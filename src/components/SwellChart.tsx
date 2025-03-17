@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Bar,
   BarChart,
   CartesianGrid,
   LabelList,
+  TooltipProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -12,9 +14,38 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
+  // ChartTooltipContent,
+  // ChartTooltipContent,
 } from "@/components/ui/chart";
 import chartData from "@/data";
+import {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+
+export const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-2 rounded-md">
+        <p className="label">{`${label} : ${payload[0].value}`}</p>
+        <div>
+          {payload.map((pld: any) => (
+            <div style={{ display: "inline-block", padding: 10 }}>
+              <div style={{ color: pld.fill }}>{pld.value}</div>
+              <div>{pld.dataKey}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const chartConfig = {
   views: {
@@ -34,7 +65,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const RenderCustomizedLabel = (props: any) => {
   const { x, y, value } = props;
 
@@ -90,16 +120,38 @@ export function SwellChart() {
                 "oklch(0.869 0.022 252.894)",
                 "oklch(0.929 0.013 255.508)",
               ]}
-              // verticalCoordinatesGenerator={() => {
-              //   const arr = chartData.map((item) => item.date);
-              //   return arr.map((item) => new Date(item).getTime());
-              // }}
               y={0}
               height={280}
+              // verticalPoints={[
+              //   100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+              // ]}
+
+              syncWithTicks
+            />
+
+            {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
+            <XAxis
+              xAxisId={0}
+              // offset={10}
+              dataKey="date"
+              // tickLine={false}
+              // axisLine={false}
+              // tickMargin={0}
+              minTickGap={100}
+              // tickCount={0}
+              orientation="top"
+              // tickFormatter={(value) => {
+              //   const date = new Date(value);
+              //   return date.toLocaleDateString("en-US", {
+              //     month: "short",
+              //     day: "numeric",
+              //   });
+              // }}
+              hide
             />
 
             <XAxis
-              xAxisId={0}
+              xAxisId={1}
               dataKey="time"
               tickLine={false}
               axisLine={false}
@@ -107,11 +159,12 @@ export function SwellChart() {
               minTickGap={4}
               tickCount={2}
               orientation="top"
-
-              // allowDuplicatedCategory={false}
             />
+
+            {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
             <XAxis
-              xAxisId={1}
+              xAxisId={2}
+              offset={10}
               dataKey="date"
               tickLine={false}
               axisLine={false}
@@ -133,7 +186,6 @@ export function SwellChart() {
               axisLine={false}
               tickMargin={8}
               minTickGap={0}
-              // ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
               unit="ft"
               padding={{
                 top: 20,
@@ -142,19 +194,21 @@ export function SwellChart() {
               overflow="visible"
             />
             <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px] bg-white"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    });
-                  }}
-                />
-              }
+              content={<CustomTooltip />}
+              // content={
+              //   <ChartTooltipContent
+              //     className="w-[150px] bg-white"
+              //     nameKey="views"
+              //     labelFormatter={(value) => {
+              //       console.log({ value });
+              //       return new Date(value).toLocaleDateString("en-US", {
+              //         month: "short",
+              //         day: "numeric",
+              //         year: "numeric",
+              //       });
+              //     }}
+              //   />
+              // }
             />
             <Bar
               dataKey="waveHeight"
