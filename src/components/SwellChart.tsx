@@ -108,16 +108,20 @@ const SwellChart = ({
               tickLine={true}
               axisLine={false}
               tickMargin={8}
-              minTickGap={0}
+              minTickGap={16}
               unit={unitPreferences.waveHeight}
               padding={{
                 top: 20,
               }}
-              interval={"preserveStart"}
+              interval="preserveStart"
               overflow="visible"
               type="number"
               domain={[0, maxWaveHeight]}
               allowDecimals={false}
+              ticks={Array.from(
+                { length: Math.ceil(maxWaveHeight) + 1 },
+                (_, i) => i
+              )}
             />
             <ChartTooltip content={<CustomTooltip />} />
             <Bar
