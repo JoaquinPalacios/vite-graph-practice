@@ -56,6 +56,21 @@ const chartConfig = {
   tertiarySwellDirection: {
     label: "tertiarySwellDirection",
   },
+  nextHighTide: {
+    label: "nextHighTide",
+  },
+  nextHighTideHeight: {
+    label: "nextHighTideHeight",
+  },
+  nextLowTide: {
+    label: "nextLowTide",
+  },
+  nextLowTideHeight: {
+    label: "nextLowTideHeight",
+  },
+  isRising: {
+    label: "isRising",
+  },
 } satisfies ChartConfig;
 
 export function SwellChart() {
