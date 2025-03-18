@@ -15,10 +15,11 @@ import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "./UnitSelector";
 const SwellChart = ({
   unitPreferences,
+  maxWaveHeight,
 }: {
   unitPreferences: UnitPreferences;
+  maxWaveHeight: number;
 }) => {
-  console.log({ unitPreferences });
   return (
     <Card className="w-full bg-slate-200 border-slate-700">
       <CardContent className="px-2 sm:p-6">
@@ -108,19 +109,26 @@ const SwellChart = ({
               axisLine={false}
               tickMargin={8}
               minTickGap={0}
-              unit="ft"
+              unit={unitPreferences.waveHeight}
               padding={{
                 top: 20,
               }}
               interval={"preserveStart"}
               overflow="visible"
+              type="number"
+              domain={[0, maxWaveHeight]}
+              allowDecimals={false}
             />
             <ChartTooltip content={<CustomTooltip />} />
             <Bar
-              dataKey="waveHeight"
+              dataKey={(d) =>
+                unitPreferences.waveHeight === "ft"
+                  ? d.waveHeight / 0.3048
+                  : d.waveHeight
+              }
               fill="#008a93"
               activeBar={{ fill: "#00b4c6" }}
-              unit="ft"
+              unit={unitPreferences.waveHeight}
             >
               <LabelList
                 dataKey="swellDirection"
