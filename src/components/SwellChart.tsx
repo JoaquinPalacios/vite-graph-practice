@@ -7,71 +7,11 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
 import { CustomTooltip } from "./CustomTooltip";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
-
-const chartConfig = {
-  views: {
-    label: "Wave height",
-  },
-  waveHeight: {
-    label: "waveHeight",
-  },
-  swellDirection: {
-    label: "swellDirection",
-  },
-  windDirection: {
-    label: "windDirection",
-  },
-  windSpeed: {
-    label: "windSpeed",
-  },
-  primarySwellHeight: {
-    label: "primarySwellHeight",
-  },
-  primarySwellDirection: {
-    label: "primarySwellDirection",
-  },
-  primarySwellPeriod: {
-    label: "primarySwellPeriod",
-  },
-  secondarySwellHeight: {
-    label: "secondarySwellHeight",
-  },
-  secondarySwellDirection: {
-    label: "secondarySwellDirection",
-  },
-  secondarySwellPeriod: {
-    label: "secondarySwellPeriod",
-  },
-  tertiarySwellHeight: {
-    label: "tertiarySwellHeight",
-  },
-  tertiarySwellDirection: {
-    label: "tertiarySwellDirection",
-  },
-  nextHighTide: {
-    label: "nextHighTide",
-  },
-  nextHighTideHeight: {
-    label: "nextHighTideHeight",
-  },
-  nextLowTide: {
-    label: "nextLowTide",
-  },
-  nextLowTideHeight: {
-    label: "nextLowTideHeight",
-  },
-  isRising: {
-    label: "isRising",
-  },
-} satisfies ChartConfig;
+import { chartConfig } from "@/lib/chart-config";
 
 export function SwellChart() {
   return (
