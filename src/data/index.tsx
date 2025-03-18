@@ -4,6 +4,7 @@ const chartData = [
     time: "12am",
     swellDirection: 222,
     windDirection: 150,
+    windSpeed: 8,
     waveHeight: 1.2,
   },
   {
@@ -11,6 +12,7 @@ const chartData = [
     time: "3am",
     swellDirection: 97,
     windDirection: 180,
+    windSpeed: 10,
     waveHeight: 1.6,
   },
   {
@@ -18,6 +20,7 @@ const chartData = [
     time: "6am",
     swellDirection: 167,
     windDirection: 120,
+    windSpeed: 12,
     waveHeight: 2.1,
   },
   {
@@ -25,6 +28,7 @@ const chartData = [
     time: "9am",
     swellDirection: 242,
     windDirection: 260,
+    windSpeed: 15,
     waveHeight: 2.5,
   },
   {
@@ -32,6 +36,7 @@ const chartData = [
     time: "12pm",
     swellDirection: 360,
     windDirection: 290,
+    windSpeed: 18,
     waveHeight: 3.0,
   },
   {
@@ -39,6 +44,7 @@ const chartData = [
     time: "3pm",
     swellDirection: 301,
     windDirection: 340,
+    windSpeed: 22,
     waveHeight: 3.5,
   },
   {
@@ -46,6 +52,7 @@ const chartData = [
     time: "6pm",
     swellDirection: 245,
     windDirection: 180,
+    windSpeed: 20,
     waveHeight: 3.2,
   },
   {
@@ -53,6 +60,7 @@ const chartData = [
     time: "9pm",
     swellDirection: 209,
     windDirection: 320,
+    windSpeed: 17,
     waveHeight: 2.8,
   },
   {
@@ -60,6 +68,7 @@ const chartData = [
     time: "12am",
     swellDirection: 59,
     windDirection: 110,
+    windSpeed: 14,
     waveHeight: 2.3,
   },
   {
@@ -67,6 +76,7 @@ const chartData = [
     time: "3am",
     swellDirection: 261,
     windDirection: 190,
+    windSpeed: 12,
     waveHeight: 1.9,
   },
   {
@@ -74,6 +84,7 @@ const chartData = [
     time: "6am",
     swellDirection: 327,
     windDirection: 350,
+    windSpeed: 10,
     waveHeight: 1.5,
   },
   {
@@ -81,13 +92,15 @@ const chartData = [
     time: "9am",
     swellDirection: 292,
     windDirection: 210,
+    windSpeed: 8,
     waveHeight: 1.2,
   },
   {
     date: "2024-04-02",
     time: "12pm",
     swellDirection: 342,
-    windDirection: 380,
+    windDirection: 20,
+    windSpeed: 8,
     waveHeight: 1.0,
   },
   {
@@ -95,6 +108,7 @@ const chartData = [
     time: "3am",
     swellDirection: 137,
     windDirection: 220,
+    windSpeed: 10,
     waveHeight: 1.3,
   },
   {
@@ -102,6 +116,7 @@ const chartData = [
     time: "6am",
     swellDirection: 120,
     windDirection: 170,
+    windSpeed: 10,
     waveHeight: 1.7,
   },
   {
@@ -109,6 +124,7 @@ const chartData = [
     time: "9am",
     swellDirection: 138,
     windDirection: 190,
+    windSpeed: 10,
     waveHeight: 2.0,
   },
   {
@@ -116,13 +132,15 @@ const chartData = [
     time: "12pm",
     swellDirection: 146,
     windDirection: 360,
+    windSpeed: 10,
     waveHeight: 2.5,
   },
   {
     date: "2024-04-02",
     time: "3pm",
     swellDirection: 349,
-    windDirection: 410,
+    windDirection: 50,
+    windSpeed: 10,
     waveHeight: 3.0,
   },
   {
@@ -130,6 +148,7 @@ const chartData = [
     time: "6pm",
     swellDirection: 243,
     windDirection: 180,
+    windSpeed: 10,
     waveHeight: 3.6,
   },
   {
@@ -137,6 +156,7 @@ const chartData = [
     time: "9pm",
     swellDirection: 89,
     windDirection: 150,
+    windSpeed: 10,
     waveHeight: 4.2,
   },
   {
@@ -144,6 +164,7 @@ const chartData = [
     time: "12am",
     swellDirection: 137,
     windDirection: 200,
+    windSpeed: 10,
     waveHeight: 4.8,
   },
   {
@@ -151,6 +172,7 @@ const chartData = [
     time: "3am",
     swellDirection: 224,
     windDirection: 170,
+    windSpeed: 10,
     waveHeight: 4.3,
   },
   {
@@ -158,6 +180,7 @@ const chartData = [
     time: "6am",
     swellDirection: 138,
     windDirection: 230,
+    windSpeed: 10,
     waveHeight: 3.7,
   },
   {
@@ -165,6 +188,7 @@ const chartData = [
     time: "9am",
     swellDirection: 317,
     windDirection: 290,
+    windSpeed: 10,
     waveHeight: 3.1,
   },
   {
@@ -172,6 +196,7 @@ const chartData = [
     time: "12pm",
     swellDirection: 215,
     windDirection: 250,
+    windSpeed: 10,
     waveHeight: 2.6,
   },
   {
@@ -179,13 +204,15 @@ const chartData = [
     time: "3pm",
     swellDirection: 75,
     windDirection: 130,
+    windSpeed: 10,
     waveHeight: 2.2,
   },
   {
     date: "2024-04-03",
     time: "6pm",
     swellDirection: 303,
-    windDirection: 420,
+    windDirection: 60,
+    windSpeed: 10,
     waveHeight: 1.8,
   },
   {
@@ -193,6 +220,7 @@ const chartData = [
     time: "9pm",
     swellDirection: 122,
     windDirection: 180,
+    windSpeed: 10,
     waveHeight: 1.4,
   },
   {
@@ -200,13 +228,15 @@ const chartData = [
     time: "12am",
     swellDirection: 315,
     windDirection: 240,
+    windSpeed: 10,
     waveHeight: 1.2,
   },
   {
     date: "2024-04-04",
     time: "3am",
     swellDirection: 54,
-    windDirection: 380,
+    windDirection: 20,
+    windSpeed: 10,
     waveHeight: 1.3,
   },
   {
@@ -214,6 +244,7 @@ const chartData = [
     time: "6am",
     swellDirection: 165,
     windDirection: 220,
+    windSpeed: 10,
     waveHeight: 1.6,
   },
   {
@@ -221,6 +252,7 @@ const chartData = [
     time: "9am",
     swellDirection: 293,
     windDirection: 310,
+    windSpeed: 10,
     waveHeight: 2.0,
   },
   {
@@ -228,27 +260,31 @@ const chartData = [
     time: "12pm",
     swellDirection: 247,
     windDirection: 190,
+    windSpeed: 10,
     waveHeight: 2.4,
   },
   {
     date: "2024-04-04",
     time: "3pm",
     swellDirection: 325,
-    windDirection: 420,
+    windDirection: 60,
+    windSpeed: 10,
     waveHeight: 2.8,
   },
   {
     date: "2024-04-04",
     time: "6pm",
     swellDirection: 181,
-    windDirection: 390,
+    windDirection: 30,
+    windSpeed: 15,
     waveHeight: 3.4,
   },
   {
     date: "2024-04-04",
     time: "9pm",
     swellDirection: 98,
-    windDirection: 520,
+    windDirection: 160,
+    windSpeed: 17,
     waveHeight: 4.0,
   },
   {
@@ -256,6 +292,7 @@ const chartData = [
     time: "12am",
     swellDirection: 288,
     windDirection: 300,
+    windSpeed: 20,
     waveHeight: 4.5,
   },
   {
@@ -263,6 +300,7 @@ const chartData = [
     time: "3am",
     swellDirection: 149,
     windDirection: 210,
+    windSpeed: 18,
     waveHeight: 3.9,
   },
   {
@@ -270,6 +308,7 @@ const chartData = [
     time: "6am",
     swellDirection: 227,
     windDirection: 180,
+    windSpeed: 10,
     waveHeight: 3.4,
   },
   {
@@ -277,6 +316,7 @@ const chartData = [
     time: "9am",
     swellDirection: 293,
     windDirection: 330,
+    windSpeed: 10,
     waveHeight: 2.9,
   },
   {
@@ -284,6 +324,7 @@ const chartData = [
     time: "12pm",
     swellDirection: 335,
     windDirection: 270,
+    windSpeed: 10,
     waveHeight: 2.4,
   },
   {
@@ -291,6 +332,7 @@ const chartData = [
     time: "3pm",
     swellDirection: 197,
     windDirection: 240,
+    windSpeed: 10,
     waveHeight: 1.9,
   },
   {
@@ -298,6 +340,7 @@ const chartData = [
     time: "6pm",
     swellDirection: 177,
     windDirection: 160,
+    windSpeed: 9,
     waveHeight: 1.5,
   },
 ];

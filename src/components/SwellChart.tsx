@@ -8,20 +8,20 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
+import { GiBigWave } from "react-icons/gi";
+import { LuWind } from "react-icons/lu";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  // ChartTooltipContent,
-  // ChartTooltipContent,
 } from "@/components/ui/chart";
 import chartData from "@/data";
 import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { degreesToCompassDirection } from "@/utils/degrees-to-compass-direction";
 
 export const CustomTooltip = ({
   active,
@@ -29,15 +29,41 @@ export const CustomTooltip = ({
   label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
+    console.log({ payload });
     return (
       <div className="bg-white p-2 rounded-md">
-        <p className="label">{`${label} : ${payload[0].value}`}</p>
-        <div>
+        <h5 className="mb-2">
+          {payload[0].payload.time}&nbsp;-&nbsp;
+          {new Date(label).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </h5>
+        <div className="flex flex-col">
           {payload.map((pld: any) => (
-            <div style={{ display: "inline-block", padding: 10 }}>
-              <div style={{ color: pld.fill }}>{pld.value}</div>
-              <div>{pld.dataKey}</div>
-            </div>
+            <>
+              <div className="flex gap-1">
+                <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
+                <p className="font-medium">
+                  {pld.value}
+                  {pld.unit || "ft"}
+                </p>
+                <p className="font-medium">
+                  {degreesToCompassDirection(pld.payload.swellDirection)}
+                </p>
+              </div>
+              <div className="flex gap-1">
+                <LuWind className="w-3.5 h-3.5" color="#008a93" />
+                <p className="font-medium">
+                  {pld.payload.windSpeed}
+                  km/h
+                </p>
+                <p className="font-medium">
+                  {degreesToCompassDirection(pld.payload.windDirection)}
+                </p>
+              </div>
+            </>
           ))}
         </div>
       </div>
@@ -51,6 +77,10 @@ const chartConfig = {
   views: {
     label: "Wave height",
   },
+  waveHeight: {
+    label: "waveHeight",
+    color: "hsl(var(--chart-3))",
+  },
   swellDirection: {
     label: "swellDirection",
     color: "hsl(var(--chart-1))",
@@ -59,9 +89,9 @@ const chartConfig = {
     label: "windDirection",
     color: "hsl(var(--chart-2))",
   },
-  waveHeight: {
-    label: "waveHeight",
-    color: "hsl(var(--chart-3))",
+  windSpeed: {
+    label: "windSpeed",
+    color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig;
 
@@ -193,28 +223,13 @@ export function SwellChart() {
               interval={"preserveStart"}
               overflow="visible"
             />
-            <ChartTooltip
-              content={<CustomTooltip />}
-              // content={
-              //   <ChartTooltipContent
-              //     className="w-[150px] bg-white"
-              //     nameKey="views"
-              //     labelFormatter={(value) => {
-              //       console.log({ value });
-              //       return new Date(value).toLocaleDateString("en-US", {
-              //         month: "short",
-              //         day: "numeric",
-              //         year: "numeric",
-              //       });
-              //     }}
-              //   />
-              // }
-            />
+            <ChartTooltip content={<CustomTooltip />} />
             <Bar
               dataKey="waveHeight"
               fill="#008a93"
               cursor="pointer"
               activeBar={{ fill: "#00b4c6" }}
+              unit="ft"
             >
               <LabelList
                 dataKey="swellDirection"
