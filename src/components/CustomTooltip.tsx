@@ -74,7 +74,7 @@ export const CustomTooltip = ({
               )}
               {pld.payload.tertiarySwellHeight && (
                 <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a9373" />
+                  <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
                   <p className="font-medium ml-px">
                     {pld.payload.tertiarySwellHeight}m @
                   </p>
