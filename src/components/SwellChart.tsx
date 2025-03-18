@@ -1,15 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Bar,
   BarChart,
   CartesianGrid,
   LabelList,
-  TooltipProps,
   XAxis,
   YAxis,
 } from "recharts";
-import { GiBigWave } from "react-icons/gi";
-import { LuWind } from "react-icons/lu";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -17,61 +13,8 @@ import {
   ChartTooltip,
 } from "@/components/ui/chart";
 import chartData from "@/data";
-import {
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
-import { degreesToCompassDirection } from "@/utils/degrees-to-compass-direction";
-
-export const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
-    console.log({ payload });
-    return (
-      <div className="bg-white p-2 rounded-md">
-        <h5 className="mb-2">
-          {payload[0].payload.time}&nbsp;-&nbsp;
-          {new Date(label).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </h5>
-        <div className="flex flex-col">
-          {payload.map((pld: any) => (
-            <>
-              <div className="flex gap-1">
-                <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
-                <p className="font-medium">
-                  {pld.value}
-                  {pld.unit || "ft"}
-                </p>
-                <p className="font-medium">
-                  {degreesToCompassDirection(pld.payload.swellDirection)}
-                </p>
-              </div>
-              <div className="flex gap-1">
-                <LuWind className="w-3.5 h-3.5" color="#008a93" />
-                <p className="font-medium">
-                  {pld.payload.windSpeed}
-                  km/h
-                </p>
-                <p className="font-medium">
-                  {degreesToCompassDirection(pld.payload.windDirection)}
-                </p>
-              </div>
-            </>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-};
+import { CustomTooltip } from "./CustomTooltip";
+import RenderCustomizedLabel from "./RenderCustomizedLabel";
 
 const chartConfig = {
   views: {
@@ -79,52 +22,41 @@ const chartConfig = {
   },
   waveHeight: {
     label: "waveHeight",
-    color: "hsl(var(--chart-3))",
   },
   swellDirection: {
     label: "swellDirection",
-    color: "hsl(var(--chart-1))",
   },
   windDirection: {
     label: "windDirection",
-    color: "hsl(var(--chart-2))",
   },
   windSpeed: {
     label: "windSpeed",
-    color: "hsl(var(--chart-4))",
+  },
+  primarySwellHeight: {
+    label: "primarySwellHeight",
+  },
+  primarySwellDirection: {
+    label: "primarySwellDirection",
+  },
+  primarySwellPeriod: {
+    label: "primarySwellPeriod",
+  },
+  secondarySwellHeight: {
+    label: "secondarySwellHeight",
+  },
+  secondarySwellDirection: {
+    label: "secondarySwellDirection",
+  },
+  secondarySwellPeriod: {
+    label: "secondarySwellPeriod",
+  },
+  tertiarySwellHeight: {
+    label: "tertiarySwellHeight",
+  },
+  tertiarySwellDirection: {
+    label: "tertiarySwellDirection",
   },
 } satisfies ChartConfig;
-
-const RenderCustomizedLabel = (props: any) => {
-  const { x, y, value } = props;
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      y={y - 20}
-      x={x}
-      height={16}
-      width={16}
-      fill="#008a93"
-    >
-      <path
-        d="M14.13 9.11h-12l6-7 6 7z"
-        transform={`rotate(${value}, 0, 0)`}
-        style={{
-          transformOrigin: "center",
-        }}
-      />
-      <path
-        d="M6.12 8h4v6h-4z"
-        transform={`rotate(${value}, 0, 0)`}
-        style={{
-          transformOrigin: "center",
-        }}
-      />
-    </svg>
-  );
-};
 
 export function SwellChart() {
   return (
