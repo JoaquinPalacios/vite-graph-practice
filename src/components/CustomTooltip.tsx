@@ -8,6 +8,39 @@ import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { PiWavesFill } from "react-icons/pi";
 
+// Helper function to format wave heights
+const formatWaveHeight = (
+  height: number | undefined,
+  unit: string | undefined
+) => {
+  if (!height) return "0m"; // Handle undefined height
+  const actualUnit = unit || "m"; // Default to meters if unit is undefined
+
+  if (actualUnit === "ft") {
+    // For feet, show as a range (e.g., 2-3ft)
+    const lowerBound = Math.floor(height);
+    const upperBound = Math.ceil(height);
+
+    // If the height is already a whole number, just return that value
+    if (lowerBound === upperBound) {
+      return `${lowerBound}${actualUnit}`;
+    }
+
+    return `${lowerBound}-${upperBound}${actualUnit}`;
+  }
+
+  // For meters, show one decimal place
+  return `${height.toFixed(1)}${actualUnit}`;
+};
+
+// Helper function to format wind speed
+const formatWindSpeed = (speed: number | undefined, unit: string) => {
+  if (!speed) return "0" + unit; // Handle undefined speed
+  // Round to nearest whole number for both units
+  const roundedSpeed = Math.round(speed);
+  return `${roundedSpeed}${unit}`;
+};
+
 export const CustomTooltip = ({
   active,
   payload,
@@ -29,8 +62,10 @@ export const CustomTooltip = ({
               <div className="flex gap-1">
                 <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
                 <p className="font-medium ml-px">
-                  {pld.value}
-                  {pld.unit || "ft"}
+                  {formatWaveHeight(
+                    pld.value as number,
+                    String(pld.unit || "m")
+                  )}
                 </p>
                 <p className="font-medium">
                   {degreesToCompassDirection(pld.payload.swellDirection)}
@@ -39,8 +74,7 @@ export const CustomTooltip = ({
               <div className="flex gap-1">
                 <LuWind className="w-3.5 h-3.5" color="#008a93" />
                 <p className="font-medium ml-px">
-                  {pld.payload.windSpeed}
-                  km/h
+                  {formatWindSpeed(pld.payload.windSpeed, "km/h")}
                 </p>
                 <p className="font-medium">
                   {degreesToCompassDirection(pld.payload.windDirection)}
