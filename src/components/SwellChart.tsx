@@ -12,8 +12,13 @@ import chartData from "@/data";
 import { CustomTooltip } from "./CustomTooltip";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { chartConfig } from "@/lib/chart-config";
-
-export function SwellChart() {
+import { UnitPreferences } from "./UnitSelector";
+const SwellChart = ({
+  unitPreferences,
+}: {
+  unitPreferences: UnitPreferences;
+}) => {
+  console.log({ unitPreferences });
   return (
     <Card className="w-full bg-slate-200 border-slate-700">
       <CardContent className="px-2 sm:p-6">
@@ -114,7 +119,6 @@ export function SwellChart() {
             <Bar
               dataKey="waveHeight"
               fill="#008a93"
-              cursor="pointer"
               activeBar={{ fill: "#00b4c6" }}
               unit="ft"
             >
@@ -130,4 +134,6 @@ export function SwellChart() {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default SwellChart;
