@@ -1,5 +1,5 @@
 import React from "react";
-import { degreesToCompassDirection } from "@/utils/degrees-to-compass-direction";
+import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { GiBigWave, GiHighTide, GiLowTide } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { TooltipProps } from "recharts";
