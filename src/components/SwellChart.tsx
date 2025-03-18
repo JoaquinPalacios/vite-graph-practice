@@ -13,6 +13,7 @@ import { CustomTooltip } from "./CustomTooltip";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "./UnitSelector";
+import { generateFootTicks } from "@/utils/chart-utils";
 const SwellChart = ({
   unitPreferences,
   maxWaveHeight,
@@ -55,21 +56,9 @@ const SwellChart = ({
             {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
             <XAxis
               xAxisId={0}
-              // offset={10}
               dataKey="date"
-              // tickLine={false}
-              // axisLine={false}
-              // tickMargin={0}
               minTickGap={100}
-              // tickCount={0}
               orientation="top"
-              // tickFormatter={(value) => {
-              //   const date = new Date(value);
-              //   return date.toLocaleDateString("en-US", {
-              //     month: "short",
-              //     day: "numeric",
-              //   });
-              // }}
               hide
             />
 
@@ -108,7 +97,7 @@ const SwellChart = ({
               tickLine={true}
               axisLine={false}
               tickMargin={8}
-              minTickGap={16}
+              minTickGap={0}
               unit={unitPreferences.waveHeight}
               padding={{
                 top: 20,
@@ -118,10 +107,7 @@ const SwellChart = ({
               type="number"
               domain={[0, maxWaveHeight]}
               allowDecimals={false}
-              ticks={Array.from(
-                { length: Math.ceil(maxWaveHeight) + 1 },
-                (_, i) => i
-              )}
+              ticks={generateFootTicks(maxWaveHeight)}
             />
             <ChartTooltip content={<CustomTooltip />} />
             <Bar
@@ -133,6 +119,9 @@ const SwellChart = ({
               fill="#008a93"
               activeBar={{ fill: "#00b4c6" }}
               unit={unitPreferences.waveHeight}
+              onMouseEnter={(props) => {
+                console.log({ props });
+              }}
             >
               <LabelList
                 dataKey="swellDirection"
