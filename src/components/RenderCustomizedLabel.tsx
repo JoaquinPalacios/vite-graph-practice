@@ -1,7 +1,7 @@
 import { LabelProps } from "recharts";
 
 const RenderCustomizedLabel = (props: LabelProps) => {
-  const { x, y, value } = props;
+  const { x, y, value, fill } = props;
 
   // Ensure y is a valid number before subtracting
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
@@ -15,7 +15,7 @@ const RenderCustomizedLabel = (props: LabelProps) => {
       x={xPosition}
       height={16}
       width={16}
-      fill="#008a93"
+      fill={fill}
     >
       <path
         d="M14.13 9.11h-12l6-7 6 7z"

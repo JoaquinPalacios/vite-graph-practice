@@ -51,7 +51,6 @@ export const CustomTooltip = ({
   unitPreferences: UnitPreferences;
 }) => {
   if (active && payload && payload.length) {
-    console.log({ unitPreferences });
     return (
       <div className="bg-stone-100 rounded-md overflow-hidden">
         <h5 className="mb-2 px-2 pt-2 text-center">
