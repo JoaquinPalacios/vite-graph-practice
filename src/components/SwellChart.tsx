@@ -31,7 +31,7 @@ const SwellChart = ({
         <ResponsiveContainer width="100%" height="100%">
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-80 w-full"
+            className="aspect-auto h-96 w-full"
           >
             <BarChart
               accessibilityLayer
@@ -115,6 +115,26 @@ const SwellChart = ({
                   right: 0,
                 }}
                 fill="#008a93"
+              />
+              <XAxis
+                xAxisId={4}
+                dataKey="windSpeed"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                fontSize={10}
+                minTickGap={0}
+                orientation="bottom"
+                interval={0}
+                unit={
+                  unitPreferences.windSpeed === "knots"
+                    ? "kts"
+                    : unitPreferences.windSpeed
+                }
+                padding={{
+                  left: 0,
+                  right: 0,
+                }}
               />
 
               <YAxis

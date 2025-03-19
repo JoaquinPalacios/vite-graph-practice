@@ -7,12 +7,9 @@ interface CustomAxisTickProps {
     value: string | number;
   };
   fill?: string;
-  windSpeed?: number;
 }
 
 const RenderCustomAxisTick = ({ x, y, payload, fill }: CustomAxisTickProps) => {
-  // console.log({ fill });
-  console.log({ x, y });
   return (
     <g className="flex flex-col-reverse items-center justify-center">
       <svg
@@ -22,7 +19,7 @@ const RenderCustomAxisTick = ({ x, y, payload, fill }: CustomAxisTickProps) => {
         x={(x ?? 0) - 10}
         height={20}
         width={20}
-        fill={fill}
+        fill={fill || "currentColor"}
       >
         <path
           d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
