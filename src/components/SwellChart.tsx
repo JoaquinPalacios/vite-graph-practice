@@ -14,15 +14,16 @@ import { CustomTooltip } from "./CustomTooltip";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "./UnitSelector";
-import { generateFootTicks } from "@/utils/chart-utils";
+import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
+import { GiBigWave } from "react-icons/gi";
 
 const SwellChart = ({
   unitPreferences,
-  maxWaveHeight,
-}: {
+}: // maxWaveHeight,
+{
   unitPreferences: UnitPreferences;
-  maxWaveHeight: number;
+  // maxWaveHeight: number;
 }) => {
   // const [activeIndex, setActiveIndex] = useState<number | undefined>();
   return (
@@ -118,7 +119,11 @@ const SwellChart = ({
               />
               <XAxis
                 xAxisId={4}
-                dataKey="windSpeed"
+                dataKey={
+                  unitPreferences.windSpeed === "knots"
+                    ? "windSpeed_knots"
+                    : "windSpeed_kmh"
+                }
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
@@ -138,9 +143,9 @@ const SwellChart = ({
               />
 
               <YAxis
-                tickLine={true}
+                tickLine={false}
                 axisLine={false}
-                tickMargin={8}
+                tickMargin={16}
                 minTickGap={0}
                 unit={unitPreferences.waveHeight}
                 padding={{
@@ -149,9 +154,29 @@ const SwellChart = ({
                 interval="preserveStart"
                 overflow="visible"
                 type="number"
-                domain={[0, maxWaveHeight]}
+                domain={[0, "dataMax"]}
                 allowDecimals={false}
-                ticks={generateFootTicks(maxWaveHeight)}
+                ticks={generateTicks(
+                  unitPreferences.waveHeight === "ft"
+                    ? Math.max(...chartData.map((d) => d.waveHeight_ft))
+                    : Math.max(...chartData.map((d) => d.waveHeight_m)),
+                  unitPreferences.waveHeight
+                )}
+                tick={(value) => {
+                  return value.index === 0 ? (
+                    <GiBigWave
+                      className="w-6 h-6"
+                      x={value.x - 8}
+                      y={value.y - 24}
+                      size={24}
+                    />
+                  ) : (
+                    <text x={value.x} y={value.y} dy={1}>
+                      {value.payload.value}
+                      {unitPreferences.waveHeight}
+                    </text>
+                  );
+                }}
               />
               <ChartTooltip
                 content={<CustomTooltip unitPreferences={unitPreferences} />}
@@ -159,27 +184,19 @@ const SwellChart = ({
               <Bar
                 dataKey={(d) =>
                   unitPreferences.waveHeight === "ft"
-                    ? d.waveHeight / 0.3048
-                    : d.waveHeight
+                    ? d.waveHeight_ft
+                    : d.waveHeight_m
                 }
                 fill="#008a93"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
                   fill: "#00b4c6",
                 }}
-                // label={({ index }) => {
-                //   return (
-                //     <RenderCustomizedLabel
-                //       fill={activeIndex === index ? "#00b4c6" : "#008a93"}
-                //     />
-                //   );
-                // }}
               >
                 <LabelList
                   dataKey="swellDirection"
                   position="top"
                   fill="#008a93"
-                  // fill={activeIndex === index ? "#00b4c6" : "#008a93"}
                   content={<RenderCustomizedLabel />}
                 />
               </Bar>
