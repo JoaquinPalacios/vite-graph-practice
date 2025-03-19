@@ -15,6 +15,7 @@ import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "./UnitSelector";
 import { generateFootTicks } from "@/utils/chart-utils";
+import RenderCustomAxisTick from "./RenderCustomAxisTick";
 
 const SwellChart = ({
   unitPreferences,
@@ -42,7 +43,6 @@ const SwellChart = ({
               // className="[&>svg>path]:fill-transparent"
               // onMouseMove={(props) => {
               //   setActiveIndex(props.activeTooltipIndex);
-              //   console.log(props);
               // }}
             >
               <CartesianGrid
@@ -72,7 +72,7 @@ const SwellChart = ({
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
               <XAxis
                 xAxisId={2}
-                offset={10}
+                offset={0}
                 dataKey="date"
                 tickLine={false}
                 axisLine={false}
@@ -97,6 +97,21 @@ const SwellChart = ({
                 minTickGap={4}
                 tickCount={2}
                 orientation="top"
+              />
+              <XAxis
+                xAxisId={3}
+                dataKey="windDirection"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={0}
+                minTickGap={0}
+                orientation="bottom"
+                tick={<RenderCustomAxisTick />}
+                interval={0}
+                padding={{
+                  left: 0,
+                  right: 0,
+                }}
               />
 
               <YAxis
