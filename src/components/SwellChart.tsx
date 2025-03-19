@@ -46,9 +46,11 @@ const SwellChart = ({
                 "oklch(0.929 0.013 255.508)",
               ]}
               y={0}
-              x={10}
               height={280}
-              syncWithTicks
+              // syncWithTicks
+              verticalPoints={[
+                0, 84, 274, 464, 654, 844, 1034, 1224, 1414, 1604,
+              ]}
             />
 
             {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
