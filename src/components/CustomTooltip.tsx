@@ -34,14 +34,6 @@ const formatWaveHeight = (
   return `${height.toFixed(1)}${actualUnit}`;
 };
 
-// Helper function to format wind speed
-const formatWindSpeed = (speed: number | undefined, unit: string) => {
-  if (!speed) return "0" + unit; // Handle undefined speed
-  // Round to nearest whole number for both units
-  const roundedSpeed = Math.round(speed);
-  return `${roundedSpeed}${unit}`;
-};
-
 export const CustomTooltip = ({
   active,
   payload,
@@ -78,12 +70,10 @@ export const CustomTooltip = ({
               <div className="flex gap-1">
                 <LuWind className="w-3.5 h-3.5" color="#008a93" />
                 <p className="font-medium ml-px">
-                  {formatWindSpeed(
-                    unitPreferences.windSpeed === "knots"
-                      ? pld.payload.windSpeed * 0.539957 // Convert km/h to knots
-                      : pld.payload.windSpeed,
-                    unitPreferences.windSpeed
-                  )}
+                  {unitPreferences.windSpeed === "knots"
+                    ? pld.payload.windSpeed_knots
+                    : pld.payload.windSpeed_kmh}
+                  {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
                 </p>
                 <p className="font-medium">
                   {degreesToCompassDirection(pld.payload.windDirection)}
