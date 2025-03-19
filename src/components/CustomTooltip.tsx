@@ -7,6 +7,7 @@ import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { PiWavesFill } from "react-icons/pi";
+import { UnitPreferences } from "./UnitSelector";
 
 // Helper function to format wave heights
 const formatWaveHeight = (
@@ -45,8 +46,12 @@ export const CustomTooltip = ({
   active,
   payload,
   label,
-}: TooltipProps<ValueType, NameType>) => {
+  unitPreferences,
+}: TooltipProps<ValueType, NameType> & {
+  unitPreferences: UnitPreferences;
+}) => {
   if (active && payload && payload.length) {
+    console.log({ unitPreferences });
     return (
       <div className="bg-stone-100 rounded-md overflow-hidden">
         <h5 className="mb-2 px-2 pt-2 text-center">
@@ -74,7 +79,12 @@ export const CustomTooltip = ({
               <div className="flex gap-1">
                 <LuWind className="w-3.5 h-3.5" color="#008a93" />
                 <p className="font-medium ml-px">
-                  {formatWindSpeed(pld.payload.windSpeed, "km/h")}
+                  {formatWindSpeed(
+                    unitPreferences.windSpeed === "knots"
+                      ? pld.payload.windSpeed * 0.539957 // Convert km/h to knots
+                      : pld.payload.windSpeed,
+                    unitPreferences.windSpeed
+                  )}
                 </p>
                 <p className="font-medium">
                   {degreesToCompassDirection(pld.payload.windDirection)}

@@ -14,6 +14,7 @@ import RenderCustomizedLabel from "./RenderCustomizedLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "./UnitSelector";
 import { generateFootTicks } from "@/utils/chart-utils";
+
 const SwellChart = ({
   unitPreferences,
   maxWaveHeight,
@@ -45,11 +46,8 @@ const SwellChart = ({
                 "oklch(0.929 0.013 255.508)",
               ]}
               y={0}
+              x={10}
               height={280}
-              // verticalPoints={[
-              //   100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-              // ]}
-
               syncWithTicks
             />
 
@@ -57,7 +55,7 @@ const SwellChart = ({
             <XAxis
               xAxisId={0}
               dataKey="date"
-              minTickGap={100}
+              // minTickGap={100}
               orientation="top"
               hide
             />
@@ -109,7 +107,9 @@ const SwellChart = ({
               allowDecimals={false}
               ticks={generateFootTicks(maxWaveHeight)}
             />
-            <ChartTooltip content={<CustomTooltip />} />
+            <ChartTooltip
+              content={<CustomTooltip unitPreferences={unitPreferences} />}
+            />
             <Bar
               dataKey={(d) =>
                 unitPreferences.waveHeight === "ft"
@@ -117,10 +117,9 @@ const SwellChart = ({
                   : d.waveHeight
               }
               fill="#008a93"
-              activeBar={{ fill: "#00b4c6" }}
               unit={unitPreferences.waveHeight}
-              onMouseEnter={(props) => {
-                console.log({ props });
+              activeBar={{
+                fill: "#00b4c6",
               }}
             >
               <LabelList

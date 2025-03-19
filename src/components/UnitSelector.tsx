@@ -63,7 +63,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         onClick={() => toggleUnit("waveHeight")}
         className={cn(
           "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
-          preferences.waveHeight === "ft" ? "bg-teal-700" : "bg-blue-900"
+          preferences.waveHeight === "m" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
         <FaRuler className="text-xs" />
@@ -74,7 +74,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         onClick={() => toggleUnit("windSpeed")}
         className={cn(
           "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
-          preferences.windSpeed === "knots" ? "bg-teal-700" : "bg-blue-900"
+          preferences.windSpeed === "km/h" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
         <FaWind className="text-xs" />
@@ -85,7 +85,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         onClick={() => toggleUnit("temperature")}
         className={cn(
           "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
-          preferences.temperature === "°C" ? "bg-teal-700" : "bg-blue-900"
+          preferences.temperature === "°F" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
         <FaThermometer className="text-xs" />
@@ -96,7 +96,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         onClick={() => toggleUnit("tideHeight")}
         className={cn(
           "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
-          preferences.tideHeight === "m" ? "bg-teal-700" : "bg-blue-900"
+          preferences.tideHeight === "ft" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
         <FaWater className="text-xs" />
