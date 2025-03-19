@@ -17,7 +17,7 @@ import { UnitPreferences } from "./UnitSelector";
 import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
-
+import { LuWind } from "react-icons/lu";
 const SwellChart = ({
   unitPreferences,
 }: // maxWaveHeight,
@@ -38,7 +38,7 @@ const SwellChart = ({
               accessibilityLayer
               data={chartData}
               margin={{
-                left: 12,
+                left: 0,
                 right: 12,
                 bottom: 16,
               }}
@@ -164,12 +164,22 @@ const SwellChart = ({
                 )}
                 tick={(value) => {
                   return value.index === 0 ? (
-                    <GiBigWave
-                      className="w-6 h-6"
-                      x={value.x - 8}
-                      y={value.y - 24}
-                      size={24}
-                    />
+                    <g>
+                      <GiBigWave
+                        className="w-6 h-6"
+                        x={value.x - 8}
+                        y={value.y - 24}
+                        size={24}
+                        color="#666"
+                      />
+                      <LuWind
+                        className="w-4 h-4"
+                        x={value.x - 8}
+                        y={value.y + 12}
+                        size={24}
+                        color="#666"
+                      />
+                    </g>
                   ) : (
                     <text x={value.x} y={value.y} dy={1}>
                       {value.payload.value}
