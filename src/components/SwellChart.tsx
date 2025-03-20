@@ -59,9 +59,6 @@ const SwellChart = ({
                 y={0}
                 height={480}
                 syncWithTicks
-                // verticalPoints={[
-                //   0, 84, 274, 464, 654, 844, 1034, 1224, 1414, 1604,
-                // ]}
                 overflow="visible"
               />
 
@@ -69,21 +66,18 @@ const SwellChart = ({
               <XAxis
                 xAxisId={0}
                 dataKey="date"
-                // minTickGap={100}
                 orientation="top"
                 hide
-                interval={8}
+                interval={7}
               />
 
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
               <XAxis
                 xAxisId={2}
-                offset={0}
                 dataKey="date"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={0}
-                tickCount={5}
                 allowDuplicatedCategory={false}
                 orientation="top"
                 tickFormatter={(value) => {
@@ -94,6 +88,8 @@ const SwellChart = ({
                   });
                 }}
               />
+
+              {/* This XAxis is the one that shows the time of the day */}
               <XAxis
                 xAxisId={1}
                 dataKey="time"
@@ -104,6 +100,8 @@ const SwellChart = ({
                 tickCount={2}
                 orientation="top"
               />
+
+              {/* This XAxis is the one that shows the wind direction */}
               <XAxis
                 xAxisId={3}
                 dataKey="windDirection"
@@ -122,6 +120,8 @@ const SwellChart = ({
                 //   Math.max(...chartData.map((d) => d.windSpeed_kmh))
                 // )}
               />
+
+              {/* This XAxis is the one that shows the wind speed */}
               <XAxis
                 xAxisId={4}
                 dataKey={
