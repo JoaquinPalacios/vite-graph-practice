@@ -87,6 +87,7 @@ const SwellChart = ({
                     day: "numeric",
                   });
                 }}
+                textAnchor="middle"
               />
 
               {/* This XAxis is the one that shows the time of the day */}
@@ -116,7 +117,7 @@ const SwellChart = ({
                   return (
                     <RenderCustomAxisTick
                       payload={payload}
-                      windSpeed={data?.windSpeed_kmh || 0}
+                      windSpeed={data?.windSpeed_knots || 0}
                       x={x}
                       y={y}
                     />
@@ -167,7 +168,7 @@ const SwellChart = ({
                 interval="preserveStart"
                 overflow="visible"
                 type="number"
-                domain={[0, "dataMax"]}
+                // domain={[0, "dataMax"]}
                 allowDecimals={false}
                 ticks={generateTicks(
                   unitPreferences.waveHeight === "ft"
@@ -210,6 +211,7 @@ const SwellChart = ({
                     ? d.waveHeight_ft
                     : d.waveHeight_m
                 }
+                stackId="a"
                 fill="#008a93"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
@@ -220,6 +222,22 @@ const SwellChart = ({
                   dataKey="swellDirection"
                   position="top"
                   fill="#008a93"
+                  content={<RenderCustomizedLabel />}
+                />
+              </Bar>
+              <Bar
+                dataKey="secondarySwellHeight"
+                stackId="a"
+                fill="#ffa800"
+                unit={unitPreferences.waveHeight}
+                activeBar={{
+                  fill: "#ffa800",
+                }}
+              >
+                <LabelList
+                  dataKey="swellDirection"
+                  position="top"
+                  fill="#ffa800"
                   content={<RenderCustomizedLabel />}
                 />
               </Bar>

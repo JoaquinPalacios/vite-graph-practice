@@ -16,8 +16,6 @@ const RenderCustomAxisTick = ({
   y,
   windSpeed = 0,
 }: CustomAxisTickProps) => {
-  // console.log({ payload });
-  // console.log({ windSpeed });
   const color = getWindColor(windSpeed);
 
   return (
