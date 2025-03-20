@@ -110,15 +110,23 @@ const SwellChart = ({
                 tickMargin={0}
                 minTickGap={0}
                 orientation="bottom"
-                tick={<RenderCustomAxisTick />}
+                tick={({ payload, x, y, index }) => {
+                  const data = chartData[index];
+
+                  return (
+                    <RenderCustomAxisTick
+                      payload={payload}
+                      windSpeed={data?.windSpeed_kmh || 0}
+                      x={x}
+                      y={y}
+                    />
+                  );
+                }}
                 interval={0}
                 padding={{
                   left: 0,
                   right: 0,
                 }}
-                // color={getWindColor(
-                //   Math.max(...chartData.map((d) => d.windSpeed_kmh))
-                // )}
               />
 
               {/* This XAxis is the one that shows the wind speed */}

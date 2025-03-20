@@ -1,4 +1,5 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { getWindColor } from "@/utils/color-utils";
 
 interface CustomAxisTickProps {
   x?: number;
@@ -6,15 +7,19 @@ interface CustomAxisTickProps {
   payload?: {
     value: string | number;
   };
-  color?: string;
+  windSpeed?: number;
 }
 
 const RenderCustomAxisTick = ({
+  payload,
   x,
   y,
-  payload,
-  color,
+  windSpeed = 0,
 }: CustomAxisTickProps) => {
+  // console.log({ payload });
+  // console.log({ windSpeed });
+  const color = getWindColor(windSpeed);
+
   return (
     <g className="flex flex-col-reverse items-center justify-center">
       <svg
