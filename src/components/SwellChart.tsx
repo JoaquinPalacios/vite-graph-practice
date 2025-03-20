@@ -24,7 +24,6 @@ const SwellChart = ({
 }: {
   unitPreferences: UnitPreferences;
 }) => {
-  // const [activeIndex, setActiveIndex] = useState<number | undefined>();
   return (
     <Card className="w-full bg-slate-200 border-slate-700">
       <CardContent className="px-2 sm:p-6">
@@ -43,9 +42,6 @@ const SwellChart = ({
               }}
               barGap={-18}
               // className="[&>svg>path]:fill-transparent"
-              // onMouseMove={(props) => {
-              //   setActiveIndex(props.activeTooltipIndex);
-              // }}
             >
               <CartesianGrid
                 vertical={true}
@@ -80,12 +76,17 @@ const SwellChart = ({
                 orientation="top"
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
+                  return date
+                    .toLocaleDateString("en-US", {
+                      weekday: "short",
+                      day: "numeric",
+                      month: "numeric",
+                    })
+                    .replace(",", "")
+                    .replace("/", "/");
                 }}
                 textAnchor="middle"
+                fontWeight={700}
               />
 
               {/* This XAxis is the one that shows the time of the day */}
