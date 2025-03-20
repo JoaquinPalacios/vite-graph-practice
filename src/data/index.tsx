@@ -554,6 +554,7 @@ const chartData = [
     windSpeed_knots: 5,
     waveHeight_m: 1.8,
     waveHeight_ft: 6,
+    faceWaveHeight_ft: 14,
     primarySwellHeight: 1.0,
     primarySwellDirection: 100,
     primarySwellPeriod: 11.5,

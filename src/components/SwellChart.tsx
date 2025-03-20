@@ -18,14 +18,11 @@ import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
-// import { getWindColor } from "@/utils/color-utils";
 
 const SwellChart = ({
   unitPreferences,
-}: // maxWaveHeight,
-{
+}: {
   unitPreferences: UnitPreferences;
-  // maxWaveHeight: number;
 }) => {
   // const [activeIndex, setActiveIndex] = useState<number | undefined>();
   return (
@@ -212,7 +209,6 @@ const SwellChart = ({
                     ? d.faceWaveHeight_ft
                     : null
                 }
-                // stackId="a"
                 fill="#ffa800"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
@@ -223,7 +219,32 @@ const SwellChart = ({
                   dataKey="swellDirection"
                   position="top"
                   fill="#ffa800"
-                  content={<RenderCustomizedLabel />}
+                  content={({ x, y, value, fill, index }) => {
+                    if (typeof index === "undefined") return null;
+                    const data = chartData[index];
+
+                    return (
+                      <RenderCustomizedLabel
+                        value={value}
+                        x={x}
+                        y={y}
+                        fill={fill}
+                        heightDifference={
+                          unitPreferences.waveHeight === "ft" &&
+                          data?.faceWaveHeight_ft
+                            ? data.faceWaveHeight_ft - data.waveHeight_ft
+                            : null
+                        }
+                        hasFaceWaveHeight={
+                          unitPreferences.waveHeight === "ft" &&
+                          data?.faceWaveHeight_ft
+                            ? true
+                            : false
+                        }
+                        secondarySwellDirection={data?.secondarySwellDirection}
+                      />
+                    );
+                  }}
                 />
               </Bar>
               <Bar
@@ -232,7 +253,6 @@ const SwellChart = ({
                     ? d.waveHeight_ft
                     : d.waveHeight_m
                 }
-                // stackId="a"
                 fill="#008a93"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
@@ -243,7 +263,21 @@ const SwellChart = ({
                   dataKey="swellDirection"
                   position="top"
                   fill="#008a93"
-                  content={<RenderCustomizedLabel />}
+                  content={({ x, y, value, fill, index }) => {
+                    if (typeof index === "undefined") return null;
+                    const data = chartData[index];
+                    if (data.faceWaveHeight_ft) return null;
+
+                    return (
+                      <RenderCustomizedLabel
+                        x={x}
+                        y={y}
+                        value={value}
+                        fill={fill}
+                        hasFaceWaveHeight={false}
+                      />
+                    );
+                  }}
                 />
               </Bar>
             </BarChart>
