@@ -1,6 +1,7 @@
 import { LabelProps } from "recharts";
 
 const RenderCustomizedLabel = (props: LabelProps) => {
+  console.log({ props });
   const { x, y, value, fill } = props;
 
   // Ensure y is a valid number before subtracting

@@ -44,6 +44,7 @@ const SwellChart = ({
                 right: 12,
                 bottom: 16,
               }}
+              barGap={-18}
               // className="[&>svg>path]:fill-transparent"
               // onMouseMove={(props) => {
               //   setActiveIndex(props.activeTooltipIndex);
@@ -208,26 +209,10 @@ const SwellChart = ({
               <Bar
                 dataKey={(d) =>
                   unitPreferences.waveHeight === "ft"
-                    ? d.waveHeight_ft
-                    : d.waveHeight_m
+                    ? d.faceWaveHeight_ft
+                    : null
                 }
-                stackId="a"
-                fill="#008a93"
-                unit={unitPreferences.waveHeight}
-                activeBar={{
-                  fill: "#00b4c6",
-                }}
-              >
-                <LabelList
-                  dataKey="swellDirection"
-                  position="top"
-                  fill="#008a93"
-                  content={<RenderCustomizedLabel />}
-                />
-              </Bar>
-              <Bar
-                dataKey="secondarySwellHeight"
-                stackId="a"
+                // stackId="a"
                 fill="#ffa800"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
@@ -238,6 +223,26 @@ const SwellChart = ({
                   dataKey="swellDirection"
                   position="top"
                   fill="#ffa800"
+                  content={<RenderCustomizedLabel />}
+                />
+              </Bar>
+              <Bar
+                dataKey={(d) =>
+                  unitPreferences.waveHeight === "ft"
+                    ? d.waveHeight_ft
+                    : d.waveHeight_m
+                }
+                // stackId="a"
+                fill="#008a93"
+                unit={unitPreferences.waveHeight}
+                activeBar={{
+                  fill: "#00b4c6",
+                }}
+              >
+                <LabelList
+                  dataKey="swellDirection"
+                  position="top"
+                  fill="#008a93"
                   content={<RenderCustomizedLabel />}
                 />
               </Bar>
