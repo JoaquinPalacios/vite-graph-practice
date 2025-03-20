@@ -6,10 +6,15 @@ interface CustomAxisTickProps {
   payload?: {
     value: string | number;
   };
-  fill?: string;
+  color?: string;
 }
 
-const RenderCustomAxisTick = ({ x, y, payload, fill }: CustomAxisTickProps) => {
+const RenderCustomAxisTick = ({
+  x,
+  y,
+  payload,
+  color,
+}: CustomAxisTickProps) => {
   return (
     <g className="flex flex-col-reverse items-center justify-center">
       <svg
@@ -19,7 +24,7 @@ const RenderCustomAxisTick = ({ x, y, payload, fill }: CustomAxisTickProps) => {
         x={(x ?? 0) - 10}
         height={20}
         width={20}
-        fill={fill || "currentColor"}
+        fill={color || "currentColor"}
       >
         <path
           d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
@@ -39,7 +44,7 @@ const RenderCustomAxisTick = ({ x, y, payload, fill }: CustomAxisTickProps) => {
       <text
         x={x ?? 0}
         y={(y ?? 0) + 32}
-        fill={fill}
+        fill="#666"
         fontSize={10}
         fontWeight={600}
         width={20}

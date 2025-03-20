@@ -18,6 +18,8 @@ import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
+// import { getWindColor } from "@/utils/color-utils";
+
 const SwellChart = ({
   unitPreferences,
 }: // maxWaveHeight,
@@ -51,15 +53,15 @@ const SwellChart = ({
                 vertical={true}
                 horizontal={true}
                 verticalFill={[
-                  "oklch(0.869 0.022 252.894)",
                   "oklch(0.929 0.013 255.508)",
+                  "oklch(0.869 0.022 252.894)",
                 ]}
                 y={0}
                 height={480}
                 syncWithTicks
-                verticalPoints={[
-                  0, 84, 274, 464, 654, 844, 1034, 1224, 1414, 1604,
-                ]}
+                // verticalPoints={[
+                //   0, 84, 274, 464, 654, 844, 1034, 1224, 1414, 1604,
+                // ]}
                 overflow="visible"
               />
 
@@ -70,6 +72,7 @@ const SwellChart = ({
                 // minTickGap={100}
                 orientation="top"
                 hide
+                interval={8}
               />
 
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
@@ -115,7 +118,9 @@ const SwellChart = ({
                   left: 0,
                   right: 0,
                 }}
-                fill="#008a93"
+                // color={getWindColor(
+                //   Math.max(...chartData.map((d) => d.windSpeed_kmh))
+                // )}
               />
               <XAxis
                 xAxisId={4}
@@ -127,7 +132,7 @@ const SwellChart = ({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
-                fontSize={10}
+                fontSize={9}
                 minTickGap={0}
                 orientation="bottom"
                 interval={0}
