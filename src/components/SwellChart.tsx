@@ -25,7 +25,7 @@ const SwellChart = ({
   unitPreferences: UnitPreferences;
 }) => {
   return (
-    <Card className="w-full bg-slate-200 border-slate-700">
+    <Card className="w-full bg-slate-200 border-slate-700 max-w-7xl">
       <CardContent className="px-2 sm:p-6">
         <ResponsiveContainer width="100%" height="100%">
           <ChartContainer
@@ -40,7 +40,9 @@ const SwellChart = ({
                 right: 12,
                 bottom: 16,
               }}
-              barGap={-18}
+              barGap={-28}
+              // barCategoryGap={16}
+              // barSize={56}
               // className="[&>svg>path]:fill-transparent"
             >
               <CartesianGrid
@@ -224,36 +226,34 @@ const SwellChart = ({
                 activeBar={{
                   fill: "#ffa800",
                 }}
+                width={28}
+                className="w-7 min-w-7"
               >
                 <LabelList
-                  dataKey="swellDirection"
+                  dataKey="secondarySwellDirection"
                   position="top"
                   fill="#ffa800"
                   content={({ x, y, value, fill, index }) => {
                     if (typeof index === "undefined") return null;
                     const data = chartData[index];
-
-                    return (
-                      <RenderCustomizedLabel
-                        value={value}
-                        x={x}
-                        y={y}
-                        fill={fill}
-                        heightDifference={
-                          unitPreferences.waveHeight === "ft" &&
-                          data?.faceWaveHeight_ft
-                            ? data.faceWaveHeight_ft - data.waveHeight_ft
-                            : null
-                        }
-                        hasFaceWaveHeight={
-                          unitPreferences.waveHeight === "ft" &&
-                          data?.faceWaveHeight_ft
-                            ? true
-                            : false
-                        }
-                        secondarySwellDirection={data?.secondarySwellDirection}
-                      />
-                    );
+                    if (data.faceWaveHeight_ft) {
+                      return (
+                        <RenderCustomizedLabel
+                          value={value}
+                          x={x}
+                          y={y}
+                          fill={fill}
+                          hasFaceWaveHeight={
+                            unitPreferences.waveHeight === "ft" &&
+                            data?.faceWaveHeight_ft
+                              ? true
+                              : false
+                          }
+                          primarySwellDirection={data?.swellDirection}
+                        />
+                      );
+                    }
+                    return null;
                   }}
                 />
               </Bar>
@@ -268,6 +268,8 @@ const SwellChart = ({
                 activeBar={{
                   fill: "#00b4c6",
                 }}
+                width={28}
+                className="w-7 min-w-7"
               >
                 <LabelList
                   dataKey="swellDirection"
