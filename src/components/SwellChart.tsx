@@ -30,7 +30,7 @@ const SwellChart = ({
         <ResponsiveContainer width="100%" height="100%">
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-96 w-full"
+            className="aspect-auto h-[30rem] w-full"
           >
             <BarChart
               accessibilityLayer
@@ -76,14 +76,22 @@ const SwellChart = ({
                 orientation="top"
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date
+                  const formattedDate = date
                     .toLocaleDateString("en-US", {
                       weekday: "short",
                       day: "numeric",
                       month: "numeric",
                     })
-                    .replace(",", "")
-                    .replace("/", "/");
+                    .toLocaleUpperCase()
+                    .replace(",", "");
+
+                  // Split into weekday and date parts
+                  const [weekday, datePart] = formattedDate.split(" ");
+                  // Split date into month and day, reverse them, and pad with zero if needed
+                  const [month, day] = datePart.split("/");
+                  const reversedDate = `${day}/${month.padStart(2, "0")}`;
+
+                  return `${weekday} ${reversedDate}`;
                 }}
                 textAnchor="middle"
                 fontWeight={700}
@@ -167,7 +175,7 @@ const SwellChart = ({
                 interval="preserveStart"
                 overflow="visible"
                 type="number"
-                // domain={[0, "dataMax"]}
+                domain={[0, "dataMax"]}
                 allowDecimals={false}
                 ticks={generateTicks(
                   unitPreferences.waveHeight === "ft"
@@ -204,9 +212,10 @@ const SwellChart = ({
               <ChartTooltip
                 content={<CustomTooltip unitPreferences={unitPreferences} />}
               />
+
               <Bar
                 dataKey={(d) =>
-                  unitPreferences.waveHeight === "ft"
+                  unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
                     ? d.faceWaveHeight_ft
                     : null
                 }
