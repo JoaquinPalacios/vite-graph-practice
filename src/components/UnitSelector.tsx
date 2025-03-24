@@ -58,7 +58,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 w-full max-w-[1340px] mx-auto">
       <button
         onClick={() => toggleUnit("waveHeight")}
         className={cn(
