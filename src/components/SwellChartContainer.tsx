@@ -42,12 +42,10 @@ const SwellChartContainer = ({
             axis.style.transform = `translateX(${
               (e.target as HTMLElement).scrollLeft
             }px)`;
-
-            // if (isScrolling) {
-            //   axis.classList.add("opacity-0");
-            // } else {
-            //   axis.classList.remove("opacity-0");
-            // }
+            axis.style.opacity = "0";
+            setTimeout(() => {
+              axis.style.opacity = "1";
+            }, 400);
           }
 
           if (!axis.querySelector(".y-axis-rect-left")) {
@@ -72,12 +70,6 @@ const SwellChartContainer = ({
 
             // Insert rectangle as first child of the axis
             axis.insertBefore(rect, axis.firstChild);
-
-            // if (isScrolling) {
-            //   rect.style.opacity = "0";
-            // } else {
-            //   rect.style.opacity = "1";
-            // }
           }
         }}
       >

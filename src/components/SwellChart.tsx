@@ -317,7 +317,7 @@ const SwellChart = ({
                 </text>
               );
             }}
-            className="transition-opacity ease-linear duration-300"
+            className="transition-opacity ease-in-out duration-200"
           />
         </BarChart>
       </ChartContainer>
