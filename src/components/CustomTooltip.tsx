@@ -53,135 +53,140 @@ export const CustomTooltip = ({
           })}
         </h5>
         <div className="flex flex-col bg-stone-50 p-2">
-          {payload.map((pld, index) => (
-            <React.Fragment key={`tooltip-item-${index}`}>
-              {index > 0 && <h5 className="mt-2">Face feet</h5>}
-              <div className="flex gap-1">
-                <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
-                <p className="font-medium ml-px">
-                  {index === 0
-                    ? formatWaveHeight(
-                        pld.value as number,
-                        String(pld.unit || "m")
-                      )
-                    : formatWaveHeight(
-                        (pld.value as number) + (payload[0].value as number),
-                        String(pld.unit || "m")
-                      )}
-                </p>
-                <p className="font-medium">
-                  {degreesToCompassDirection(
-                    index === 0
-                      ? pld.payload.swellDirection
-                      : pld.payload.secondarySwellDirection
-                  )}
-                </p>
-              </div>
-              {index === 0 && (
-                <div className="flex gap-1">
-                  <LuWind className="w-3.5 h-3.5" color="#008a93" />
-                  <p className="font-medium ml-px">
-                    {unitPreferences.windSpeed === "knots"
-                      ? pld.payload.windSpeed_knots
-                      : pld.payload.windSpeed_kmh}
-                    {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
-                  </p>
-                  <p className="font-medium">
-                    {degreesToCompassDirection(pld.payload.windDirection)}
-                  </p>
-                </div>
-              )}
-              {index === 0 && (
-                <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
-                  <p className="font-medium ml-px">
-                    {pld.payload.primarySwellHeight}m @
-                  </p>
-                  <p className="font-medium">
-                    {pld.payload.primarySwellPeriod}s
-                  </p>
-                  <p>
-                    <RenderCustomizedLabel
-                      value={pld.payload.primarySwellDirection}
-                    />
-                  </p>
-                </div>
-              )}
-              {pld.payload.secondarySwellHeight && index === 0 && (
-                <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
-                  <p className="font-medium ml-px">
-                    {pld.payload.secondarySwellHeight}m @
-                  </p>
-                  <p>{pld.payload.secondarySwellPeriod}s</p>
-                  <p className="">
-                    <RenderCustomizedLabel
-                      value={pld.payload.secondarySwellDirection}
-                    />
-                  </p>
-                </div>
-              )}
-              {pld.payload.tertiarySwellHeight && index === 0 && (
-                <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
-                  <p className="font-medium ml-px">
-                    {pld.payload.tertiarySwellHeight}m @
-                  </p>
-                  <p className="font-medium">
-                    {pld.payload.tertiarySwellPeriod}s
-                  </p>
-                  <p>
-                    <RenderCustomizedLabel
-                      value={pld.payload.tertiarySwellDirection}
-                    />
-                  </p>
-                </div>
-              )}
-              {index === 0 && (
+          <div className="flex gap-1">
+            <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
+            <p className="font-medium ml-px">
+              {payload &&
+                formatWaveHeight(
+                  payload[0].value as number,
+                  String(payload[0].unit || "m")
+                )}
+            </p>
+            <p className="font-medium">
+              {payload[0] &&
+                degreesToCompassDirection(payload[0].payload.swellDirection)}
+            </p>
+          </div>
+          {payload && payload[1] && (
+            <div className="flex gap-1">
+              <GiBigWave className="w-3.5 h-3.5" color={"#ffa800"} />
+              <p className="font-medium ml-px">
+                {formatWaveHeight(
+                  (payload[1].value as number) +
+                    (payload[0].payload.waveHeight_ft as number),
+                  String(payload[1].unit || "ft")
+                )}
+              </p>
+              <p className="font-medium">South Facing Beaches</p>
+            </div>
+          )}
+          {payload[0] && (
+            <div className="flex gap-1">
+              <LuWind className="w-3.5 h-3.5" color="#008a93" />
+              <p className="font-medium ml-px">
+                {unitPreferences.windSpeed === "knots"
+                  ? payload[0].payload.windSpeed_knots
+                  : payload[0].payload.windSpeed_kmh}
+                {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
+              </p>
+              <p className="font-medium">
+                {degreesToCompassDirection(payload[0].payload.windDirection)}
+              </p>
+            </div>
+          )}
+          {payload[0] && (
+            <div className="flex gap-1">
+              <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
+              <p className="font-medium ml-px">
+                {payload[0].payload.primarySwellHeight}m @
+              </p>
+              <p className="font-medium">
+                {payload[0].payload.primarySwellPeriod}s
+              </p>
+              <p>
+                <RenderCustomizedLabel
+                  value={payload[0].payload.primarySwellDirection}
+                />
+              </p>
+            </div>
+          )}
+          {payload[0].payload.secondarySwellHeight && (
+            <div className="flex gap-1">
+              <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
+              <p className="font-medium ml-px">
+                {payload[0].payload.secondarySwellHeight}m @
+              </p>
+              <p>{payload[0].payload.secondarySwellPeriod}s</p>
+              <p className="">
+                <RenderCustomizedLabel
+                  value={payload[0].payload.secondarySwellDirection}
+                />
+              </p>
+            </div>
+          )}
+          {payload[0].payload.tertiarySwellHeight && (
+            <div className="flex gap-1">
+              <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
+              <p className="font-medium ml-px">
+                {payload[0].payload.tertiarySwellHeight}m @
+              </p>
+              <p className="font-medium">
+                {payload[0].payload.tertiarySwellPeriod}s
+              </p>
+              <p>
+                <RenderCustomizedLabel
+                  value={payload[0].payload.tertiarySwellDirection}
+                />
+              </p>
+            </div>
+          )}
+          {payload[0] && (
+            <>
+              {payload[0].payload.isRising ? (
                 <>
-                  {pld.payload.isRising ? (
-                    <>
-                      <div className="flex gap-1">
-                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="font-medium ml-px">
-                          {pld.payload.nextHighTideHeight}m @
-                        </p>
-                        <p className="font-medium">
-                          {pld.payload.nextHighTide}
-                        </p>
-                      </div>
-                      <div className="flex gap-1">
-                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="font-medium ml-px">
-                          {pld.payload.nextLowTideHeight}m @
-                        </p>
-                        <p className="font-medium">{pld.payload.nextLowTide}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex gap-1">
-                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="font-medium ml-px">
-                          {pld.payload.nextLowTideHeight}m @
-                        </p>
-                        <p className="font-medium">{pld.payload.nextLowTide}</p>
-                      </div>
-                      <div className="flex gap-1">
-                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="font-medium ml-px">
-                          {pld.payload.nextHighTideHeight}m @
-                        </p>
-                        <p className="font-medium">
-                          {pld.payload.nextHighTide}
-                        </p>
-                      </div>
-                    </>
-                  )}
+                  <div className="flex gap-1">
+                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                    <p className="font-medium ml-px">
+                      {payload[0].payload.nextHighTideHeight}m @
+                    </p>
+                    <p className="font-medium">
+                      {payload[0].payload.nextHighTide}
+                    </p>
+                  </div>
+                  <div className="flex gap-1">
+                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                    <p className="font-medium ml-px">
+                      {payload[0].payload.nextLowTideHeight}m @
+                    </p>
+                    <p className="font-medium">
+                      {payload[0].payload.nextLowTide}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-1">
+                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                    <p className="font-medium ml-px">
+                      {payload[0].payload.nextLowTideHeight}m @
+                    </p>
+                    <p className="font-medium">
+                      {payload[0].payload.nextLowTide}
+                    </p>
+                  </div>
+                  <div className="flex gap-1">
+                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                    <p className="font-medium ml-px">
+                      {payload[0].payload.nextHighTideHeight}m @
+                    </p>
+                    <p className="font-medium">
+                      {payload[0].payload.nextHighTide}
+                    </p>
+                  </div>
                 </>
               )}
-            </React.Fragment>
-          ))}
+            </>
+          )}
         </div>
       </div>
     );
