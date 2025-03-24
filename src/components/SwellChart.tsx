@@ -101,7 +101,7 @@ const SwellChart = ({
             tickLine={false}
             axisLine={false}
             tickMargin={0}
-            minTickGap={8}
+            minTickGap={16}
             orientation="top"
             interval={"preserveStart"}
           />
@@ -145,15 +145,15 @@ const SwellChart = ({
             tickLine={false}
             axisLine={false}
             tickMargin={10}
-            fontSize={9}
+            fontSize={12}
             minTickGap={0}
             orientation="bottom"
             interval={0}
-            unit={
-              unitPreferences.windSpeed === "knots"
-                ? "kts"
-                : unitPreferences.windSpeed
-            }
+            // unit={
+            //   unitPreferences.windSpeed === "knots"
+            //     ? "kts"
+            //     : unitPreferences.windSpeed
+            // }
             padding={{
               left: 0,
               right: 0,
@@ -290,6 +290,25 @@ const SwellChart = ({
                     size={24}
                     color="#666"
                   />
+                  {unitPreferences.windSpeed === "knots" ? (
+                    <text
+                      x={value.x + 12}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                    >
+                      kts
+                    </text>
+                  ) : (
+                    <text
+                      x={value.x + 12}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                    >
+                      km/h
+                    </text>
+                  )}
                 </g>
               ) : (
                 <text x={value.x} y={value.y} dy={1} textAnchor="end">

@@ -55,43 +55,59 @@ export const CustomTooltip = ({
         <div className="flex flex-col bg-stone-50 p-2">
           {payload.map((pld, index) => (
             <React.Fragment key={`tooltip-item-${index}`}>
+              {index > 0 && <h5 className="mt-2">Face feet</h5>}
               <div className="flex gap-1">
                 <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
                 <p className="font-medium ml-px">
-                  {formatWaveHeight(
-                    pld.value as number,
-                    String(pld.unit || "m")
+                  {index === 0
+                    ? formatWaveHeight(
+                        pld.value as number,
+                        String(pld.unit || "m")
+                      )
+                    : formatWaveHeight(
+                        (pld.value as number) + (payload[0].value as number),
+                        String(pld.unit || "m")
+                      )}
+                </p>
+                <p className="font-medium">
+                  {degreesToCompassDirection(
+                    index === 0
+                      ? pld.payload.swellDirection
+                      : pld.payload.secondarySwellDirection
                   )}
                 </p>
-                <p className="font-medium">
-                  {degreesToCompassDirection(pld.payload.swellDirection)}
-                </p>
               </div>
-              <div className="flex gap-1">
-                <LuWind className="w-3.5 h-3.5" color="#008a93" />
-                <p className="font-medium ml-px">
-                  {unitPreferences.windSpeed === "knots"
-                    ? pld.payload.windSpeed_knots
-                    : pld.payload.windSpeed_kmh}
-                  {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
-                </p>
-                <p className="font-medium">
-                  {degreesToCompassDirection(pld.payload.windDirection)}
-                </p>
-              </div>
-              <div className="flex gap-1">
-                <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
-                <p className="font-medium ml-px">
-                  {pld.payload.primarySwellHeight}m @
-                </p>
-                <p className="font-medium">{pld.payload.primarySwellPeriod}s</p>
-                <p>
-                  <RenderCustomizedLabel
-                    value={pld.payload.primarySwellDirection}
-                  />
-                </p>
-              </div>
-              {pld.payload.secondarySwellHeight && (
+              {index === 0 && (
+                <div className="flex gap-1">
+                  <LuWind className="w-3.5 h-3.5" color="#008a93" />
+                  <p className="font-medium ml-px">
+                    {unitPreferences.windSpeed === "knots"
+                      ? pld.payload.windSpeed_knots
+                      : pld.payload.windSpeed_kmh}
+                    {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
+                  </p>
+                  <p className="font-medium">
+                    {degreesToCompassDirection(pld.payload.windDirection)}
+                  </p>
+                </div>
+              )}
+              {index === 0 && (
+                <div className="flex gap-1">
+                  <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
+                  <p className="font-medium ml-px">
+                    {pld.payload.primarySwellHeight}m @
+                  </p>
+                  <p className="font-medium">
+                    {pld.payload.primarySwellPeriod}s
+                  </p>
+                  <p>
+                    <RenderCustomizedLabel
+                      value={pld.payload.primarySwellDirection}
+                    />
+                  </p>
+                </div>
+              )}
+              {pld.payload.secondarySwellHeight && index === 0 && (
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
                   <p className="font-medium ml-px">
@@ -105,7 +121,7 @@ export const CustomTooltip = ({
                   </p>
                 </div>
               )}
-              {pld.payload.tertiarySwellHeight && (
+              {pld.payload.tertiarySwellHeight && index === 0 && (
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
                   <p className="font-medium ml-px">
@@ -121,39 +137,47 @@ export const CustomTooltip = ({
                   </p>
                 </div>
               )}
-              {pld.payload.isRising ? (
+              {index === 0 && (
                 <>
-                  <div className="flex gap-1">
-                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {pld.payload.nextHighTideHeight}m @
-                    </p>
-                    <p className="font-medium">{pld.payload.nextHighTide}</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {pld.payload.nextLowTideHeight}m @
-                    </p>
-                    <p className="font-medium">{pld.payload.nextLowTide}</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex gap-1">
-                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {pld.payload.nextLowTideHeight}m @
-                    </p>
-                    <p className="font-medium">{pld.payload.nextLowTide}</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {pld.payload.nextHighTideHeight}m @
-                    </p>
-                    <p className="font-medium">{pld.payload.nextHighTide}</p>
-                  </div>
+                  {pld.payload.isRising ? (
+                    <>
+                      <div className="flex gap-1">
+                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                        <p className="font-medium ml-px">
+                          {pld.payload.nextHighTideHeight}m @
+                        </p>
+                        <p className="font-medium">
+                          {pld.payload.nextHighTide}
+                        </p>
+                      </div>
+                      <div className="flex gap-1">
+                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                        <p className="font-medium ml-px">
+                          {pld.payload.nextLowTideHeight}m @
+                        </p>
+                        <p className="font-medium">{pld.payload.nextLowTide}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex gap-1">
+                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                        <p className="font-medium ml-px">
+                          {pld.payload.nextLowTideHeight}m @
+                        </p>
+                        <p className="font-medium">{pld.payload.nextLowTide}</p>
+                      </div>
+                      <div className="flex gap-1">
+                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                        <p className="font-medium ml-px">
+                          {pld.payload.nextHighTideHeight}m @
+                        </p>
+                        <p className="font-medium">
+                          {pld.payload.nextHighTide}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </React.Fragment>
