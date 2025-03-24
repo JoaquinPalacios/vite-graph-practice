@@ -41,12 +41,45 @@ const SwellChart = ({
 
   return (
     <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px]">
-      <CardContent className="p-0 w-full overflow-x-scroll overflow-y-auto no-scrollbar">
+      <CardContent
+        className="p-0 w-full overflow-x-scroll overflow-y-auto no-scrollbar"
+        onScroll={(e) => {
+          const axis = document.querySelector(".recharts-yAxis") as HTMLElement;
+          if (axis) {
+            axis.style.transform = `translateX(${
+              (e.target as HTMLElement).scrollLeft
+            }px)`;
+          }
+
+          if (!axis.querySelector(".y-axis-rect-left")) {
+            // Create background rectangle
+            const rect = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "rect"
+            );
+
+            // Get axis dimensions
+            // const yAxisHeight = axis.getBoundingClientRect().height;
+            // const yAxisWidth = axis.getBoundingClientRect().width;
+            // const xAxisHeight = 20; // Adjust this value based on your X-axis height
+
+            // Set rectangle attributes
+            rect.setAttribute("x", "0");
+            rect.setAttribute("y", "0");
+            rect.setAttribute("width", "64");
+            rect.setAttribute("height", "480");
+            rect.setAttribute("fill", "rgb(226 232 240)"); // Using slate-200 color to match card background
+            rect.setAttribute("class", "y-axis-rect-left");
+
+            // Insert rectangle as first child of the axis
+            axis.insertBefore(rect, axis.firstChild);
+          }
+        }}
+      >
         <ResponsiveContainer
           // width={width}
           width={4000}
           height="100%"
-          // className="overflow-x-scroll overflow-y-auto"
         >
           <ChartContainer
             config={chartConfig}
@@ -61,7 +94,6 @@ const SwellChart = ({
                 bottom: 16,
               }}
               barCategoryGap={2}
-              // barGap={-32}
               barSize={120}
               // className="[&>svg>path]:fill-transparent"
             >
@@ -75,7 +107,6 @@ const SwellChart = ({
                 y={0}
                 height={480}
                 syncWithTicks
-                // overflow="visible"
               />
 
               {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
@@ -85,7 +116,6 @@ const SwellChart = ({
                 orientation="top"
                 hide
                 interval={7}
-                // tickCount={5}
               />
 
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
@@ -118,7 +148,6 @@ const SwellChart = ({
                 }}
                 textAnchor="middle"
                 fontWeight={700}
-                // tickCount={5}
               />
 
               {/* This XAxis is the one that shows the time of the day */}
@@ -129,7 +158,6 @@ const SwellChart = ({
                 axisLine={false}
                 tickMargin={0}
                 minTickGap={8}
-                // tickCount={2}
                 orientation="top"
                 interval={"preserveStart"}
               />
@@ -188,6 +216,100 @@ const SwellChart = ({
                 }}
               />
 
+              <ChartTooltip
+                content={<CustomTooltip unitPreferences={unitPreferences} />}
+              />
+
+              <Bar
+                dataKey={(d) =>
+                  unitPreferences.waveHeight === "ft"
+                    ? d.waveHeight_ft
+                    : d.waveHeight_m
+                }
+                fill="#008a93"
+                unit={unitPreferences.waveHeight}
+                activeBar={{
+                  fill: "#00b4c6",
+                }}
+                width={28}
+                className="w-7 min-w-7"
+                barSize={32}
+                stackId="a"
+              >
+                <LabelList
+                  dataKey="swellDirection"
+                  position="top"
+                  fill="#008a93"
+                  content={({ x, y, value, fill, index }) => {
+                    if (typeof index === "undefined") return null;
+                    const data = chartData[index];
+                    if (
+                      data.faceWaveHeight_ft &&
+                      unitPreferences.waveHeight === "ft"
+                    )
+                      return null;
+
+                    return (
+                      <RenderCustomizedLabel
+                        x={x}
+                        y={y}
+                        value={value}
+                        fill={fill}
+                        hasFaceWaveHeight={false}
+                        className="animate-in fade-in-0 duration-1000"
+                      />
+                    );
+                  }}
+                />
+              </Bar>
+
+              <Bar
+                dataKey={(d) =>
+                  unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
+                    ? d.faceWaveHeight_ft - d.waveHeight_ft
+                    : null
+                }
+                fill="#ffa800"
+                unit={unitPreferences.waveHeight}
+                activeBar={{
+                  fill: "#ffc95d",
+                }}
+                className="w-7 min-w-7"
+                stackId="a"
+              >
+                <LabelList
+                  dataKey="secondarySwellDirection"
+                  position="top"
+                  fill="#ffa800"
+                  content={({ x, y, value, fill, index }) => {
+                    if (typeof index === "undefined") return null;
+                    const data = chartData[index];
+
+                    if (
+                      data.faceWaveHeight_ft &&
+                      unitPreferences.waveHeight === "ft"
+                    ) {
+                      return (
+                        <RenderCustomizedLabel
+                          value={value}
+                          x={x}
+                          y={y}
+                          fill={fill}
+                          hasFaceWaveHeight={
+                            unitPreferences.waveHeight === "ft" &&
+                            data?.faceWaveHeight_ft
+                              ? true
+                              : false
+                          }
+                          primarySwellDirection={data?.swellDirection}
+                        />
+                      );
+                    }
+                    return null;
+                  }}
+                />
+              </Bar>
+
               <YAxis
                 tickLine={false}
                 axisLine={false}
@@ -233,105 +355,8 @@ const SwellChart = ({
                     </text>
                   );
                 }}
+                // className="transition-all ease-linear duration-0"
               />
-              <ChartTooltip
-                content={<CustomTooltip unitPreferences={unitPreferences} />}
-              />
-
-              <Bar
-                dataKey={(d) =>
-                  unitPreferences.waveHeight === "ft"
-                    ? d.waveHeight_ft
-                    : d.waveHeight_m
-                }
-                fill="#008a93"
-                unit={unitPreferences.waveHeight}
-                activeBar={{
-                  fill: "#00b4c6",
-                }}
-                width={28}
-                className="w-7 min-w-7"
-                barSize={32}
-                stackId="a"
-              >
-                <LabelList
-                  dataKey="swellDirection"
-                  position="top"
-                  fill="#008a93"
-                  // content={<RenderCustomizedLabel hasFaceWaveHeight={false} />}
-                  content={({ x, y, value, fill, index }) => {
-                    if (typeof index === "undefined") return null;
-                    const data = chartData[index];
-                    if (
-                      data.faceWaveHeight_ft &&
-                      unitPreferences.waveHeight === "ft"
-                    )
-                      return null;
-
-                    return (
-                      <RenderCustomizedLabel
-                        x={x}
-                        y={y}
-                        value={value}
-                        fill={fill}
-                        hasFaceWaveHeight={false}
-                        className="animate-in fade-in-0 duration-1000"
-                      />
-                    );
-                  }}
-                />
-              </Bar>
-
-              <Bar
-                dataKey={(d) =>
-                  unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-                    ? d.faceWaveHeight_ft - d.waveHeight_ft
-                    : null
-                }
-                fill="#ffa800"
-                unit={unitPreferences.waveHeight}
-                activeBar={{
-                  fill: "#ffc95d",
-                }}
-                // width={28}
-                className="w-7 min-w-7"
-                // barSize={32}
-                stackId="a"
-                // width={28}
-                // barSize={32}
-              >
-                <LabelList
-                  dataKey="secondarySwellDirection"
-                  position="top"
-                  fill="#ffa800"
-                  content={({ x, y, value, fill, index }) => {
-                    if (typeof index === "undefined") return null;
-                    const data = chartData[index];
-
-                    if (
-                      data.faceWaveHeight_ft &&
-                      unitPreferences.waveHeight === "ft"
-                    ) {
-                      return (
-                        <RenderCustomizedLabel
-                          value={value}
-                          x={x}
-                          y={y}
-                          fill={fill}
-                          hasFaceWaveHeight={
-                            unitPreferences.waveHeight === "ft" &&
-                            data?.faceWaveHeight_ft
-                              ? true
-                              : false
-                          }
-                          primarySwellDirection={data?.swellDirection}
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-              </Bar>
             </BarChart>
           </ChartContainer>
         </ResponsiveContainer>
