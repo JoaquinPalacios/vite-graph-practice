@@ -17,7 +17,7 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         y={yPosition}
-        x={xPosition}
+        x={xPosition + 8}
         height={16}
         width={16}
         fill={fill}
@@ -45,7 +45,7 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 16 16"
           y={yPosition - 16}
-          x={xPosition}
+          x={xPosition + 8}
           height={16}
           width={16}
           fill="#ffa800"
@@ -69,7 +69,7 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 16 16"
           y={yPosition}
-          x={xPosition}
+          x={xPosition + 8}
           height={16}
           width={16}
           fill="#008a93"

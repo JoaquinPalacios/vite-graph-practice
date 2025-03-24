@@ -4,6 +4,7 @@ import {
   CartesianGrid,
   LabelList,
   ResponsiveContainer,
+  // ResponsiveContainer,
   XAxis,
   YAxis,
 } from "recharts";
@@ -24,10 +25,28 @@ const SwellChart = ({
 }: {
   unitPreferences: UnitPreferences;
 }) => {
+  // Add this at the beginning of the component
+  const fiveDaysData = chartData.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    const startDate = new Date(chartData[0].date);
+    const diffTime = Math.abs(entryDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays < 5;
+  });
+
+  // Calculate width based on data points
+  const minWidth = 800; // Minimum width of the chart
+  const barWidth = 40; // Width per data point
+  const width = Math.max(minWidth, fiveDaysData.length * barWidth);
+
   return (
-    <Card className="w-full bg-slate-200 border-slate-700 max-w-7xl">
-      <CardContent className="px-2 sm:p-6">
-        <ResponsiveContainer width="100%" height="100%">
+    <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px]">
+      <CardContent className="p-2 w-full overflow-x-scroll overflow-y-auto">
+        <ResponsiveContainer
+          width={width}
+          height="100%"
+          // className="overflow-x-scroll overflow-y-auto"
+        >
           <ChartContainer
             config={chartConfig}
             className="aspect-auto h-[30rem] w-full"
@@ -40,9 +59,9 @@ const SwellChart = ({
                 right: 12,
                 bottom: 16,
               }}
-              barGap={-28}
-              // barCategoryGap={16}
-              // barSize={56}
+              barCategoryGap={2}
+              // barGap={-32}
+              // barSize={120}
               // className="[&>svg>path]:fill-transparent"
             >
               <CartesianGrid
@@ -55,7 +74,7 @@ const SwellChart = ({
                 y={0}
                 height={480}
                 syncWithTicks
-                overflow="visible"
+                // overflow="visible"
               />
 
               {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
@@ -65,6 +84,7 @@ const SwellChart = ({
                 orientation="top"
                 hide
                 interval={7}
+                tickCount={5}
               />
 
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
@@ -97,6 +117,7 @@ const SwellChart = ({
                 }}
                 textAnchor="middle"
                 fontWeight={700}
+                tickCount={5}
               />
 
               {/* This XAxis is the one that shows the time of the day */}
@@ -168,7 +189,7 @@ const SwellChart = ({
               <YAxis
                 tickLine={false}
                 axisLine={false}
-                tickMargin={16}
+                tickMargin={8}
                 minTickGap={0}
                 unit={unitPreferences.waveHeight}
                 padding={{
@@ -187,7 +208,7 @@ const SwellChart = ({
                 )}
                 tick={(value) => {
                   return value.index === 0 ? (
-                    <g>
+                    <g transform="translate(-10, 0)">
                       <GiBigWave
                         className="w-6 h-6"
                         x={value.x - 8}
@@ -204,7 +225,7 @@ const SwellChart = ({
                       />
                     </g>
                   ) : (
-                    <text x={value.x} y={value.y} dy={1}>
+                    <text x={value.x} y={value.y} dy={1} textAnchor="end">
                       {value.payload.value}
                       {unitPreferences.waveHeight}
                     </text>
@@ -217,17 +238,63 @@ const SwellChart = ({
 
               <Bar
                 dataKey={(d) =>
+                  unitPreferences.waveHeight === "ft"
+                    ? d.waveHeight_ft
+                    : d.waveHeight_m
+                }
+                fill="#008a93"
+                unit={unitPreferences.waveHeight}
+                activeBar={{
+                  fill: "#00b4c6",
+                }}
+                // width={28}
+                className="w-7 min-w-7"
+                // barSize={32}
+                stackId="a"
+              >
+                <LabelList
+                  dataKey="swellDirection"
+                  position="top"
+                  fill="#008a93"
+                  // content={<RenderCustomizedLabel hasFaceWaveHeight={false} />}
+                  content={({ x, y, value, fill, index }) => {
+                    if (typeof index === "undefined") return null;
+                    const data = chartData[index];
+                    if (
+                      data.faceWaveHeight_ft &&
+                      unitPreferences.waveHeight === "ft"
+                    )
+                      return null;
+
+                    return (
+                      <RenderCustomizedLabel
+                        x={x}
+                        y={y}
+                        value={value}
+                        fill={fill}
+                        hasFaceWaveHeight={false}
+                        className="animate-in fade-in-0 duration-1000"
+                      />
+                    );
+                  }}
+                />
+              </Bar>
+
+              <Bar
+                dataKey={(d) =>
                   unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-                    ? d.faceWaveHeight_ft
+                    ? d.faceWaveHeight_ft - d.waveHeight_ft
                     : null
                 }
                 fill="#ffa800"
                 unit={unitPreferences.waveHeight}
                 activeBar={{
-                  fill: "#ffa800",
+                  fill: "#ffc95d",
                 }}
-                width={28}
+                // width={28}
                 className="w-7 min-w-7"
+                // barSize={32}
+                stackId="a"
               >
                 <LabelList
                   dataKey="secondarySwellDirection"
@@ -236,6 +303,7 @@ const SwellChart = ({
                   content={({ x, y, value, fill, index }) => {
                     if (typeof index === "undefined") return null;
                     const data = chartData[index];
+
                     if (data.faceWaveHeight_ft) {
                       return (
                         <RenderCustomizedLabel
@@ -254,41 +322,6 @@ const SwellChart = ({
                       );
                     }
                     return null;
-                  }}
-                />
-              </Bar>
-              <Bar
-                dataKey={(d) =>
-                  unitPreferences.waveHeight === "ft"
-                    ? d.waveHeight_ft
-                    : d.waveHeight_m
-                }
-                fill="#008a93"
-                unit={unitPreferences.waveHeight}
-                activeBar={{
-                  fill: "#00b4c6",
-                }}
-                width={28}
-                className="w-7 min-w-7"
-              >
-                <LabelList
-                  dataKey="swellDirection"
-                  position="top"
-                  fill="#008a93"
-                  content={({ x, y, value, fill, index }) => {
-                    if (typeof index === "undefined") return null;
-                    const data = chartData[index];
-                    if (data.faceWaveHeight_ft) return null;
-
-                    return (
-                      <RenderCustomizedLabel
-                        x={x}
-                        y={y}
-                        value={value}
-                        fill={fill}
-                        hasFaceWaveHeight={false}
-                      />
-                    );
                   }}
                 />
               </Bar>
