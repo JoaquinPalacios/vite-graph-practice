@@ -26,24 +26,25 @@ const SwellChart = ({
   unitPreferences: UnitPreferences;
 }) => {
   // Add this at the beginning of the component
-  const fiveDaysData = chartData.filter((entry) => {
-    const entryDate = new Date(entry.date);
-    const startDate = new Date(chartData[0].date);
-    const diffTime = Math.abs(entryDate.getTime() - startDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays < 5;
-  });
+  // const fiveDaysData = chartData.filter((entry) => {
+  //   const entryDate = new Date(entry.date);
+  //   const startDate = new Date(chartData[0].date);
+  //   const diffTime = Math.abs(entryDate.getTime() - startDate.getTime());
+  //   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  //   return diffDays < 5;
+  // });
 
   // Calculate width based on data points
-  const minWidth = 800; // Minimum width of the chart
-  const barWidth = 40; // Width per data point
-  const width = Math.max(minWidth, fiveDaysData.length * barWidth);
+  // const minWidth = 800; // Minimum width of the chart
+  // const barWidth = 40; // Width per data point
+  // const width = Math.max(minWidth, fiveDaysData.length * barWidth);
 
   return (
     <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px]">
       <CardContent className="p-2 w-full overflow-x-scroll overflow-y-auto">
         <ResponsiveContainer
-          width={width}
+          // width={width}
+          width={4000}
           height="100%"
           // className="overflow-x-scroll overflow-y-auto"
         >
@@ -61,7 +62,7 @@ const SwellChart = ({
               }}
               barCategoryGap={2}
               // barGap={-32}
-              // barSize={120}
+              barSize={120}
               // className="[&>svg>path]:fill-transparent"
             >
               <CartesianGrid
@@ -84,7 +85,7 @@ const SwellChart = ({
                 orientation="top"
                 hide
                 interval={7}
-                tickCount={5}
+                // tickCount={5}
               />
 
               {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
@@ -117,7 +118,7 @@ const SwellChart = ({
                 }}
                 textAnchor="middle"
                 fontWeight={700}
-                tickCount={5}
+                // tickCount={5}
               />
 
               {/* This XAxis is the one that shows the time of the day */}
@@ -247,9 +248,9 @@ const SwellChart = ({
                 activeBar={{
                   fill: "#00b4c6",
                 }}
-                // width={28}
+                width={28}
                 className="w-7 min-w-7"
-                // barSize={32}
+                barSize={32}
                 stackId="a"
               >
                 <LabelList
@@ -295,6 +296,8 @@ const SwellChart = ({
                 className="w-7 min-w-7"
                 // barSize={32}
                 stackId="a"
+                // width={28}
+                // barSize={32}
               >
                 <LabelList
                   dataKey="secondarySwellDirection"
