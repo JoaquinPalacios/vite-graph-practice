@@ -19,6 +19,7 @@ import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const SwellChart = ({
   unitPreferences,
@@ -56,19 +57,19 @@ const SwellChart = ({
   };
 
   return (
-    <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px] mx-auto">
-      <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between z-10">
+    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] mx-auto">
+      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between z-10 h-full">
         <button
           onClick={() => scrollByDay("left")}
-          className="bg-white rounded-full p-2 cursor-pointer"
+          className="bg-slate-600 rounded-l-lg p-2 cursor-pointer"
         >
-          ←
+          <AiOutlineLeft color="white" />
         </button>
         <button
           onClick={() => scrollByDay("right")}
-          className="bg-white rounded-full p-2 cursor-pointer"
+          className="bg-slate-600 rounded-r-lg p-2 cursor-pointer"
         >
-          →
+          <AiOutlineRight color="white" />
         </button>
       </div>
 
@@ -107,11 +108,7 @@ const SwellChart = ({
           }
         }}
       >
-        <ResponsiveContainer
-          // width={width}
-          width={4000}
-          height="100%"
-        >
+        <ResponsiveContainer width={4000} height="100%">
           <ChartContainer
             config={chartConfig}
             className="aspect-auto h-[30rem] w-full"
