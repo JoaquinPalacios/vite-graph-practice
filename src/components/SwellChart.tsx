@@ -41,7 +41,7 @@ const SwellChart = ({
 
   return (
     <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px]">
-      <CardContent className="p-2 w-full overflow-x-scroll overflow-y-auto">
+      <CardContent className="p-0 w-full overflow-x-scroll overflow-y-auto no-scrollbar">
         <ResponsiveContainer
           // width={width}
           width={4000}
@@ -128,9 +128,10 @@ const SwellChart = ({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={0}
-                minTickGap={4}
-                tickCount={2}
+                minTickGap={8}
+                // tickCount={2}
                 orientation="top"
+                interval={"preserveStart"}
               />
 
               {/* This XAxis is the one that shows the wind direction */}
@@ -307,7 +308,10 @@ const SwellChart = ({
                     if (typeof index === "undefined") return null;
                     const data = chartData[index];
 
-                    if (data.faceWaveHeight_ft) {
+                    if (
+                      data.faceWaveHeight_ft &&
+                      unitPreferences.waveHeight === "ft"
+                    ) {
                       return (
                         <RenderCustomizedLabel
                           value={value}

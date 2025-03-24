@@ -19,3 +19,8 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
