@@ -39,10 +39,41 @@ const SwellChart = ({
   // const barWidth = 40; // Width per data point
   // const width = Math.max(minWidth, fiveDaysData.length * barWidth);
 
+  const scrollByDay = (direction: "left" | "right") => {
+    const container = document.querySelector(
+      ".chart-scroll-container"
+    ) as HTMLElement;
+    if (container) {
+      // Each day has 8 data points (every 3 hours) and each bar is 120px wide
+      const dayWidth = 8 * 120; // 960px per day
+      const scrollAmount = direction === "left" ? -dayWidth : dayWidth;
+
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px]">
+    <Card className="w-full bg-slate-200 border-slate-700 max-w-[1340px] mx-auto">
+      <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between z-10">
+        <button
+          onClick={() => scrollByDay("left")}
+          className="bg-white rounded-full p-2 cursor-pointer"
+        >
+          ←
+        </button>
+        <button
+          onClick={() => scrollByDay("right")}
+          className="bg-white rounded-full p-2 cursor-pointer"
+        >
+          →
+        </button>
+      </div>
+
       <CardContent
-        className="p-0 w-full overflow-x-scroll overflow-y-auto no-scrollbar"
+        className="p-0 w-full overflow-y-auto no-scrollbar chart-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-track]:bg-transparent [touch-action:none]"
         onScroll={(e) => {
           const axis = document.querySelector(".recharts-yAxis") as HTMLElement;
           if (axis) {
