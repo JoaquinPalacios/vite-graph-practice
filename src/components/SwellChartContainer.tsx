@@ -7,6 +7,7 @@ import { UnitPreferences } from "./UnitSelector";
 import GraphButtons from "./GraphButtons";
 import { useState } from "react";
 import SwellChart from "./SwellChart";
+import TideChart from "./TideChart";
 
 const SwellChartContainer = ({
   unitPreferences,
@@ -29,7 +30,7 @@ const SwellChartContainer = ({
   };
 
   return (
-    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] mx-auto px-4">
+    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] max-h-[1000px] mx-auto px-4">
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
       <CardContent
@@ -41,6 +42,12 @@ const SwellChartContainer = ({
             axis.style.transform = `translateX(${
               (e.target as HTMLElement).scrollLeft
             }px)`;
+
+            // if (isScrolling) {
+            //   axis.classList.add("opacity-0");
+            // } else {
+            //   axis.classList.remove("opacity-0");
+            // }
           }
 
           if (!axis.querySelector(".y-axis-rect-left")) {
@@ -65,10 +72,17 @@ const SwellChartContainer = ({
 
             // Insert rectangle as first child of the axis
             axis.insertBefore(rect, axis.firstChild);
+
+            // if (isScrolling) {
+            //   rect.style.opacity = "0";
+            // } else {
+            //   rect.style.opacity = "1";
+            // }
           }
         }}
       >
         <SwellChart unitPreferences={unitPreferences} />
+        <TideChart />
       </CardContent>
     </Card>
   );

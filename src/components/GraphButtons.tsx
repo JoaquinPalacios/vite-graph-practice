@@ -13,7 +13,7 @@ const GraphButtons = ({
     ) as HTMLElement;
     if (container) {
       // Each day has 8 data points (every 3 hours) and each bar is 246px wide. We show 5 days in the chart
-      const dayWidth = 4 * 298; // 1192px per day
+      const dayWidth = 1 * 298; // 894px per day
       const scrollAmount = direction === "left" ? -dayWidth : dayWidth;
 
       container.scrollBy({
