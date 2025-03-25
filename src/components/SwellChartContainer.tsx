@@ -30,7 +30,7 @@ const SwellChartContainer = ({
   };
 
   return (
-    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] max-h-[1000px] mx-auto px-4">
+    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] h-auto mx-auto px-4">
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
       <CardContent
@@ -54,11 +54,6 @@ const SwellChartContainer = ({
               "http://www.w3.org/2000/svg",
               "rect"
             );
-
-            // Get axis dimensions
-            // const yAxisHeight = axis.getBoundingClientRect().height;
-            // const yAxisWidth = axis.getBoundingClientRect().width;
-            // const xAxisHeight = 20; // Adjust this value based on your X-axis height
 
             // Set rectangle attributes
             rect.setAttribute("x", "0");

@@ -143,45 +143,53 @@ export const CustomTooltip = ({
             <>
               {payload[0].payload.isRising ? (
                 <>
-                  <div className="flex gap-1">
-                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {payload[0].payload.nextHighTideHeight}m @
-                    </p>
-                    <p className="font-medium">
-                      {payload[0].payload.nextHighTide}
-                    </p>
-                  </div>
-                  <div className="flex gap-1">
-                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {payload[0].payload.nextLowTideHeight}m @
-                    </p>
-                    <p className="font-medium">
-                      {payload[0].payload.nextLowTide}
-                    </p>
-                  </div>
+                  {payload[0].payload.nextHighTideHeight && (
+                    <div className="flex gap-1">
+                      <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                      <p className="font-medium ml-px">
+                        {payload[0].payload.nextHighTideHeight}m @
+                      </p>
+                      <p className="font-medium">
+                        {payload[0].payload.nextHighTide}
+                      </p>
+                    </div>
+                  )}
+                  {payload[0].payload.nextLowTideHeight && (
+                    <div className="flex gap-1">
+                      <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                      <p className="font-medium ml-px">
+                        {payload[0].payload.nextLowTideHeight}m @
+                      </p>
+                      <p className="font-medium">
+                        {payload[0].payload.nextLowTide}
+                      </p>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
-                  <div className="flex gap-1">
-                    <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {payload[0].payload.nextLowTideHeight}m @
-                    </p>
-                    <p className="font-medium">
-                      {payload[0].payload.nextLowTide}
-                    </p>
-                  </div>
-                  <div className="flex gap-1">
-                    <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                    <p className="font-medium ml-px">
-                      {payload[0].payload.nextHighTideHeight}m @
-                    </p>
-                    <p className="font-medium">
-                      {payload[0].payload.nextHighTide}
-                    </p>
-                  </div>
+                  {payload[0].payload.nextLowTideHeight && (
+                    <div className="flex gap-1">
+                      <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
+                      <p className="font-medium ml-px">
+                        {payload[0].payload.nextLowTideHeight}m @
+                      </p>
+                      <p className="font-medium">
+                        {payload[0].payload.nextLowTide}
+                      </p>
+                    </div>
+                  )}
+                  {payload[0].payload.nextHighTideHeight && (
+                    <div className="flex gap-1">
+                      <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
+                      <p className="font-medium ml-px">
+                        {payload[0].payload.nextHighTideHeight}m @
+                      </p>
+                      <p className="font-medium">
+                        {payload[0].payload.nextHighTide}
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </>

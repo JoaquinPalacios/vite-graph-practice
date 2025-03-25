@@ -53,3 +53,15 @@ export const chartConfig = {
     label: "isRising",
   },
 } satisfies ChartConfig;
+
+export const tideChartConfig = {
+  date: {
+    label: "date",
+  },
+  height: {
+    label: "height",
+  },
+  time: {
+    label: "time",
+  },
+};

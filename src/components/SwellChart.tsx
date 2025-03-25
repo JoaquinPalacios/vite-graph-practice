@@ -178,6 +178,9 @@ const SwellChart = ({
             width={28}
             barSize={32}
             stackId="a"
+            // animationBegin={300}
+            animationEasing="linear"
+            animationDuration={220}
           >
             <LabelList
               dataKey="swellDirection"
@@ -219,6 +222,9 @@ const SwellChart = ({
             }}
             className="w-7 min-w-7"
             stackId="a"
+            animationBegin={210}
+            animationEasing="ease-in-out"
+            // animationDuration={3000}
           >
             <LabelList
               dataKey="secondarySwellDirection"
