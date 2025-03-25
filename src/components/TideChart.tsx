@@ -1,24 +1,17 @@
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  YAxis,
-  XAxis,
-  Tooltip,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, YAxis, XAxis } from "recharts";
 
-// import chartData from "@/data";
 import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
-import { ChartContainer } from "./ui/chart";
+import { ChartContainer, ChartTooltip } from "./ui/chart";
 import tideData from "@/data/tide-data";
+import CustomTideTooltip from "./CustomTideTooltip";
 
 const TideChart = () => {
   return (
     <ResponsiveContainer width={4848} height="100%" className="w-full mt-40">
       <ChartContainer
         config={tideChartConfig}
-        className="aspect-auto h-[12.5rem] w-full"
+        className="aspect-auto h-[12rem] w-full"
       >
         <AreaChart
           accessibilityLayer
@@ -28,6 +21,7 @@ const TideChart = () => {
             right: 12,
             bottom: 16,
           }}
+          syncId="swellnet"
         >
           <CartesianGrid
             vertical={true}
@@ -48,7 +42,7 @@ const TideChart = () => {
             connectNulls
           />
 
-          <Tooltip />
+          <ChartTooltip content={<CustomTideTooltip />} />
 
           <XAxis dataKey="date" interval={3} />
           <XAxis dataKey="time" hide />

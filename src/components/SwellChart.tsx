@@ -39,6 +39,7 @@ const SwellChart = ({
           }}
           barCategoryGap={2}
           barSize={120}
+          syncId="swellnet"
           // className="[&>svg>path]:fill-transparent"
         >
           <CartesianGrid
