@@ -17,6 +17,7 @@ import { generateTicks } from "@/utils/chart-utils";
 import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
+import { formatDateTick } from "@/lib/utils";
 
 const SwellChart = ({
   unitPreferences,
@@ -24,7 +25,7 @@ const SwellChart = ({
   unitPreferences: UnitPreferences;
 }) => {
   return (
-    <ResponsiveContainer width={4848} height="100%">
+    <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
         config={chartConfig}
         className="aspect-auto h-[30rem] w-full"
@@ -37,8 +38,8 @@ const SwellChart = ({
             right: 12,
             bottom: 16,
           }}
-          barCategoryGap={2}
-          barSize={120}
+          // barCategoryGap={2}
+          // barSize={120}
           syncId="swellnet"
           // className="[&>svg>path]:fill-transparent"
         >
@@ -58,7 +59,7 @@ const SwellChart = ({
           <XAxis
             xAxisId={0}
             dataKey="date"
-            orientation="top"
+            // orientation="top"
             hide
             interval={7}
           />
@@ -72,25 +73,7 @@ const SwellChart = ({
             tickMargin={0}
             allowDuplicatedCategory={false}
             orientation="top"
-            tickFormatter={(value) => {
-              const date = new Date(value);
-              const formattedDate = date
-                .toLocaleDateString("en-US", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "numeric",
-                })
-                .toLocaleUpperCase()
-                .replace(",", "");
-
-              // Split into weekday and date parts
-              const [weekday, datePart] = formattedDate.split(" ");
-              // Split date into month and day, reverse them, and pad with zero if needed
-              const [month, day] = datePart.split("/");
-              const reversedDate = `${day}/${month.padStart(2, "0")}`;
-
-              return `${weekday} ${reversedDate}`;
-            }}
+            tickFormatter={formatDateTick}
             textAnchor="middle"
             fontWeight={700}
           />
