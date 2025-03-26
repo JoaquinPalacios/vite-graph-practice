@@ -12,7 +12,7 @@ const TideChart = () => {
     <ResponsiveContainer width={4848} height="100%">
       <ChartContainer
         config={tideChartConfig}
-        className="aspect-auto h-[12rem] w-full"
+        className="aspect-auto h-36 w-full"
       >
         <AreaChart
           accessibilityLayer

@@ -28,7 +28,7 @@ const SwellChart = ({
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
         config={chartConfig}
-        className="aspect-auto h-[30rem] w-full"
+        className="aspect-auto h-[20rem] w-full"
       >
         <BarChart
           accessibilityLayer
@@ -36,10 +36,8 @@ const SwellChart = ({
           margin={{
             left: 0,
             right: 12,
-            bottom: 16,
+            bottom: 0,
           }}
-          // barCategoryGap={2}
-          // barSize={120}
           syncId="swellnet"
           // className="[&>svg>path]:fill-transparent"
         >
@@ -51,18 +49,12 @@ const SwellChart = ({
               "oklch(0.869 0.022 252.894)",
             ]}
             y={0}
-            height={480}
+            height={320}
             syncWithTicks
           />
 
           {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-          <XAxis
-            xAxisId={0}
-            dataKey="date"
-            // orientation="top"
-            hide
-            interval={7}
-          />
+          <XAxis xAxisId={0} dataKey="date" hide interval={7} />
 
           {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
           <XAxis
@@ -162,7 +154,6 @@ const SwellChart = ({
             width={28}
             barSize={32}
             stackId="a"
-            // animationBegin={300}
             animationEasing="linear"
             animationDuration={220}
           >
@@ -208,7 +199,6 @@ const SwellChart = ({
             stackId="a"
             animationBegin={210}
             animationEasing="ease-in-out"
-            // animationDuration={3000}
           >
             <LabelList
               dataKey="secondarySwellDirection"

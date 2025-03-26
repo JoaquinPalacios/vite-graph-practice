@@ -1,5 +1,5 @@
 import { weatherData } from "@/data/weatherData";
-import { formatDateTick } from "@/lib/utils";
+// import { formatDateTick } from "@/lib/utils";
 import { IoCloudOfflineOutline } from "react-icons/io5";
 
 import {
@@ -14,14 +14,7 @@ import {
   WiWindy,
 } from "react-icons/wi";
 
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  ZAxis,
-  CartesianGrid,
-} from "recharts";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
 
@@ -44,35 +37,47 @@ export const WeatherIcon = (props: WeatherIconProps) => {
   if (!props.payload) return null;
   switch (props.payload.weatherId) {
     case 1:
-      return <WiRain size={24} x={props.x} y={props.y} />;
+      return <WiRain size={24} x={props.x && props.x - 7} y={props.y} />;
     case 2:
-      return <WiCloud size={24} x={props.x} y={props.y} />;
+      return <WiCloud size={24} x={props.x && props.x - 7} y={props.y} />;
     case 3:
-      return <WiDaySunny size={24} x={props.x} y={props.y} />;
+      return <WiDaySunny size={24} x={props.x && props.x - 7} y={props.y} />;
     case 4:
-      return <WiDayCloudyHigh size={24} x={props.x} y={props.y} />;
+      return (
+        <WiDayCloudyHigh size={24} x={props.x && props.x - 7} y={props.y} />
+      );
     case 5:
-      return <WiDayCloudy size={24} x={props.x} y={props.y} />;
+      return <WiDayCloudy size={24} x={props.x && props.x - 7} y={props.y} />;
     case 6:
-      return <WiDayFog size={24} x={props.x} y={props.y} />;
+      return <WiDayFog size={24} x={props.x && props.x - 7} y={props.y} />;
     case 7:
-      return <WiWindy size={24} x={props.x} y={props.y} />;
+      return <WiWindy size={24} x={props.x && props.x - 7} y={props.y} />;
     case 8:
     case 9:
-      return <WiShowers size={24} x={props.x} y={props.y} />;
+      return <WiShowers size={24} x={props.x && props.x - 7} y={props.y} />;
     case 10:
-      return <WiDaySunnyOvercast size={24} x={props.x} y={props.y} />;
+      return (
+        <WiDaySunnyOvercast size={24} x={props.x && props.x - 7} y={props.y} />
+      );
     case 11:
     case 12:
-      return <WiDayCloudyHigh size={24} x={props.x} y={props.y} />;
+      return (
+        <WiDayCloudyHigh size={24} x={props.x && props.x - 7} y={props.y} />
+      );
     default:
-      return <IoCloudOfflineOutline size={20} x={props.x} y={props.y} />;
+      return (
+        <IoCloudOfflineOutline
+          size={20}
+          x={props.x && props.x - 7}
+          y={props.y}
+        />
+      );
   }
 };
 
 const WeatherChart = () => {
   return (
-    <ResponsiveContainer width={4848} height={160} className="mt-0">
+    <ResponsiveContainer width={4848} height="100%" className="h-8 min-h-8">
       <ScatterChart
         data={weatherData}
         margin={{
@@ -90,40 +95,11 @@ const WeatherChart = () => {
             "oklch(0.869 0.022 252.894)",
           ]}
           y={0}
-          height={160}
+          height={32}
           syncWithTicks
         />
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        <XAxis
-          xAxisId={0}
-          dataKey="date"
-          // orientation="top"
-          hide
-          interval={7}
-        />
-        {/* This XAxis is the one that shows the time of the day */}
-        <XAxis
-          xAxisId={1}
-          dataKey="time"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={0}
-          minTickGap={16}
-          interval={"preserveStart"}
-        />
-        {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
-        <XAxis
-          xAxisId={2}
-          dataKey="date"
-          interval={0}
-          tickLine={false}
-          axisLine={false}
-          tickMargin={0}
-          allowDuplicatedCategory={false}
-          tickFormatter={formatDateTick}
-          textAnchor="middle"
-          fontWeight={700}
-        />
+        <XAxis xAxisId={0} dataKey="date" hide interval={7} />
 
         <YAxis
           dataKey="index"
@@ -131,13 +107,6 @@ const WeatherChart = () => {
           opacity={0}
           height={0}
           domain={[1]}
-        />
-
-        <ZAxis
-          type="number"
-          dataKey="currentTemp"
-          //   domain={parseDomain()}
-          //   range={[0, 225]}
         />
 
         <Scatter
