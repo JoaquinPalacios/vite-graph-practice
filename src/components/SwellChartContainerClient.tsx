@@ -3,7 +3,6 @@
 import { useState } from "react";
 import SwellChartContainer from "./SwellChartContainer";
 import { UnitPreferences, UnitSelector } from "./UnitSelector";
-// import TideChart from "./TideChart";
 
 const SwellChartContainerClient = () => {
   const [unitPreferences, setUnitPreferences] = useState<UnitPreferences>({
@@ -18,7 +17,6 @@ const SwellChartContainerClient = () => {
       <UnitSelector onChange={setUnitPreferences} />
 
       <SwellChartContainer unitPreferences={unitPreferences} />
-      {/* <TideChart /> */}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 const chartData = [
+  // April 1 (Tue)
   {
     date: "2024-04-01",
     time: "12am",
@@ -261,6 +262,7 @@ const chartData = [
       secondHighTideHeight: 1.7,
     },
   },
+  // April 2 (Wed)
   {
     date: "2024-04-02",
     time: "12am",
@@ -509,6 +511,7 @@ const chartData = [
       secondHighTideHeight: 1.6,
     },
   },
+  // April 3 (Thu)
   {
     date: "2024-04-03",
     time: "12am",
@@ -733,6 +736,7 @@ const chartData = [
       secondLowTideHeight: 0.4,
     },
   },
+  // April 4 (Fri)
   {
     date: "2024-04-04",
     time: "12am",
@@ -927,7 +931,6 @@ const chartData = [
     nextLowTideHeight: 0.5,
     isRising: false,
     // nextTideTime: "6:40pm",
-    // nextTideHeight: 0.5,
     tides: {
       firstLowTide: "7:30am",
       firstLowTideHeight: 0.6,
@@ -963,6 +966,7 @@ const chartData = [
       secondHighTideHeight: 1.0,
     },
   },
+  // April 5 (Sat)
   {
     date: "2024-04-05",
     time: "12am",
@@ -1197,6 +1201,7 @@ const chartData = [
       secondHighTideHeight: 0.9,
     },
   },
+  // April 6 (Sun)
   {
     date: "2024-04-06",
     time: "12am",
