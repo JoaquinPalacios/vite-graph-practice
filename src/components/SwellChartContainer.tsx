@@ -70,8 +70,8 @@ const SwellChartContainer = ({
         }}
       >
         <SwellChart unitPreferences={unitPreferences} />
-        <TideChart />
         <WeatherChart />
+        <TideChart />
       </CardContent>
     </Card>
   );

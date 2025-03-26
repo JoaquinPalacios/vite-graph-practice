@@ -37,18 +37,14 @@ export const weatherId = [
   },
   {
     id: 10,
-    name: "sunny",
-  },
-  {
-    id: 11,
     name: "mostly-sunny",
   },
   {
-    id: 12,
+    id: 11,
     name: "partly-cloudy",
   },
   {
-    id: 13,
+    id: 12,
     name: "partly-sunny",
   },
 ];
