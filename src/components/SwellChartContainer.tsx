@@ -8,6 +8,7 @@ import GraphButtons from "./GraphButtons";
 import { useState } from "react";
 import SwellChart from "./SwellChart";
 import TideChart from "./TideChart";
+import WeatherChart from "./WeatherChart";
 
 const SwellChartContainer = ({
   unitPreferences,
@@ -70,6 +71,7 @@ const SwellChartContainer = ({
       >
         <SwellChart unitPreferences={unitPreferences} />
         <TideChart />
+        <WeatherChart />
       </CardContent>
     </Card>
   );
