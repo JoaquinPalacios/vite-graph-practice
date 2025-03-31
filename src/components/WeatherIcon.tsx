@@ -38,7 +38,7 @@ const WeatherIcon = (props: WeatherIconProps) => {
       {/* Invisible hit area */}
       <rect
         width="24"
-        height="24"
+        height="40"
         fill="transparent"
         className="cursor-pointer"
       />

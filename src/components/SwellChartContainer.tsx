@@ -38,35 +38,40 @@ const SwellChartContainer = ({
         className="p-0 w-full overflow-y-auto no-scrollbar chart-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-track]:bg-transparent [touch-action:none]"
         onScroll={(e) => {
           checkScrollLimits(e);
-          const axis = document.querySelector(".recharts-yAxis") as HTMLElement;
-          if (axis) {
-            axis.style.transform = `translateX(${
-              (e.target as HTMLElement).scrollLeft
-            }px)`;
-            axis.style.opacity = "0";
-            setTimeout(() => {
-              axis.style.opacity = "1";
-            }, 400);
-          }
+          const axes = document.querySelectorAll(
+            ".recharts-yAxis"
+          ) as NodeListOf<HTMLElement>;
 
-          if (!axis.querySelector(".y-axis-rect-left")) {
-            // Create background rectangle
-            const rect = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "rect"
-            );
+          axes.forEach((axis) => {
+            if (axis) {
+              axis.style.transform = `translateX(${
+                (e.target as HTMLElement).scrollLeft
+              }px)`;
+              axis.style.opacity = "0";
+              setTimeout(() => {
+                axis.style.opacity = "1";
+              }, 400);
 
-            // Set rectangle attributes
-            rect.setAttribute("x", "0");
-            rect.setAttribute("y", "0");
-            rect.setAttribute("width", "64");
-            rect.setAttribute("height", "480");
-            rect.setAttribute("fill", "oklch(0.968 0.007 247.896)"); // Using slate-100 color to match card background
-            rect.setAttribute("class", "y-axis-rect-left");
+              if (!axis.querySelector(".y-axis-rect-left")) {
+                // Create background rectangle
+                const rect = document.createElementNS(
+                  "http://www.w3.org/2000/svg",
+                  "rect"
+                );
 
-            // Insert rectangle as first child of the axis
-            axis.insertBefore(rect, axis.firstChild);
-          }
+                // Set rectangle attributes
+                rect.setAttribute("x", "0");
+                rect.setAttribute("y", "0");
+                rect.setAttribute("width", "64");
+                rect.setAttribute("height", "544");
+                rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
+                rect.setAttribute("class", "y-axis-rect-left");
+
+                // Insert rectangle as first child of the axis
+                axis.insertBefore(rect, axis.firstChild);
+              }
+            }
+          });
         }}
       >
         <SwellChart unitPreferences={unitPreferences} />

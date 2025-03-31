@@ -18,7 +18,7 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-16 min-h-16 relative after:absolute after:inset-0 after:left-20 after:border-y after:border-slate-300"
+      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-full after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
     >
       <ScatterChart
         data={weatherData}
@@ -40,7 +40,6 @@ const WeatherChart = () => {
           y={0}
           height={64}
           syncWithTicks
-          overflow="hidden"
         />
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
         <XAxis
@@ -69,11 +68,7 @@ const WeatherChart = () => {
           content={<WeatherTooltip />}
         />
 
-        <Scatter
-          dataKey="weatherId"
-          //   opacity={0.5}
-          shape={<WeatherIcon />}
-        />
+        <Scatter dataKey="weatherId" shape={<WeatherIcon />} />
       </ScatterChart>
     </ResponsiveContainer>
   );

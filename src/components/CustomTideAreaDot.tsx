@@ -12,7 +12,6 @@ export const CustomTideAreaDot = ({
   cy,
   payload,
 }: CustomTideAreaDotProps) => {
-  //   console.log({ payload });
   if (!cx || !cy || !payload) return null;
   return (
     <g width={20} height={20} transform={`translate(${cx}, ${cy})`}>
@@ -32,7 +31,7 @@ export const CustomTideAreaDot = ({
         textAnchor="middle"
         dy={-8}
       >
-        {payload.height}
+        {payload.height}m
       </text>
     </g>
   );
