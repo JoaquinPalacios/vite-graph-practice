@@ -43,15 +43,15 @@ export const CustomTooltip = ({
 }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-stone-100 rounded-md overflow-hidden">
-        <h5 className="mb-2 px-2 pt-2 text-center">
+      <div className="bg-slate-400 rounded-md overflow-hidden">
+        <h5 className="mb-2 px-2 pt-2 text-center text-white">
           {payload[0].payload.time}&nbsp;-&nbsp;
           {new Date(label).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
           })}
         </h5>
-        <div className="flex flex-col bg-stone-50 p-2">
+        <div className="flex flex-col bg-white p-2">
           <div className="flex gap-1">
             <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
             <p className="font-medium ml-px">

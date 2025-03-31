@@ -12,7 +12,7 @@ const WeatherTooltip = ({
 
   return (
     <div className="rounded-md bg-white shadow-md overflow-hidden relative before:absolute before:bg-swell before:left-0 before:top-0 before:w-1 before:h-full before:z-10 before:opacity-50">
-      <h5 className="text-xs bg-slate-100 p-2 text-center">
+      <h5 className="text-xs bg-slate-400 text-white p-2 text-center">
         {new Date(payload[0].payload.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
