@@ -11,10 +11,21 @@ const WeatherTooltip = ({
   if (!active || !payload) return null;
 
   return (
-    <div className="rounded-md bg-white p-2 shadow-md">
-      <h5 className="">{payload[0].payload.time}</h5>
-      <p className="text-sm">{formatWeatherText(payload[0].payload.weather)}</p>
-      <p className="text-sm">{payload[0].payload.currentTemp}°C</p>
+    <div className="rounded-md bg-white shadow-md overflow-hidden relative before:absolute before:bg-swell before:left-0 before:top-0 before:w-1 before:h-full before:z-10 before:opacity-50">
+      <h5 className="text-xs bg-slate-100 p-2 text-center">
+        {new Date(payload[0].payload.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })}
+        &nbsp;-&nbsp;
+        {payload[0].payload.time}
+      </h5>
+      <p className="text-xs pt-2 px-2">
+        {formatWeatherText(payload[0].payload.weather)}
+      </p>
+      <p className="text-xs px-2 pb-2">
+        {payload[0].payload.minTemp}°C / {payload[0].payload.maxTemp}°C
+      </p>
     </div>
   );
 };
