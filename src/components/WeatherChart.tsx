@@ -18,8 +18,7 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-11 min-h-11 border-y border-slate-400"
-      //   className="h-11 min-h-11 border-y-2 border-double"
+      className="h-16 min-h-16 border-y border-slate-400"
     >
       <ScatterChart
         data={weatherData}
@@ -39,7 +38,7 @@ const WeatherChart = () => {
             "oklch(0.929 0.013 255.508)", // Tailwind slate-300
           ]}
           y={0}
-          height={44}
+          height={64}
           syncWithTicks
           overflow="hidden"
         />
@@ -61,7 +60,7 @@ const WeatherChart = () => {
           opacity={0}
           height={0}
           domain={[1]}
-          padding={{ top: 16, bottom: 16 }}
+          padding={{ bottom: 16 }}
         />
 
         <Tooltip

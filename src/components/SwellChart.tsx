@@ -130,6 +130,7 @@ const SwellChart = ({
               left: 0,
               right: 0,
             }}
+            stroke="#666"
           />
 
           <ChartTooltip

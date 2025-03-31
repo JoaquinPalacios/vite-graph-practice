@@ -72,7 +72,7 @@ const TideChart = () => {
             unit="m"
             axisLine={false}
             domain={[0, "dataMax + 0.2"]}
-            padding={{ top: 24 }}
+            padding={{ top: 32 }}
           />
         </AreaChart>
       </ChartContainer>
