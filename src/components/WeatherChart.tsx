@@ -18,7 +18,7 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-16 min-h-16 border-y border-slate-400"
+      className="h-16 min-h-16 relative after:absolute after:inset-0 after:left-20 after:border-y after:border-slate-300"
     >
       <ScatterChart
         data={weatherData}
