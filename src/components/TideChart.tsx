@@ -38,17 +38,7 @@ const TideChart = () => {
           />
 
           {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-          <XAxis
-            xAxisId={0}
-            dataKey="date"
-            hide
-            // interval={"preserveStart"}
-            // scale="time"
-            // tickCount={16}
-            // ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
-            // type="number"
-            interval={3}
-          />
+          <XAxis xAxisId={0} dataKey="date" hide interval={3} />
 
           {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
           <XAxis
@@ -62,7 +52,6 @@ const TideChart = () => {
             textAnchor="middle"
             fontWeight={700}
           />
-          {/* <XAxis xAxisId={2} dataKey="time" interval={1} /> */}
 
           <ChartTooltip content={<CustomTideTooltip />} />
 
@@ -80,9 +69,7 @@ const TideChart = () => {
           <YAxis
             dataKey="height"
             unit="m"
-            // tickLine={false}
             axisLine={false}
-            // tickMargin={8}
             domain={[0, "dataMax + 0.2"]}
             padding={{ top: 24 }}
           />
