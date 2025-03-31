@@ -86,7 +86,7 @@ const SwellChart = ({
           <ChartTooltip
             cursor={{
               height: 280,
-              fill: "#000",
+              fill: "oklch(0.129 0.042 264.695)",
               fillOpacity: 0.08,
             }}
             content={<CustomTooltip unitPreferences={unitPreferences} />}
