@@ -22,3 +22,10 @@ export const formatDateTick = (value: string) => {
 
   return `${weekday} ${reversedDate}`;
 };
+
+export const formatWeatherText = (text: string) => {
+  return text
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};

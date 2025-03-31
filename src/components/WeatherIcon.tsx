@@ -1,0 +1,121 @@
+import { IoCloudOfflineOutline } from "react-icons/io5";
+import {
+  WiDayCloudyHigh,
+  WiDayCloudy,
+  WiDaySunny,
+  WiShowers,
+  WiDaySunnyOvercast,
+  WiRain,
+  WiCloud,
+  WiDayFog,
+  WiWindy,
+} from "react-icons/wi";
+
+type WeatherData = {
+  weatherId: number;
+  date: string;
+  time: string;
+  currentTemp: number;
+};
+
+type WeatherIconProps = {
+  x?: number;
+  y?: number;
+  cx?: number;
+  cy?: number;
+  payload?: WeatherData;
+};
+
+const WeatherIcon = (props: WeatherIconProps) => {
+  if (!props.payload) return null;
+
+  // Common wrapper for all icons to provide a larger hit area
+  const IconWrapper = ({ children }: { children: React.ReactNode }) => (
+    <g
+      transform={`translate(${(props.x || 0) - 7}, ${props.y || 0})`}
+      className="hover:[&>svg]:fill-gray-800"
+    >
+      {/* Invisible hit area */}
+      <rect
+        width="24"
+        height="24"
+        fill="transparent"
+        className="cursor-pointer"
+      />
+      {children}
+    </g>
+  );
+
+  switch (props.payload.weatherId) {
+    case 1:
+      return (
+        <IconWrapper>
+          <WiRain size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 2:
+      return (
+        <IconWrapper>
+          <WiCloud size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 3:
+      return (
+        <IconWrapper>
+          <WiDaySunny size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 4:
+      return (
+        <IconWrapper>
+          <WiDayCloudyHigh size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 5:
+      return (
+        <IconWrapper>
+          <WiDayCloudy size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 6:
+      return (
+        <IconWrapper>
+          <WiDayFog size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 7:
+      return (
+        <IconWrapper>
+          <WiWindy size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 8:
+    case 9:
+      return (
+        <IconWrapper>
+          <WiShowers size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 10:
+      return (
+        <IconWrapper>
+          <WiDaySunnyOvercast size={24} color="#666" />
+        </IconWrapper>
+      );
+    case 11:
+    case 12:
+      return (
+        <IconWrapper>
+          <WiDayCloudyHigh size={24} color="#666" />
+        </IconWrapper>
+      );
+    default:
+      return (
+        <IconWrapper>
+          <IoCloudOfflineOutline size={20} color="#666" />
+        </IconWrapper>
+      );
+  }
+};
+
+export default WeatherIcon;

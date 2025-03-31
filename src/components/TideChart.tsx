@@ -6,6 +6,7 @@ import { ChartContainer, ChartTooltip } from "./ui/chart";
 import tideData from "@/data/tide-data";
 import CustomTideTooltip from "./CustomTideTooltip";
 import { formatDateTick } from "@/lib/utils";
+import { CustomTideAreaDot } from "./CustomTideAreaDot";
 
 const TideChart = () => {
   return (
@@ -71,7 +72,9 @@ const TideChart = () => {
             stroke="#008a93"
             fill="#008a93"
             connectNulls
-            // data={tideData}
+            dot={(props) => {
+              return <CustomTideAreaDot {...props} key={props.key} />;
+            }}
           />
 
           <YAxis
@@ -81,6 +84,7 @@ const TideChart = () => {
             axisLine={false}
             // tickMargin={8}
             domain={[0, "dataMax + 0.2"]}
+            padding={{ top: 24 }}
           />
         </AreaChart>
       </ChartContainer>

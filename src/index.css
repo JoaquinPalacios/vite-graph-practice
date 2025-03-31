@@ -20,6 +20,10 @@
   }
 }
 
+@theme {
+  --color-swell: #008a93;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
