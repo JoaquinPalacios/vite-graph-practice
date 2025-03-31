@@ -46,8 +46,8 @@ const SwellChart = ({
             vertical={true}
             horizontal={true}
             verticalFill={[
-              "oklch(0.929 0.013 255.508)",
-              "oklch(0.869 0.022 252.894)",
+              "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
             ]}
             y={0}
             height={320}

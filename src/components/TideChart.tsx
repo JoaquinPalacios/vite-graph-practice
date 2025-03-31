@@ -29,8 +29,8 @@ const TideChart = () => {
             vertical={true}
             horizontal={true}
             verticalFill={[
-              "oklch(0.869 0.022 252.894)",
-              "oklch(0.929 0.013 255.508)",
+              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+              "oklch(0.968 0.007 247.896)", // Tailwind slate-200
             ]}
             y={0}
             height={200}
@@ -62,7 +62,7 @@ const TideChart = () => {
             fill="#008a93"
             connectNulls
             dot={(props) => {
-              if (props.key === "dot-0") return <span />;
+              if (props.key === "dot-0") return <span key={props.key} />;
               return <CustomTideAreaDot {...props} key={props.key} />;
             }}
           />

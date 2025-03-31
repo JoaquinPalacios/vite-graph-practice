@@ -18,7 +18,8 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-11 min-h-11 border-y-2 border-double"
+      className="h-11 min-h-11 border-y border-slate-400"
+      //   className="h-11 min-h-11 border-y-2 border-double"
     >
       <ScatterChart
         data={weatherData}
@@ -34,12 +35,13 @@ const WeatherChart = () => {
           vertical={true}
           horizontal={false}
           verticalFill={[
-            "oklch(0.929 0.013 255.508)",
-            "oklch(0.869 0.022 252.894)",
+            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
           ]}
           y={0}
           height={44}
           syncWithTicks
+          overflow="hidden"
         />
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
         <XAxis

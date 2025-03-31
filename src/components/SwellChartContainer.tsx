@@ -31,7 +31,7 @@ const SwellChartContainer = ({
   };
 
   return (
-    <Card className="w-full relative bg-slate-200 border-slate-700 max-w-[1340px] h-auto mx-auto px-4">
+    <Card className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-4">
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
       <CardContent
