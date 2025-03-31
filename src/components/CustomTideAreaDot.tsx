@@ -5,7 +5,6 @@ type CustomTideAreaDotProps = {
     time: string;
     height: number;
   };
-  key: string;
 };
 
 export const CustomTideAreaDot = ({
@@ -13,6 +12,7 @@ export const CustomTideAreaDot = ({
   cy,
   payload,
 }: CustomTideAreaDotProps) => {
+  //   console.log({ payload });
   if (!cx || !cy || !payload) return null;
   return (
     <g width={20} height={20} transform={`translate(${cx}, ${cy})`}>

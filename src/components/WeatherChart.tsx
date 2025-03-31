@@ -15,7 +15,11 @@ import WeatherIcon from "./WeatherIcon";
 
 const WeatherChart = () => {
   return (
-    <ResponsiveContainer width={4848} height="100%" className="h-8 min-h-8">
+    <ResponsiveContainer
+      width={4848}
+      height="100%"
+      className="h-11 min-h-11 border-y-2 border-double"
+    >
       <ScatterChart
         data={weatherData}
         margin={{
@@ -34,7 +38,7 @@ const WeatherChart = () => {
             "oklch(0.869 0.022 252.894)",
           ]}
           y={0}
-          height={32}
+          height={44}
           syncWithTicks
         />
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
@@ -55,6 +59,7 @@ const WeatherChart = () => {
           opacity={0}
           height={0}
           domain={[1]}
+          padding={{ top: 16, bottom: 16 }}
         />
 
         <Tooltip

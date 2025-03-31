@@ -37,7 +37,7 @@ const SwellChart = ({
           margin={{
             left: 0,
             right: 12,
-            bottom: 0,
+            bottom: 12,
           }}
           syncId="swellnet"
           // className="[&>svg>path]:fill-transparent"
@@ -126,11 +126,6 @@ const SwellChart = ({
             minTickGap={0}
             orientation="bottom"
             interval={0}
-            // unit={
-            //   unitPreferences.windSpeed === "knots"
-            //     ? "kts"
-            //     : unitPreferences.windSpeed
-            // }
             padding={{
               left: 0,
               right: 0,

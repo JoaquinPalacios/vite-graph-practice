@@ -62,6 +62,7 @@ const TideChart = () => {
             fill="#008a93"
             connectNulls
             dot={(props) => {
+              if (props.key === "dot-0") return <span />;
               return <CustomTideAreaDot {...props} key={props.key} />;
             }}
           />
