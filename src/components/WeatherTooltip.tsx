@@ -10,8 +10,6 @@ const WeatherTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (!active || !payload) return null;
 
-  console.log({ payload });
-
   return (
     <div className="rounded-md bg-white p-2 shadow-md">
       <h5 className="">{payload[0].payload.time}</h5>
