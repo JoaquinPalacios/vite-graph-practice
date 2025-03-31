@@ -61,7 +61,7 @@ const SwellChartContainer = ({
             rect.setAttribute("y", "0");
             rect.setAttribute("width", "64");
             rect.setAttribute("height", "480");
-            rect.setAttribute("fill", "rgb(226 232 240)"); // Using slate-200 color to match card background
+            rect.setAttribute("fill", "oklch(0.968 0.007 247.896)"); // Using slate-100 color to match card background
             rect.setAttribute("class", "y-axis-rect-left");
 
             // Insert rectangle as first child of the axis
