@@ -62,7 +62,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       <button
         onClick={() => toggleUnit("waveHeight")}
         className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
+          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
           preferences.waveHeight === "m" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
@@ -73,7 +73,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       <button
         onClick={() => toggleUnit("windSpeed")}
         className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
+          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
           preferences.windSpeed === "km/h" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
@@ -84,7 +84,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       <button
         onClick={() => toggleUnit("temperature")}
         className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
+          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
           preferences.temperature === "°F" ? "bg-teal-700" : "bg-blue-900"
         )}
       >
@@ -95,7 +95,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       <button
         onClick={() => toggleUnit("tideHeight")}
         className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-white w-fit",
+          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
           preferences.tideHeight === "ft" ? "bg-teal-700" : "bg-blue-900"
         )}
       >

@@ -39,8 +39,8 @@ const SwellChart = ({
             right: 12,
             bottom: 12,
           }}
-          syncId="swellnet"
-          // className="[&>svg>path]:fill-transparent"
+          // syncId="swellnet"
+          // className="[&>svg>path]:fill-slate-300"
         >
           <CartesianGrid
             vertical={true}
@@ -81,6 +81,15 @@ const SwellChart = ({
             minTickGap={16}
             orientation="top"
             interval={"preserveStart"}
+          />
+
+          <ChartTooltip
+            cursor={{
+              height: 280,
+              fill: "#000",
+              fillOpacity: 0.08,
+            }}
+            content={<CustomTooltip unitPreferences={unitPreferences} />}
           />
 
           {/* This XAxis is the one that shows the wind direction */}
@@ -133,10 +142,6 @@ const SwellChart = ({
             stroke="#666"
           />
 
-          <ChartTooltip
-            content={<CustomTooltip unitPreferences={unitPreferences} />}
-          />
-
           <Bar
             dataKey={(d) =>
               unitPreferences.waveHeight === "ft"
@@ -149,7 +154,7 @@ const SwellChart = ({
               fill: "#00b4c6",
             }}
             width={28}
-            barSize={32}
+            barSize={36}
             stackId="a"
             animationEasing="linear"
             animationDuration={220}
