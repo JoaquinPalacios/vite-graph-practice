@@ -11,7 +11,7 @@ const WeatherTooltip = ({
   if (!active || !payload) return null;
 
   return (
-    <div className="rounded-md bg-white shadow-md overflow-hidden relative before:absolute before:bg-swell before:left-0 before:top-0 before:w-1 before:h-full before:z-10 before:opacity-50">
+    <div className="rounded-md bg-white shadow-md overflow-hidden">
       <h5 className="text-xs bg-slate-400 text-white p-2 text-center">
         {new Date(payload[0].payload.date).toLocaleDateString("en-US", {
           month: "short",
@@ -20,10 +20,10 @@ const WeatherTooltip = ({
         &nbsp;-&nbsp;
         {payload[0].payload.time}
       </h5>
-      <p className="text-xs pt-2 px-2">
+      <p className="text-xs pt-2 pl-2.5 pr-2 relative before:absolute before:bg-swell/50 before:left-0.5 before:top-2 before:w-1 before:h-8 before:z-10">
         {formatWeatherText(payload[0].payload.weather)}
       </p>
-      <p className="text-xs px-2 pb-2">
+      <p className="text-xs pl-2.5 pr-2 pb-2">
         {payload[0].payload.minTemp}°C / {payload[0].payload.maxTemp}°C
       </p>
     </div>
