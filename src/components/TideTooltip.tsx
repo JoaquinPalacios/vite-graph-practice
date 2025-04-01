@@ -3,7 +3,7 @@ import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-const CustomTideTooltip = ({
+const TideTooltip = ({
   active,
   payload,
   label,
@@ -30,4 +30,4 @@ const CustomTideTooltip = ({
   return null;
 };
 
-export default CustomTideTooltip;
+export default TideTooltip;

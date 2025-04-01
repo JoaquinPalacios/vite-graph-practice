@@ -9,16 +9,16 @@ import {
 } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
-import RenderCustomizedLabel from "./CustomSwellLabel";
+import RenderCustomizedLabel from "./SwellLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { generateTicks } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { formatDateTick } from "@/lib/utils";
-import { CustomSwellTooltip } from "./CustomSwellTooltip";
-import CustomSwellAxisTick from "./CustomSwellAxisTick";
-import CustomSwellLabel from "./CustomSwellLabel";
+import { SwellTooltip } from "./SwellTooltip";
+import SwellLabel from "./SwellLabel";
+import SwellAxisTick from "./SwellAxisTick";
 
 const SwellChart = ({
   unitPreferences,
@@ -88,7 +88,7 @@ const SwellChart = ({
               fill: "oklch(0.129 0.042 264.695)",
               fillOpacity: 0.1,
             }}
-            content={<CustomSwellTooltip unitPreferences={unitPreferences} />}
+            content={<SwellTooltip unitPreferences={unitPreferences} />}
             trigger="hover"
           />
 
@@ -105,7 +105,7 @@ const SwellChart = ({
               const data = chartData[index];
 
               return (
-                <CustomSwellAxisTick
+                <SwellAxisTick
                   payload={payload}
                   windSpeed={data?.windSpeed_knots || 0}
                   x={x}
@@ -172,7 +172,7 @@ const SwellChart = ({
                   return null;
 
                 return (
-                  <CustomSwellLabel
+                  <SwellLabel
                     x={x}
                     y={y}
                     value={value}

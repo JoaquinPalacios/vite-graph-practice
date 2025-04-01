@@ -4,9 +4,9 @@ import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip } from "./ui/chart";
 import tideData from "@/data/tide-data";
-import CustomTideTooltip from "./CustomTideTooltip";
+import TideTooltip from "./TideTooltip";
 import { formatDateTick } from "@/lib/utils";
-import { CustomTideAreaDot } from "./CustomTideAreaDot";
+import { TideAreaDot } from "./TideAreaDot";
 
 const TideChart = () => {
   return (
@@ -53,7 +53,7 @@ const TideChart = () => {
             fontWeight={700}
           />
 
-          <ChartTooltip content={<CustomTideTooltip />} />
+          <ChartTooltip content={<TideTooltip />} />
 
           <Area
             type="monotone"
@@ -63,7 +63,7 @@ const TideChart = () => {
             connectNulls
             dot={(props) => {
               if (props.key === "dot-0") return <span key={props.key} />;
-              return <CustomTideAreaDot {...props} key={props.key} />;
+              return <TideAreaDot {...props} key={props.key} />;
             }}
             isAnimationActive={false}
           />

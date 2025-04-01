@@ -1,4 +1,4 @@
-type CustomTideAreaDotProps = {
+type TideAreaDotProps = {
   cx?: number;
   cy?: number;
   payload?: {
@@ -7,11 +7,7 @@ type CustomTideAreaDotProps = {
   };
 };
 
-export const CustomTideAreaDot = ({
-  cx,
-  cy,
-  payload,
-}: CustomTideAreaDotProps) => {
+export const TideAreaDot = ({ cx, cy, payload }: TideAreaDotProps) => {
   if (!cx || !cy || !payload) return null;
   return (
     <g width={20} height={20} transform={`translate(${cx}, ${cy})`}>

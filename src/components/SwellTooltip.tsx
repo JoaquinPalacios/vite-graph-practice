@@ -4,12 +4,12 @@ import { LuWind } from "react-icons/lu";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import RenderCustomizedLabel from "./CustomSwellLabel";
+import RenderCustomizedLabel from "./SwellLabel";
 import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
 import { formatWaveHeight } from "@/utils/chart-utils";
 
-export const CustomSwellTooltip = ({
+export const SwellTooltip = ({
   active,
   payload,
   label,

@@ -1,11 +1,11 @@
 import { LabelProps } from "recharts";
 
-interface CustomLabelProps extends LabelProps {
+interface SwellLabelProps extends LabelProps {
   hasFaceWaveHeight?: boolean;
   primarySwellDirection?: number | null;
 }
 
-const CustomSwellLabel = (props: CustomLabelProps) => {
+const SwellLabel = (props: SwellLabelProps) => {
   const { x, y, value, fill, hasFaceWaveHeight, primarySwellDirection } = props;
 
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
@@ -132,4 +132,4 @@ const CustomSwellLabel = (props: CustomLabelProps) => {
   }
 };
 
-export default CustomSwellLabel;
+export default SwellLabel;
