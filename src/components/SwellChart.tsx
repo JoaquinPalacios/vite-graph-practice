@@ -30,7 +30,6 @@ const SwellChart = ({
       <ChartContainer
         config={chartConfig}
         className="aspect-auto h-[20rem] w-full"
-        // syncId="swellnet"
       >
         <BarChart
           accessibilityLayer

@@ -1,20 +1,11 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-
-import { UnitPreferences } from "@/types";
+import { CardContent } from "@/components/ui/card";
 
 import GraphButtons from "./GraphButtons";
 import { useState } from "react";
-import SwellChart from "./SwellChart";
-import TideChart from "./TideChart";
-import WeatherChart from "./WeatherChart";
 
-const SwellChartContainer = ({
-  unitPreferences,
-}: {
-  unitPreferences: UnitPreferences;
-}) => {
+const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   // Add state to track scroll position and limits
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -44,7 +35,7 @@ const SwellChartContainer = ({
         axis.style.opacity = "0";
         setTimeout(() => {
           axis.style.opacity = "1";
-        }, 400);
+        }, 350);
 
         if (!axis.querySelector(".y-axis-rect-left")) {
           // Create background rectangle
@@ -69,19 +60,17 @@ const SwellChartContainer = ({
   };
 
   return (
-    <Card className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-4 py-0 rounded-lg">
+    <>
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
       <CardContent
         className="p-0 w-full overflow-y-auto no-scrollbar chart-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-track]:bg-transparent [touch-action:none]"
         onScroll={handleScroll}
       >
-        <SwellChart unitPreferences={unitPreferences} />
-        <WeatherChart />
-        <TideChart />
+        {children}
       </CardContent>
-    </Card>
+    </>
   );
 };
 
-export default SwellChartContainer;
+export default ChartsWrapper;

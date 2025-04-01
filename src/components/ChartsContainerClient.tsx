@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SwellChartContainer from "./SwellChartContainer";
+import ChartsContainer from "./ChartsContainer";
 import { UnitPreferences } from "@/types";
 import { UnitSelector } from "./UnitSelector";
 
@@ -17,7 +17,7 @@ const SwellChartContainerLayout = () => {
     <div className="flex flex-col gap-4 w-full">
       <UnitSelector onChange={setUnitPreferences} />
 
-      <SwellChartContainer unitPreferences={unitPreferences} />
+      <ChartsContainer unitPreferences={unitPreferences} />
     </div>
   );
 };
