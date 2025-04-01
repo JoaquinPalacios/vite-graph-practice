@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 
-import { UnitPreferences } from "./UnitSelector";
+import { UnitPreferences } from "@/types";
 
 import GraphButtons from "./GraphButtons";
 import { useState } from "react";

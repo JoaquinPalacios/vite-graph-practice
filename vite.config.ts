@@ -11,4 +11,22 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            if (id.includes("recharts")) {
+              return "recharts";
+            }
+            if (id.includes("react")) {
+              return "react-vendor";
+            }
+            return "vendors";
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 });

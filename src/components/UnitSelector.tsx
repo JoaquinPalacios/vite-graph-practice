@@ -1,18 +1,11 @@
 import { cn } from "@/lib/utils";
+import { UnitPreferences } from "@/types";
 import React, { useState, useEffect } from "react";
 import { FaRuler, FaWind, FaThermometer, FaWater } from "react-icons/fa";
 
-// Define types for our unit options
-export type UnitPreferences = {
-  waveHeight: "ft" | "m";
-  windSpeed: "knots" | "km/h";
-  temperature: "°C" | "°F";
-  tideHeight: "ft" | "m";
-};
-
-interface UnitSelectorProps {
+type UnitSelectorProps = {
   onChange: (preferences: UnitPreferences) => void;
-}
+};
 
 export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
   // Initialize with defaults or stored preferences

@@ -9,15 +9,16 @@ import {
 } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
-import { CustomTooltip } from "./CustomTooltip";
-import RenderCustomizedLabel from "./RenderCustomizedLabel";
+import RenderCustomizedLabel from "./CustomSwellLabel";
 import { chartConfig } from "@/lib/chart-config";
-import { UnitPreferences } from "./UnitSelector";
+import { UnitPreferences } from "@/types";
 import { generateTicks } from "@/utils/chart-utils";
-import RenderCustomAxisTick from "./RenderCustomAxisTick";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { formatDateTick } from "@/lib/utils";
+import { CustomSwellTooltip } from "./CustomSwellTooltip";
+import CustomSwellAxisTick from "./CustomSwellAxisTick";
+import CustomSwellLabel from "./CustomSwellLabel";
 
 const SwellChart = ({
   unitPreferences,
@@ -40,7 +41,6 @@ const SwellChart = ({
             bottom: 12,
           }}
           // syncId="swellnet"
-          // className="[&>svg>path]:fill-slate-300"
         >
           <CartesianGrid
             vertical={true}
@@ -87,9 +87,9 @@ const SwellChart = ({
             cursor={{
               height: 280,
               fill: "oklch(0.129 0.042 264.695)",
-              fillOpacity: 0.08,
+              fillOpacity: 0.2,
             }}
-            content={<CustomTooltip unitPreferences={unitPreferences} />}
+            content={<CustomSwellTooltip unitPreferences={unitPreferences} />}
             trigger="hover"
           />
 
@@ -106,7 +106,7 @@ const SwellChart = ({
               const data = chartData[index];
 
               return (
-                <RenderCustomAxisTick
+                <CustomSwellAxisTick
                   payload={payload}
                   windSpeed={data?.windSpeed_knots || 0}
                   x={x}
@@ -134,7 +134,6 @@ const SwellChart = ({
             tickMargin={10}
             fontSize={12}
             minTickGap={0}
-            orientation="bottom"
             interval={0}
             padding={{
               left: 0,
@@ -174,7 +173,7 @@ const SwellChart = ({
                   return null;
 
                 return (
-                  <RenderCustomizedLabel
+                  <CustomSwellLabel
                     x={x}
                     y={y}
                     value={value}

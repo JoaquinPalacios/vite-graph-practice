@@ -5,7 +5,7 @@ interface CustomLabelProps extends LabelProps {
   primarySwellDirection?: number | null;
 }
 
-const RenderCustomizedLabel = (props: CustomLabelProps) => {
+const CustomSwellLabel = (props: CustomLabelProps) => {
   const { x, y, value, fill, hasFaceWaveHeight, primarySwellDirection } = props;
 
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
@@ -27,7 +27,7 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
             attributeName="opacity"
             from="0"
             to="1"
-            dur="0.3s"
+            dur="0.2s"
             begin="0s"
             fill="freeze"
           />
@@ -37,32 +37,14 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
             style={{
               transformOrigin: "center",
             }}
-          >
-            <animate
-              attributeName="transform"
-              from="translate(0, 10)"
-              to="translate(0, 0)"
-              dur="0.3s"
-              begin="0s"
-              fill="freeze"
-            />
-          </path>
+          />
           <path
             d="M6.12 8h4v6h-4z"
             transform={`rotate(${value}, 0, 0)`}
             style={{
               transformOrigin: "center",
             }}
-          >
-            <animate
-              attributeName="transform"
-              from="translate(0, 10)"
-              to="translate(0, 0)"
-              dur="0.3s"
-              begin="0s"
-              fill="freeze"
-            />
-          </path>
+          />
         </g>
       </svg>
     );
@@ -150,4 +132,4 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
   }
 };
 
-export default RenderCustomizedLabel;
+export default CustomSwellLabel;

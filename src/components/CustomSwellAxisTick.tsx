@@ -1,16 +1,16 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { getWindColor } from "@/utils/color-utils";
 
-interface CustomAxisTickProps {
+type CustomAxisTickProps = {
   x?: number;
   y?: number;
   payload?: {
     value: string | number;
   };
   windSpeed?: number;
-}
+};
 
-const RenderCustomAxisTick = ({
+const CustomSwellAxisTick = ({
   payload,
   x,
   y,
@@ -60,4 +60,4 @@ const RenderCustomAxisTick = ({
   );
 };
 
-export default RenderCustomAxisTick;
+export default CustomSwellAxisTick;

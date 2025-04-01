@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import SwellChartContainer from "./SwellChartContainer";
-import { UnitPreferences, UnitSelector } from "./UnitSelector";
+import { UnitPreferences } from "@/types";
+import { UnitSelector } from "./UnitSelector";
 
-const SwellChartContainerClient = () => {
+const SwellChartContainerLayout = () => {
   const [unitPreferences, setUnitPreferences] = useState<UnitPreferences>({
     waveHeight: "ft",
     windSpeed: "knots",
@@ -21,4 +22,4 @@ const SwellChartContainerClient = () => {
   );
 };
 
-export default SwellChartContainerClient;
+export default SwellChartContainerLayout;

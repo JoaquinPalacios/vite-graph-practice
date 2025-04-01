@@ -43,3 +43,28 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
     return baseTicksMeters.filter((tick) => tick <= maxTick).concat(maxTick);
   }
 };
+
+// Helper function to format wave heights
+export const formatWaveHeight = (
+  height: number | undefined,
+  unit: string | undefined
+) => {
+  if (!height) return "0m"; // Handle undefined height
+  const actualUnit = unit || "m"; // Default to meters if unit is undefined
+
+  if (actualUnit === "ft") {
+    // For feet, show as a range (e.g., 2-3ft)
+    const lowerBound = Math.floor(height);
+    const upperBound = Math.ceil(height);
+
+    // If the height is already a whole number, just return that value
+    if (lowerBound === upperBound) {
+      return `${lowerBound}${actualUnit}`;
+    }
+
+    return `${lowerBound}-${upperBound}${actualUnit}`;
+  }
+
+  // For meters, show one decimal place
+  return `${height.toFixed(1)}${actualUnit}`;
+};
