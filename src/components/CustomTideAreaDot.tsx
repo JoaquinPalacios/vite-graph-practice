@@ -28,7 +28,7 @@ export const CustomTideAreaDot = ({
           from="0"
           to="1"
           dur="0.3s"
-          begin="1.5s"
+          begin="0.1s"
           fill="freeze"
         />
         <animate
@@ -36,7 +36,7 @@ export const CustomTideAreaDot = ({
           from="-10"
           to="-20"
           dur="0.3s"
-          begin="1.5s"
+          begin="0.1s"
           fill="freeze"
         />
         {payload.time}
@@ -54,7 +54,7 @@ export const CustomTideAreaDot = ({
           from="0"
           to="1"
           dur="0.3s"
-          begin="1.5s"
+          begin="0.1s"
           fill="freeze"
         />
         <animate
@@ -62,7 +62,7 @@ export const CustomTideAreaDot = ({
           from="2"
           to="-8"
           dur="0.3s"
-          begin="1.5s"
+          begin="0.1s"
           fill="freeze"
         />
         {payload.height}m
