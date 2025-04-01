@@ -43,6 +43,8 @@ const WeatherChart = () => {
           axisLine={false}
         />
 
+        <Scatter dataKey="weatherId" shape={<WeatherIcon />} />
+
         <YAxis
           dataKey="index"
           type="number"
@@ -52,6 +54,7 @@ const WeatherChart = () => {
           height={0}
           domain={[1]}
           padding={{ bottom: 16 }}
+          className="transition-opacity ease-in-out duration-200"
         />
 
         {/* <Tooltip
@@ -59,8 +62,6 @@ const WeatherChart = () => {
           wrapperStyle={{ zIndex: 100 }}
           content={<WeatherTooltip />}
         /> */}
-
-        <Scatter dataKey="weatherId" shape={<WeatherIcon />} />
       </ScatterChart>
     </ResponsiveContainer>
   );

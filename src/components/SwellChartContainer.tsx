@@ -57,7 +57,7 @@ const SwellChartContainer = ({
           rect.setAttribute("x", "0");
           rect.setAttribute("y", "0");
           rect.setAttribute("width", "64");
-          rect.setAttribute("height", "544");
+          rect.setAttribute("height", "320");
           rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
           rect.setAttribute("class", "y-axis-rect-left");
 

@@ -75,6 +75,7 @@ const TideChart = () => {
             domain={[0, "dataMax + 0.2"]}
             padding={{ top: 32 }}
             opacity={0}
+            className="transition-opacity ease-in-out duration-200"
           />
         </AreaChart>
       </ChartContainer>
