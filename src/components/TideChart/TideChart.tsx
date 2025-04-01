@@ -2,7 +2,7 @@ import { Area, AreaChart, CartesianGrid, YAxis, XAxis } from "recharts";
 
 import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
-import { ChartContainer, ChartTooltip } from "./ui/chart";
+import { ChartContainer, ChartTooltip } from "../ui/chart";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { formatDateTick } from "@/lib/utils";

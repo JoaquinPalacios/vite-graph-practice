@@ -2,9 +2,9 @@ import { Card } from "@/components/ui/card";
 
 import { UnitPreferences } from "@/types";
 
-import SwellChart from "./SwellChart";
-import TideChart from "./TideChart";
-import WeatherChart from "./WeatherChart";
+import SwellChart from "./SwellChart/SwellChart";
+import TideChart from "./TideChart/TideChart";
+import WeatherChart from "./WeatherChart/WeatherChart";
 import ChartsWrapper from "./ChartsWrapper";
 
 const ChartsContainer = ({
