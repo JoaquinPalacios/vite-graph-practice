@@ -22,20 +22,48 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
         width={16}
         fill={fill}
       >
-        <path
-          d="M14.13 9.11h-12l6-7 6 7z"
-          transform={`rotate(${value}, 0, 0)`}
-          style={{
-            transformOrigin: "center",
-          }}
-        />
-        <path
-          d="M6.12 8h4v6h-4z"
-          transform={`rotate(${value}, 0, 0)`}
-          style={{
-            transformOrigin: "center",
-          }}
-        />
+        <g opacity="0">
+          <animate
+            attributeName="opacity"
+            from="0"
+            to="1"
+            dur="0.3s"
+            begin="0s"
+            fill="freeze"
+          />
+          <path
+            d="M14.13 9.11h-12l6-7 6 7z"
+            transform={`rotate(${value}, 0, 0)`}
+            style={{
+              transformOrigin: "center",
+            }}
+          >
+            <animate
+              attributeName="transform"
+              from="translate(0, 10)"
+              to="translate(0, 0)"
+              dur="0.3s"
+              begin="0s"
+              fill="freeze"
+            />
+          </path>
+          <path
+            d="M6.12 8h4v6h-4z"
+            transform={`rotate(${value}, 0, 0)`}
+            style={{
+              transformOrigin: "center",
+            }}
+          >
+            <animate
+              attributeName="transform"
+              from="translate(0, 10)"
+              to="translate(0, 0)"
+              dur="0.3s"
+              begin="0s"
+              fill="freeze"
+            />
+          </path>
+        </g>
       </svg>
     );
   } else if (primarySwellDirection && hasFaceWaveHeight) {
@@ -50,20 +78,30 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
           width={16}
           fill="#ffa800"
         >
-          <path
-            d="M14.13 9.11h-12l6-7 6 7z"
-            transform={`rotate(${value}, 0, 0)`}
-            style={{
-              transformOrigin: "center",
-            }}
-          />
-          <path
-            d="M6.12 8h4v6h-4z"
-            transform={`rotate(${value}, 0, 0)`}
-            style={{
-              transformOrigin: "center",
-            }}
-          />
+          <g opacity="0">
+            <animate
+              attributeName="opacity"
+              from="0"
+              to="1"
+              dur="0.2s"
+              begin="0s"
+              fill="freeze"
+            />
+            <path
+              d="M14.13 9.11h-12l6-7 6 7z"
+              transform={`rotate(${value}, 0, 0)`}
+              style={{
+                transformOrigin: "center",
+              }}
+            />
+            <path
+              d="M6.12 8h4v6h-4z"
+              transform={`rotate(${value}, 0, 0)`}
+              style={{
+                transformOrigin: "center",
+              }}
+            />
+          </g>
         </svg>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -74,28 +112,38 @@ const RenderCustomizedLabel = (props: CustomLabelProps) => {
           width={16}
           fill="#008a93"
         >
-          <path
-            d="M14.13 9.11h-12l6-7 6 7z"
-            transform={
-              primarySwellDirection
-                ? `rotate(${primarySwellDirection}, 0, 0)`
-                : `rotate(${value}, 0, 0)`
-            }
-            style={{
-              transformOrigin: "center",
-            }}
-          />
-          <path
-            d="M6.12 8h4v6h-4z"
-            transform={
-              primarySwellDirection
-                ? `rotate(${primarySwellDirection}, 0, 0)`
-                : `rotate(${value}, 0, 0)`
-            }
-            style={{
-              transformOrigin: "center",
-            }}
-          />
+          <g opacity="0">
+            <animate
+              attributeName="opacity"
+              from="0"
+              to="1"
+              dur="0.2s"
+              begin="0s"
+              fill="freeze"
+            />
+            <path
+              d="M14.13 9.11h-12l6-7 6 7z"
+              transform={
+                primarySwellDirection
+                  ? `rotate(${primarySwellDirection}, 0, 0)`
+                  : `rotate(${value}, 0, 0)`
+              }
+              style={{
+                transformOrigin: "center",
+              }}
+            />
+            <path
+              d="M6.12 8h4v6h-4z"
+              transform={
+                primarySwellDirection
+                  ? `rotate(${primarySwellDirection}, 0, 0)`
+                  : `rotate(${value}, 0, 0)`
+              }
+              style={{
+                transformOrigin: "center",
+              }}
+            />
+          </g>
         </svg>
       </g>
     );
