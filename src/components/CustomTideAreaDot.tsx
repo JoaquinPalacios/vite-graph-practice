@@ -21,7 +21,24 @@ export const CustomTideAreaDot = ({
         fontWeight={600}
         textAnchor="middle"
         dy={-20}
+        opacity="0"
       >
+        <animate
+          attributeName="opacity"
+          from="0"
+          to="1"
+          dur="0.3s"
+          begin="1.5s"
+          fill="freeze"
+        />
+        <animate
+          attributeName="dy"
+          from="-10"
+          to="-20"
+          dur="0.3s"
+          begin="1.5s"
+          fill="freeze"
+        />
         {payload.time}
       </text>
       <text
@@ -30,7 +47,24 @@ export const CustomTideAreaDot = ({
         fontWeight={400}
         textAnchor="middle"
         dy={-8}
+        opacity="0"
       >
+        <animate
+          attributeName="opacity"
+          from="0"
+          to="1"
+          dur="0.3s"
+          begin="1.5s"
+          fill="freeze"
+        />
+        <animate
+          attributeName="dy"
+          from="2"
+          to="-8"
+          dur="0.3s"
+          begin="1.5s"
+          fill="freeze"
+        />
         {payload.height}m
       </text>
     </g>

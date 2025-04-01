@@ -90,6 +90,7 @@ const SwellChart = ({
               fillOpacity: 0.08,
             }}
             content={<CustomTooltip unitPreferences={unitPreferences} />}
+            trigger="hover"
           />
 
           {/* This XAxis is the one that shows the wind direction */}
@@ -148,7 +149,7 @@ const SwellChart = ({
                 ? d.waveHeight_ft
                 : d.waveHeight_m
             }
-            fill="#008a93"
+            fill="#008993"
             unit={unitPreferences.waveHeight}
             activeBar={{
               fill: "#00b4c6",

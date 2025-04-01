@@ -20,10 +20,10 @@ const WeatherTooltip = ({
         &nbsp;-&nbsp;
         {payload[0].payload.time}
       </h5>
-      <p className="text-xs pt-2 pl-2.5 pr-2 relative before:absolute before:bg-swell/50 before:left-0.5 before:top-2 before:w-1 before:h-8 before:z-10">
+      <p className="text-xs pt-2 pl-4 pr-2 relative before:absolute before:bg-swell/50 before:left-1 before:top-3 before:w-2 before:h-2 before:z-10 before:rounded-xs">
         {formatWeatherText(payload[0].payload.weather)}
       </p>
-      <p className="text-xs pl-2.5 pr-2 pb-2">
+      <p className="text-xs pl-4 pr-2 pb-2 relative before:absolute before:bg-swell/50 before:left-1 before:top-1 before:w-2 before:h-2 before:z-10 before:rounded-xs">
         {payload[0].payload.minTemp}°C / {payload[0].payload.maxTemp}°C
       </p>
     </div>

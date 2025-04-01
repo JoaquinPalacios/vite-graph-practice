@@ -65,6 +65,8 @@ const TideChart = () => {
               if (props.key === "dot-0") return <span key={props.key} />;
               return <CustomTideAreaDot {...props} key={props.key} />;
             }}
+            animationEasing="ease-in"
+            animationDuration={1500} // long period animation due to it loads 16 days, and the user gets to see a max 3.3 days on first screen load
           />
 
           <YAxis

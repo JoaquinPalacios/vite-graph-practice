@@ -1,16 +1,8 @@
 import { weatherData } from "@/data/weatherData";
 
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
-import WeatherTooltip from "./WeatherTooltip";
 import WeatherIcon from "./WeatherIcon";
 
 const WeatherChart = () => {
@@ -18,7 +10,7 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-full after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
+      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-[calc(100%-5rem)] after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
     >
       <ScatterChart
         data={weatherData}
@@ -62,11 +54,11 @@ const WeatherChart = () => {
           padding={{ bottom: 16 }}
         />
 
-        <Tooltip
+        {/* <Tooltip
           cursor={false}
           wrapperStyle={{ zIndex: 100 }}
           content={<WeatherTooltip />}
-        />
+        /> */}
 
         <Scatter dataKey="weatherId" shape={<WeatherIcon />} />
       </ScatterChart>
