@@ -87,7 +87,7 @@ const SwellChart = ({
             cursor={{
               height: 280,
               fill: "oklch(0.129 0.042 264.695)",
-              fillOpacity: 0.2,
+              fillOpacity: 0.1,
             }}
             content={<CustomSwellTooltip unitPreferences={unitPreferences} />}
             trigger="hover"
