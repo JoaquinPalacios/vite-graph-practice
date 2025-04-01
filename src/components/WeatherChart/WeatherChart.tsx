@@ -3,7 +3,7 @@ import { weatherData } from "@/data/weatherData";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
-import WeatherIcon from "./WeatherIcon";
+import WeatherBubble from "./WeatherBubble";
 
 const WeatherChart = () => {
   return (
@@ -43,7 +43,7 @@ const WeatherChart = () => {
           axisLine={false}
         />
 
-        <Scatter dataKey="weatherId" shape={<WeatherIcon />} />
+        <Scatter dataKey="weatherId" shape={<WeatherBubble />} />
 
         <YAxis
           dataKey="index"

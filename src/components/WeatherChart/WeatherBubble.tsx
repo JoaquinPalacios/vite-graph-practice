@@ -18,7 +18,7 @@ type WeatherData = {
   currentTemp: number;
 };
 
-type WeatherIconProps = {
+type WeatherBubbleProps = {
   x?: number;
   y?: number;
   cx?: number;
@@ -26,7 +26,7 @@ type WeatherIconProps = {
   payload?: WeatherData;
 };
 
-const WeatherIcon = (props: WeatherIconProps) => {
+const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!props.payload) return null;
 
   // Common wrapper for all icons to provide a larger hit area
@@ -143,4 +143,4 @@ const WeatherIcon = (props: WeatherIconProps) => {
   }
 };
 
-export default WeatherIcon;
+export default WeatherBubble;
