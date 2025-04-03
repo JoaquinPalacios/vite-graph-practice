@@ -1,5 +1,3 @@
-import { Card } from "@/components/ui/card";
-
 import { UnitPreferences } from "@/types";
 
 import SwellChart from "./SwellChart/SwellChart";
@@ -13,13 +11,13 @@ const ChartsContainer = ({
   unitPreferences: UnitPreferences;
 }) => {
   return (
-    <Card className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-4 py-0 rounded-lg">
+    <div className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-4 py-0 rounded-lg border">
       <ChartsWrapper>
         <SwellChart unitPreferences={unitPreferences} />
         <WeatherChart />
         <TideChart />
       </ChartsWrapper>
-    </Card>
+    </div>
   );
 };
 

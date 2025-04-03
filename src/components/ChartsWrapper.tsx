@@ -1,7 +1,5 @@
 "use client";
 
-import { CardContent } from "@/components/ui/card";
-
 import GraphButtons from "./GraphButtons";
 import { useState } from "react";
 
@@ -63,12 +61,12 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
     <>
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
-      <CardContent
+      <div
         className="p-0 w-full overflow-y-auto no-scrollbar chart-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-track]:bg-transparent [touch-action:none]"
         onScroll={handleScroll}
       >
         {children}
-      </CardContent>
+      </div>
     </>
   );
 };

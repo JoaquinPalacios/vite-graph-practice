@@ -15,7 +15,7 @@ import { UnitPreferences } from "@/types";
 import { generateTicks } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
-import { formatDateTick } from "@/lib/utils";
+import { formatDateTick } from "@/utils/chart-utils";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellLabel from "./SwellLabel";
 import SwellAxisTick from "./SwellAxisTick";

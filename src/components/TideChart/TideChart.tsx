@@ -5,7 +5,7 @@ import { ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip } from "../ui/chart";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
-import { formatDateTick } from "@/lib/utils";
+import { formatDateTick } from "@/utils/chart-utils";
 import { TideAreaDot } from "./TideAreaDot";
 
 const TideChart = () => {

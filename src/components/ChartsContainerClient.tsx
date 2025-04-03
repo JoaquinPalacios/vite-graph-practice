@@ -14,11 +14,11 @@ const SwellChartContainerLayout = () => {
   });
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <section className="flex flex-col gap-4 w-full">
       <UnitSelector onChange={setUnitPreferences} />
 
       <ChartsContainer unitPreferences={unitPreferences} />
-    </div>
+    </section>
   );
 };
 

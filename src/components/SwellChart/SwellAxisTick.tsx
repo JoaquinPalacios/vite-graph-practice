@@ -1,5 +1,5 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getWindColor } from "@/utils/color-utils";
+import { getWindColor } from "@/utils/chart-utils";
 
 type SwellAxisTickProps = {
   x?: number;

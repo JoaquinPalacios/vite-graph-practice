@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { UnitPreferences } from "@/types";
 import React, { useState, useEffect } from "react";
 import { FaRuler, FaWind, FaThermometer, FaWater } from "react-icons/fa";

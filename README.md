@@ -1,54 +1,83 @@
-# React + TypeScript + Vite
+# Swellnet Graphs 🌊
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance React application for displaying weather and tide data using Vite and Recharts.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📊 Interactive charts for swell, tide, and weather data
+- 🎨 Smooth animations and transitions
+- 📱 Responsive design
+- ⚡ Optimized performance with code splitting
+- 🔄 Real-time data updates
+- 🎯 Type-safe with TypeScript
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
+- [React](https://react.dev/) - A JavaScript library for building user interfaces
+- [Recharts](https://recharts.org/) - Composable charting library built on React components
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Performance Optimizations
+
+The project implements several performance optimizations:
+
+- Code splitting for better initial load
+- Dynamic imports for chart components
+- Efficient bundle organization
+- CSS optimizations with Tailwind
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Preview production build
+pnpm preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
 ```
+src/
+├── assets/                    # Static assets
+├── components/
+│   ├── ChartsContainer.tsx       # Main container (Server Component)
+│   ├── ChartsContainerClient.tsx # Client-side container
+│   ├── ChartsWrapper.tsx         # Scroll and interaction handling
+│   ├── GraphButtons.tsx          # Navigation controls
+│   ├── UnitSelector.tsx          # Unit preference selector
+│   ├── SwellChart/               # Swell chart components
+│   ├── TideChart/                # Tide chart components
+│   ├── WeatherChart/             # Weather chart components
+│   └── ui/                       # Shared UI components
+├── data/                         # Data management
+├── lib/                          # Utility libraries
+├── types/                        # TypeScript type definitions
+├── utils/                        # Helper functions
+├── App.tsx                       # Main application component
+├── main.tsx                      # Application entry point
+└── index.css                     # Global styles
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📱 Reach out
+
+If you have any questions that are not covered here then contact mailto:joaquin@swellnet.com
+
+Happy Coding 🥳
