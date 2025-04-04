@@ -1,15 +1,5 @@
 import { Area, AreaChart, CartesianGrid, YAxis, XAxis } from "recharts";
 import { scaleTime } from "d3-scale";
-import { timeFormat } from "d3-time-format";
-import {
-  timeDay,
-  timeHour,
-  timeMinute,
-  timeMonth,
-  timeSecond,
-  timeWeek,
-  timeYear,
-} from "d3-time";
 
 import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
@@ -17,8 +7,15 @@ import { ChartContainer, ChartTooltip } from "../ui/chart";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { TideAreaDot } from "./TideAreaDot";
+import { multiFormat } from "@/lib/time-utils";
 
-// Previous tide data
+/**
+ * Tide data for the previous tide
+ * This needs to be fixed in the future when real data is fetched.
+ * We will need to somehow store the previous tide data
+ * and use that to calculate the height at midnight.
+ * @todo: Fix this
+ */
 const previousTide = {
   date: "2024-03-31",
   time: "9:54pm",
@@ -90,41 +87,6 @@ while (currentDate <= endDate) {
   currentDate.setDate(currentDate.getDate() + 1);
 }
 
-// Time formatting utilities
-const formatMillisecond = timeFormat(".%L"),
-  formatSecond = timeFormat(":%S"),
-  formatMinute = timeFormat("%I:%M"),
-  formatHour = timeFormat("%I %p"),
-  formatDay = timeFormat("%a %d"),
-  formatWeek = timeFormat("%b %d"),
-  formatMonth = timeFormat("%B"),
-  formatYear = timeFormat("%Y");
-
-function multiFormat(date: Date): string {
-  if (timeSecond(date) < date) {
-    return formatMillisecond(date);
-  }
-  if (timeMinute(date) < date) {
-    return formatSecond(date);
-  }
-  if (timeHour(date) < date) {
-    return formatMinute(date);
-  }
-  if (timeDay(date) < date) {
-    return formatHour(date);
-  }
-  if (timeMonth(date) < date) {
-    if (timeWeek(date) < date) {
-      return formatDay(date);
-    }
-    return formatWeek(date);
-  }
-  if (timeYear(date) < date) {
-    return formatMonth(date);
-  }
-  return formatYear(date);
-}
-
 const TideChart = () => {
   return (
     <ResponsiveContainer width={4848} height="100%">
@@ -145,8 +107,8 @@ const TideChart = () => {
             vertical={true}
             horizontal={true}
             verticalFill={[
-              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
               "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
             ]}
             y={0}
             height={200}
@@ -161,11 +123,11 @@ const TideChart = () => {
             type="number"
             scale={timeScale}
             domain={timeScale.domain().map((date) => date.valueOf())}
-            // domain={[startDate.getTime() + 1, endDate.getTime()]}
             ticks={dayTicks}
             tickFormatter={multiFormat}
             interval={"preserveStart"}
             allowDataOverflow
+            padding={{ left: 8 }}
           />
 
           {/* Legend XAxis */}
@@ -179,13 +141,14 @@ const TideChart = () => {
             type="number"
             scale={timeScale}
             domain={timeScale.domain().map((date) => date.valueOf())}
-            // domain={[startDate.getTime(), endDate.getTime()]}
             ticks={timeScale.ticks(5).map((date) => date.valueOf())}
             tickFormatter={multiFormat}
             textAnchor="middle"
             fontWeight={700}
             allowDataOverflow
             interval={"preserveStart"}
+            hide
+            padding={{ left: 8 }}
           />
 
           <ChartTooltip content={<TideTooltip />} />
