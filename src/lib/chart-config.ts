@@ -64,4 +64,7 @@ export const tideChartConfig = {
   time: {
     label: "time",
   },
-};
+  dateTime: {
+    label: "dateTime",
+  },
+} satisfies ChartConfig;

@@ -34,8 +34,6 @@ type WeatherBubbleProps = {
 const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!props.payload) return null;
 
-  console.log(props.payload);
-
   // Common wrapper for all icons to provide a larger hit area
   const IconWrapper = ({ children }: { children: React.ReactNode }) => (
     <g
