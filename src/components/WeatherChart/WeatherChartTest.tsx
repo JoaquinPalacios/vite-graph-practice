@@ -59,7 +59,7 @@ const WeatherChartTest = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-[calc(100%-5rem)] after:top-0 after:left-[4.25rem] after:border-y after:border-slate-300 after:pointer-events-none"
+      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-[calc(100%-5rem)] after:top-0 after:left-[4.5rem] after:border-y after:border-slate-300 after:pointer-events-none"
     >
       <ScatterChart
         accessibilityLayer
@@ -96,7 +96,7 @@ const WeatherChartTest = () => {
           tickFormatter={multiFormat}
           interval={"preserveStart"}
           allowDataOverflow
-          padding={{ left: 8 }}
+          padding={{ left: 12 }}
         />
 
         {/* Legend XAxis */}

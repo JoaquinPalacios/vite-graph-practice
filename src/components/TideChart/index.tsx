@@ -127,7 +127,7 @@ const TideChart = () => {
             tickFormatter={multiFormat}
             interval={"preserveStart"}
             allowDataOverflow
-            padding={{ left: 8 }}
+            padding={{ left: 12 }}
           />
 
           {/* Legend XAxis */}
@@ -148,7 +148,7 @@ const TideChart = () => {
             allowDataOverflow
             interval={"preserveStart"}
             hide
-            padding={{ left: 8 }}
+            padding={{ left: 12 }}
           />
 
           <ChartTooltip content={<TideTooltip />} />
