@@ -25,22 +25,20 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
       ".recharts-yAxis"
     ) as NodeListOf<HTMLElement>;
 
+    const scrollLeft = (e.target as HTMLElement).scrollLeft;
+
     axes.forEach((axis) => {
       if (axis) {
-        axis.style.transform = `translateX(${
-          (e.target as HTMLElement).scrollLeft
-        }px)`;
+        axis.style.transform = `translateX(${scrollLeft}px)`;
         axis.style.opacity = "0";
         setTimeout(() => {
           axis.style.opacity = "1";
         }, 350);
 
-        if (!axis.querySelector(".y-axis-rect-left")) {
+        let rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
+        if (!rect) {
           // Create background rectangle
-          const rect = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "rect"
-          );
+          rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
           // Set rectangle attributes
           rect.setAttribute("x", "0");
@@ -53,6 +51,9 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
           // Insert rectangle as first child of the axis
           axis.insertBefore(rect, axis.firstChild);
         }
+
+        // Set fill-opacity based on scroll position
+        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
       }
     });
   };

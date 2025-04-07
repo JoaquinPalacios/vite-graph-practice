@@ -20,10 +20,10 @@ const GraphButtons = ({
   isAtStart: boolean;
   isAtEnd: boolean;
 }) => {
+  /**
+   * Scroll the graph by a given number of days
+   */
   const scrollByDay = (direction: "left" | "right", multiplier = 1) => {
-    /**
-     * Get the container element of the graph. This is the element that will be scrolled.
-     */
     const container = document.querySelector(
       ".chart-scroll-container"
     ) as HTMLElement;
@@ -45,7 +45,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
-            "bg-slate-600 rounded-tl-lg p-2 cursor-pointer absolute left-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-2 cursor-pointer absolute left-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtStart}
@@ -56,7 +56,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", 4)}
           className={cn(
-            "bg-slate-600 rounded-bl-lg p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtStart}
@@ -69,7 +69,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(
-            "bg-slate-600 rounded-tr-lg p-2 cursor-pointer absolute right-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-2 cursor-pointer absolute right-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtEnd}
@@ -80,7 +80,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", 4)}
           className={cn(
-            "bg-slate-600 rounded-br-lg p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtEnd}
