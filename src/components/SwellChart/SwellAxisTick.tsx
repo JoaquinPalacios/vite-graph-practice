@@ -18,8 +18,14 @@ const SwellAxisTick = ({
 }: SwellAxisTickProps) => {
   const color = getWindColor(windSpeed);
 
+  // console.log({ payload, x });
+
   return (
-    <g className="flex flex-col-reverse items-center justify-center">
+    <g
+      className="flex flex-col-reverse items-center justify-center"
+      // transform={`translate(auto, 0)`}
+      textAnchor="middle"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"

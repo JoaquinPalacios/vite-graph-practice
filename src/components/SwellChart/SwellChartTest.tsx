@@ -21,6 +21,7 @@ import SwellLabel from "./SwellLabel";
 import SwellAxisTick from "./SwellAxisTick";
 import { multiFormat, processTimeData } from "@/lib/time-utils";
 import { scaleTime } from "d3-scale";
+import WindSpeedTick from "./WindSpeedTick";
 
 const convertTo24Hour = (time: string) => {
   const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
@@ -69,6 +70,30 @@ while (currentDate <= endDateObj) {
   currentDate.setDate(currentDate.getDate() + 1);
 }
 
+const generateHourlyTicks = (
+  startDate: Date,
+  endDate: Date,
+  hours: number[] = [0, 3, 6, 9, 12, 15, 18, 21]
+) => {
+  const ticks: number[] = [];
+  const currentDate = new Date(startDate);
+  const lastValidTimestamp = endDate.getTime();
+
+  while (currentDate <= endDate) {
+    hours.forEach((hour) => {
+      const date = new Date(currentDate);
+      date.setHours(hour, 0, 0, 0);
+      const timestamp = date.getTime();
+      if (timestamp <= lastValidTimestamp) {
+        ticks.push(timestamp);
+      }
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return ticks;
+};
+
 const SwellChartTest = ({
   unitPreferences,
 }: {
@@ -84,11 +109,9 @@ const SwellChartTest = ({
           accessibilityLayer
           data={processedData}
           margin={{
-            left: 0,
-            right: 12,
             bottom: 12,
           }}
-          // syncId="swellnet"
+          barCategoryGap={1}
         >
           <CartesianGrid
             vertical={true}
@@ -112,9 +135,8 @@ const SwellChartTest = ({
             domain={timeScale.domain().map((date) => date.valueOf())}
             ticks={dayTicks}
             tickFormatter={multiFormat}
-            interval={"preserveStart"}
+            interval="preserveStart"
             allowDataOverflow
-            // padding={{ left: 12 }}
           />
 
           {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
@@ -147,31 +169,14 @@ const SwellChartTest = ({
             dataKey="timestamp"
             tickLine={false}
             axisLine={false}
-            // tickMargin={0}
             type="number"
             scale={timeScale}
             domain={timeScale.domain().map((date) => date.valueOf())}
-            ticks={(() => {
-              const ticks: number[] = [];
-              const currentDate = new Date(startDateObj);
-              const hours = [0, 6, 12, 18];
-              const lastValidTimestamp = endTimestamp; // Use the actual last data point timestamp
-
-              while (currentDate <= endDateObj) {
-                hours.forEach((hour) => {
-                  const date = new Date(currentDate);
-                  date.setHours(hour, 0, 0, 0);
-                  const timestamp = date.getTime();
-                  // Only add the tick if it's before or equal to our last data point
-                  if (timestamp <= lastValidTimestamp) {
-                    ticks.push(timestamp);
-                  }
-                });
-                currentDate.setDate(currentDate.getDate() + 1);
-              }
-
-              return ticks;
-            })()}
+            ticks={generateHourlyTicks(
+              startDateObj,
+              endDateObj,
+              [0, 6, 12, 18]
+            )}
             tickFormatter={(timestamp) => {
               const date = new Date(timestamp);
               const hours = date.getHours();
@@ -195,50 +200,72 @@ const SwellChartTest = ({
           {/* This XAxis is the one that shows the wind direction */}
           <XAxis
             xAxisId={3}
-            dataKey="windDirection"
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
             tickMargin={0}
-            minTickGap={0}
-            orientation="bottom"
-            tick={({ payload, x, y, index }) => {
-              const data = chartData[index];
-
+            tick={({
+              x,
+              y,
+              index,
+            }: {
+              x: number;
+              y: number;
+              index: number;
+            }) => {
+              const data = processedData[index];
+              if (!data) {
+                return <g />;
+              }
               return (
                 <SwellAxisTick
-                  payload={payload}
-                  windSpeed={data?.windSpeed_knots || 0}
+                  payload={{ value: data.windDirection }}
+                  windSpeed={data.windSpeed_knots || 0}
                   x={x}
                   y={y}
                 />
               );
             }}
             interval={0}
-            padding={{
-              left: 0,
-              right: 0,
-            }}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={generateHourlyTicks(startDateObj, endDateObj)}
+            scale={timeScale}
+            type="number"
+            padding={{ left: 12 }}
           />
 
           {/* This XAxis is the one that shows the wind speed */}
           <XAxis
             xAxisId={4}
-            dataKey={
-              unitPreferences.windSpeed === "knots"
-                ? "windSpeed_knots"
-                : "windSpeed_kmh"
-            }
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
-            tickMargin={10}
-            fontSize={12}
-            minTickGap={0}
-            interval={0}
-            padding={{
-              left: 0,
-              right: 0,
-            }}
+            tickMargin={16}
             stroke="#666"
+            tick={({ x, y, index }) => {
+              const data = processedData[index];
+              if (!data) {
+                return <g />;
+              }
+              return (
+                <WindSpeedTick
+                  x={x}
+                  y={y}
+                  payload={{
+                    value:
+                      unitPreferences.windSpeed === "knots"
+                        ? data.windSpeed_knots
+                        : data.windSpeed_kmh,
+                  }}
+                />
+              );
+            }}
+            interval={0}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={generateHourlyTicks(startDateObj, endDateObj)}
+            scale={timeScale}
+            type="number"
+            padding={{ left: 12 }}
           />
 
           <Bar
@@ -252,8 +279,6 @@ const SwellChartTest = ({
             activeBar={{
               fill: "#00b4c6",
             }}
-            width={28}
-            barSize={36}
             stackId="a"
             animationEasing="linear"
             animationDuration={220}
@@ -360,15 +385,15 @@ const SwellChartTest = ({
                   <GiBigWave
                     className="w-6 h-6"
                     x={value.x - 8}
-                    y={value.y - 24}
-                    size={24}
+                    y={value.y - 20}
+                    size={20}
                     color="#666"
                   />
                   <LuWind
                     className="w-4 h-4"
                     x={value.x - 8}
                     y={value.y + 12}
-                    size={24}
+                    size={20}
                     color="#666"
                   />
                   {unitPreferences.windSpeed === "knots" ? (
@@ -377,6 +402,7 @@ const SwellChartTest = ({
                       y={value.y + 52}
                       dy={1}
                       textAnchor="end"
+                      fontSize={10}
                     >
                       kts
                     </text>
@@ -386,6 +412,7 @@ const SwellChartTest = ({
                       y={value.y + 52}
                       dy={1}
                       textAnchor="end"
+                      fontSize={10}
                     >
                       km/h
                     </text>

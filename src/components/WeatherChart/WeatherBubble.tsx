@@ -41,12 +41,7 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
       className="hover:[&>svg]:fill-gray-800 hover:[&>text]:fill-gray-800 [&>svg]:transition-colors"
     >
       {/* Invisible hit area */}
-      <rect
-        width="24"
-        height="40"
-        fill="transparent"
-        className="cursor-pointer"
-      />
+      <rect width="24" height="40" fill="transparent" />
       {children}
     </g>
   );

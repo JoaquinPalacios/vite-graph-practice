@@ -99,7 +99,7 @@ const TideChart = () => {
           data={processedData}
           margin={{
             left: 0,
-            right: 12,
+            right: 0,
             bottom: 16,
           }}
         >

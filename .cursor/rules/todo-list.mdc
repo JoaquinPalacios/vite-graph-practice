@@ -1,0 +1,20 @@
+---
+description: A todo list for tracking tasks and questions that need to be addressed
+globs: .cursor/rules/todo-list.mdc
+---
+
+# Todo List
+
+## Active Tasks
+- [ ] Review and respond to user questions
+- [ ] Track ongoing conversations
+- [ ] Maintain context between interactions
+
+## Completed Tasks
+- [x] Create .cursor/rules directory
+- [x] Initialize todo-list.mdc file
+
+## Notes
+- This file will be updated as new tasks are added or completed
+- Tasks can be moved between Active and Completed sections
+- Use checkboxes [ ] for active tasks and [x] for completed ones 
