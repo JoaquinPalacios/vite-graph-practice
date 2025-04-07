@@ -27,14 +27,14 @@ const GraphButtons = ({
     <>
       <button
         onClick={() => scrollByDay("left")}
-        className="bg-slate-600 rounded-l-lg p-2 cursor-pointer absolute left-0 top-1/2 -translate-y-1/2 h-full z-10 transition-opacity duration-300 disabled:opacity-0 disabled:cursor-auto"
+        className="bg-slate-600 rounded-l-lg p-2 cursor-pointer absolute left-0 top-1/2 -translate-y-1/2 h-[calc(100%+0.25rem)] z-10 transition-opacity duration-300 disabled:opacity-0 disabled:cursor-auto"
         disabled={isAtStart}
       >
         <AiOutlineLeft color="white" />
       </button>
       <button
         onClick={() => scrollByDay("right")}
-        className="bg-slate-600 rounded-r-lg p-2 cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 h-full z-10 transition-opacity duration-300 disabled:opacity-0 disabled:cursor-auto"
+        className="bg-slate-600 rounded-r-lg p-2 cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 h-[calc(100%+0.25rem)] z-10 transition-opacity duration-300 disabled:opacity-0 disabled:cursor-auto"
         disabled={isAtEnd}
       >
         <AiOutlineRight color="white" />

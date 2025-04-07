@@ -84,3 +84,27 @@ export function processTimeData<T extends { dateTime: string }>(data: T[]) {
     dayTicks,
   };
 }
+
+export const generateHourlyTicks = (
+  startDate: Date,
+  endDate: Date,
+  hours: number[] = [0, 3, 6, 9, 12, 15, 18, 21]
+) => {
+  const ticks: number[] = [];
+  const currentDate = new Date(startDate);
+  const lastValidTimestamp = endDate.getTime();
+
+  while (currentDate <= endDate) {
+    hours.forEach((hour) => {
+      const date = new Date(currentDate);
+      date.setHours(hour, 0, 0, 0);
+      const timestamp = date.getTime();
+      if (timestamp <= lastValidTimestamp) {
+        ticks.push(timestamp);
+      }
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return ticks;
+};

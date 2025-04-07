@@ -19,6 +19,60 @@ import { formatDateTick } from "@/utils/chart-utils";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellLabel from "./SwellLabel";
 import SwellAxisTick from "./SwellAxisTick";
+import {
+  generateHourlyTicks,
+  multiFormat,
+  processTimeData,
+} from "@/lib/time-utils";
+import { scaleTime } from "d3-scale";
+import WindSpeedTick from "./WindSpeedTick";
+
+const convertTo24Hour = (time: string) => {
+  const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
+  if (!hours || !period) return time;
+  let hour = parseInt(hours);
+  if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
+  if (period.toLowerCase() === "am" && hour === 12) hour = 0;
+  return `${hour.toString().padStart(2, "0")}:00`;
+};
+
+// Process the weather data
+const { processedData, dayTicks } = processTimeData(
+  chartData.map((item) => ({
+    ...item,
+    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
+    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
+  }))
+);
+
+// Get the start and end timestamps
+const timeValues = processedData.map((row) => row.timestamp);
+const startTimestamp = Math.min(...timeValues);
+const endTimestamp = Math.max(...timeValues);
+
+// Create Date objects for the start and end of the day
+const startDateObj = new Date(startTimestamp);
+const endDateObj = new Date(endTimestamp);
+
+// Set start date to beginning of day (00:00:00)
+startDateObj.setDate(startDateObj.getDate());
+startDateObj.setHours(0, 0, 0, 0);
+
+// Set end date to beginning of next day (00:00:00)
+endDateObj.setDate(endDateObj.getDate() + 1);
+endDateObj.setHours(0, 0, 0, 0);
+
+// Create time scale with numeric timestamps
+const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
+
+// Generate ticks for each day
+// const dayTicks: number[] = [];
+let currentDate = new Date(startDateObj);
+while (currentDate <= endDateObj) {
+  dayTicks.push(currentDate.getTime());
+  currentDate = new Date(currentDate);
+  currentDate.setDate(currentDate.getDate() + 1);
+}
 
 const SwellChart = ({
   unitPreferences,
@@ -33,13 +87,11 @@ const SwellChart = ({
       >
         <BarChart
           accessibilityLayer
-          data={chartData}
+          data={processedData}
           margin={{
-            left: 0,
-            right: 12,
             bottom: 12,
           }}
-          // syncId="swellnet"
+          barCategoryGap={1}
         >
           <CartesianGrid
             vertical={true}
@@ -54,15 +106,36 @@ const SwellChart = ({
           />
 
           {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-          <XAxis xAxisId={0} dataKey="date" hide interval={7} />
+          <XAxis
+            xAxisId={0}
+            dataKey="timestamp"
+            hide
+            type="number"
+            scale={timeScale}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={dayTicks}
+            tickFormatter={multiFormat}
+            interval="preserveStart"
+            allowDataOverflow
+          />
 
-          {/* Duplicate XAxis for the legend. This is the legend shown in the chart */}
+          {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
           <XAxis
             xAxisId={2}
-            dataKey="date"
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
-            tickMargin={0}
+            type="number"
+            scale={timeScale}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={timeScale.ticks(16).map((date) => {
+              const centeredDate = new Date(date);
+              centeredDate.setHours(12, 0, 0, 0); // Set to noon to center the date
+              return centeredDate.getTime();
+            })}
+            padding={{ left: 12 }}
+            allowDataOverflow
+            interval={"preserveStart"}
             allowDuplicatedCategory={false}
             orientation="top"
             tickFormatter={formatDateTick}
@@ -73,13 +146,25 @@ const SwellChart = ({
           {/* This XAxis is the one that shows the time of the day */}
           <XAxis
             xAxisId={1}
-            dataKey="time"
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
-            tickMargin={0}
-            minTickGap={16}
+            type="number"
+            scale={timeScale}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={generateHourlyTicks(
+              startDateObj,
+              endDateObj,
+              [0, 6, 12, 18]
+            )}
+            tickFormatter={(timestamp) => {
+              const date = new Date(timestamp);
+              const hours = date.getHours();
+              const period = hours >= 12 ? "pm" : "am";
+              const hour = hours % 12 || 12;
+              return `${hour}${period}`;
+            }}
             orientation="top"
-            interval={"preserveStart"}
           />
 
           <ChartTooltip
@@ -95,50 +180,71 @@ const SwellChart = ({
           {/* This XAxis is the one that shows the wind direction */}
           <XAxis
             xAxisId={3}
-            dataKey="windDirection"
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
             tickMargin={0}
-            minTickGap={0}
-            orientation="bottom"
-            tick={({ payload, x, y, index }) => {
-              const data = chartData[index];
-
+            tick={({
+              x,
+              y,
+              index,
+            }: {
+              x: number;
+              y: number;
+              index: number;
+            }) => {
+              const data = processedData[index];
+              if (!data) {
+                return <g />;
+              }
               return (
                 <SwellAxisTick
-                  payload={payload}
-                  windSpeed={data?.windSpeed_knots || 0}
+                  payload={{ value: data.windDirection }}
+                  windSpeed={data.windSpeed_knots || 0}
                   x={x}
                   y={y}
                 />
               );
             }}
             interval={0}
-            padding={{
-              left: 0,
-              right: 0,
-            }}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={generateHourlyTicks(startDateObj, endDateObj)}
+            scale={timeScale}
+            type="number"
+            padding={{ left: 12 }}
           />
 
           {/* This XAxis is the one that shows the wind speed */}
           <XAxis
             xAxisId={4}
-            dataKey={
-              unitPreferences.windSpeed === "knots"
-                ? "windSpeed_knots"
-                : "windSpeed_kmh"
-            }
+            dataKey="timestamp"
             tickLine={false}
             axisLine={false}
-            tickMargin={10}
-            fontSize={12}
-            minTickGap={0}
-            interval={0}
-            padding={{
-              left: 0,
-              right: 0,
+            tickMargin={16}
+            tick={({ x, y, index }) => {
+              const data = processedData[index];
+              if (!data) {
+                return <g />;
+              }
+              return (
+                <WindSpeedTick
+                  x={x}
+                  y={y}
+                  payload={{
+                    value:
+                      unitPreferences.windSpeed === "knots"
+                        ? data.windSpeed_knots
+                        : data.windSpeed_kmh,
+                  }}
+                />
+              );
             }}
-            stroke="#666"
+            interval={0}
+            domain={timeScale.domain().map((date) => date.valueOf())}
+            ticks={generateHourlyTicks(startDateObj, endDateObj)}
+            scale={timeScale}
+            type="number"
+            padding={{ left: 12 }}
           />
 
           <Bar
@@ -152,8 +258,6 @@ const SwellChart = ({
             activeBar={{
               fill: "#00b4c6",
             }}
-            width={28}
-            barSize={36}
             stackId="a"
             animationEasing="linear"
             animationDuration={220}
@@ -260,15 +364,15 @@ const SwellChart = ({
                   <GiBigWave
                     className="w-6 h-6"
                     x={value.x - 8}
-                    y={value.y - 24}
-                    size={24}
+                    y={value.y - 20}
+                    size={20}
                     color="#666"
                   />
                   <LuWind
                     className="w-4 h-4"
                     x={value.x - 8}
                     y={value.y + 12}
-                    size={24}
+                    size={20}
                     color="#666"
                   />
                   {unitPreferences.windSpeed === "knots" ? (
@@ -277,6 +381,7 @@ const SwellChart = ({
                       y={value.y + 52}
                       dy={1}
                       textAnchor="end"
+                      fontSize={10}
                     >
                       kts
                     </text>
@@ -286,6 +391,7 @@ const SwellChart = ({
                       y={value.y + 52}
                       dy={1}
                       textAnchor="end"
+                      fontSize={10}
                     >
                       km/h
                     </text>

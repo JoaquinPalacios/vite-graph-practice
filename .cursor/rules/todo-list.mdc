@@ -1,6 +1,7 @@
 ---
 description: A todo list for tracking tasks and questions that need to be addressed
 globs: .cursor/rules/todo-list.mdc
+alwaysApply: false
 ---
 
 # Todo List
