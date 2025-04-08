@@ -9,6 +9,8 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const lastScrollPos = useRef(0);
+  const lastScrollTime = useRef(Date.now());
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -58,7 +60,11 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollLeft = (e.target as HTMLElement).scrollLeft;
+    const currentTime = Date.now();
+    const currentPos = (e.target as HTMLElement).scrollLeft;
+    const timeDiff = currentTime - lastScrollTime.current;
+    const scrollDiff = Math.abs(currentPos - lastScrollPos.current);
+
     checkScrollLimits(e);
 
     // Clear any existing timeout
@@ -66,16 +72,21 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
       clearTimeout(scrollTimeout.current);
     }
 
-    // For non-mobile, update immediately
-    if (!isMobile && !isLandscapeMobile) {
-      updateYAxisPosition(scrollLeft);
-      return;
+    // For non-mobile or slow scrolling, update immediately
+    if (
+      (!isMobile && !isLandscapeMobile) ||
+      (timeDiff > 50 && scrollDiff < 5)
+    ) {
+      updateYAxisPosition(currentPos);
+    } else {
+      // For mobile with momentum scrolling, wait longer
+      scrollTimeout.current = setTimeout(() => {
+        updateYAxisPosition(currentPos);
+      }, 300);
     }
 
-    // For mobile, wait for scroll to finish
-    scrollTimeout.current = setTimeout(() => {
-      updateYAxisPosition(scrollLeft);
-    }, 150); // Adjust this value if needed
+    lastScrollPos.current = currentPos;
+    lastScrollTime.current = currentTime;
   };
 
   return (
