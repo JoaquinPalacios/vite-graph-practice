@@ -65,7 +65,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
-            "bg-slate-600 p-2 cursor-pointer absolute left-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute left-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtStart}
@@ -76,7 +76,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", getScrollMultiplier())}
           className={cn(
-            "bg-slate-600 p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtStart}
@@ -89,7 +89,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(
-            "bg-slate-600 p-2 cursor-pointer absolute right-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute right-0 top-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtEnd}
@@ -100,7 +100,7 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", getScrollMultiplier())}
           className={cn(
-            "bg-slate-600 p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
+            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtEnd}

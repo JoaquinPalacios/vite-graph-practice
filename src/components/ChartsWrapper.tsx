@@ -1,5 +1,6 @@
 "use client";
 
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 import GraphButtons from "./GraphButtons";
 import { useState } from "react";
 
@@ -7,6 +8,8 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   // Add state to track scroll position and limits
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
+
+  const { isMobile } = useScreenDetector();
 
   // Add function to check scroll limits
   const checkScrollLimits = (e: React.UIEvent<HTMLDivElement>) => {
@@ -43,7 +46,7 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
           // Set rectangle attributes
           rect.setAttribute("x", "0");
           rect.setAttribute("y", "0");
-          rect.setAttribute("width", "64");
+          rect.setAttribute("width", isMobile ? "56" : "64");
           rect.setAttribute("height", "320");
           rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
           rect.setAttribute("class", "y-axis-rect-left");

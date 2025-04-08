@@ -10,7 +10,7 @@ const ChartsContainer = ({
   unitPreferences: UnitPreferences;
 }) => {
   return (
-    <div className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-4 py-0 rounded-lg border overflow-hidden">
+    <div className="w-full relative bg-slate-100 border-slate-700 max-w-[1340px] h-auto mx-auto px-3 sm:px-4 py-0 rounded-lg border overflow-hidden">
       <ChartsWrapper>
         <SwellChart unitPreferences={unitPreferences} />
 
