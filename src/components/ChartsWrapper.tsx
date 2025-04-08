@@ -2,12 +2,13 @@
 
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import GraphButtons from "./GraphButtons";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   // Add state to track scroll position and limits
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -22,22 +23,14 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
     setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10); // -10 for some buffer
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    checkScrollLimits(e);
+  const updateYAxisPosition = (scrollLeft: number) => {
     const axes = document.querySelectorAll(
       ".recharts-yAxis"
     ) as NodeListOf<HTMLElement>;
 
-    const scrollLeft = (e.target as HTMLElement).scrollLeft;
-
     axes.forEach((axis) => {
       if (axis) {
         axis.style.transform = `translateX(${scrollLeft}px)`;
-        axis.style.opacity = "0";
-        setTimeout(() => {
-          axis.style.opacity = "1";
-        }, 350);
-
         let rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
         if (!rect) {
           // Create background rectangle
@@ -62,6 +55,27 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
         rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
       }
     });
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollLeft = (e.target as HTMLElement).scrollLeft;
+    checkScrollLimits(e);
+
+    // Clear any existing timeout
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+
+    // For non-mobile, update immediately
+    if (!isMobile && !isLandscapeMobile) {
+      updateYAxisPosition(scrollLeft);
+      return;
+    }
+
+    // For mobile, wait for scroll to finish
+    scrollTimeout.current = setTimeout(() => {
+      updateYAxisPosition(scrollLeft);
+    }, 150); // Adjust this value if needed
   };
 
   return (
