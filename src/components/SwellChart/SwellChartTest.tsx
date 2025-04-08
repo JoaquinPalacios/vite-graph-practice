@@ -1,0 +1,165 @@
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
+import chartData from "@/data";
+import { chartConfig } from "@/lib/chart-config";
+import { UnitPreferences } from "@/types";
+import { generateTicks } from "@/utils/chart-utils";
+import { GiBigWave } from "react-icons/gi";
+import { LuWind } from "react-icons/lu";
+import { convertTo24Hour, processTimeData } from "@/lib/time-utils";
+import { useScreenDetector } from "@/hooks/useScreenDetector";
+
+// Process the weather data
+const { processedData } = processTimeData(
+  chartData.map((item) => ({
+    ...item,
+    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
+    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
+  }))
+);
+
+const SwellChartTest = ({
+  unitPreferences,
+}: {
+  unitPreferences: UnitPreferences;
+}) => {
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  return (
+    <ResponsiveContainer
+      width={60}
+      height="100%"
+      className="mb-0 absolute top-0 left-0 md:left-4 z-10"
+    >
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-auto h-[20rem] w-full"
+      >
+        <BarChart
+          data={processedData}
+          margin={{
+            bottom: 12,
+          }}
+          width={60}
+        >
+          <CartesianGrid
+            vertical={true}
+            horizontal={true}
+            y={0}
+            height={320}
+            syncWithTicks
+          />
+
+          {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
+          <XAxis xAxisId={0} dataKey="timestamp" hide />
+
+          {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
+          <XAxis xAxisId={2} dataKey="timestamp" orientation="top" />
+
+          {/* This XAxis is the one that shows the time of the day */}
+          <XAxis xAxisId={1} dataKey="timestamp" orientation="top" />
+
+          {/* This XAxis is the one that shows the wind direction */}
+          <XAxis xAxisId={3} dataKey="timestamp" />
+
+          {/* This XAxis is the one that shows the wind speed */}
+          <XAxis xAxisId={4} dataKey="timestamp" />
+
+          <Bar
+            dataKey={(d) =>
+              unitPreferences.waveHeight === "ft"
+                ? d.waveHeight_ft
+                : d.waveHeight_m
+            }
+            stackId="a"
+          />
+
+          <Bar
+            dataKey={(d) =>
+              unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
+                ? d.faceWaveHeight_ft - d.waveHeight_ft
+                : null
+            }
+            stackId="a"
+          />
+
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+            minTickGap={0}
+            unit={unitPreferences.waveHeight}
+            padding={{
+              top: 20,
+            }}
+            interval="preserveStart"
+            overflow="visible"
+            type="number"
+            domain={[0, "dataMax"]}
+            allowDecimals={false}
+            ticks={generateTicks(
+              unitPreferences.waveHeight === "ft"
+                ? Math.max(...chartData.map((d) => d.waveHeight_ft))
+                : Math.max(...chartData.map((d) => d.waveHeight_m)),
+              unitPreferences.waveHeight
+            )}
+            tick={(value) => {
+              return value.index === 0 ? (
+                <g transform="translate(-10, 0)">
+                  <GiBigWave
+                    className="w-6 h-6"
+                    x={value.x - 8}
+                    y={value.y - 20}
+                    size={20}
+                    color="#666"
+                  />
+                  <LuWind
+                    className="w-4 h-4"
+                    x={value.x - 8}
+                    y={value.y + 12}
+                    size={20}
+                    color="#666"
+                  />
+                  {unitPreferences.windSpeed === "knots" ? (
+                    <text
+                      x={value.x + 12}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                      fontSize={10}
+                    >
+                      kts
+                    </text>
+                  ) : (
+                    <text
+                      x={value.x + 12}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                      fontSize={10}
+                    >
+                      km/h
+                    </text>
+                  )}
+                </g>
+              ) : (
+                <text x={value.x} y={value.y} dy={1} textAnchor="end">
+                  {value.payload.value}
+                  {unitPreferences.waveHeight}
+                </text>
+              );
+            }}
+          />
+        </BarChart>
+      </ChartContainer>
+    </ResponsiveContainer>
+  );
+};
+
+export default SwellChartTest;

@@ -70,6 +70,7 @@ const WeatherChart = () => {
           bottom: 16,
           top: 0,
         }}
+        className="[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}

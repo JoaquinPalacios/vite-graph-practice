@@ -13,8 +13,6 @@ import RenderCustomizedLabel from "./SwellLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { generateTicks } from "@/utils/chart-utils";
-import { GiBigWave } from "react-icons/gi";
-import { LuWind } from "react-icons/lu";
 import { formatDateTick } from "@/utils/chart-utils";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellLabel from "./SwellLabel";
@@ -349,6 +347,8 @@ const SwellChart = ({
             padding={{
               top: 20,
             }}
+            opacity={0}
+            // width={0}
             interval="preserveStart"
             overflow="visible"
             type="number"
@@ -360,51 +360,8 @@ const SwellChart = ({
                 : Math.max(...chartData.map((d) => d.waveHeight_m)),
               unitPreferences.waveHeight
             )}
-            tick={(value) => {
-              return value.index === 0 ? (
-                <g transform="translate(-10, 0)">
-                  <GiBigWave
-                    className="w-6 h-6"
-                    x={value.x - 8}
-                    y={value.y - 20}
-                    size={20}
-                    color="#666"
-                  />
-                  <LuWind
-                    className="w-4 h-4"
-                    x={value.x - 8}
-                    y={value.y + 12}
-                    size={20}
-                    color="#666"
-                  />
-                  {unitPreferences.windSpeed === "knots" ? (
-                    <text
-                      x={value.x + 12}
-                      y={value.y + 52}
-                      dy={1}
-                      textAnchor="end"
-                      fontSize={10}
-                    >
-                      kts
-                    </text>
-                  ) : (
-                    <text
-                      x={value.x + 12}
-                      y={value.y + 52}
-                      dy={1}
-                      textAnchor="end"
-                      fontSize={10}
-                    >
-                      km/h
-                    </text>
-                  )}
-                </g>
-              ) : (
-                <text x={value.x} y={value.y} dy={1} textAnchor="end">
-                  {value.payload.value}
-                  {unitPreferences.waveHeight}
-                </text>
-              );
+            tick={() => {
+              return <text></text>;
             }}
             className="transition-opacity ease-in-out duration-200"
           />
