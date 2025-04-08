@@ -26,6 +26,7 @@ import {
 } from "@/lib/time-utils";
 import { scaleTime } from "d3-scale";
 import WindSpeedTick from "./WindSpeedTick";
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 
 const convertTo24Hour = (time: string) => {
   const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
@@ -79,6 +80,7 @@ const SwellChart = ({
 }: {
   unitPreferences: UnitPreferences;
 }) => {
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
   return (
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
@@ -341,7 +343,7 @@ const SwellChart = ({
           <YAxis
             tickLine={false}
             axisLine={false}
-            tickMargin={8}
+            tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
             minTickGap={0}
             unit={unitPreferences.waveHeight}
             padding={{

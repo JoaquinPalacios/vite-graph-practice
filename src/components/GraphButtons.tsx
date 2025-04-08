@@ -61,7 +61,7 @@ const GraphButtons = ({
 
   return (
     <>
-      <div className="flex flex-col items-center divide-y-2 divide-slate-200">
+      <div className="hidden md:flex flex-col items-center divide-y-2 divide-slate-200">
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
@@ -85,7 +85,7 @@ const GraphButtons = ({
           <AiOutlineDoubleLeft color="white" size={18} />
         </button>
       </div>
-      <div className="flex flex-col items-center divide-y-2 divide-slate-200">
+      <div className="hidden md:flex flex-col items-center divide-y-2 divide-slate-200">
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(

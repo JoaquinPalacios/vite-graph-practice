@@ -9,7 +9,7 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
 
-  const { isMobile } = useScreenDetector();
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   // Add function to check scroll limits
   const checkScrollLimits = (e: React.UIEvent<HTMLDivElement>) => {
@@ -46,7 +46,10 @@ const ChartsWrapper = ({ children }: { children: React.ReactNode }) => {
           // Set rectangle attributes
           rect.setAttribute("x", "0");
           rect.setAttribute("y", "0");
-          rect.setAttribute("width", isMobile ? "56" : "64");
+          rect.setAttribute(
+            "width",
+            isLandscapeMobile || isMobile ? "48" : "64"
+          );
           rect.setAttribute("height", "320");
           rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
           rect.setAttribute("class", "y-axis-rect-left");
