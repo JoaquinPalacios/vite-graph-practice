@@ -1,3 +1,4 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { cn } from "@/utils/utils";
 import {
   AiOutlineLeft,
@@ -20,6 +21,25 @@ const GraphButtons = ({
   isAtStart: boolean;
   isAtEnd: boolean;
 }) => {
+  const { isDesktop, isLargeDesktop, isExtraLargeDesktop } =
+    useScreenDetector();
+
+  /**
+   * Get the scroll multiplier based on screen size
+   */
+  const getScrollMultiplier = () => {
+    switch (true) {
+      case isExtraLargeDesktop:
+        return 4;
+      case isLargeDesktop:
+        return 3;
+      case isDesktop:
+        return 2;
+      default:
+        return 3;
+    }
+  };
+
   /**
    * Scroll the graph by a given number of days
    */
@@ -54,13 +74,13 @@ const GraphButtons = ({
           <AiOutlineLeft color="white" size={18} />
         </button>
         <button
-          onClick={() => scrollByDay("left", 4)}
+          onClick={() => scrollByDay("left", getScrollMultiplier())}
           className={cn(
             "bg-slate-600 p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtStart}
-          aria-label="Scroll left four days"
+          aria-label="Scroll left multiple days"
         >
           <AiOutlineDoubleLeft color="white" size={18} />
         </button>
@@ -78,13 +98,13 @@ const GraphButtons = ({
           <AiOutlineRight color="white" size={18} />
         </button>
         <button
-          onClick={() => scrollByDay("right", 4)}
+          onClick={() => scrollByDay("right", getScrollMultiplier())}
           className={cn(
             "bg-slate-600 p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-10 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
             "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
           )}
           disabled={isAtEnd}
-          aria-label="Scroll right four days"
+          aria-label="Scroll right multiple days"
         >
           <AiOutlineDoubleRight color="white" size={18} />
         </button>
