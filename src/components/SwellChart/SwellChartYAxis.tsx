@@ -25,7 +25,7 @@ const { processedData } = processTimeData(
   }))
 );
 
-const SwellChartTest = ({
+const SwellChartYAxis = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
@@ -162,4 +162,4 @@ const SwellChartTest = ({
   );
 };
 
-export default SwellChartTest;
+export default SwellChartYAxis;
