@@ -6,33 +6,18 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  XAxisProps,
-  YAxisProps,
-  CartesianGridProps,
-  TooltipProps,
 } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
-import {
-  baseChartXAxisProps,
-  generateTicks,
-  timeScale,
-  dayTicks,
-  processedData,
-  startDateObj,
-  endDateObj,
-} from "@/utils/chart-utils";
-import { formatDateTick } from "@/utils/chart-utils";
-import { SwellTooltip } from "./SwellTooltip";
+import { generateTicks, processedData } from "@/utils/chart-utils";
 import SwellLabel from "./SwellLabel";
-import SwellAxisTick from "./SwellAxisTick";
-import { generateHourlyTicks, multiFormat } from "@/lib/time-utils";
-import WindSpeedTick from "./WindSpeedTick";
+import { chartArgs } from "./ChartArgs";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { CategoricalChartProps } from "recharts/types/chart/generateCategoricalChart";
+import { SwellTooltip } from "./SwellTooltip";
+import WindSpeedTick from "./WindSpeedTick";
 
 const SwellChart = ({
   unitPreferences,
@@ -41,90 +26,37 @@ const SwellChart = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
-  /**
-   * XAxis args for the background stripes
-   */
-  const xAxisArgsBackground: XAxisProps = {
-    ...baseChartXAxisProps,
-    xAxisId: 0,
-    hide: true,
-    ticks: dayTicks,
-    tickFormatter: multiFormat,
-  };
+  // Get all static args
+  const {
+    xAxisArgsBackground,
+    xAxisArgsCalendarDate,
+    xAxisArgsTimeOfDay,
+    xAxisArgsWindDirection,
+    xAxisArgsWindSpeed,
+    yAxisArgs,
+    barChartArgs,
+    cartesianGridArgs,
+    chartTooltipArgs,
+  } = chartArgs;
 
-  /**
-   * XAxis args for the calendar date
-   */
-  const xAxisArgsCalendarDate: XAxisProps = {
-    ...baseChartXAxisProps,
-    xAxisId: 2,
-    tickLine: false,
-    axisLine: false,
-    ticks: timeScale.ticks(16).map((date) => {
-      const centeredDate = new Date(date);
-      centeredDate.setHours(12, 0, 0, 0);
-      return centeredDate.getTime();
-    }),
-    orientation: "top" as const,
-    tickFormatter: formatDateTick,
-    fontWeight: 700,
-  };
-
-  /**
-   * XAxis args for the time of day
-   */
-  const xAxisArgsTimeOfDay: XAxisProps = {
-    ...baseChartXAxisProps,
-    xAxisId: 1,
-    tickLine: false,
-    axisLine: false,
-    ticks: generateHourlyTicks(startDateObj, endDateObj, [0, 6, 12, 18]),
-    tickFormatter: (timestamp: number) => {
-      const date = new Date(timestamp);
-      const hours = date.getHours();
-      const period = hours >= 12 ? "pm" : "am";
-      const hour = hours % 12 || 12;
-      return `${hour}${period}`;
+  // Override dynamic values
+  const dynamicYAxisArgs = {
+    ...yAxisArgs,
+    tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
+    unit: unitPreferences.waveHeight,
+    tick: () => {
+      return <text></text>;
     },
-    orientation: "top" as const,
+    ticks: generateTicks(
+      unitPreferences.waveHeight === "ft"
+        ? Math.max(...chartData.map((d) => d.waveHeight_ft ?? 0))
+        : Math.max(...chartData.map((d) => d.waveHeight_m ?? 0)),
+      unitPreferences.waveHeight
+    ),
   };
 
-  /**
-   * XAxis args for the wind direction
-   */
-  const xAxisArgsWindDirection: XAxisProps = {
-    ...baseChartXAxisProps,
-    xAxisId: 3,
-    tickLine: false,
-    axisLine: false,
-    tickMargin: 0,
-    tick: ({ x, y, index }: { x: number; y: number; index: number }) => {
-      const data = processedData[index];
-      if (!data) {
-        return <g />;
-      }
-      return (
-        <SwellAxisTick
-          payload={{ value: data.windDirection }}
-          windSpeed={data.windSpeed_knots || 0}
-          x={x}
-          y={y}
-        />
-      );
-    },
-    interval: 0,
-    ticks: generateHourlyTicks(startDateObj, endDateObj),
-  };
-
-  /**
-   * XAxis args for the wind speed
-   */
-  const xAxisArgsWindSpeed: XAxisProps = {
-    ...baseChartXAxisProps,
-    xAxisId: 4,
-    tickLine: false,
-    axisLine: false,
-    tickMargin: 16,
+  const dynamicWindSpeedArgs = {
+    ...xAxisArgsWindSpeed,
     tick: ({ x, y, index }: { x: number; y: number; index: number }) => {
       const data = processedData[index];
       if (!data) {
@@ -143,76 +75,24 @@ const SwellChart = ({
         />
       );
     },
-    interval: 0,
-    ticks: generateHourlyTicks(startDateObj, endDateObj),
   };
 
-  /**
-   * YAxis args
-   */
-  const yAxisArgs: YAxisProps = {
-    tickLine: false,
-    axisLine: false,
-    tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
-    minTickGap: 0,
-    unit: unitPreferences.waveHeight,
-    padding: {
-      top: 20,
-    },
-    opacity: 0,
-    interval: "preserveStart" as const,
-    overflow: "visible",
-    type: "number" as const,
-    domain: [0, "dataMax"],
-    allowDecimals: false,
-    ticks: generateTicks(
-      unitPreferences.waveHeight === "ft"
-        ? Math.max(...chartData.map((d) => d.waveHeight_ft ?? 0))
-        : Math.max(...chartData.map((d) => d.waveHeight_m ?? 0)),
-      unitPreferences.waveHeight
-    ),
-    tick: () => {
-      return <text></text>;
-    },
+  const dynamicTooltipArgs = {
+    ...chartTooltipArgs,
+    content: <SwellTooltip unitPreferences={unitPreferences} />,
   };
 
-  /**
-   * BarChart args
-   */
-  const barChartArgs: CategoricalChartProps = {
-    accessibilityLayer: true,
-    margin: {
-      bottom: 12,
-    },
-    barCategoryGap: 1,
-  };
-
-  /**
-   * CartesianGrid args
-   */
-  const cartesianGridArgs: CartesianGridProps = {
-    vertical: true,
-    horizontal: true,
+  const dynamicCartesianGridArgs = {
+    ...cartesianGridArgs,
     verticalFill: [
       "oklch(0.968 0.007 247.896)", // Tailwind slate-200
       "oklch(0.929 0.013 255.508)", // Tailwind slate-300
     ],
-    y: 0,
-    height: 320,
-    syncWithTicks: true,
   };
 
-  /**
-   * ChartTooltip args
-   */
-  const chartTooltipArgs: TooltipProps<number, string> = {
-    cursor: {
-      fill: "oklch(0.129 0.042 264.695)",
-      fillOpacity: 0.1,
-      height: 280,
-    },
-    content: <SwellTooltip unitPreferences={unitPreferences} />,
-    trigger: "hover",
+  const dynamicBarChartArgs = {
+    ...barChartArgs,
+    barCategoryGap: 1,
   };
 
   return (
@@ -221,25 +101,25 @@ const SwellChart = ({
         config={chartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
-        <BarChart data={processedData} {...barChartArgs}>
-          <CartesianGrid {...cartesianGridArgs} />
+        <BarChart data={processedData} {...dynamicBarChartArgs}>
+          <CartesianGrid {...dynamicCartesianGridArgs} />
 
-          {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
+          {/* Duplicate XAxis for the stripes in the background */}
           <XAxis {...xAxisArgsBackground} />
 
-          {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
+          {/* XAxis for the calendar date */}
           <XAxis {...xAxisArgsCalendarDate} />
 
-          {/* This XAxis is the one that shows the time of the day */}
+          {/* XAxis for the time of day */}
           <XAxis {...xAxisArgsTimeOfDay} />
 
-          <ChartTooltip {...chartTooltipArgs} />
-
-          {/* This XAxis is the one that shows the wind direction */}
+          {/* XAxis for the wind direction */}
           <XAxis {...xAxisArgsWindDirection} />
 
-          {/* This XAxis is the one that shows the wind speed */}
-          <XAxis {...xAxisArgsWindSpeed} />
+          {/* XAxis for the wind speed with dynamic values */}
+          <XAxis {...dynamicWindSpeedArgs} />
+
+          <ChartTooltip {...dynamicTooltipArgs} />
 
           <Bar
             dataKey={(d) =>
@@ -332,7 +212,7 @@ const SwellChart = ({
             />
           </Bar>
 
-          <YAxis {...yAxisArgs} />
+          <YAxis {...dynamicYAxisArgs} />
         </BarChart>
       </ChartContainer>
     </ResponsiveContainer>

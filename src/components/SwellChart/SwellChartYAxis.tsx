@@ -15,6 +15,7 @@ import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { convertTo24Hour, processTimeData } from "@/lib/time-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { chartArgs } from "./ChartArgs";
 
 // Process the weather data
 const { processedData } = processTimeData(
@@ -25,12 +26,96 @@ const { processedData } = processTimeData(
   }))
 );
 
+/**
+ * SwellChartYAxis component
+ * This component is used to display the YAxis of the SwellChart.
+ * It is a duplicate of the YAxis of the main SwellChart component.
+ * This is a workaround in order to have the Y axis fix on the left side while the X axis is scrollable.
+ * @param {UnitPreferences} unitPreferences - The unit preferences for the chart
+ * @returns {React.ReactElement} The SwellChartYAxis component
+ */
 const SwellChartYAxis = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
+
+  // Get all static args
+  const { yAxisArgs, cartesianGridArgs, barChartArgs } = chartArgs;
+
+  // Override dynamic values
+  const dynamicYAxisArgs = {
+    ...yAxisArgs,
+    tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
+    unit: unitPreferences.waveHeight,
+    ticks: generateTicks(
+      unitPreferences.waveHeight === "ft"
+        ? Math.max(...chartData.map((d) => d.waveHeight_ft))
+        : Math.max(...chartData.map((d) => d.waveHeight_m)),
+      unitPreferences.waveHeight
+    ),
+    tick: (value: {
+      x: number;
+      y: number;
+      index: number;
+      payload: { value: number };
+    }) => {
+      return value.index === 0 ? (
+        <g transform="translate(-10, 0)">
+          <GiBigWave
+            className="w-6 h-6"
+            x={value.x - 8}
+            y={value.y - 20}
+            size={20}
+            color="#666"
+          />
+          <LuWind
+            className="w-4 h-4"
+            x={value.x - 8}
+            y={value.y + 12}
+            size={20}
+            color="#666"
+          />
+          {unitPreferences.windSpeed === "knots" ? (
+            <text
+              x={value.x + 12}
+              y={value.y + 52}
+              dy={1}
+              textAnchor="end"
+              fontSize={10}
+            >
+              kts
+            </text>
+          ) : (
+            <text
+              x={value.x + 12}
+              y={value.y + 52}
+              dy={1}
+              textAnchor="end"
+              fontSize={10}
+            >
+              km/h
+            </text>
+          )}
+        </g>
+      ) : (
+        <text x={value.x} y={value.y} dy={1} textAnchor="end">
+          {value.payload.value}
+          {unitPreferences.waveHeight}
+        </text>
+      );
+    },
+  };
+
+  /**
+   * BarChart args
+   */
+  const dynamicBarChartArgs = {
+    ...barChartArgs,
+    width: 60,
+  };
+
   return (
     <ResponsiveContainer
       width={60}
@@ -41,20 +126,8 @@ const SwellChartYAxis = ({
         config={chartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
-        <BarChart
-          data={processedData}
-          margin={{
-            bottom: 12,
-          }}
-          width={60}
-        >
-          <CartesianGrid
-            vertical={true}
-            horizontal={true}
-            y={0}
-            height={320}
-            syncWithTicks
-          />
+        <BarChart data={processedData} {...dynamicBarChartArgs}>
+          <CartesianGrid {...cartesianGridArgs} />
 
           {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
           <XAxis xAxisId={0} dataKey="timestamp" hide />
@@ -89,73 +162,7 @@ const SwellChartYAxis = ({
             stackId="a"
           />
 
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-            minTickGap={0}
-            unit={unitPreferences.waveHeight}
-            padding={{
-              top: 20,
-            }}
-            interval="preserveStart"
-            overflow="visible"
-            type="number"
-            domain={[0, "dataMax"]}
-            allowDecimals={false}
-            ticks={generateTicks(
-              unitPreferences.waveHeight === "ft"
-                ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-                : Math.max(...chartData.map((d) => d.waveHeight_m)),
-              unitPreferences.waveHeight
-            )}
-            tick={(value) => {
-              return value.index === 0 ? (
-                <g transform="translate(-10, 0)">
-                  <GiBigWave
-                    className="w-6 h-6"
-                    x={value.x - 8}
-                    y={value.y - 20}
-                    size={20}
-                    color="#666"
-                  />
-                  <LuWind
-                    className="w-4 h-4"
-                    x={value.x - 8}
-                    y={value.y + 12}
-                    size={20}
-                    color="#666"
-                  />
-                  {unitPreferences.windSpeed === "knots" ? (
-                    <text
-                      x={value.x + 12}
-                      y={value.y + 52}
-                      dy={1}
-                      textAnchor="end"
-                      fontSize={10}
-                    >
-                      kts
-                    </text>
-                  ) : (
-                    <text
-                      x={value.x + 12}
-                      y={value.y + 52}
-                      dy={1}
-                      textAnchor="end"
-                      fontSize={10}
-                    >
-                      km/h
-                    </text>
-                  )}
-                </g>
-              ) : (
-                <text x={value.x} y={value.y} dy={1} textAnchor="end">
-                  {value.payload.value}
-                  {unitPreferences.waveHeight}
-                </text>
-              );
-            }}
-          />
+          <YAxis {...dynamicYAxisArgs} />
         </BarChart>
       </ChartContainer>
     </ResponsiveContainer>
