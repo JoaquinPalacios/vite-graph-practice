@@ -78,6 +78,7 @@ const WeatherChart = () => {
     height: 0,
     domain: [1],
     padding: { bottom: 16 },
+    opacity: 0,
   };
 
   return (
