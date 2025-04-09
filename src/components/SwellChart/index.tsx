@@ -10,7 +10,6 @@ import {
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
-import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { generateTicks, processedData } from "@/utils/chart-utils";
 import SwellLabel from "./SwellLabel";
@@ -18,6 +17,7 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
 import WindSpeedTick from "./WindSpeedTick";
 import { chartArgs } from "@/lib/chart-args";
+import { swellChartConfig } from "@/lib/chart-config";
 
 const SwellChart = ({
   unitPreferences,
@@ -39,7 +39,9 @@ const SwellChart = ({
     chartTooltipArgs,
   } = chartArgs;
 
-  // Override dynamic values
+  /**
+   * YAxis args
+   */
   const dynamicYAxisArgs = {
     ...yAxisArgs,
     minTickGap: 0,
@@ -62,6 +64,9 @@ const SwellChart = ({
     ),
   };
 
+  /**
+   * Wind speed XAxis args
+   */
   const dynamicWindSpeedArgs = {
     ...xAxisArgsWindSpeed,
     tick: ({ x, y, index }: { x: number; y: number; index: number }) => {
@@ -84,6 +89,9 @@ const SwellChart = ({
     },
   };
 
+  /**
+   * Tooltip args
+   */
   const dynamicTooltipArgs = {
     ...chartTooltipArgs,
     content: <SwellTooltip unitPreferences={unitPreferences} />,
@@ -97,6 +105,9 @@ const SwellChart = ({
     ],
   };
 
+  /**
+   * Bar chart args
+   */
   const dynamicBarChartArgs = {
     ...mainChartArgs,
     barCategoryGap: 1,
@@ -105,10 +116,14 @@ const SwellChart = ({
   return (
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
-        config={chartConfig}
+        config={swellChartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
-        <BarChart data={processedData} {...dynamicBarChartArgs}>
+        <BarChart
+          data={processedData}
+          {...dynamicBarChartArgs}
+          syncId="swellnet"
+        >
           <CartesianGrid {...dynamicCartesianGridArgs} />
 
           {/* Duplicate XAxis for the stripes in the background */}

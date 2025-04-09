@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
-import { chartConfig } from "@/lib/chart-config";
+import { swellChartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
@@ -23,7 +23,7 @@ const AdvancedSwellChart = ({
   return (
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
-        config={chartConfig}
+        config={swellChartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
         <LineChart

@@ -1,6 +1,6 @@
 import { ChartConfig } from "@/components/ui/chart";
 
-export const chartConfig = {
+export const swellChartConfig = {
   waveHeight: {
     label: "waveHeight",
   },

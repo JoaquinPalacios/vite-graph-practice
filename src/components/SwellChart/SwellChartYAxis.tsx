@@ -8,13 +8,13 @@ import {
 } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 import chartData from "@/data";
-import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { generateTicks, processedData } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { chartArgs } from "@/lib/chart-args";
+import { swellChartConfig } from "@/lib/chart-config";
 
 /**
  * SwellChartYAxis component
@@ -116,7 +116,7 @@ const SwellChartYAxis = ({
       className="mb-0 absolute top-0 left-0 md:left-4 z-10"
     >
       <ChartContainer
-        config={chartConfig}
+        config={swellChartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
         <BarChart data={processedData} {...dynamicBarChartArgs}>

@@ -1,7 +1,8 @@
 ---
 description: A todo list for tracking tasks and questions that need to be addressed
-globs: .cursor/rules/todo-list.mdc
-alwaysApply: false
+globs: "**/*.{js,jsx,ts,tsx,vue}"
+type: Always
+alwaysApply: true
 ---
 
 # Todo List
@@ -10,6 +11,10 @@ alwaysApply: false
 - [ ] Review and respond to user questions
 - [ ] Track ongoing conversations
 - [ ] Maintain context between interactions
+- [ ] Optimize bundle size:
+  - [ ] Consider code splitting for Recharts (260.01 kB)
+  - [ ] Analyze React vendor chunk (248.17 kB) for potential tree-shaking
+  - [ ] Review ChartsContainerClient for optimization opportunities
 
 ## Completed Tasks
 - [x] Create .cursor/rules directory
