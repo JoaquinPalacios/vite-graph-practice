@@ -40,6 +40,7 @@ const SwellChartYAxis = ({
   const dynamicYAxisArgs = {
     ...yAxisArgs,
     tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
+    minTickGap: 0,
     unit: unitPreferences.waveHeight,
     ticks: generateTicks(
       unitPreferences.waveHeight === "ft"

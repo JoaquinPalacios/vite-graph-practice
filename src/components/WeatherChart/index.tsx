@@ -15,8 +15,6 @@ const { processedData } = processTimeData(
   }))
 );
 
-// Get time scale data
-
 const WeatherChart = () => {
   // Get all static args
   const { xAxisArgsBackground, yAxisArgs, mainChartArgs, cartesianGridArgs } =
