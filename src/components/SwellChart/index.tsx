@@ -14,10 +14,10 @@ import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
 import { generateTicks, processedData } from "@/utils/chart-utils";
 import SwellLabel from "./SwellLabel";
-import { chartArgs } from "./ChartArgs";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
 import WindSpeedTick from "./WindSpeedTick";
+import { chartArgs } from "@/lib/chart-args";
 
 const SwellChart = ({
   unitPreferences,
@@ -34,7 +34,7 @@ const SwellChart = ({
     xAxisArgsWindDirection,
     xAxisArgsWindSpeed,
     yAxisArgs,
-    barChartArgs,
+    mainChartArgs,
     cartesianGridArgs,
     chartTooltipArgs,
   } = chartArgs;
@@ -42,6 +42,13 @@ const SwellChart = ({
   // Override dynamic values
   const dynamicYAxisArgs = {
     ...yAxisArgs,
+    minTickGap: 0,
+    padding: {
+      top: 20,
+    },
+    interval: "preserveStart" as const,
+    overflow: "visible",
+    allowDecimals: false,
     tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
     unit: unitPreferences.waveHeight,
     tick: () => {
@@ -91,7 +98,7 @@ const SwellChart = ({
   };
 
   const dynamicBarChartArgs = {
-    ...barChartArgs,
+    ...mainChartArgs,
     barCategoryGap: 1,
   };
 
@@ -212,7 +219,7 @@ const SwellChart = ({
             />
           </Bar>
 
-          <YAxis {...dynamicYAxisArgs} />
+          <YAxis {...dynamicYAxisArgs} domain={[0, "dataMax"]} />
         </BarChart>
       </ChartContainer>
     </ResponsiveContainer>

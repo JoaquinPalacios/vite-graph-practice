@@ -156,10 +156,45 @@ const convertTo24Hour = (time: string) => {
 };
 
 /**
- * Process the weather data and export the results
- * It uses the convertTo24Hour function to convert the time to a 24-hour time string
- * @returns The processed data and the day ticks
+ * Generic time processing utility that can be used for any time-series data
  */
+export const processTimeScaleData = (timestamps: number[]) => {
+  const startTimestamp = Math.min(...timestamps);
+  const endTimestamp = Math.max(...timestamps);
+
+  // Create Date objects for the start and end of the day
+  const startDateObj = new Date(startTimestamp);
+  const endDateObj = new Date(endTimestamp);
+
+  // Set start date to beginning of day (00:00:00)
+  startDateObj.setDate(startDateObj.getDate());
+  startDateObj.setHours(0, 0, 0, 0);
+
+  // Set end date to beginning of next day (00:00:00)
+  endDateObj.setDate(endDateObj.getDate() + 1);
+  endDateObj.setHours(0, 0, 0, 0);
+
+  // Create time scale with numeric timestamps
+  const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
+
+  // Generate ticks for each day
+  const dayTicks: number[] = [];
+  let currentDate = new Date(startDateObj);
+  while (currentDate <= endDateObj) {
+    dayTicks.push(currentDate.getTime());
+    currentDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return {
+    startDateObj,
+    endDateObj,
+    timeScale,
+    dayTicks,
+  };
+};
+
+// Update the existing swell chart data processing to use the new utility
 export const { processedData, dayTicks } = processTimeData(
   chartData.map((item) => ({
     ...item,
@@ -168,46 +203,11 @@ export const { processedData, dayTicks } = processTimeData(
   }))
 );
 
-/**
- * Get the start and end timestamps
- */
 const timeValues = processedData.map((row) => row.timestamp);
-const startTimestamp = Math.min(...timeValues);
-const endTimestamp = Math.max(...timeValues);
+const { startDateObj, endDateObj, timeScale } =
+  processTimeScaleData(timeValues);
 
-/**
- * Create Date objects for the start and end of the day
- */
-export const startDateObj = new Date(startTimestamp);
-export const endDateObj = new Date(endTimestamp);
-
-/**
- * Set start date to beginning of day (00:00:00)
- */
-startDateObj.setDate(startDateObj.getDate());
-startDateObj.setHours(0, 0, 0, 0);
-
-/**
- * Set end date to beginning of next day (00:00:00)
- */
-endDateObj.setDate(endDateObj.getDate() + 1);
-endDateObj.setHours(0, 0, 0, 0);
-
-/**
- * Create time scale with numeric timestamps
- */
-export const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
-
-/**
- * Generate ticks for each day
- * It uses the startDateObj and endDateObj to generate the ticks
- */
-let currentDate = new Date(startDateObj);
-while (currentDate <= endDateObj) {
-  dayTicks.push(currentDate.getTime());
-  currentDate = new Date(currentDate);
-  currentDate.setDate(currentDate.getDate() + 1);
-}
+export { startDateObj, endDateObj, timeScale };
 
 /**
  * Base XAxis configuration

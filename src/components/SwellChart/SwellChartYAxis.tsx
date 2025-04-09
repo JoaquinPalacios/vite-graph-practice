@@ -10,21 +10,11 @@ import { ChartContainer } from "@/components/ui/chart";
 import chartData from "@/data";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
-import { generateTicks } from "@/utils/chart-utils";
+import { generateTicks, processedData } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
-import { convertTo24Hour, processTimeData } from "@/lib/time-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { chartArgs } from "./ChartArgs";
-
-// Process the weather data
-const { processedData } = processTimeData(
-  chartData.map((item) => ({
-    ...item,
-    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
-    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
-  }))
-);
+import { chartArgs } from "@/lib/chart-args";
 
 /**
  * SwellChartYAxis component
@@ -42,9 +32,11 @@ const SwellChartYAxis = ({
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   // Get all static args
-  const { yAxisArgs, cartesianGridArgs, barChartArgs } = chartArgs;
+  const { yAxisArgs, cartesianGridArgs, mainChartArgs } = chartArgs;
 
-  // Override dynamic values
+  /**
+   * YAxis args
+   */
   const dynamicYAxisArgs = {
     ...yAxisArgs,
     tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
@@ -112,7 +104,7 @@ const SwellChartYAxis = ({
    * BarChart args
    */
   const dynamicBarChartArgs = {
-    ...barChartArgs,
+    ...mainChartArgs,
     width: 60,
   };
 

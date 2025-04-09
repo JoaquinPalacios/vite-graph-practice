@@ -1,6 +1,11 @@
-import { Area, AreaChart, CartesianGrid, YAxis, XAxis } from "recharts";
-import { scaleTime } from "d3-scale";
-
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  YAxis,
+  XAxis,
+  YAxisProps,
+} from "recharts";
 import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip } from "../ui/chart";
@@ -8,6 +13,15 @@ import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { TideAreaDot } from "./TideAreaDot";
 import { multiFormat } from "@/lib/time-utils";
+import { baseChartXAxisProps, processTimeScaleData } from "@/utils/chart-utils";
+import { chartArgs } from "@/lib/chart-args";
+
+interface TideDataItem {
+  date: string;
+  time: string;
+  dateTime: string;
+  height: number;
+}
 
 /**
  * Tide data for the previous tide
@@ -52,42 +66,69 @@ const processedData = [
     height: heightAtMidnight,
     timestamp: midnightTime,
   },
-  ...tideData.map((item) => ({
+  ...tideData.map((item: TideDataItem) => ({
     ...item,
     timestamp: new Date(item.dateTime).getTime(),
   })),
 ];
 
-// Get the start and end timestamps
+// Get time scale data
 const timeValues = processedData.map((row) => row.timestamp);
-const startTimestamp = Math.min(...timeValues);
-const endTimestamp = Math.max(...timeValues);
-
-// Create Date objects for the start and end of the day
-const startDate = new Date(startTimestamp);
-const endDate = new Date(endTimestamp);
-
-// Set start date to beginning of day (00:00:00)
-startDate.setDate(startDate.getDate());
-startDate.setHours(0, 0, 0, 0);
-
-// Set end date to beginning of next day (00:00:00)
-endDate.setDate(endDate.getDate() + 1);
-endDate.setHours(0, 0, 0, 0);
-
-// Create time scale with numeric timestamps
-const timeScale = scaleTime().domain([startDate, endDate]).nice();
-
-// Generate ticks for each day
-const dayTicks: number[] = [];
-let currentDate = new Date(startDate);
-while (currentDate <= endDate) {
-  dayTicks.push(currentDate.getTime());
-  currentDate = new Date(currentDate);
-  currentDate.setDate(currentDate.getDate() + 1);
-}
+const { timeScale } = processTimeScaleData(timeValues);
 
 const TideChart = () => {
+  // Get all static args
+  const { xAxisArgsBackground, cartesianGridArgs } = chartArgs;
+
+  /**
+   * Dynamic args
+   */
+  const dynamicCartesianGridArgs = {
+    ...cartesianGridArgs,
+    verticalFill: [
+      "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+      "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+    ],
+  };
+
+  /**
+   * XAxis args for the background stripes
+   */
+  const dynamicXAxisBackgroundArgs = {
+    ...xAxisArgsBackground,
+    allowDataOverflow: true,
+    padding: { left: 12 },
+  };
+
+  /**
+   * XAxis for the legend
+   */
+  const dynamicXAxisLegendArgs = {
+    ...baseChartXAxisProps,
+    xAxisId: 1,
+    tickLine: false,
+    axisLine: false,
+    tickMargin: 0,
+    ticks: timeScale.ticks(5).map((date: Date) => date.valueOf()),
+    tickFormatter: multiFormat,
+    textAnchor: "middle",
+    fontWeight: 700,
+    allowDataOverflow: true,
+    hide: true,
+  };
+
+  /**
+   * YAxis args
+   */
+  const dynamicYAxisArgs = {
+    dataKey: "height",
+    unit: "m",
+    axisLine: false,
+    domain: [0, "dataMax + 0.2"],
+    padding: { top: 32 },
+    opacity: 0,
+  } as YAxisProps;
+
   return (
     <ResponsiveContainer width={4848} height="100%">
       <ChartContainer
@@ -103,53 +144,13 @@ const TideChart = () => {
             bottom: 16,
           }}
         >
-          <CartesianGrid
-            vertical={true}
-            horizontal={true}
-            verticalFill={[
-              "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-            ]}
-            y={0}
-            height={200}
-            syncWithTicks
-          />
+          <CartesianGrid {...dynamicCartesianGridArgs} />
 
           {/* Background stripes XAxis */}
-          <XAxis
-            xAxisId={0}
-            dataKey="timestamp"
-            hide
-            type="number"
-            scale={timeScale}
-            domain={timeScale.domain().map((date) => date.valueOf())}
-            ticks={dayTicks}
-            tickFormatter={multiFormat}
-            interval={"preserveStart"}
-            allowDataOverflow
-            padding={{ left: 12 }}
-          />
+          <XAxis {...dynamicXAxisBackgroundArgs} />
 
           {/* Legend XAxis */}
-          <XAxis
-            xAxisId={1}
-            dataKey="timestamp"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={0}
-            allowDuplicatedCategory={false}
-            type="number"
-            scale={timeScale}
-            domain={timeScale.domain().map((date) => date.valueOf())}
-            ticks={timeScale.ticks(5).map((date) => date.valueOf())}
-            tickFormatter={multiFormat}
-            textAnchor="middle"
-            fontWeight={700}
-            allowDataOverflow
-            interval={"preserveStart"}
-            hide
-            padding={{ left: 12 }}
-          />
+          <XAxis {...dynamicXAxisLegendArgs} />
 
           <ChartTooltip content={<TideTooltip />} />
 
@@ -166,15 +167,7 @@ const TideChart = () => {
             isAnimationActive={false}
           />
 
-          <YAxis
-            dataKey="height"
-            unit="m"
-            axisLine={false}
-            domain={[0, "dataMax + 0.2"]}
-            padding={{ top: 32 }}
-            opacity={0}
-            className="transition-opacity ease-in-out duration-200"
-          />
+          <YAxis {...dynamicYAxisArgs} />
         </AreaChart>
       </ChartContainer>
     </ResponsiveContainer>

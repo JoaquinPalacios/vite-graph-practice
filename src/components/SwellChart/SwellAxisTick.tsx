@@ -10,6 +10,13 @@ type SwellAxisTickProps = {
   windSpeed?: number;
 };
 
+/**
+ * SwellAxisTick component
+ * This component is used to display the tick of the SwellChart.
+ * @param {SwellAxisTickProps} props - The props for the SwellAxisTick component
+ * @returns {React.ReactElement} The SwellAxisTick component
+ * @todo: Revise the use of this component
+ */
 const SwellAxisTick = ({
   payload,
   x,

@@ -1,3 +1,5 @@
+import SwellAxisTick from "@/components/SwellChart/SwellAxisTick";
+import WindSpeedTick from "@/components/SwellChart/WindSpeedTick";
 import { generateHourlyTicks, multiFormat } from "@/lib/time-utils";
 import {
   baseChartXAxisProps,
@@ -14,8 +16,6 @@ import {
   XAxisProps,
   YAxisProps,
 } from "recharts";
-import SwellAxisTick from "./SwellAxisTick";
-import WindSpeedTick from "./WindSpeedTick";
 import { CategoricalChartProps } from "recharts/types/chart/generateCategoricalChart";
 
 /**
@@ -131,23 +131,15 @@ export const chartArgs = {
   yAxisArgs: {
     tickLine: false,
     axisLine: false,
-    tickMargin: 8,
-    minTickGap: 0,
-    padding: {
-      top: 20,
-    },
     opacity: 0,
-    interval: "preserveStart" as const,
-    overflow: "visible",
     type: "number" as const,
     domain: [0, "dataMax"],
-    allowDecimals: false,
   } as YAxisProps,
 
   /**
    * BarChart args
    */
-  barChartArgs: {
+  mainChartArgs: {
     accessibilityLayer: true,
     margin: {
       bottom: 12,
@@ -160,7 +152,6 @@ export const chartArgs = {
   cartesianGridArgs: {
     vertical: true,
     horizontal: true,
-
     y: 0,
     height: 320,
     syncWithTicks: true,

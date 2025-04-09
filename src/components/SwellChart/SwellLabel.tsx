@@ -5,6 +5,12 @@ interface SwellLabelProps extends LabelProps {
   primarySwellDirection?: number | null;
 }
 
+/**
+ * SwellLabel component
+ * This component is used to display the label of the SwellChart.
+ * @param {SwellLabelProps} props - The props for the SwellLabel component
+ * @returns {React.ReactElement} The SwellLabel component
+ */
 const SwellLabel = (props: SwellLabelProps) => {
   const { x, y, value, fill, hasFaceWaveHeight, primarySwellDirection } = props;
 

@@ -1,3 +1,9 @@
+/**
+ * WindSpeedTick component
+ * This component is used to display the tick of the WindSpeedChart.
+ * @param {WindSpeedTickProps} props - The props for the WindSpeedTick component
+ * @returns {React.ReactElement} The WindSpeedTick component
+ */
 const WindSpeedTick = ({
   x,
   y,

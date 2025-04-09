@@ -9,6 +9,12 @@ import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
 import { formatWaveHeight } from "@/utils/chart-utils";
 
+/**
+ * SwellTooltip component
+ * This component is used to display the tooltip of the SwellChart.
+ * @param {TooltipProps<ValueType, NameType> & { unitPreferences: UnitPreferences }} props - The props for the SwellTooltip component
+ * @returns {React.ReactElement} The SwellTooltip component
+ */
 export const SwellTooltip = ({
   active,
   payload,
