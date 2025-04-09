@@ -90,7 +90,6 @@ const WeatherChart = () => {
         data={processedData}
         {...dynamicScatterChartArgs}
         className="[&>svg]:focus:outline-none"
-        syncId="swellnet"
       >
         <CartesianGrid {...dynamicCartesianGridArgs} />
 

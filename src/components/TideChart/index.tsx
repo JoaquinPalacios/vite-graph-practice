@@ -143,7 +143,6 @@ const TideChart = () => {
             right: 0,
             bottom: 16,
           }}
-          syncId="swellnet"
         >
           <CartesianGrid {...dynamicCartesianGridArgs} />
 

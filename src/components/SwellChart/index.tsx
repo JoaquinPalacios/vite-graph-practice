@@ -119,11 +119,7 @@ const SwellChart = ({
         config={swellChartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
-        <BarChart
-          data={processedData}
-          {...dynamicBarChartArgs}
-          syncId="swellnet"
-        >
+        <BarChart data={processedData} {...dynamicBarChartArgs}>
           <CartesianGrid {...dynamicCartesianGridArgs} />
 
           {/* Duplicate XAxis for the stripes in the background */}
