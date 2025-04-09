@@ -1,3 +1,8 @@
+import chartData from "@/data";
+import { processTimeData } from "@/lib/time-utils";
+import { scaleTime } from "d3-scale";
+import { XAxisProps } from "recharts";
+
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
     // Base ticks for feet with increasing intervals
@@ -134,4 +139,86 @@ export const getWindColor = (windSpeed: number): string => {
   // Find the first range where wind speed is less than or equal to max
   const range = windSpeedRanges.find((range) => windSpeed <= range.max);
   return range?.color || "grey";
+};
+
+/**
+ * Convert a 12-hour time string to a 24-hour time string
+ * @param time - The 12-hour time string
+ * @returns The 24-hour time string
+ */
+const convertTo24Hour = (time: string) => {
+  const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
+  if (!hours || !period) return time;
+  let hour = parseInt(hours);
+  if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
+  if (period.toLowerCase() === "am" && hour === 12) hour = 0;
+  return `${hour.toString().padStart(2, "0")}:00`;
+};
+
+/**
+ * Process the weather data and export the results
+ * It uses the convertTo24Hour function to convert the time to a 24-hour time string
+ * @returns The processed data and the day ticks
+ */
+export const { processedData, dayTicks } = processTimeData(
+  chartData.map((item) => ({
+    ...item,
+    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
+    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
+  }))
+);
+
+/**
+ * Get the start and end timestamps
+ */
+const timeValues = processedData.map((row) => row.timestamp);
+const startTimestamp = Math.min(...timeValues);
+const endTimestamp = Math.max(...timeValues);
+
+/**
+ * Create Date objects for the start and end of the day
+ */
+export const startDateObj = new Date(startTimestamp);
+export const endDateObj = new Date(endTimestamp);
+
+/**
+ * Set start date to beginning of day (00:00:00)
+ */
+startDateObj.setDate(startDateObj.getDate());
+startDateObj.setHours(0, 0, 0, 0);
+
+/**
+ * Set end date to beginning of next day (00:00:00)
+ */
+endDateObj.setDate(endDateObj.getDate() + 1);
+endDateObj.setHours(0, 0, 0, 0);
+
+/**
+ * Create time scale with numeric timestamps
+ */
+export const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
+
+/**
+ * Generate ticks for each day
+ * It uses the startDateObj and endDateObj to generate the ticks
+ */
+let currentDate = new Date(startDateObj);
+while (currentDate <= endDateObj) {
+  dayTicks.push(currentDate.getTime());
+  currentDate = new Date(currentDate);
+  currentDate.setDate(currentDate.getDate() + 1);
+}
+
+/**
+ * Base XAxis configuration
+ */
+export const baseChartXAxisProps: Partial<XAxisProps> = {
+  dataKey: "timestamp",
+  type: "number" as const,
+  scale: timeScale,
+  domain: timeScale.domain().map((date) => date.valueOf()),
+  padding: { left: 12 },
+  allowDataOverflow: true,
+  interval: "preserveStart" as const,
+  allowDuplicatedCategory: false,
 };

@@ -8,72 +8,31 @@ import {
   YAxis,
   XAxisProps,
   YAxisProps,
+  CartesianGridProps,
+  TooltipProps,
 } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { chartConfig } from "@/lib/chart-config";
 import { UnitPreferences } from "@/types";
-import { generateTicks } from "@/utils/chart-utils";
+import {
+  baseChartXAxisProps,
+  generateTicks,
+  timeScale,
+  dayTicks,
+  processedData,
+  startDateObj,
+  endDateObj,
+} from "@/utils/chart-utils";
 import { formatDateTick } from "@/utils/chart-utils";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellLabel from "./SwellLabel";
 import SwellAxisTick from "./SwellAxisTick";
-import {
-  generateHourlyTicks,
-  multiFormat,
-  processTimeData,
-} from "@/lib/time-utils";
-import { scaleTime } from "d3-scale";
+import { generateHourlyTicks, multiFormat } from "@/lib/time-utils";
 import WindSpeedTick from "./WindSpeedTick";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-
-const convertTo24Hour = (time: string) => {
-  const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
-  if (!hours || !period) return time;
-  let hour = parseInt(hours);
-  if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
-  if (period.toLowerCase() === "am" && hour === 12) hour = 0;
-  return `${hour.toString().padStart(2, "0")}:00`;
-};
-
-// Process the weather data
-const { processedData, dayTicks } = processTimeData(
-  chartData.map((item) => ({
-    ...item,
-    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
-    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
-  }))
-);
-
-// Get the start and end timestamps
-const timeValues = processedData.map((row) => row.timestamp);
-const startTimestamp = Math.min(...timeValues);
-const endTimestamp = Math.max(...timeValues);
-
-// Create Date objects for the start and end of the day
-const startDateObj = new Date(startTimestamp);
-const endDateObj = new Date(endTimestamp);
-
-// Set start date to beginning of day (00:00:00)
-startDateObj.setDate(startDateObj.getDate());
-startDateObj.setHours(0, 0, 0, 0);
-
-// Set end date to beginning of next day (00:00:00)
-endDateObj.setDate(endDateObj.getDate() + 1);
-endDateObj.setHours(0, 0, 0, 0);
-
-// Create time scale with numeric timestamps
-const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
-
-// Generate ticks for each day
-// const dayTicks: number[] = [];
-let currentDate = new Date(startDateObj);
-while (currentDate <= endDateObj) {
-  dayTicks.push(currentDate.getTime());
-  currentDate = new Date(currentDate);
-  currentDate.setDate(currentDate.getDate() + 1);
-}
+import { CategoricalChartProps } from "recharts/types/chart/generateCategoricalChart";
 
 const SwellChart = ({
   unitPreferences,
@@ -86,38 +45,26 @@ const SwellChart = ({
    * XAxis args for the background stripes
    */
   const xAxisArgsBackground: XAxisProps = {
+    ...baseChartXAxisProps,
     xAxisId: 0,
-    dataKey: "timestamp",
     hide: true,
-    type: "number" as const,
-    scale: timeScale,
-    domain: timeScale.domain().map((date) => date.valueOf()),
     ticks: dayTicks,
     tickFormatter: multiFormat,
-    interval: "preserveStart" as const,
-    allowDataOverflow: true,
   };
 
   /**
    * XAxis args for the calendar date
    */
   const xAxisArgsCalendarDate: XAxisProps = {
+    ...baseChartXAxisProps,
     xAxisId: 2,
-    dataKey: "timestamp",
     tickLine: false,
     axisLine: false,
-    type: "number" as const,
-    scale: timeScale,
-    domain: timeScale.domain().map((date) => date.valueOf()),
     ticks: timeScale.ticks(16).map((date) => {
       const centeredDate = new Date(date);
-      centeredDate.setHours(12, 0, 0, 0); // Set to noon to center the date
+      centeredDate.setHours(12, 0, 0, 0);
       return centeredDate.getTime();
     }),
-    padding: { left: 12 },
-    allowDataOverflow: true,
-    interval: "preserveStart" as const,
-    allowDuplicatedCategory: false,
     orientation: "top" as const,
     tickFormatter: formatDateTick,
     fontWeight: 700,
@@ -127,13 +74,10 @@ const SwellChart = ({
    * XAxis args for the time of day
    */
   const xAxisArgsTimeOfDay: XAxisProps = {
+    ...baseChartXAxisProps,
     xAxisId: 1,
-    dataKey: "timestamp",
     tickLine: false,
     axisLine: false,
-    type: "number" as const,
-    scale: timeScale,
-    domain: timeScale.domain().map((date) => date.valueOf()),
     ticks: generateHourlyTicks(startDateObj, endDateObj, [0, 6, 12, 18]),
     tickFormatter: (timestamp: number) => {
       const date = new Date(timestamp);
@@ -143,18 +87,14 @@ const SwellChart = ({
       return `${hour}${period}`;
     },
     orientation: "top" as const,
-    padding: { left: 12 },
-    allowDataOverflow: true,
-    interval: "preserveStart" as const,
-    allowDuplicatedCategory: false,
   };
 
   /**
    * XAxis args for the wind direction
    */
   const xAxisArgsWindDirection: XAxisProps = {
+    ...baseChartXAxisProps,
     xAxisId: 3,
-    dataKey: "timestamp",
     tickLine: false,
     axisLine: false,
     tickMargin: 0,
@@ -173,19 +113,15 @@ const SwellChart = ({
       );
     },
     interval: 0,
-    domain: timeScale.domain().map((date) => date.valueOf()),
     ticks: generateHourlyTicks(startDateObj, endDateObj),
-    scale: timeScale,
-    type: "number" as const,
-    padding: { left: 12 },
   };
 
   /**
    * XAxis args for the wind speed
    */
   const xAxisArgsWindSpeed: XAxisProps = {
+    ...baseChartXAxisProps,
     xAxisId: 4,
-    dataKey: "timestamp",
     tickLine: false,
     axisLine: false,
     tickMargin: 16,
@@ -208,11 +144,7 @@ const SwellChart = ({
       );
     },
     interval: 0,
-    domain: timeScale.domain().map((date) => date.valueOf()),
     ticks: generateHourlyTicks(startDateObj, endDateObj),
-    scale: timeScale,
-    type: "number" as const,
-    padding: { left: 12 },
   };
 
   /**
@@ -244,31 +176,53 @@ const SwellChart = ({
     },
   };
 
+  /**
+   * BarChart args
+   */
+  const barChartArgs: CategoricalChartProps = {
+    accessibilityLayer: true,
+    margin: {
+      bottom: 12,
+    },
+    barCategoryGap: 1,
+  };
+
+  /**
+   * CartesianGrid args
+   */
+  const cartesianGridArgs: CartesianGridProps = {
+    vertical: true,
+    horizontal: true,
+    verticalFill: [
+      "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+      "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+    ],
+    y: 0,
+    height: 320,
+    syncWithTicks: true,
+  };
+
+  /**
+   * ChartTooltip args
+   */
+  const chartTooltipArgs: TooltipProps<number, string> = {
+    cursor: {
+      fill: "oklch(0.129 0.042 264.695)",
+      fillOpacity: 0.1,
+      height: 280,
+    },
+    content: <SwellTooltip unitPreferences={unitPreferences} />,
+    trigger: "hover",
+  };
+
   return (
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
         config={chartConfig}
         className="aspect-auto h-[20rem] w-full"
       >
-        <BarChart
-          accessibilityLayer
-          data={processedData}
-          margin={{
-            bottom: 12,
-          }}
-          barCategoryGap={1}
-        >
-          <CartesianGrid
-            vertical={true}
-            horizontal={true}
-            verticalFill={[
-              "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-            ]}
-            y={0}
-            height={320}
-            syncWithTicks
-          />
+        <BarChart data={processedData} {...barChartArgs}>
+          <CartesianGrid {...cartesianGridArgs} />
 
           {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
           <XAxis {...xAxisArgsBackground} />
@@ -279,15 +233,7 @@ const SwellChart = ({
           {/* This XAxis is the one that shows the time of the day */}
           <XAxis {...xAxisArgsTimeOfDay} />
 
-          <ChartTooltip
-            cursor={{
-              height: 280,
-              fill: "oklch(0.129 0.042 264.695)",
-              fillOpacity: 0.1,
-            }}
-            content={<SwellTooltip unitPreferences={unitPreferences} />}
-            trigger="hover"
-          />
+          <ChartTooltip {...chartTooltipArgs} />
 
           {/* This XAxis is the one that shows the wind direction */}
           <XAxis {...xAxisArgsWindDirection} />
