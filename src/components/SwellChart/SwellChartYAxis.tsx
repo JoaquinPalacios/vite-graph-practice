@@ -150,6 +150,13 @@ const SwellChartYAxis = ({
                 : d.waveHeight_m
             }
             stackId="b"
+            name="Y Wave Height"
+            id="y-wave-height"
+            key={`y-wave-height-${unitPreferences.waveHeight}`}
+            keyPoints={160}
+            keySplines={16}
+            hide
+            aria-hidden
           />
 
           <Bar
@@ -159,6 +166,13 @@ const SwellChartYAxis = ({
                 : null
             }
             stackId="b"
+            name="Y Face Wave Height"
+            id="y-face-wave-height"
+            key={`y-face-wave-height-${unitPreferences.waveHeight}`}
+            keyPoints={160}
+            keySplines={16}
+            hide
+            aria-hidden
           />
 
           <YAxis {...dynamicYAxisArgs} />
