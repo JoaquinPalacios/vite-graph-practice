@@ -42,12 +42,18 @@ const SwellChartYAxis = ({
     tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
     minTickGap: 0,
     unit: unitPreferences.waveHeight,
+    interval: "preserveStart" as const,
+    overflow: "visible",
+    allowDecimals: false,
     ticks: generateTicks(
       unitPreferences.waveHeight === "ft"
         ? Math.max(...chartData.map((d) => d.waveHeight_ft))
         : Math.max(...chartData.map((d) => d.waveHeight_m)),
       unitPreferences.waveHeight
     ),
+    padding: {
+      top: 20,
+    },
     tick: (value: {
       x: number;
       y: number;
@@ -117,7 +123,7 @@ const SwellChartYAxis = ({
     >
       <ChartContainer
         config={swellChartConfig}
-        className="aspect-auto h-[20rem] w-full"
+        className="aspect-auto h-80 w-full"
       >
         <BarChart data={processedData} {...dynamicBarChartArgs}>
           <CartesianGrid {...cartesianGridArgs} />
@@ -143,7 +149,7 @@ const SwellChartYAxis = ({
                 ? d.waveHeight_ft
                 : d.waveHeight_m
             }
-            stackId="a"
+            stackId="b"
           />
 
           <Bar
@@ -152,7 +158,7 @@ const SwellChartYAxis = ({
                 ? d.faceWaveHeight_ft - d.waveHeight_ft
                 : null
             }
-            stackId="a"
+            stackId="b"
           />
 
           <YAxis {...dynamicYAxisArgs} />

@@ -50,6 +50,7 @@ const SwellChart = ({
     },
     interval: "preserveStart" as const,
     overflow: "visible",
+    opacity: 0,
     allowDecimals: false,
     tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
     unit: unitPreferences.waveHeight,
@@ -117,7 +118,8 @@ const SwellChart = ({
     <ResponsiveContainer width={4848} height="100%" className="mb-0">
       <ChartContainer
         config={swellChartConfig}
-        className="aspect-auto h-[20rem] w-full"
+        className="aspect-auto h-80 w-full"
+        id="swell-chart"
       >
         <BarChart data={processedData} {...dynamicBarChartArgs}>
           <CartesianGrid {...dynamicCartesianGridArgs} />

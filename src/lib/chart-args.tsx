@@ -131,7 +131,6 @@ export const chartArgs = {
   yAxisArgs: {
     tickLine: false,
     axisLine: false,
-    opacity: 0,
     type: "number" as const,
     domain: [0, "dataMax"],
   } as YAxisProps,
