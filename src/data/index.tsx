@@ -57,8 +57,6 @@ const chartData = [
     nextLowTide: "4:04pm",
     nextLowTideHeight: 0.3,
     isRising: false,
-    // nextTideHeight: 0.3,
-    // nextTideTime: "4:04pm",
     tides: {
       firstLowTide: "4:06am",
       firstLowTideHeight: 0.3,
@@ -130,8 +128,6 @@ const chartData = [
     nextLowTide: "6:30pm",
     nextLowTideHeight: 0.5,
     isRising: true,
-    // nextTideHeight: 1.4,
-    // nextTideTime: "10:06am",
     tides: {
       firstLowTide: "4:06am",
       firstLowTideHeight: 0.3,
@@ -199,8 +195,6 @@ const chartData = [
     nextLowTide: "4:04pm",
     nextLowTideHeight: 0.3,
     isRising: false,
-    // nextTideHeight: 0.3,
-    // nextTideTime: "4:04pm",
     tides: {
       firstLowTide: "4:06am",
       firstLowTideHeight: 0.3,
@@ -257,8 +251,6 @@ const chartData = [
     nextHighTide: "10:36pm",
     nextHighTideHeight: 1.7,
     isRising: true,
-    // nextTideHeight: 1.7,
-    // nextTideTime: "10:36pm",
     tides: {
       firstLowTide: "4:06am",
       firstLowTideHeight: 0.3,
@@ -320,8 +312,6 @@ const chartData = [
     nextLowTide: "5:03am",
     nextLowTideHeight: 0.4,
     isRising: false,
-    // nextTideHeight: 0.4,
-    // nextTideTime: "5:03am",
     tides: {
       firstLowTide: "5:03am",
       firstLowTideHeight: 0.4,
@@ -382,8 +372,6 @@ const chartData = [
     nextLowTide: "4:48pm",
     nextLowTideHeight: 0.4,
     isRising: true,
-    // nextTideHeight: 1.3,
-    // nextTideTime: "10:53am",
     tides: {
       firstLowTide: "5:03am",
       firstLowTideHeight: 0.4,
@@ -429,7 +417,7 @@ const chartData = [
   {
     date: "2024-04-02",
     time: "3pm",
-    timestamp: 1712069400,
+    timestamp: 1712070000,
     swellDirection: 137,
     windDirection: 220,
     windSpeed_kmh: 10,
@@ -448,8 +436,6 @@ const chartData = [
     nextLowTide: "4:48pm",
     nextLowTideHeight: 0.4,
     isRising: false,
-    // nextTideHeight: 0.4,
-    // nextTideTime: "4:48pm",
     tides: {
       firstLowTide: "5:03am",
       firstLowTideHeight: 0.4,
@@ -464,7 +450,7 @@ const chartData = [
   {
     date: "2024-04-02",
     time: "6pm",
-    timestamp: 1712079600,
+    timestamp: 1712080800,
     swellDirection: 120,
     windDirection: 170,
     windSpeed_kmh: 10,
@@ -497,7 +483,7 @@ const chartData = [
   {
     date: "2024-04-02",
     time: "9pm",
-    timestamp: 1712089800,
+    timestamp: 1712091600,
     swellDirection: 138,
     windDirection: 190,
     windSpeed_kmh: 10,
@@ -514,8 +500,6 @@ const chartData = [
     nextHighTide: "11:30pm",
     nextHighTideHeight: 1.6,
     isRising: true,
-    // nextTideHeight: 1.6,
-    // nextTideTime: "11:30pm",
     tides: {
       firstLowTide: "5:03am",
       firstLowTideHeight: 0.4,
@@ -531,7 +515,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "12am",
-    timestamp: 1712099400,
+    timestamp: 1712102400,
     swellDirection: 146,
     windDirection: 360,
     windSpeed_kmh: 10,
@@ -564,7 +548,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "3am",
-    timestamp: 1712109000,
+    timestamp: 1712113200,
     swellDirection: 349,
     windDirection: 50,
     windSpeed_kmh: 10,
@@ -583,8 +567,6 @@ const chartData = [
     nextLowTide: "6:09am",
     nextLowTideHeight: 0.5,
     isRising: false,
-    // nextTideHeight: 0.5,
-    // nextTideTime: "6:09am",
     tides: {
       firstLowTide: "6:09am",
       firstLowTideHeight: 0.5,
@@ -597,7 +579,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "6am",
-    timestamp: 1712118600,
+    timestamp: 1712124000,
     swellDirection: 243,
     windDirection: 180,
     windSpeed_kmh: 30,
@@ -630,7 +612,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "9am",
-    timestamp: 1712128200,
+    timestamp: 1712134800,
     swellDirection: 89,
     windDirection: 150,
     windSpeed_kmh: 47,
@@ -663,7 +645,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "12pm",
-    timestamp: 1712137800,
+    timestamp: 1712145600,
     swellDirection: 137,
     windDirection: 200,
     windSpeed_kmh: 80,
@@ -690,7 +672,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "3pm",
-    timestamp: 1712147400,
+    timestamp: 1712156400,
     swellDirection: 224,
     windDirection: 170,
     windSpeed_kmh: 60,
@@ -703,8 +685,6 @@ const chartData = [
     nextLowTide: "5:38pm",
     nextLowTideHeight: 0.4,
     isRising: false,
-    // nextTideHeight: 0.4,
-    // nextTideTime: "5:38pm",
     tides: {
       firstLowTide: "6:09am",
       firstLowTideHeight: 0.5,
@@ -717,7 +697,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "6pm",
-    timestamp: 1712157000,
+    timestamp: 1712167200,
     swellDirection: 138,
     windDirection: 230,
     windSpeed_kmh: 29,
@@ -740,7 +720,7 @@ const chartData = [
   {
     date: "2024-04-03",
     time: "9pm",
-    timestamp: 1712166600,
+    timestamp: 1712178000,
     swellDirection: 317,
     windDirection: 290,
     windSpeed_kmh: 10,
@@ -764,7 +744,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "12am",
-    timestamp: 1712176200,
+    timestamp: 1712188800,
     swellDirection: 215,
     windDirection: 250,
     windSpeed_kmh: 10,
@@ -795,7 +775,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "3am",
-    timestamp: 1712185800,
+    timestamp: 1712199600,
     swellDirection: 75,
     windDirection: 130,
     windSpeed_kmh: 10,
@@ -826,7 +806,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "6am",
-    timestamp: 1712195400,
+    timestamp: 1712210400,
     swellDirection: 303,
     windDirection: 60,
     windSpeed_kmh: 10,
@@ -841,8 +821,6 @@ const chartData = [
     nextLowTide: "7:30am",
     nextLowTideHeight: 0.6,
     isRising: false,
-    // nextTideTime: "7:30am",
-    // nextTideHeight: 0.6,
     tides: {
       firstLowTide: "7:30am",
       firstLowTideHeight: 0.6,
@@ -857,7 +835,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "9am",
-    timestamp: 1712205000,
+    timestamp: 1712221200,
     swellDirection: 122,
     windDirection: 180,
     windSpeed_kmh: 10,
@@ -888,7 +866,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "12pm",
-    timestamp: 1712214600,
+    timestamp: 1712232000,
     swellDirection: 315,
     windDirection: 240,
     windSpeed_kmh: 10,
@@ -903,8 +881,6 @@ const chartData = [
     nextLowTide: "6:40pm",
     nextLowTideHeight: 0.5,
     isRising: true,
-    // nextTideTime: "12:52pm",
-    // nextTideHeight: 1.5,
     tides: {
       firstLowTide: "7:30am",
       firstLowTideHeight: 0.6,
@@ -919,7 +895,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "3pm",
-    timestamp: 1712224200,
+    timestamp: 1712242800,
     swellDirection: 54,
     windDirection: 20,
     windSpeed_kmh: 10,
@@ -948,7 +924,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "6pm",
-    timestamp: 1712233800,
+    timestamp: 1712253600,
     swellDirection: 165,
     windDirection: 220,
     windSpeed_kmh: 10,
@@ -961,7 +937,6 @@ const chartData = [
     nextLowTide: "6:40pm",
     nextLowTideHeight: 0.5,
     isRising: false,
-    // nextTideTime: "6:40pm",
     tides: {
       firstLowTide: "7:30am",
       firstLowTideHeight: 0.6,
@@ -976,7 +951,7 @@ const chartData = [
   {
     date: "2024-04-04",
     time: "9pm",
-    timestamp: 1712243400,
+    timestamp: 1712264400,
     swellDirection: 293,
     windDirection: 310,
     windSpeed_kmh: 10,
@@ -1002,7 +977,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "12am",
-    timestamp: 1712253000,
+    timestamp: 1712275200,
     swellDirection: 247,
     windDirection: 190,
     windSpeed_kmh: 20,
@@ -1033,7 +1008,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "3am",
-    timestamp: 1712262600,
+    timestamp: 1712286000,
     swellDirection: 325,
     windDirection: 60,
     windSpeed_kmh: 24,
@@ -1064,7 +1039,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "6am",
-    timestamp: 1712272200,
+    timestamp: 1712296800,
     swellDirection: 181,
     windDirection: 30,
     windSpeed_kmh: 28,
@@ -1095,7 +1070,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "9am",
-    timestamp: 1712281800,
+    timestamp: 1712307600,
     swellDirection: 98,
     windDirection: 160,
     windSpeed_kmh: 32,
@@ -1126,7 +1101,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "12pm",
-    timestamp: 1712291400,
+    timestamp: 1712318400,
     swellDirection: 288,
     windDirection: 300,
     windSpeed_kmh: 36,
@@ -1157,7 +1132,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "3pm",
-    timestamp: 1712301000,
+    timestamp: 1712329200,
     swellDirection: 149,
     windDirection: 210,
     windSpeed_kmh: 28,
@@ -1190,7 +1165,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "6pm",
-    timestamp: 1712310600,
+    timestamp: 1712340000,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1219,7 +1194,7 @@ const chartData = [
   {
     date: "2024-04-05",
     time: "9pm",
-    timestamp: 1712320200,
+    timestamp: 1712350800,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1245,7 +1220,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "12am",
-    timestamp: 1712329800,
+    timestamp: 1712361600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1264,7 +1239,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "3am",
-    timestamp: 1712339400,
+    timestamp: 1712372400,
     swellDirection: 197,
     windDirection: 240,
     windSpeed_kmh: 12,
@@ -1283,7 +1258,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "6am",
-    timestamp: 1712349000,
+    timestamp: 1712383200,
     swellDirection: 177,
     windDirection: 160,
     windSpeed_kmh: 10,
@@ -1302,7 +1277,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "9am",
-    timestamp: 1712358600,
+    timestamp: 1712394000,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1321,7 +1296,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "12pm",
-    timestamp: 1712368200,
+    timestamp: 1712404800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1340,7 +1315,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "3pm",
-    timestamp: 1712377800,
+    timestamp: 1712415600,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1359,7 +1334,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "6pm",
-    timestamp: 1712387400,
+    timestamp: 1712426400,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1378,7 +1353,7 @@ const chartData = [
   {
     date: "2024-04-06",
     time: "9pm",
-    timestamp: 1712397000,
+    timestamp: 1712437200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1397,7 +1372,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "12am",
-    timestamp: 1712406600,
+    timestamp: 1712448000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1416,7 +1391,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "3am",
-    timestamp: 1712416200,
+    timestamp: 1712458800,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1435,7 +1410,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "6am",
-    timestamp: 1712425800,
+    timestamp: 1712469600,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1454,7 +1429,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "9am",
-    timestamp: 1712435400,
+    timestamp: 1712480400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1473,7 +1448,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "12pm",
-    timestamp: 1712445000,
+    timestamp: 1712491200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1492,7 +1467,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "3pm",
-    timestamp: 1712454600,
+    timestamp: 1712502000,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1511,7 +1486,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "6pm",
-    timestamp: 1712464200,
+    timestamp: 1712512800,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1530,7 +1505,7 @@ const chartData = [
   {
     date: "2024-04-07",
     time: "9pm",
-    timestamp: 1712473800,
+    timestamp: 1712523600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1549,7 +1524,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "12am",
-    timestamp: 1712483400,
+    timestamp: 1712534400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1568,7 +1543,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "3am",
-    timestamp: 1712493000,
+    timestamp: 1712545200,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1587,7 +1562,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "6am",
-    timestamp: 1712502600,
+    timestamp: 1712556000,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1606,7 +1581,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "9am",
-    timestamp: 1712512200,
+    timestamp: 1712566800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1625,7 +1600,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "12pm",
-    timestamp: 1712521800,
+    timestamp: 1712577600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1644,7 +1619,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "3pm",
-    timestamp: 1712531400,
+    timestamp: 1712588400,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1663,7 +1638,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "6pm",
-    timestamp: 1712541000,
+    timestamp: 1712599200,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1682,7 +1657,7 @@ const chartData = [
   {
     date: "2024-04-08",
     time: "9pm",
-    timestamp: 1712550600,
+    timestamp: 1712610000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1701,7 +1676,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "12am",
-    timestamp: 1712560200,
+    timestamp: 1712620800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1720,7 +1695,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "3am",
-    timestamp: 1712569800,
+    timestamp: 1712631600,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1739,7 +1714,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "6am",
-    timestamp: 1712579400,
+    timestamp: 1712642400,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1758,7 +1733,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "9am",
-    timestamp: 1712589000,
+    timestamp: 1712653200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1777,7 +1752,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "12pm",
-    timestamp: 1712598600,
+    timestamp: 1712664000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1796,7 +1771,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "3pm",
-    timestamp: 1712608200,
+    timestamp: 1712674800,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1815,7 +1790,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "6pm",
-    timestamp: 1712617800,
+    timestamp: 1712685600,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1834,7 +1809,7 @@ const chartData = [
   {
     date: "2024-04-09",
     time: "9pm",
-    timestamp: 1712627400,
+    timestamp: 1712696400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1853,7 +1828,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "12am",
-    timestamp: 1712637000,
+    timestamp: 1712707200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1872,7 +1847,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "3am",
-    timestamp: 1712646600,
+    timestamp: 1712718000,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1891,7 +1866,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "6am",
-    timestamp: 1712656200,
+    timestamp: 1712728800,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1910,7 +1885,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "9am",
-    timestamp: 1712665800,
+    timestamp: 1712739600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1929,7 +1904,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "12pm",
-    timestamp: 1712675400,
+    timestamp: 1712750400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -1948,7 +1923,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "3pm",
-    timestamp: 1712685000,
+    timestamp: 1712761200,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -1967,7 +1942,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "6pm",
-    timestamp: 1712694600,
+    timestamp: 1712772000,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -1986,7 +1961,7 @@ const chartData = [
   {
     date: "2024-04-10",
     time: "9pm",
-    timestamp: 1712704200,
+    timestamp: 1712782800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2005,7 +1980,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "12am",
-    timestamp: 1712713800,
+    timestamp: 1712793600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2024,7 +1999,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "3am",
-    timestamp: 1712723400,
+    timestamp: 1712804400,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2043,7 +2018,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "6am",
-    timestamp: 1712733000,
+    timestamp: 1712815200,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2062,7 +2037,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "9am",
-    timestamp: 1712742600,
+    timestamp: 1712826000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2081,7 +2056,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "12pm",
-    timestamp: 1712752200,
+    timestamp: 1712836800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2100,7 +2075,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "3pm",
-    timestamp: 1712761800,
+    timestamp: 1712847600,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2119,7 +2094,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "6pm",
-    timestamp: 1712771400,
+    timestamp: 1712858400,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2138,7 +2113,7 @@ const chartData = [
   {
     date: "2024-04-11",
     time: "9pm",
-    timestamp: 1712781000,
+    timestamp: 1712869200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2157,7 +2132,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "12am",
-    timestamp: 1712790600,
+    timestamp: 1712880000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2176,7 +2151,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "3am",
-    timestamp: 1712800200,
+    timestamp: 1712890800,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2195,7 +2170,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "6am",
-    timestamp: 1712809800,
+    timestamp: 1712901600,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2214,7 +2189,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "9am",
-    timestamp: 1712819400,
+    timestamp: 1712912400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2233,7 +2208,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "12pm",
-    timestamp: 1712829000,
+    timestamp: 1712923200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2252,7 +2227,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "3pm",
-    timestamp: 1712838600,
+    timestamp: 1712934000,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2271,7 +2246,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "6pm",
-    timestamp: 1712848200,
+    timestamp: 1712944800,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2290,7 +2265,7 @@ const chartData = [
   {
     date: "2024-04-12",
     time: "9pm",
-    timestamp: 1712857800,
+    timestamp: 1712955600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2309,7 +2284,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "12am",
-    timestamp: 1712867400,
+    timestamp: 1712966400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2328,7 +2303,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "3am",
-    timestamp: 1712877000,
+    timestamp: 1712977200,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2347,7 +2322,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "6am",
-    timestamp: 1712886600,
+    timestamp: 1712988000,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2366,7 +2341,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "9am",
-    timestamp: 1712896200,
+    timestamp: 1712998800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2385,7 +2360,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "12pm",
-    timestamp: 1712905800,
+    timestamp: 1713009600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2404,7 +2379,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "3pm",
-    timestamp: 1712915400,
+    timestamp: 1713020400,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2423,7 +2398,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "6pm",
-    timestamp: 1712925000,
+    timestamp: 1713031200,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2442,7 +2417,7 @@ const chartData = [
   {
     date: "2024-04-13",
     time: "9pm",
-    timestamp: 1712934600,
+    timestamp: 1713042000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2461,7 +2436,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "12am",
-    timestamp: 1712944200,
+    timestamp: 1713052800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2480,7 +2455,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "3am",
-    timestamp: 1712953800,
+    timestamp: 1713063600,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2499,7 +2474,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "6am",
-    timestamp: 1712963400,
+    timestamp: 1713074400,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2518,7 +2493,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "9am",
-    timestamp: 1712973000,
+    timestamp: 1713085200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2537,7 +2512,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "12pm",
-    timestamp: 1712982600,
+    timestamp: 1713096000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2556,7 +2531,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "3pm",
-    timestamp: 1712992200,
+    timestamp: 1713106800,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2575,7 +2550,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "6pm",
-    timestamp: 1713001800,
+    timestamp: 1713117600,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2594,7 +2569,7 @@ const chartData = [
   {
     date: "2024-04-14",
     time: "9pm",
-    timestamp: 1713011400,
+    timestamp: 1713128400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2613,7 +2588,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "12am",
-    timestamp: 1713021000,
+    timestamp: 1713139200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2632,7 +2607,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "3am",
-    timestamp: 1713030600,
+    timestamp: 1713150000,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2651,7 +2626,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "6am",
-    timestamp: 1713040200,
+    timestamp: 1713160800,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2670,7 +2645,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "9am",
-    timestamp: 1713049800,
+    timestamp: 1713171600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2689,7 +2664,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "12pm",
-    timestamp: 1713059400,
+    timestamp: 1713182400,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2708,7 +2683,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "3pm",
-    timestamp: 1713069000,
+    timestamp: 1713193200,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2727,7 +2702,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "6pm",
-    timestamp: 1713078600,
+    timestamp: 1713204000,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2746,7 +2721,7 @@ const chartData = [
   {
     date: "2024-04-15",
     time: "9pm",
-    timestamp: 1713088200,
+    timestamp: 1713214800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2765,7 +2740,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "12am",
-    timestamp: 1713097800,
+    timestamp: 1713225600,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2784,7 +2759,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "3am",
-    timestamp: 1713107400,
+    timestamp: 1713236400,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2803,7 +2778,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "6am",
-    timestamp: 1713117000,
+    timestamp: 1713247200,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2822,7 +2797,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "9am",
-    timestamp: 1713126600,
+    timestamp: 1713258000,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2841,7 +2816,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "12pm",
-    timestamp: 1713136200,
+    timestamp: 1713268800,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,
@@ -2860,7 +2835,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "3pm",
-    timestamp: 1713145800,
+    timestamp: 1713279600,
     swellDirection: 227,
     windDirection: 180,
     windSpeed_kmh: 20,
@@ -2879,7 +2854,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "6pm",
-    timestamp: 1713155400,
+    timestamp: 1713290400,
     swellDirection: 293,
     windDirection: 330,
     windSpeed_kmh: 10,
@@ -2898,7 +2873,7 @@ const chartData = [
   {
     date: "2024-04-16",
     time: "9pm",
-    timestamp: 1713165000,
+    timestamp: 1713301200,
     swellDirection: 335,
     windDirection: 270,
     windSpeed_kmh: 10,

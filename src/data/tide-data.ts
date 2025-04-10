@@ -163,6 +163,7 @@ const tideData = [
     date: "2024-04-06",
     time: "9:29pm",
     dateTime: "2024-04-06 21:29:00",
+    timeStamp: 1712127540000,
     height: 0.6,
   },
   // April 7 (Mon)
@@ -220,6 +221,7 @@ const tideData = [
     date: "2024-04-08",
     time: "11:38pm",
     dateTime: "2024-04-08 23:38:00",
+    timeStamp: 1712152680000,
     height: 0.5,
   },
   // April 9 (Wed)
