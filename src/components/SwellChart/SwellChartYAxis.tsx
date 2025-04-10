@@ -6,7 +6,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import { generateTicks, processedData } from "@/utils/chart-utils";
@@ -14,7 +13,6 @@ import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { chartArgs } from "@/lib/chart-args";
-import { swellChartConfig } from "@/lib/chart-config";
 
 /**
  * SwellChartYAxis component
@@ -99,7 +97,14 @@ const SwellChartYAxis = ({
           )}
         </g>
       ) : (
-        <text x={value.x} y={value.y} dy={1} textAnchor="end">
+        <text
+          x={value.x}
+          y={value.y}
+          dy={1}
+          textAnchor="end"
+          fontSize={12}
+          fill="#666"
+        >
           {value.payload.value}
           {unitPreferences.waveHeight}
         </text>
@@ -119,65 +124,60 @@ const SwellChartYAxis = ({
     <ResponsiveContainer
       width={60}
       height="100%"
-      className="mb-0 absolute top-0 left-0 md:left-4 z-10"
+      className="mb-0 absolute top-0 left-0 md:left-4 z-10 h-80 min-h-80 max-h-80"
     >
-      <ChartContainer
-        config={swellChartConfig}
-        className="aspect-auto h-80 w-full"
-      >
-        <BarChart data={processedData} {...dynamicBarChartArgs}>
-          <CartesianGrid {...cartesianGridArgs} />
+      <BarChart data={processedData} {...dynamicBarChartArgs}>
+        <CartesianGrid {...cartesianGridArgs} />
 
-          {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-          <XAxis xAxisId={0} dataKey="timestamp" hide />
+        {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
+        <XAxis xAxisId={0} dataKey="timestamp" hide />
 
-          {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
-          <XAxis xAxisId={2} dataKey="timestamp" orientation="top" />
+        {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
+        <XAxis xAxisId={2} dataKey="timestamp" orientation="top" />
 
-          {/* This XAxis is the one that shows the time of the day */}
-          <XAxis xAxisId={1} dataKey="timestamp" orientation="top" />
+        {/* This XAxis is the one that shows the time of the day */}
+        <XAxis xAxisId={1} dataKey="timestamp" orientation="top" />
 
-          {/* This XAxis is the one that shows the wind direction */}
-          <XAxis xAxisId={3} dataKey="timestamp" />
+        {/* This XAxis is the one that shows the wind direction */}
+        <XAxis xAxisId={3} dataKey="timestamp" />
 
-          {/* This XAxis is the one that shows the wind speed */}
-          <XAxis xAxisId={4} dataKey="timestamp" />
+        {/* This XAxis is the one that shows the wind speed */}
+        <XAxis xAxisId={4} dataKey="timestamp" />
 
-          <Bar
-            dataKey={(d) =>
-              unitPreferences.waveHeight === "ft"
-                ? d.waveHeight_ft
-                : d.waveHeight_m
-            }
-            stackId="b"
-            name="Y Wave Height"
-            id="y-wave-height"
-            key={`y-wave-height-${unitPreferences.waveHeight}`}
-            keyPoints={160}
-            keySplines={16}
-            hide
-            aria-hidden
-          />
+        <Bar
+          dataKey={(d) =>
+            unitPreferences.waveHeight === "ft"
+              ? d.waveHeight_ft
+              : d.waveHeight_m
+          }
+          stackId="b"
+          name="Y Wave Height"
+          id="y-wave-height"
+          key={`y-wave-height-${unitPreferences.waveHeight}`}
+          keyPoints={160}
+          keySplines={16}
+          hide
+          aria-hidden
+        />
 
-          <Bar
-            dataKey={(d) =>
-              unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-                ? d.faceWaveHeight_ft - d.waveHeight_ft
-                : null
-            }
-            stackId="b"
-            name="Y Face Wave Height"
-            id="y-face-wave-height"
-            key={`y-face-wave-height-${unitPreferences.waveHeight}`}
-            keyPoints={160}
-            keySplines={16}
-            hide
-            aria-hidden
-          />
+        <Bar
+          dataKey={(d) =>
+            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
+              ? d.faceWaveHeight_ft - d.waveHeight_ft
+              : null
+          }
+          stackId="b"
+          name="Y Face Wave Height"
+          id="y-face-wave-height"
+          key={`y-face-wave-height-${unitPreferences.waveHeight}`}
+          keyPoints={160}
+          keySplines={16}
+          hide
+          aria-hidden
+        />
 
-          <YAxis {...dynamicYAxisArgs} />
-        </BarChart>
-      </ChartContainer>
+        <YAxis {...dynamicYAxisArgs} />
+      </BarChart>
     </ResponsiveContainer>
   );
 };

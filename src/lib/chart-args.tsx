@@ -48,6 +48,7 @@ export const chartArgs = {
     }),
     orientation: "top" as const,
     tickFormatter: formatDateTick,
+    fontSize: 12,
     fontWeight: 700,
   } as XAxisProps,
 
@@ -68,6 +69,7 @@ export const chartArgs = {
       return `${hour}${period}`;
     },
     orientation: "top" as const,
+    fontSize: 12,
   } as XAxisProps,
 
   /**

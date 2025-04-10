@@ -4,10 +4,10 @@ import {
   CartesianGrid,
   LabelList,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
@@ -17,7 +17,6 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
 import WindSpeedTick from "./WindSpeedTick";
 import { chartArgs } from "@/lib/chart-args";
-import { swellChartConfig } from "@/lib/chart-config";
 
 const SwellChart = ({
   unitPreferences,
@@ -115,126 +114,121 @@ const SwellChart = ({
   };
 
   return (
-    <ResponsiveContainer width={4848} height="100%" className="mb-0">
-      <ChartContainer
-        config={swellChartConfig}
-        className="aspect-auto h-80 w-full"
-        id="swell-chart"
-      >
-        <BarChart data={processedData} {...dynamicBarChartArgs}>
-          <CartesianGrid {...dynamicCartesianGridArgs} />
+    <ResponsiveContainer
+      width={4848}
+      height="100%"
+      className="mb-0 h-80 min-h-80"
+    >
+      <BarChart data={processedData} {...dynamicBarChartArgs}>
+        <CartesianGrid {...dynamicCartesianGridArgs} />
 
-          {/* Duplicate XAxis for the stripes in the background */}
-          <XAxis {...xAxisArgsBackground} />
+        {/* Duplicate XAxis for the stripes in the background */}
+        <XAxis {...xAxisArgsBackground} />
 
-          {/* XAxis for the calendar date */}
-          <XAxis {...xAxisArgsCalendarDate} />
+        {/* XAxis for the calendar date */}
+        <XAxis {...xAxisArgsCalendarDate} />
 
-          {/* XAxis for the time of day */}
-          <XAxis {...xAxisArgsTimeOfDay} />
+        {/* XAxis for the time of day */}
+        <XAxis {...xAxisArgsTimeOfDay} />
 
-          {/* XAxis for the wind direction */}
-          <XAxis {...xAxisArgsWindDirection} />
+        {/* XAxis for the wind direction */}
+        <XAxis {...xAxisArgsWindDirection} />
 
-          {/* XAxis for the wind speed with dynamic values */}
-          <XAxis {...dynamicWindSpeedArgs} />
+        {/* XAxis for the wind speed with dynamic values */}
+        <XAxis {...dynamicWindSpeedArgs} />
 
-          <ChartTooltip {...dynamicTooltipArgs} />
+        <Tooltip {...dynamicTooltipArgs} />
 
-          <Bar
-            dataKey={(d) =>
-              unitPreferences.waveHeight === "ft"
-                ? d.waveHeight_ft
-                : d.waveHeight_m
-            }
-            fill="#008993"
-            unit={unitPreferences.waveHeight}
-            activeBar={{
-              fill: "#00b4c6",
+        <Bar
+          dataKey={(d) =>
+            unitPreferences.waveHeight === "ft"
+              ? d.waveHeight_ft
+              : d.waveHeight_m
+          }
+          fill="#008993"
+          unit={unitPreferences.waveHeight}
+          activeBar={{
+            fill: "#00b4c6",
+          }}
+          stackId="a"
+          animationEasing="linear"
+          animationDuration={220}
+        >
+          <LabelList
+            dataKey="swellDirection"
+            position="top"
+            fill="#008a93"
+            content={({ x, y, value, fill, index }) => {
+              if (typeof index === "undefined") return null;
+              const data = chartData[index];
+              if (data.faceWaveHeight_ft && unitPreferences.waveHeight === "ft")
+                return null;
+
+              return (
+                <SwellLabel
+                  x={x}
+                  y={y}
+                  value={value}
+                  fill={fill}
+                  hasFaceWaveHeight={false}
+                  className="animate-in fade-in-0 duration-1000"
+                />
+              );
             }}
-            stackId="a"
-            animationEasing="linear"
-            animationDuration={220}
-          >
-            <LabelList
-              dataKey="swellDirection"
-              position="top"
-              fill="#008a93"
-              content={({ x, y, value, fill, index }) => {
-                if (typeof index === "undefined") return null;
-                const data = chartData[index];
-                if (
-                  data.faceWaveHeight_ft &&
-                  unitPreferences.waveHeight === "ft"
-                )
-                  return null;
+          />
+        </Bar>
 
+        <Bar
+          dataKey={(d) =>
+            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
+              ? d.faceWaveHeight_ft - d.waveHeight_ft
+              : null
+          }
+          fill="#ffa800"
+          unit={unitPreferences.waveHeight}
+          activeBar={{
+            fill: "#ffc95d",
+          }}
+          className="w-7 min-w-7"
+          stackId="a"
+          animationBegin={210}
+          animationEasing="ease-in-out"
+        >
+          <LabelList
+            dataKey="secondarySwellDirection"
+            position="top"
+            fill="#ffa800"
+            content={({ x, y, value, fill, index }) => {
+              if (typeof index === "undefined") return null;
+              const data = chartData[index];
+
+              if (
+                data.faceWaveHeight_ft &&
+                unitPreferences.waveHeight === "ft"
+              ) {
                 return (
-                  <SwellLabel
+                  <RenderCustomizedLabel
+                    value={value}
                     x={x}
                     y={y}
-                    value={value}
                     fill={fill}
-                    hasFaceWaveHeight={false}
-                    className="animate-in fade-in-0 duration-1000"
+                    hasFaceWaveHeight={
+                      unitPreferences.waveHeight === "ft" &&
+                      data?.faceWaveHeight_ft
+                        ? true
+                        : false
+                    }
+                    primarySwellDirection={data?.swellDirection}
                   />
                 );
-              }}
-            />
-          </Bar>
-
-          <Bar
-            dataKey={(d) =>
-              unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-                ? d.faceWaveHeight_ft - d.waveHeight_ft
-                : null
-            }
-            fill="#ffa800"
-            unit={unitPreferences.waveHeight}
-            activeBar={{
-              fill: "#ffc95d",
+              }
+              return null;
             }}
-            className="w-7 min-w-7"
-            stackId="a"
-            animationBegin={210}
-            animationEasing="ease-in-out"
-          >
-            <LabelList
-              dataKey="secondarySwellDirection"
-              position="top"
-              fill="#ffa800"
-              content={({ x, y, value, fill, index }) => {
-                if (typeof index === "undefined") return null;
-                const data = chartData[index];
+          />
+        </Bar>
 
-                if (
-                  data.faceWaveHeight_ft &&
-                  unitPreferences.waveHeight === "ft"
-                ) {
-                  return (
-                    <RenderCustomizedLabel
-                      value={value}
-                      x={x}
-                      y={y}
-                      fill={fill}
-                      hasFaceWaveHeight={
-                        unitPreferences.waveHeight === "ft" &&
-                        data?.faceWaveHeight_ft
-                          ? true
-                          : false
-                      }
-                      primarySwellDirection={data?.swellDirection}
-                    />
-                  );
-                }
-                return null;
-              }}
-            />
-          </Bar>
-
-          <YAxis {...dynamicYAxisArgs} domain={[0, "dataMax"]} />
-        </BarChart>
-      </ChartContainer>
+        <YAxis {...dynamicYAxisArgs} domain={[0, "dataMax"]} />
+      </BarChart>
     </ResponsiveContainer>
   );
 };

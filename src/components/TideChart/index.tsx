@@ -5,10 +5,9 @@ import {
   YAxis,
   XAxis,
   YAxisProps,
+  Tooltip,
 } from "recharts";
-import { tideChartConfig } from "@/lib/chart-config";
 import { ResponsiveContainer } from "recharts";
-import { ChartContainer, ChartTooltip } from "../ui/chart";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { TideAreaDot } from "./TideAreaDot";
@@ -130,46 +129,41 @@ const TideChart = () => {
   } as YAxisProps;
 
   return (
-    <ResponsiveContainer width={4848} height="100%">
-      <ChartContainer
-        config={tideChartConfig}
-        className="aspect-auto h-36 w-full"
+    <ResponsiveContainer width={4848} height="100%" className="h-36 min-h-36">
+      <AreaChart
+        accessibilityLayer
+        data={processedData}
+        margin={{
+          left: 0,
+          right: 0,
+          bottom: 16,
+        }}
       >
-        <AreaChart
-          accessibilityLayer
-          data={processedData}
-          margin={{
-            left: 0,
-            right: 0,
-            bottom: 16,
+        <CartesianGrid {...dynamicCartesianGridArgs} />
+
+        {/* Background stripes XAxis */}
+        <XAxis {...dynamicXAxisBackgroundArgs} />
+
+        {/* Legend XAxis */}
+        <XAxis {...dynamicXAxisLegendArgs} />
+
+        <Tooltip content={<TideTooltip />} />
+
+        <Area
+          type="monotone"
+          dataKey="height"
+          stroke="#008a93"
+          fill="#008a93"
+          connectNulls
+          dot={(props) => {
+            if (props.key === "dot-0") return <span key={props.key} />;
+            return <TideAreaDot {...props} key={props.key} />;
           }}
-        >
-          <CartesianGrid {...dynamicCartesianGridArgs} />
+          isAnimationActive={false}
+        />
 
-          {/* Background stripes XAxis */}
-          <XAxis {...dynamicXAxisBackgroundArgs} />
-
-          {/* Legend XAxis */}
-          <XAxis {...dynamicXAxisLegendArgs} />
-
-          <ChartTooltip content={<TideTooltip />} />
-
-          <Area
-            type="monotone"
-            dataKey="height"
-            stroke="#008a93"
-            fill="#008a93"
-            connectNulls
-            dot={(props) => {
-              if (props.key === "dot-0") return <span key={props.key} />;
-              return <TideAreaDot {...props} key={props.key} />;
-            }}
-            isAnimationActive={false}
-          />
-
-          <YAxis {...dynamicYAxisArgs} />
-        </AreaChart>
-      </ChartContainer>
+        <YAxis {...dynamicYAxisArgs} />
+      </AreaChart>
     </ResponsiveContainer>
   );
 };
