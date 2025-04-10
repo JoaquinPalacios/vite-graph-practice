@@ -119,7 +119,11 @@ const SwellChart = ({
       height="100%"
       className="mb-0 h-80 min-h-80"
     >
-      <BarChart data={processedData} {...dynamicBarChartArgs}>
+      <BarChart
+        data={processedData}
+        {...dynamicBarChartArgs}
+        className="[&>svg]:focus:outline-none"
+      >
         <CartesianGrid {...dynamicCartesianGridArgs} />
 
         {/* Duplicate XAxis for the stripes in the background */}

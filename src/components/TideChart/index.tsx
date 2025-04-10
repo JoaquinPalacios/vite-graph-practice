@@ -138,6 +138,7 @@ const TideChart = () => {
           right: 0,
           bottom: 16,
         }}
+        className="[&>svg]:focus:outline-none"
       >
         <CartesianGrid {...dynamicCartesianGridArgs} />
 

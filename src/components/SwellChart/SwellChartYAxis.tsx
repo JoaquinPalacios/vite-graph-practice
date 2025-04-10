@@ -126,7 +126,11 @@ const SwellChartYAxis = ({
       height="100%"
       className="mb-0 absolute top-0 left-0 md:left-4 z-10 h-80 min-h-80 max-h-80"
     >
-      <BarChart data={processedData} {...dynamicBarChartArgs}>
+      <BarChart
+        data={processedData}
+        {...dynamicBarChartArgs}
+        className="[&>svg]:focus:outline-none"
+      >
         <CartesianGrid {...cartesianGridArgs} />
 
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
@@ -154,8 +158,6 @@ const SwellChartYAxis = ({
           name="Y Wave Height"
           id="y-wave-height"
           key={`y-wave-height-${unitPreferences.waveHeight}`}
-          keyPoints={160}
-          keySplines={16}
           hide
           aria-hidden
         />
@@ -170,8 +172,6 @@ const SwellChartYAxis = ({
           name="Y Face Wave Height"
           id="y-face-wave-height"
           key={`y-face-wave-height-${unitPreferences.waveHeight}`}
-          keyPoints={160}
-          keySplines={16}
           hide
           aria-hidden
         />

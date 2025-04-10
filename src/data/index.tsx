@@ -1369,6 +1369,7 @@ const chartData = [
     nextLowTideHeight: 0.2,
     isRising: true,
   },
+  // April 7 (Mon)
   {
     date: "2024-04-07",
     time: "12am",
@@ -1521,6 +1522,7 @@ const chartData = [
     nextLowTideHeight: 0.2,
     isRising: true,
   },
+  // April 8 (Tue)
   {
     date: "2024-04-08",
     time: "12am",
