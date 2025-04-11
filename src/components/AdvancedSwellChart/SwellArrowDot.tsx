@@ -54,16 +54,14 @@ interface SwellArrowDotProps {
 }
 
 const SwellArrowDot = (props: SwellArrowDotProps) => {
-  const { cx, cy, payload, dataKey, stroke } = props;
+  const { cx, cy, payload, stroke, dataKey } = props;
 
   if (!cx || !cy || !dataKey || !payload) {
     return null;
   }
 
-  // Extract the rank prefix (primary, secondary, tertiary, fourth, fifth)
+  // Extract the rank prefix (primary, secondary, etc.)
   const rankPrefix = dataKey.replace("SwellHeight", "");
-
-  // Get the corresponding direction and period based on the rank
   const direction = payload[
     `${rankPrefix}SwellDirection` as keyof typeof payload
   ] as number | undefined;
@@ -74,22 +72,14 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
     | number
     | undefined;
 
-  // Don't render if data is missing or height is negligible
-  if (
-    direction === undefined ||
-    period === undefined ||
-    height === undefined ||
-    height < 0.1
-  ) {
+  if (!direction || !period || !height || height < 0.1) {
     return null;
   }
 
   // --- Calculate arrow properties ---
-  const baseSize = 8; // Base font size for the arrow
-  const size = baseSize + period * 0.5; // Example: increase size slightly with period
-  const clampedSize = Math.max(5, Math.min(16, size)); // Keep size within reasonable bounds
-
-  // Calculate rotation angle
+  const baseSize = 8;
+  const size = baseSize + period * 0.5;
+  const clampedSize = Math.max(5, Math.min(16, size));
   const rotation = direction;
 
   return (
@@ -98,7 +88,7 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
       y={cy}
       transform={`rotate(${rotation}, ${cx}, ${cy})`}
       fontSize={clampedSize}
-      fill={stroke}
+      fill={stroke || "#888"}
       textAnchor="middle"
       dominantBaseline="central"
       style={{ pointerEvents: "none" }}

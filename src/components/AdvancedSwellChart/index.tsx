@@ -14,19 +14,45 @@ import { LuWind } from "react-icons/lu";
 // import { SwellTooltip } from "../SwellChart/SwellTooltip";
 import SwellAxisTick from "../SwellChart/SwellAxisTick";
 import SwellArrowDot from "./SwellArrowDot";
+import { useMemo } from "react";
+import processSwellData from "./ProcessDataSwell";
 
 const AdvancedSwellChart = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
 }) => {
-  const swellColors = {
-    primary: "#008993", // Teal
-    secondary: "#ffa800", // Orange
-    tertiary: "#fd6363", // Red
-    fourth: "#8884d8", // Purple (Example)
-    fifth: "#82ca9d", // Green (Example)
-  };
+  // --- Process data to identify events ---
+  // useMemo prevents reprocessing on every render unless chartData changes
+  const processedSwellData = useMemo(() => processSwellData(chartData), []);
+  const eventIds = Object.keys(processedSwellData);
+
+  // --- Define a color palette ---
+  const colorPalette = [
+    "#008993", // Teal
+    "#ffa800", // Orange
+    "#fd6363", // Red
+    "#8884d8", // Purple
+    "#82ca9d", // Green
+    "#ffc658", // Yellow
+    "#d0ed57", // Lime
+    "#a4de6c", // Light Green
+    "#8dd1e1", // Light Blue
+    "#83a6ed", // Indigo
+  ];
+
+  // --- Find overall max height for Y-axis domain ---
+  const overallMaxHeight = useMemo(() => {
+    let maxH = 0;
+    eventIds.forEach((id) => {
+      processedSwellData[id].forEach((point) => {
+        if (point.height > maxH) {
+          maxH = point.height;
+        }
+      });
+    });
+    return maxH;
+  }, [processedSwellData, eventIds]);
 
   return (
     <ResponsiveContainer
@@ -36,7 +62,7 @@ const AdvancedSwellChart = ({
     >
       <LineChart
         accessibilityLayer
-        data={chartData}
+        // data={chartData}
         margin={{
           left: 0,
           right: 12,
@@ -55,8 +81,21 @@ const AdvancedSwellChart = ({
           syncWithTicks
         />
 
+        {/* Define XAxis based on timestamp */}
+        <XAxis
+          dataKey="timestamp"
+          type="number" // Timestamps are numbers
+          scale="time" // Tell recharts it's time data
+          domain={["dataMin", "dataMax"]} // Use min/max timestamps from data
+          axisLine={false}
+          tickLine={false}
+          // You'll likely want a custom tick formatter for timestamps
+          // tickFormatter={(unixTime) => new Date(unixTime * 1000).toLocaleTimeString()}
+          hide // Hide this main time axis, rely on others below if needed
+        />
+
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        <XAxis xAxisId={0} dataKey="date" hide interval={7} />
+        {/* <XAxis xAxisId={0} dataKey="date" hide interval={7} /> */}
 
         {/* <Tooltip
           cursor={{
@@ -71,14 +110,31 @@ const AdvancedSwellChart = ({
         {/* This XAxis is the one that shows the wind direction */}
         <XAxis
           xAxisId={1}
-          dataKey="windDirection"
+          // Link this axis to the main time axis scale
+          scale="time"
+          type="number"
+          domain={["dataMin", "dataMax"]}
+          dataKey="timestamp" // Use timestamp to position ticks correctly
           tickLine={false}
           axisLine={true}
           tickMargin={0}
           minTickGap={0}
-          tick={({ payload, x, y, index }) => {
+          // Need to find the correct index in original chartData based on timestamp
+          tick={({
+            payload,
+            x,
+            y,
+          }: {
+            payload: { value: number };
+            x: number;
+            y: number;
+          }) => {
+            const timestampValue = payload.value;
+            const index = chartData.findIndex(
+              (d) => d.timestamp === timestampValue
+            );
             const data = chartData[index];
-
+            if (!data) return <g />; // Return empty group instead of null
             return (
               <SwellAxisTick
                 payload={payload}
@@ -88,15 +144,13 @@ const AdvancedSwellChart = ({
               />
             );
           }}
-          interval={0}
-          padding={{
-            left: 0,
-            right: 0,
-          }}
+          interval={0} // Show all ticks
+          allowDuplicatedCategory={false}
+          padding={{ left: 0, right: 0 }}
         />
 
         {/* This XAxis is the one that shows the wind speed */}
-        <XAxis
+        {/* <XAxis
           xAxisId={4}
           dataKey={
             unitPreferences.windSpeed === "knots"
@@ -114,9 +168,37 @@ const AdvancedSwellChart = ({
             right: 0,
           }}
           stroke="#666"
+        /> */}
+
+        <XAxis
+          xAxisId={4}
+          scale="time"
+          type="number"
+          domain={["dataMin", "dataMax"]}
+          dataKey="timestamp" // Use timestamp to position ticks correctly
+          tickLine={false}
+          axisLine={false}
+          tickMargin={10}
+          fontSize={12}
+          minTickGap={0}
+          interval={0} // Show all ticks
+          allowDuplicatedCategory={false}
+          padding={{ left: 0, right: 0 }}
+          stroke="#666"
+          // Format the timestamp tick value as wind speed
+          tickFormatter={(unixTime: number) => {
+            const index = chartData.findIndex((d) => d.timestamp === unixTime);
+            const data = chartData[index];
+            if (!data) return "";
+            return String(
+              unitPreferences.windSpeed === "knots"
+                ? data.windSpeed_knots
+                : data.windSpeed_kmh
+            );
+          }}
         />
 
-        <Line
+        {/* <Line
           dataKey="primarySwellHeight"
           fill={swellColors.primary}
           unit="m"
@@ -130,9 +212,9 @@ const AdvancedSwellChart = ({
           stroke={swellColors.primary} // Use stroke for line color
           strokeWidth={2}
           connectNulls={false} // Don't connect gaps where swell is missing
-        />
+        /> */}
 
-        <Line
+        {/* <Line
           dataKey="secondarySwellHeight"
           fill={swellColors.secondary}
           unit="m"
@@ -146,9 +228,9 @@ const AdvancedSwellChart = ({
           stroke={swellColors.secondary} // Use stroke for line color
           strokeWidth={2}
           connectNulls={false} // Don't connect gaps where swell is missing
-        />
+        /> */}
 
-        <Line
+        {/* <Line
           dataKey="tertiarySwellHeight"
           fill={swellColors.tertiary}
           unit="m"
@@ -162,9 +244,9 @@ const AdvancedSwellChart = ({
           stroke={swellColors.tertiary} // Use stroke for line color
           strokeWidth={2}
           connectNulls={false} // Don't connect gaps where swell is missing
-        />
+        /> */}
 
-        <Line
+        {/* <Line
           dataKey="fourthSwellHeight"
           fill={swellColors.fourth}
           unit="m"
@@ -178,9 +260,9 @@ const AdvancedSwellChart = ({
           stroke={swellColors.fourth} // Use stroke for line color
           strokeWidth={2}
           connectNulls={false} // Don't connect gaps where swell is missing
-        />
+        /> */}
 
-        <Line
+        {/* <Line
           dataKey="fifthSwellHeight"
           fill={swellColors.fifth}
           unit="m"
@@ -194,9 +276,91 @@ const AdvancedSwellChart = ({
           stroke={swellColors.fifth} // Use stroke for line color
           strokeWidth={2}
           connectNulls={false} // Don't connect gaps where swell is missing
-        />
+        /> */}
 
         <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          minTickGap={0}
+          unit="m"
+          padding={{ top: 20 }}
+          interval="preserveStart"
+          overflow="visible"
+          type="number"
+          // Use the calculated overall max height
+          domain={[0, Math.ceil(overallMaxHeight) + 0.5]}
+          allowDecimals={false}
+          tick={(value) => {
+            return value.index === 0 ? (
+              <g transform="translate(-10, 0)">
+                <GiBigWave
+                  className="w-6 h-6"
+                  x={value.x - 8}
+                  y={value.y - 24}
+                  size={24}
+                  color="#666"
+                />
+                <LuWind
+                  className="w-4 h-4"
+                  x={value.x - 8}
+                  y={value.y + 12}
+                  size={24}
+                  color="#666"
+                />
+                {unitPreferences.windSpeed === "knots" ? (
+                  <text
+                    x={value.x + 12}
+                    y={value.y + 52}
+                    dy={1}
+                    textAnchor="end"
+                  >
+                    kts
+                  </text>
+                ) : (
+                  <text
+                    x={value.x + 12}
+                    y={value.y + 52}
+                    dy={1}
+                    textAnchor="end"
+                  >
+                    km/h
+                  </text>
+                )}
+              </g>
+            ) : (
+              <text x={value.x} y={value.y} dy={1} textAnchor="end">
+                {value.payload.value}m
+              </text>
+            );
+          }}
+          className="transition-opacity ease-in-out duration-200"
+        />
+
+        {eventIds.map((eventId, index) => {
+          const eventData = processedSwellData[eventId];
+          const color = colorPalette[index % colorPalette.length]; // Cycle through palette
+
+          return (
+            <Line
+              key={eventId}
+              data={eventData} // Data specific to this swell event
+              type="monotone"
+              dataKey="height" // Plotting the 'height' property within eventData
+              xAxisId={0} // Link to the main (hidden) time axis
+              name={eventId} // Optional: helpful for tooltips
+              stroke={color}
+              fill="none"
+              strokeWidth={2}
+              dot={<SwellArrowDot />} // Pass data point via payload to dot
+              activeDot={false}
+              connectNulls={false} // Show gaps if event disappears temporarily
+              isAnimationActive={false}
+            />
+          );
+        })}
+
+        {/* <YAxis
           tickLine={false}
           axisLine={false}
           tickMargin={8}
@@ -254,7 +418,7 @@ const AdvancedSwellChart = ({
             );
           }}
           className="transition-opacity ease-in-out duration-200"
-        />
+        /> */}
       </LineChart>
     </ResponsiveContainer>
   );
