@@ -5,20 +5,29 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip,
+  // Tooltip,
 } from "recharts";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
-import { SwellTooltip } from "../SwellChart/SwellTooltip";
+// import { SwellTooltip } from "../SwellChart/SwellTooltip";
 import SwellAxisTick from "../SwellChart/SwellAxisTick";
+import SwellArrowDot from "./SwellArrowDot";
 
 const AdvancedSwellChart = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
 }) => {
+  const swellColors = {
+    primary: "#008993", // Teal
+    secondary: "#ffa800", // Orange
+    tertiary: "#fd6363", // Red
+    fourth: "#8884d8", // Purple (Example)
+    fifth: "#82ca9d", // Green (Example)
+  };
+
   return (
     <ResponsiveContainer
       width={4848}
@@ -49,7 +58,7 @@ const AdvancedSwellChart = ({
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
         <XAxis xAxisId={0} dataKey="date" hide interval={7} />
 
-        <Tooltip
+        {/* <Tooltip
           cursor={{
             height: 280,
             fill: "oklch(0.129 0.042 264.695)",
@@ -57,7 +66,7 @@ const AdvancedSwellChart = ({
           }}
           content={<SwellTooltip unitPreferences={unitPreferences} />}
           trigger="hover"
-        />
+        /> */}
 
         {/* This XAxis is the one that shows the wind direction */}
         <XAxis
@@ -109,38 +118,82 @@ const AdvancedSwellChart = ({
 
         <Line
           dataKey="primarySwellHeight"
-          fill="#008993"
+          fill={swellColors.primary}
           unit="m"
           activeDot={{
-            fill: "#00b4c6",
+            fill: swellColors.primary,
           }}
+          dot={<SwellArrowDot />}
           width={28}
           animationEasing="linear"
           animationDuration={220}
+          stroke={swellColors.primary} // Use stroke for line color
+          strokeWidth={2}
+          connectNulls={false} // Don't connect gaps where swell is missing
         />
 
         <Line
           dataKey="secondarySwellHeight"
-          fill="#ffa800"
+          fill={swellColors.secondary}
           unit="m"
           activeDot={{
-            fill: "#ffc95d",
+            fill: swellColors.secondary,
           }}
+          dot={<SwellArrowDot />}
           className="w-7 min-w-7"
           animationBegin={210}
           animationEasing="ease-in-out"
+          stroke={swellColors.secondary} // Use stroke for line color
+          strokeWidth={2}
+          connectNulls={false} // Don't connect gaps where swell is missing
         />
 
         <Line
           dataKey="tertiarySwellHeight"
-          fill="#fd6363"
+          fill={swellColors.tertiary}
           unit="m"
           activeDot={{
-            fill: "#fd6363",
+            fill: swellColors.tertiary,
           }}
+          dot={<SwellArrowDot />}
           className="w-7 min-w-7"
           animationBegin={210}
           animationEasing="ease-in-out"
+          stroke={swellColors.tertiary} // Use stroke for line color
+          strokeWidth={2}
+          connectNulls={false} // Don't connect gaps where swell is missing
+        />
+
+        <Line
+          dataKey="fourthSwellHeight"
+          fill={swellColors.fourth}
+          unit="m"
+          activeDot={{
+            fill: swellColors.fourth,
+          }}
+          dot={<SwellArrowDot />}
+          className="w-7 min-w-7"
+          animationBegin={210}
+          animationEasing="ease-in-out"
+          stroke={swellColors.fourth} // Use stroke for line color
+          strokeWidth={2}
+          connectNulls={false} // Don't connect gaps where swell is missing
+        />
+
+        <Line
+          dataKey="fifthSwellHeight"
+          fill={swellColors.fifth}
+          unit="m"
+          activeDot={{
+            fill: swellColors.fifth,
+          }}
+          dot={<SwellArrowDot />}
+          className="w-7 min-w-7"
+          animationBegin={210}
+          animationEasing="ease-in-out"
+          stroke={swellColors.fifth} // Use stroke for line color
+          strokeWidth={2}
+          connectNulls={false} // Don't connect gaps where swell is missing
         />
 
         <YAxis
