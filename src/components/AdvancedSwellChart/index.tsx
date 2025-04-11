@@ -5,17 +5,28 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  // Tooltip,
 } from "recharts";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
-// import { SwellTooltip } from "../SwellChart/SwellTooltip";
 import SwellAxisTick from "../SwellChart/SwellAxisTick";
-import SwellArrowDot from "./SwellArrowDot";
+import { SwellArrowDotProps } from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
+import { chartArgs } from "@/lib/chart-args";
+import { timeScale } from "@/utils/chart-utils";
+
+interface ProcessedSwellDataPoint {
+  timestamp: number;
+  height: number;
+  period: number;
+  direction: number;
+}
+
+interface ProcessedDotProps extends Omit<SwellArrowDotProps, "payload"> {
+  payload: ProcessedSwellDataPoint;
+}
 
 const AdvancedSwellChart = ({
   unitPreferences,
@@ -29,16 +40,16 @@ const AdvancedSwellChart = ({
 
   // --- Define a color palette ---
   const colorPalette = [
-    "#008993", // Teal
-    "#ffa800", // Orange
-    "#fd6363", // Red
-    "#8884d8", // Purple
-    "#82ca9d", // Green
-    "#ffc658", // Yellow
-    "#d0ed57", // Lime
-    "#a4de6c", // Light Green
-    "#8dd1e1", // Light Blue
-    "#83a6ed", // Indigo
+    "#FF3B30", // Vibrant Red
+    "#007AFF", // iOS Blue
+    "#4CD964", // Bright Green
+    "#FF9500", // Orange
+    "#5856D6", // Purple
+    "#FF2D55", // Pink
+    "#00C7BE", // Teal
+    "#FFD60A", // Yellow
+    "#BF5AF2", // Magenta
+    "#64D2FF", // Light Blue
   ];
 
   // --- Find overall max height for Y-axis domain ---
@@ -54,11 +65,24 @@ const AdvancedSwellChart = ({
     return maxH;
   }, [processedSwellData, eventIds]);
 
+  // Get all static args
+  const {
+    xAxisArgsBackground,
+    // xAxisArgsCalendarDate,
+    // xAxisArgsTimeOfDay,
+    // xAxisArgsWindDirection,
+    // xAxisArgsWindSpeed,
+    // yAxisArgs,
+    // mainChartArgs,
+    // cartesianGridArgs,
+    // chartTooltipArgs,
+  } = chartArgs;
+
   return (
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="mb-0 h-60 min-h-60"
+      className="mb-0 h-80 min-h-80"
     >
       <LineChart
         accessibilityLayer
@@ -95,31 +119,19 @@ const AdvancedSwellChart = ({
         />
 
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        {/* <XAxis xAxisId={0} dataKey="date" hide interval={7} /> */}
-
-        {/* <Tooltip
-          cursor={{
-            height: 280,
-            fill: "oklch(0.129 0.042 264.695)",
-            fillOpacity: 0.1,
-          }}
-          content={<SwellTooltip unitPreferences={unitPreferences} />}
-          trigger="hover"
-        /> */}
+        <XAxis {...xAxisArgsBackground} />
 
         {/* This XAxis is the one that shows the wind direction */}
         <XAxis
           xAxisId={1}
-          // Link this axis to the main time axis scale
-          scale="time"
+          scale={timeScale}
           type="number"
-          domain={["dataMin", "dataMax"]}
+          domain={timeScale.domain().map((date) => date.valueOf())}
           dataKey="timestamp" // Use timestamp to position ticks correctly
-          tickLine={false}
+          tickLine={true}
           axisLine={true}
           tickMargin={0}
           minTickGap={0}
-          // Need to find the correct index in original chartData based on timestamp
           tick={({
             payload,
             x,
@@ -150,7 +162,7 @@ const AdvancedSwellChart = ({
         />
 
         {/* This XAxis is the one that shows the wind speed */}
-        {/* <XAxis
+        <XAxis
           xAxisId={4}
           dataKey={
             unitPreferences.windSpeed === "knots"
@@ -168,7 +180,7 @@ const AdvancedSwellChart = ({
             right: 0,
           }}
           stroke="#666"
-        /> */}
+        />
 
         <XAxis
           xAxisId={4}
@@ -197,86 +209,6 @@ const AdvancedSwellChart = ({
             );
           }}
         />
-
-        {/* <Line
-          dataKey="primarySwellHeight"
-          fill={swellColors.primary}
-          unit="m"
-          activeDot={{
-            fill: swellColors.primary,
-          }}
-          dot={<SwellArrowDot />}
-          width={28}
-          animationEasing="linear"
-          animationDuration={220}
-          stroke={swellColors.primary} // Use stroke for line color
-          strokeWidth={2}
-          connectNulls={false} // Don't connect gaps where swell is missing
-        /> */}
-
-        {/* <Line
-          dataKey="secondarySwellHeight"
-          fill={swellColors.secondary}
-          unit="m"
-          activeDot={{
-            fill: swellColors.secondary,
-          }}
-          dot={<SwellArrowDot />}
-          className="w-7 min-w-7"
-          animationBegin={210}
-          animationEasing="ease-in-out"
-          stroke={swellColors.secondary} // Use stroke for line color
-          strokeWidth={2}
-          connectNulls={false} // Don't connect gaps where swell is missing
-        /> */}
-
-        {/* <Line
-          dataKey="tertiarySwellHeight"
-          fill={swellColors.tertiary}
-          unit="m"
-          activeDot={{
-            fill: swellColors.tertiary,
-          }}
-          dot={<SwellArrowDot />}
-          className="w-7 min-w-7"
-          animationBegin={210}
-          animationEasing="ease-in-out"
-          stroke={swellColors.tertiary} // Use stroke for line color
-          strokeWidth={2}
-          connectNulls={false} // Don't connect gaps where swell is missing
-        /> */}
-
-        {/* <Line
-          dataKey="fourthSwellHeight"
-          fill={swellColors.fourth}
-          unit="m"
-          activeDot={{
-            fill: swellColors.fourth,
-          }}
-          dot={<SwellArrowDot />}
-          className="w-7 min-w-7"
-          animationBegin={210}
-          animationEasing="ease-in-out"
-          stroke={swellColors.fourth} // Use stroke for line color
-          strokeWidth={2}
-          connectNulls={false} // Don't connect gaps where swell is missing
-        /> */}
-
-        {/* <Line
-          dataKey="fifthSwellHeight"
-          fill={swellColors.fifth}
-          unit="m"
-          activeDot={{
-            fill: swellColors.fifth,
-          }}
-          dot={<SwellArrowDot />}
-          className="w-7 min-w-7"
-          animationBegin={210}
-          animationEasing="ease-in-out"
-          stroke={swellColors.fifth} // Use stroke for line color
-          strokeWidth={2}
-          connectNulls={false} // Don't connect gaps where swell is missing
-        /> */}
 
         <YAxis
           tickLine={false}
@@ -352,10 +284,59 @@ const AdvancedSwellChart = ({
               stroke={color}
               fill="none"
               strokeWidth={2}
-              dot={<SwellArrowDot />} // Pass data point via payload to dot
-              activeDot={false}
+              // dot={<SwellArrowDot />} // Pass data point via payload to dot
+              // activeDot={false}
               connectNulls={false} // Show gaps if event disappears temporarily
-              isAnimationActive={false}
+              // isAnimationActive={false}
+              dot={(props: ProcessedDotProps) => {
+                console.log({ props });
+                const { cx, cy, payload, dataKey, stroke } = props;
+
+                if (!cx || !cy || !payload) {
+                  return <g />;
+                }
+
+                const { direction, period, height } = payload;
+
+                if (!direction || !period || !height || height < 0.1) {
+                  return <g />;
+                }
+
+                // --- Calculate arrow properties ---
+                const baseSize = 8;
+                const size = baseSize + period * 0.5;
+                const clampedSize = Math.max(5, Math.min(16, size));
+                const rotation = direction;
+
+                return (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    y={cy - 20}
+                    x={cx}
+                    height={clampedSize}
+                    width={clampedSize}
+                    fill={stroke}
+                  >
+                    <g>
+                      <path
+                        d="M14.13 9.11h-12l6-7 6 7z"
+                        transform={`rotate(${rotation}, 0, 0)`}
+                        style={{
+                          transformOrigin: "center",
+                        }}
+                      />
+                      <path
+                        d="M6.12 8h4v6h-4z"
+                        transform={`rotate(${rotation}, 0, 0)`}
+                        style={{
+                          transformOrigin: "center",
+                        }}
+                      />
+                    </g>
+                  </svg>
+                );
+              }}
             />
           );
         })}
