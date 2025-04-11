@@ -30,7 +30,6 @@ export interface SwellArrowDotProps {
 }
 
 const SwellArrowDot = (props: SwellArrowDotProps) => {
-  console.log({ props });
   const { cx, cy, payload, stroke } = props;
 
   if (!cx || !cy || !payload) {

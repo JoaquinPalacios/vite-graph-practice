@@ -5,6 +5,7 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip,
 } from "recharts";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
@@ -16,6 +17,7 @@ import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { chartArgs } from "@/lib/chart-args";
 import { timeScale } from "@/utils/chart-utils";
+import { SwellTooltip } from "../SwellChart/SwellTooltip";
 
 const AdvancedSwellChart = ({
   unitPreferences,
@@ -257,6 +259,8 @@ const AdvancedSwellChart = ({
           }}
           className="transition-opacity ease-in-out duration-200"
         />
+
+        <Tooltip content={<SwellTooltip unitPreferences={unitPreferences} />} />
 
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
