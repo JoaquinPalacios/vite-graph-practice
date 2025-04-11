@@ -290,7 +290,7 @@ const AdvancedSwellChart = ({
               // isAnimationActive={false}
               dot={(props: ProcessedDotProps) => {
                 console.log({ props });
-                const { cx, cy, payload, dataKey, stroke } = props;
+                const { cx, cy, payload, stroke } = props;
 
                 if (!cx || !cy || !payload) {
                   return <g />;
