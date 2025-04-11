@@ -134,19 +134,19 @@ const SwellChartYAxis = ({
         <CartesianGrid {...cartesianGridArgs} />
 
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        <XAxis xAxisId={0} dataKey="timestamp" hide />
+        <XAxis xAxisId={0} dataKey="dateTime" hide />
 
         {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
-        <XAxis xAxisId={2} dataKey="timestamp" orientation="top" />
+        <XAxis xAxisId={2} dataKey="dateTime" orientation="top" />
 
         {/* This XAxis is the one that shows the time of the day */}
-        <XAxis xAxisId={1} dataKey="timestamp" orientation="top" />
+        <XAxis xAxisId={1} dataKey="dateTime" orientation="top" />
 
         {/* This XAxis is the one that shows the wind direction */}
-        <XAxis xAxisId={3} dataKey="timestamp" />
+        <XAxis xAxisId={3} dataKey="dateTime" />
 
         {/* This XAxis is the one that shows the wind speed */}
-        <XAxis xAxisId={4} dataKey="timestamp" />
+        <XAxis xAxisId={4} dataKey="dateTime" />
 
         <Bar
           dataKey={(d) =>

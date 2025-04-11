@@ -4,8 +4,8 @@ import { useState } from "react";
 import ChartsContainer from "./ChartsContainer";
 import { UnitPreferences } from "@/types";
 import { UnitSelector } from "./UnitSelector";
-// import AdvancedSwellChart from "./AdvancedSwellChart";
 // import TestChart from "./TestChart";
+import AdvancedSwellChart from "./AdvancedSwellChart";
 
 const SwellChartContainerLayout = () => {
   const [unitPreferences, setUnitPreferences] = useState<UnitPreferences>({
@@ -21,9 +21,9 @@ const SwellChartContainerLayout = () => {
 
       <ChartsContainer unitPreferences={unitPreferences} />
 
-      {/* <AdvancedSwellChart unitPreferences={unitPreferences} />
+      <AdvancedSwellChart unitPreferences={unitPreferences} />
 
-      <TestChart /> */}
+      {/* <TestChart /> */}
     </section>
   );
 };

@@ -23,7 +23,7 @@ const AdvancedSwellChart = ({
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="mb-0 h-20 min-h-20"
+      className="mb-0 h-60 min-h-60"
     >
       <LineChart
         accessibilityLayer
