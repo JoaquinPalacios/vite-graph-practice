@@ -5,7 +5,6 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip,
 } from "recharts";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
@@ -14,7 +13,6 @@ import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { generateTicks } from "@/utils/chart-utils";
-import { SwellTooltip } from "../SwellChart/SwellTooltip";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 
 const AdvancedSwellChartYAxis = ({
@@ -27,20 +25,6 @@ const AdvancedSwellChartYAxis = ({
   // useMemo prevents reprocessing on every render unless chartData changes
   const processedSwellData = useMemo(() => processSwellData(chartData), []);
   const eventIds = Object.keys(processedSwellData);
-
-  // --- Define a color palette ---
-  const colorPalette = [
-    "#FF3B30", // Vibrant Red
-    "#007AFF", // iOS Blue
-    "#4CD964", // Bright Green
-    "#FF9500", // Orange
-    "#5856D6", // Purple
-    "#FF2D55", // Pink
-    "#00C7BE", // Teal
-    "#FFD60A", // Yellow
-    "#BF5AF2", // Magenta
-    "#64D2FF", // Light Blue
-  ];
 
   return (
     <ResponsiveContainer
@@ -118,19 +102,8 @@ const AdvancedSwellChartYAxis = ({
           className="transition-opacity ease-in-out duration-200"
         />
 
-        <Tooltip
-          content={<SwellTooltip unitPreferences={unitPreferences} />}
-          cursor={{
-            fill: "oklch(0.129 0.042 264.695)",
-            fillOpacity: 0.1,
-            height: 280,
-          }}
-          trigger="hover"
-        />
-
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
-          const color = colorPalette[index % colorPalette.length]; // Cycle through palette
 
           return (
             <Line
@@ -139,7 +112,6 @@ const AdvancedSwellChartYAxis = ({
               type="monotone"
               dataKey="height"
               name={eventId}
-              stroke={color}
               strokeWidth={2}
               // activeDot={false}
               connectNulls={false} // Show gaps if event disappears temporarily
