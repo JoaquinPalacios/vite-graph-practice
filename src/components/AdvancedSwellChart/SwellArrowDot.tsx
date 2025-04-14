@@ -45,8 +45,8 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
 
   // --- Calculate arrow properties ---
   const baseSize = 8;
-  const size = baseSize + period * 1.25; // Scale size based on period
-  const clampedSize = Math.max(5, Math.min(16, size));
+  const size = baseSize + period * 1; // Scale size based on period
+  const clampedSize = Math.max(5, Math.min(18, size));
   const rotation = direction - 45;
 
   const activeDot = isHover ? 1 : 0.4;
