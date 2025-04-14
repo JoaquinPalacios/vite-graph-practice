@@ -9,15 +9,15 @@ import {
 } from "recharts";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
+import { GiBigWave } from "react-icons/gi";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
+import { generateTicks } from "@/utils/chart-utils";
 import { SwellTooltip } from "../SwellChart/SwellTooltip";
-import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 
-const AdvancedSwellChart = ({
+const AdvancedSwellChartYAxis = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
@@ -42,32 +42,11 @@ const AdvancedSwellChart = ({
     "#64D2FF", // Light Blue
   ];
 
-  // Get all static args
-  const { xAxisArgsBackground } = chartArgs;
-
-  // Calculate custom vertical points for the grid
-  const verticalPoints = useMemo(() => {
-    const chartWidth = 4848; // Width from ResponsiveContainer
-    const xAxisLeftMargin = 12; // From your padding
-    const yAxisWidth = 60; // Approximate width of YAxis
-    const xPadding = 0;
-
-    const leftX = yAxisWidth + xAxisLeftMargin + xPadding;
-    const rightX = chartWidth - xPadding;
-
-    // Use timeScale to generate points
-    return dayTicks.map((tick) => {
-      const x = timeScale(new Date(tick));
-      // Map the x value to the chart's pixel space
-      return leftX + x * (rightX - leftX);
-    });
-  }, []);
-
   return (
     <ResponsiveContainer
-      width={4848}
+      width={60}
       height="100%"
-      className="mb-0 h-48 min-h-48"
+      className="mb-0 absolute top-80 left-0 md:left-4 z-10 h-48 min-h-48 max-h-48"
     >
       <LineChart
         accessibilityLayer
@@ -81,28 +60,14 @@ const AdvancedSwellChart = ({
         <CartesianGrid
           vertical={true}
           horizontal={true}
-          verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-          ]}
           y={0}
           height={192}
           syncWithTicks
-          verticalPoints={verticalPoints}
         />
 
-        <XAxis
-          dataKey="timestamp"
-          type="number" // Timestamps are numbers
-          scale="time" // Tell recharts it's time data
-          domain={["dataMin", "dataMax"]} // Use min/max timestamps from data
-          axisLine={false}
-          tickLine={false}
-          allowDuplicatedCategory={false}
-          hide
-        />
+        <XAxis dataKey="timestamp" hide />
 
-        <XAxis {...xAxisArgsBackground} />
+        <XAxis xAxisId={0} dataKey="timestamp" hide />
 
         <YAxis
           tickLine={false}
@@ -111,20 +76,46 @@ const AdvancedSwellChart = ({
           domain={[0, "dataMax"]}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
+          unit={unitPreferences.waveHeight}
           interval="preserveStart"
           allowDecimals={false}
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
-          opacity={0}
           ticks={generateTicks(
             unitPreferences.waveHeight === "ft"
               ? Math.max(...chartData.map((d) => d.waveHeight_ft))
               : Math.max(...chartData.map((d) => d.waveHeight_m)),
             unitPreferences.waveHeight
           )}
-          tick={() => {
-            return <text></text>;
+          tick={(value: {
+            x: number;
+            y: number;
+            index: number;
+            payload: { value: number };
+          }) => {
+            return value.index === 0 ? (
+              <GiBigWave
+                className="w-6 h-6"
+                x={value.x - 30}
+                y={value.y - 20}
+                size={20}
+                color="#666"
+              />
+            ) : (
+              <text
+                x={value.x - 11}
+                y={value.y}
+                dy={1}
+                textAnchor="end"
+                fontSize={12}
+                fill="#666"
+              >
+                {value.payload.value}
+                {unitPreferences.waveHeight}
+              </text>
+            );
           }}
+          className="transition-opacity ease-in-out duration-200"
         />
 
         <Tooltip
@@ -161,4 +152,4 @@ const AdvancedSwellChart = ({
   );
 };
 
-export default AdvancedSwellChart;
+export default AdvancedSwellChartYAxis;
