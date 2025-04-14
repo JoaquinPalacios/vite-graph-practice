@@ -30,16 +30,15 @@ const AdvancedSwellChart = ({
 
   // --- Define a color palette ---
   const colorPalette = [
-    "#FF3B30", // Vibrant Red
-    "#007AFF", // iOS Blue
-    "#4CD964", // Bright Green
-    "#FF9500", // Orange
-    "#5856D6", // Purple
-    "#FF2D55", // Pink
-    "#00C7BE", // Teal
-    "#FFD60A", // Yellow
-    "#BF5AF2", // Magenta
-    "#64D2FF", // Light Blue
+    "oklch(57.7% 0.245 27.325)", // Tailwind red-600
+    "oklch(64.6% 0.222 41.116)", // Tailwind orange-600
+    "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
+    "oklch(62.7% 0.194 149.214)", // Tailwind green-600
+    "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
+    "oklch(59.2% 0.249 0.584)", // Tailwind pink-600
+    "oklch(79.5% 0.184 86.047)", // Tailwind yellow-500
+    "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
+    "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
   ];
 
   // Get all static args
