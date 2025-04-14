@@ -13,15 +13,19 @@ import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
-import { SwellTooltip } from "../SwellChart/SwellTooltip";
 import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
+import { useState } from "react";
 
 const AdvancedSwellChart = ({
   unitPreferences,
 }: {
   unitPreferences: UnitPreferences;
 }) => {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [hoverEventId, setHoverEventId] = useState<string | null>(null);
+
   const { isMobile, isLandscapeMobile } = useScreenDetector();
   // --- Process data to identify events ---
   // useMemo prevents reprocessing on every render unless chartData changes
@@ -79,6 +83,10 @@ const AdvancedSwellChart = ({
           left: 11,
         }}
         className="[&>svg]:focus:outline-none"
+        onMouseLeave={() => {
+          console.log("mouse leave");
+          setHoverIndex(null);
+        }}
       >
         <CartesianGrid
           vertical={true}
@@ -130,7 +138,12 @@ const AdvancedSwellChart = ({
         />
 
         <Tooltip
-          content={<SwellTooltip unitPreferences={unitPreferences} />}
+          content={
+            <AdvanceCustomTooltip
+              unitPreferences={unitPreferences}
+              hoverEventId={hoverEventId}
+            />
+          }
           cursor={{
             fill: "oklch(0.129 0.042 264.695)",
             fillOpacity: 0.1,
@@ -154,7 +167,12 @@ const AdvancedSwellChart = ({
               strokeWidth={2}
               // activeDot={false}
               connectNulls={false}
-              dot={<SwellArrowDot />}
+              dot={<SwellArrowDot isHover={hoverIndex === index} />}
+              opacity={hoverIndex === index ? 1 : 0.25}
+              onMouseEnter={() => {
+                setHoverEventId(eventId);
+                setHoverIndex(index);
+              }}
             />
           );
         })}

@@ -45,7 +45,7 @@ const SwellChart = ({
     ...yAxisArgs,
     minTickGap: 0,
     padding: {
-      top: 20,
+      top: unitPreferences.waveHeight === "ft" ? 32 : 0,
     },
     interval: "preserveStart" as const,
     overflow: "visible",

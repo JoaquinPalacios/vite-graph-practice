@@ -52,7 +52,12 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   }
 };
 
-// Helper function to format wave heights
+/**
+ * Formats the wave height for the tooltip
+ * @param height - The wave height
+ * @param unit - The unit of the wave height
+ * @returns The formatted wave height
+ */
 export const formatWaveHeight = (
   height: number | undefined,
   unit: string | undefined

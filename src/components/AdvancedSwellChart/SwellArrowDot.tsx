@@ -27,6 +27,7 @@ export interface SwellArrowDotProps {
   width?: number;
   value?: number;
   payload?: ProcessedSwellDataPoint;
+  isHover?: boolean;
 }
 
 const SwellArrowDot = (props: SwellArrowDotProps) => {
@@ -48,6 +49,8 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
   const clampedSize = Math.max(5, Math.min(16, size));
   const rotation = direction - 45;
 
+  // const activeDot = isHover ? 1 : 0.25;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -60,6 +63,7 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
       x={cx - clampedSize / 2}
       overflow="visible"
       stroke="#f9f9f9"
+      // opacity={activeDot}
     >
       <path
         transform={`rotate(${rotation}, 0, 0)`}
