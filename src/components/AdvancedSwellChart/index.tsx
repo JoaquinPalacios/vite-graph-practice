@@ -153,7 +153,7 @@ const AdvancedSwellChart = ({
               stroke={color}
               strokeWidth={2}
               // activeDot={false}
-              connectNulls={false} // Show gaps if event disappears temporarily
+              connectNulls={false}
               dot={<SwellArrowDot />}
             />
           );
