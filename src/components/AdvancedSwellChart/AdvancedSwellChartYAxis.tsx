@@ -9,7 +9,6 @@ import {
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import { GiBigWave } from "react-icons/gi";
-import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { generateTicks } from "@/utils/chart-utils";
@@ -112,10 +111,7 @@ const AdvancedSwellChartYAxis = ({
               type="monotone"
               dataKey="height"
               name={eventId}
-              strokeWidth={2}
-              // activeDot={false}
-              connectNulls={false} // Show gaps if event disappears temporarily
-              dot={<SwellArrowDot />}
+              activeDot={false}
             />
           );
         })}
