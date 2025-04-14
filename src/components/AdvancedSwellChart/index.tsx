@@ -25,7 +25,10 @@ const AdvancedSwellChart = ({
   const { isMobile, isLandscapeMobile } = useScreenDetector();
   // --- Process data to identify events ---
   // useMemo prevents reprocessing on every render unless chartData changes
-  const processedSwellData = useMemo(() => processSwellData(chartData), []);
+  const processedSwellData = useMemo(
+    () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
+    [unitPreferences.waveHeight]
+  );
   const eventIds = Object.keys(processedSwellData);
 
   // --- Define a color palette ---
@@ -145,7 +148,7 @@ const AdvancedSwellChart = ({
               key={index}
               data={eventData} // Data specific to this swell event
               type="monotone"
-              dataKey="height"
+              dataKey={"height"}
               name={eventId}
               stroke={color}
               strokeWidth={2}

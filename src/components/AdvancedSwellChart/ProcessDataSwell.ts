@@ -7,10 +7,12 @@
  * @param {number} options.periodThreshold - Max period difference (seconds).
  * @param {number} options.minHeight - Minimum height (meters) to track.
  * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
+ * @param {string} unitPreference - The preferred unit for wave height ('m' or 'ft').
  * @returns {object} - Object where keys are event IDs and values are arrays of data points.
  */
 
 import { SwellData } from "@/types";
+import { metersToFeet } from "@/utils/chart-utils";
 
 type SwellRank = "primary" | "secondary" | "tertiary" | "fourth" | "fifth";
 
@@ -49,7 +51,8 @@ export default function processSwellData(
     periodThreshold: 2.0,
     minHeight: 0.15,
     maxGap: 2,
-  }
+  },
+  unitPreference: "m" | "ft" = "m"
 ) {
   const events: EventMap = {};
   let activeEvents: ActiveEvent[] = [];
@@ -83,12 +86,12 @@ export default function processSwellData(
         period !== undefined
       ) {
         currentSwells.push({
-          rank: rank, // Keep track of original rank if needed, but not essential for plotting
-          height: height,
+          rank: rank,
+          height: unitPreference === "ft" ? metersToFeet(height) : height,
           direction: direction,
           period: period,
-          timestamp: timeStep.timestamp, // Use timestamp for x-axis
-          matched: false, // Flag to track if matched to an active event
+          timestamp: timeStep.timestamp,
+          matched: false,
         });
       }
     });

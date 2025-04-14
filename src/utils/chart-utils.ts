@@ -28,7 +28,9 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
     return baseTicks.filter((tick) => tick <= maxTick).concat(maxTick);
   } else {
     // For meters, use smaller increments
-    const baseTicksMeters = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15];
+    const baseTicksMeters = [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40,
+    ];
 
     let maxTick = 0;
     for (let i = 0; i < baseTicksMeters.length; i++) {
@@ -222,4 +224,9 @@ export const baseChartXAxisProps: Partial<XAxisProps> = {
   allowDataOverflow: true,
   interval: "preserveStart" as const,
   allowDuplicatedCategory: false,
+};
+
+// Convert meters to feet with one decimal place precision
+export const metersToFeet = (meters: number): number => {
+  return Number((meters * 3.28084).toFixed(1));
 };
