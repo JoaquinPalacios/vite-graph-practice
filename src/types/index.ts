@@ -4,6 +4,7 @@ export type UnitPreferences = {
   windSpeed: "knots" | "km/h";
   temperature: "°C" | "°F";
   tideHeight: "ft" | "m";
+  showAdvancedChart: boolean;
 };
 
 export interface SwellData {

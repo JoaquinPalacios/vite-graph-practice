@@ -17,6 +17,7 @@ import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { useState } from "react";
+import { cn } from "@/utils/utils";
 
 const AdvancedSwellChart = ({
   unitPreferences,
@@ -73,7 +74,10 @@ const AdvancedSwellChart = ({
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="mb-0 h-48 min-h-48"
+      className={cn(
+        "mb-0 h-48 min-h-48 transition-[height,min-height] duration-300 ease-in-out",
+        !unitPreferences.showAdvancedChart && "!h-0 !min-h-0"
+      )}
     >
       <LineChart
         accessibilityLayer

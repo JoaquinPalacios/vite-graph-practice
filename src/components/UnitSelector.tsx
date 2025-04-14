@@ -18,6 +18,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
           windSpeed: "knots",
           temperature: "°C",
           tideHeight: "m",
+          showAdvancedChart: true,
         };
   });
 
@@ -44,6 +45,9 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         case "temperature":
           newPrefs[key] = prev[key] === "°C" ? "°F" : "°C";
           break;
+        case "showAdvancedChart":
+          newPrefs[key] = !prev[key];
+          break;
       }
 
       return newPrefs;
@@ -51,7 +55,7 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 w-full max-w-[1340px] mx-auto">
+    <div className="flex flex-wrap gap-2 w-full max-w-full mx-auto">
       <button
         onClick={() => toggleUnit("waveHeight")}
         className={cn(
@@ -94,6 +98,14 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       >
         <FaWater className="text-xs" />
         Tide: {preferences.tideHeight}
+      </button>
+      <button
+        onClick={() => toggleUnit("showAdvancedChart")}
+        className={cn(
+          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-slate-900 border border-slate-900 w-fit"
+        )}
+      >
+        {preferences.showAdvancedChart ? "Hide" : "Show"} advanced chart
       </button>
     </div>
   );
