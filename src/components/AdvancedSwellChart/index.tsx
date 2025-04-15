@@ -38,6 +38,19 @@ const AdvancedSwellChart = ({
 
   // --- Define a color palette ---
   const colorPalette = [
+    "oklch(39.6% 0.141 25.723)", // Tailwind red-900
+    "oklch(40.8% 0.123 38.172)", // Tailwind orange-900
+    "oklch(37.9% 0.146 265.522)", // Tailwind blue-900
+    "oklch(39.3% 0.095 152.535)", // Tailwind green-900
+    "oklch(38.1% 0.176 304.987)", // Tailwind purple-900
+    "oklch(40.8% 0.153 2.432)", // Tailwind pink-900
+    "oklch(42.1% 0.095 57.708)", // Tailwind yellow-900
+    "oklch(39.8% 0.07 227.392)", // Tailwind cyan-900
+    "oklch(40.5% 0.101 131.063)", // Tailwind lime-900
+  ];
+
+  // --- Define a active color palette ---
+  const activeColorPalette = [
     "oklch(57.7% 0.245 27.325)", // Tailwind red-600
     "oklch(64.6% 0.222 41.116)", // Tailwind orange-600
     "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
@@ -159,6 +172,8 @@ const AdvancedSwellChart = ({
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
           const color = colorPalette[index % colorPalette.length]; // Cycle through palette
+          const activeColor =
+            activeColorPalette[index % activeColorPalette.length]; // Cycle through active palette
 
           return (
             <Line
@@ -167,7 +182,7 @@ const AdvancedSwellChart = ({
               type="monotone"
               dataKey={"height"}
               name={eventId}
-              stroke={color}
+              stroke={hoverIndex === index ? activeColor : color}
               strokeWidth={2}
               // activeDot={false}
               connectNulls={false}
