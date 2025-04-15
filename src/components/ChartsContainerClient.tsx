@@ -11,6 +11,7 @@ const SwellChartContainerLayout = () => {
     windSpeed: "knots",
     temperature: "°C",
     tideHeight: "m",
+    showAdvancedChart: true,
   });
 
   return (

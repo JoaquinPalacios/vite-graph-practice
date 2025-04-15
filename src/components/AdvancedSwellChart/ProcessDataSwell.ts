@@ -44,6 +44,32 @@ interface EventMap {
   [key: string]: SwellEvent[];
 }
 
+/**
+ * Function to ensure the timestamp are in miliseconds
+ * @param timeStep - The time step object.
+ * @returns {number} - The timestamp in miliseconds.
+ */
+function ensureTimestampInMs(timestamp: number) {
+  if (isNaN(timestamp)) {
+    console.warn("Invalid timestamp generated for timestep:", timestamp);
+    return; // Skip this iteration
+  }
+  // Check if input timestamp is likely seconds
+  if (timestamp < 31536000000) {
+    // Simple check for seconds timestamp
+    return timestamp * 1000;
+  } else {
+    return timestamp; // Assume already ms
+  }
+}
+
+/**
+ * Process Swell Data
+ * @param data - The input chartData array.
+ * @param options - Thresholds for matching.
+ * @param unitPreference - The preferred unit for wave height ('m' or 'ft').
+ * @returns {object} - Object where keys are event IDs and values are arrays of data points.
+ */
 export default function processSwellData(
   data: SwellData[],
   options = {
@@ -90,7 +116,7 @@ export default function processSwellData(
           height: unitPreference === "ft" ? metersToFeet(height) : height,
           direction: direction,
           period: period,
-          timestamp: timeStep.timestamp,
+          timestamp: ensureTimestampInMs(timeStep.timestamp) as number,
           matched: false,
         });
       }
@@ -129,7 +155,7 @@ export default function processSwellData(
         // Found a match - continue the event
         bestMatch.matched = true;
         events[activeEvent.id].push({
-          timestamp: bestMatch.timestamp,
+          timestamp: ensureTimestampInMs(bestMatch.timestamp) as number,
           height: bestMatch.height,
           period: bestMatch.period,
           direction: bestMatch.direction,
@@ -160,7 +186,7 @@ export default function processSwellData(
         }_${currentSwell.period.toFixed(1)}`;
         events[newEventId] = [
           {
-            timestamp: currentSwell.timestamp,
+            timestamp: ensureTimestampInMs(currentSwell.timestamp) as number,
             height: currentSwell.height,
             period: currentSwell.period,
             direction: currentSwell.direction,
@@ -182,17 +208,5 @@ export default function processSwellData(
     activeEvents = nextActiveEvents;
   });
 
-  // Optional: Filter out very short events (e.g., only 1 or 2 points)
-  const finalEvents: EventMap = {};
-  for (const eventId in events) {
-    if (
-      Object.prototype.hasOwnProperty.call(events, eventId) &&
-      events[eventId].length > 2
-    ) {
-      // Require at least 3 data points
-      finalEvents[eventId] = events[eventId];
-    }
-  }
-
-  return finalEvents;
+  return events;
 }

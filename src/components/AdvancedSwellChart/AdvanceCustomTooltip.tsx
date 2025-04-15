@@ -19,8 +19,8 @@ export const AdvanceCustomTooltip = ({
   payload,
   label,
   unitPreferences,
-  hoverEventId,
-}: TooltipProps<ValueType, NameType> & {
+}: //   hoverEventId,
+TooltipProps<ValueType, NameType> & {
   unitPreferences: UnitPreferences;
   hoverEventId: string | null;
 }) => {
@@ -31,8 +31,8 @@ export const AdvanceCustomTooltip = ({
       (item) => item.name === activeDataKey
     );
 
-    console.log({ filteredPayload });
-    console.log({ hoverEventId });
+    // console.log({ filteredPayload });
+    // console.log({ hoverEventId });
 
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">

@@ -48,8 +48,6 @@ const AdvancedSwellChartYAxis = ({
           syncWithTicks
         />
 
-        <XAxis dataKey="timestamp" hide />
-
         <XAxis xAxisId={0} dataKey="timestamp" hide />
 
         <YAxis
