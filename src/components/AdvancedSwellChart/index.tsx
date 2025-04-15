@@ -38,13 +38,13 @@ const AdvancedSwellChart = ({
 
   // --- Define a color palette ---
   const colorPalette = [
-    "oklch(39.6% 0.141 25.723)", // Tailwind red-900
-    "oklch(40.8% 0.123 38.172)", // Tailwind orange-900
+    "oklch(25.8% 0.092 26.042)", // Tailwind red-950
+    "oklch(47% 0.157 37.304)", // Tailwind orange-800
     "oklch(37.9% 0.146 265.522)", // Tailwind blue-900
     "oklch(39.3% 0.095 152.535)", // Tailwind green-900
     "oklch(38.1% 0.176 304.987)", // Tailwind purple-900
     "oklch(40.8% 0.153 2.432)", // Tailwind pink-900
-    "oklch(42.1% 0.095 57.708)", // Tailwind yellow-900
+    "oklch(20.8% 0.042 265.755)", // Tailwind slate-900
     "oklch(39.8% 0.07 227.392)", // Tailwind cyan-900
     "oklch(40.5% 0.101 131.063)", // Tailwind lime-900
   ];
@@ -57,7 +57,7 @@ const AdvancedSwellChart = ({
     "oklch(62.7% 0.194 149.214)", // Tailwind green-600
     "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
     "oklch(59.2% 0.249 0.584)", // Tailwind pink-600
-    "oklch(79.5% 0.184 86.047)", // Tailwind yellow-500
+    "oklch(55.4% 0.046 257.417)", // Tailwind slate-500
     "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
     "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
   ];
