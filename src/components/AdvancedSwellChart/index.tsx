@@ -12,7 +12,7 @@ import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
+import { generateTicks } from "@/utils/chart-utils";
 import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
@@ -34,12 +34,13 @@ const AdvancedSwellChart = ({
     () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
     [unitPreferences.waveHeight]
   );
+
   const eventIds = Object.keys(processedSwellData);
 
   // --- Define a color palette ---
   const colorPalette = [
     "oklch(25.8% 0.092 26.042)", // Tailwind red-950
-    "oklch(47% 0.157 37.304)", // Tailwind orange-800
+    "oklch(47.3% 0.137 46.201)", // Tailwind amber-800
     "oklch(37.9% 0.146 265.522)", // Tailwind blue-900
     "oklch(39.3% 0.095 152.535)", // Tailwind green-900
     "oklch(38.1% 0.176 304.987)", // Tailwind purple-900
@@ -52,7 +53,7 @@ const AdvancedSwellChart = ({
   // --- Define a active color palette ---
   const activeColorPalette = [
     "oklch(57.7% 0.245 27.325)", // Tailwind red-600
-    "oklch(64.6% 0.222 41.116)", // Tailwind orange-600
+    "oklch(66.6% 0.179 58.318)", // Tailwind amber-600
     "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
     "oklch(62.7% 0.194 149.214)", // Tailwind green-600
     "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
@@ -64,24 +65,6 @@ const AdvancedSwellChart = ({
 
   // Get all static args
   const { xAxisArgsBackground } = chartArgs;
-
-  // Calculate custom vertical points for the grid
-  const verticalPoints = useMemo(() => {
-    const chartWidth = 4848; // Width from ResponsiveContainer
-    const xAxisLeftMargin = 12; // From your padding
-    const yAxisWidth = 60; // Approximate width of YAxis
-    const xPadding = 0;
-
-    const leftX = yAxisWidth + xAxisLeftMargin + xPadding;
-    const rightX = chartWidth - xPadding;
-
-    // Use timeScale to generate points
-    return dayTicks.map((tick) => {
-      const x = timeScale(new Date(tick));
-      // Map the x value to the chart's pixel space
-      return leftX + x * (rightX - leftX);
-    });
-  }, []);
 
   return (
     <ResponsiveContainer
@@ -97,7 +80,6 @@ const AdvancedSwellChart = ({
         data={chartData}
         margin={{
           bottom: 12,
-          left: 11,
         }}
         className="[&>svg]:focus:outline-none"
         onMouseLeave={() => {
@@ -115,20 +97,7 @@ const AdvancedSwellChart = ({
           y={0}
           height={192}
           syncWithTicks
-          verticalPoints={verticalPoints}
         />
-
-        <XAxis
-          dataKey="timestamp"
-          type="number" // Timestamps are numbers
-          scale="time" // Tell recharts it's time data
-          domain={["dataMin", "dataMax"]} // Use min/max timestamps from data
-          axisLine={false}
-          tickLine={false}
-          allowDuplicatedCategory={false}
-          hide
-        />
-
         <XAxis {...xAxisArgsBackground} />
 
         <YAxis
@@ -168,9 +137,19 @@ const AdvancedSwellChart = ({
           }}
           trigger="hover"
         />
+        {/* 
+        <Line
+          type="monotone"
+          dataKey={"height"}
+          name="height"
+          strokeDasharray="5 5"
+          strokeWidth={10}
+          stroke="oklch(0.129 0.042 264.695)"
+        /> */}
 
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
+
           const color = colorPalette[index % colorPalette.length]; // Cycle through palette
           const activeColor =
             activeColorPalette[index % activeColorPalette.length]; // Cycle through active palette
@@ -184,7 +163,6 @@ const AdvancedSwellChart = ({
               name={eventId}
               stroke={hoverIndex === index ? activeColor : color}
               strokeWidth={2}
-              // activeDot={false}
               connectNulls={false}
               dot={<SwellArrowDot isHover={hoverIndex === index} />}
               opacity={hoverIndex === index ? 1 : 0.25}

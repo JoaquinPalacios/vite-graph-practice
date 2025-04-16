@@ -44,6 +44,13 @@ interface EventMap {
   [key: string]: SwellEvent[];
 }
 
+/**
+ * Process Swell Data
+ * @param data - The input chartData array.
+ * @param options - Thresholds for matching.
+ * @param unitPreference - The preferred unit for wave height ('m' or 'ft').
+ * @returns {object} - Object where keys are event IDs and values are arrays of data points.
+ */
 export default function processSwellData(
   data: SwellData[],
   options = {
@@ -59,6 +66,17 @@ export default function processSwellData(
   let eventCounter = 0;
 
   data.forEach((timeStep, t) => {
+    // --- Get timestamp from localDateTimeISO ---
+    const tsMs = new Date(timeStep.localDateTimeISO).getTime(); // Use the reliable ISO string
+
+    if (isNaN(tsMs)) {
+      console.warn(
+        "Invalid timestamp parsed from localDateTimeISO:",
+        timeStep.localDateTimeISO
+      );
+      return; // Skip if parsing fails
+    }
+
     const currentSwells: CurrentSwell[] = [];
     const ranks: SwellRank[] = [
       "primary",
@@ -90,7 +108,7 @@ export default function processSwellData(
           height: unitPreference === "ft" ? metersToFeet(height) : height,
           direction: direction,
           period: period,
-          timestamp: timeStep.timestamp,
+          timestamp: tsMs,
           matched: false,
         });
       }
@@ -182,17 +200,5 @@ export default function processSwellData(
     activeEvents = nextActiveEvents;
   });
 
-  // Optional: Filter out very short events (e.g., only 1 or 2 points)
-  const finalEvents: EventMap = {};
-  for (const eventId in events) {
-    if (
-      Object.prototype.hasOwnProperty.call(events, eventId) &&
-      events[eventId].length > 2
-    ) {
-      // Require at least 3 data points
-      finalEvents[eventId] = events[eventId];
-    }
-  }
-
-  return finalEvents;
+  return events;
 }

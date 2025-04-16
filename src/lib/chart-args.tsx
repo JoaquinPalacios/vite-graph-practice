@@ -42,9 +42,20 @@ export const chartArgs = {
     tickLine: false,
     axisLine: false,
     ticks: timeScale.ticks(16).map((date) => {
-      const centeredDate = new Date(date);
-      centeredDate.setHours(12, 0, 0, 0);
-      return centeredDate.getTime();
+      // Create a UTC date to avoid DST issues
+      const utcDate = new Date(
+        Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate(),
+          12,
+          0,
+          0,
+          0
+        )
+      );
+      // Convert back to local time for display
+      return utcDate.getTime();
     }),
     orientation: "top" as const,
     tickFormatter: formatDateTick,
