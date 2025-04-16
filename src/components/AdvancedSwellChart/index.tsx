@@ -28,8 +28,11 @@ const AdvancedSwellChart = ({
   const [hoverEventId, setHoverEventId] = useState<string | null>(null);
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
-  // --- Process data to identify events ---
-  // useMemo prevents reprocessing on every render unless chartData changes
+
+  /**
+   * Process the swell data to identify events
+   * useMemo prevents reprocessing on every render unless chartData changes
+   */
   const processedSwellData = useMemo(
     () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
     [unitPreferences.waveHeight]
@@ -37,7 +40,9 @@ const AdvancedSwellChart = ({
 
   const eventIds = Object.keys(processedSwellData);
 
-  // --- Define a color palette ---
+  /**
+   * Define the color palette of each event
+   */
   const colorPalette = [
     "oklch(25.8% 0.092 26.042)", // Tailwind red-950
     "oklch(47.3% 0.137 46.201)", // Tailwind amber-800
@@ -50,7 +55,9 @@ const AdvancedSwellChart = ({
     "oklch(40.5% 0.101 131.063)", // Tailwind lime-900
   ];
 
-  // --- Define a active color palette ---
+  /**
+   * Define the active color palette of the hovered event
+   */
   const activeColorPalette = [
     "oklch(57.7% 0.245 27.325)", // Tailwind red-600
     "oklch(66.6% 0.179 58.318)", // Tailwind amber-600
@@ -137,15 +144,6 @@ const AdvancedSwellChart = ({
           }}
           trigger="hover"
         />
-        {/* 
-        <Line
-          type="monotone"
-          dataKey={"height"}
-          name="height"
-          strokeDasharray="5 5"
-          strokeWidth={10}
-          stroke="oklch(0.129 0.042 264.695)"
-        /> */}
 
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
