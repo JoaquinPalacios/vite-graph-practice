@@ -9,6 +9,13 @@ import {
   timeYear,
 } from "d3-time";
 
+interface TimeDataItem {
+  dateTimeISO: string;
+  dateTime?: string; // Optional if it still exists
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any; // Allow other properties
+}
+
 // Time formatting utilities
 export const formatMillisecond = timeFormat(".%L"),
   formatSecond = timeFormat(":%S"),

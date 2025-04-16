@@ -12,7 +12,7 @@ import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
+import { dayTicks, generateTicks } from "@/utils/chart-utils";
 import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
@@ -67,10 +67,7 @@ const AdvancedSwellChart = ({
   ];
 
   // Get all static args
-  const { xAxisArgsBackground, xAxisArgsCalendarDate, xAxisArgsTimeOfDay } =
-    chartArgs;
-
-  console.log({ domain: timeScale.domain().map((d) => d.valueOf()) });
+  const { xAxisArgsBackground } = chartArgs;
 
   return (
     <ResponsiveContainer
@@ -96,37 +93,15 @@ const AdvancedSwellChart = ({
         <CartesianGrid
           vertical={true}
           horizontal={true}
-          // verticalFill={[
-          //   "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-          //   "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-          // ]}
+          verticalFill={[
+            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+          ]}
           y={0}
           height={192}
           syncWithTicks
         />
         <XAxis {...xAxisArgsBackground} />
-
-        {/* XAxis for the calendar date */}
-        <XAxis {...xAxisArgsCalendarDate} />
-
-        {/* XAxis for the time of day */}
-        <XAxis {...xAxisArgsTimeOfDay} tickLine axisLine />
-
-        {/* <XAxis
-          dataKey="timestamp"
-          type="number" // Timestamps are numbers
-          // xAxisId={0}
-          scale={timeScale}
-          // scale={"time"}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          // domain={["dataMin", "dataMax"]}
-          axisLine={true}
-          tickLine={true}
-          ticks={dayTicks}
-          allowDuplicatedCategory={false}
-          // hide
-          // padding={{ left: 12 }}
-        /> */}
 
         <YAxis
           tickLine={false}
@@ -139,16 +114,16 @@ const AdvancedSwellChart = ({
           allowDecimals={false}
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
-          // opacity={0}
+          opacity={0}
           ticks={generateTicks(
             unitPreferences.waveHeight === "ft"
               ? Math.max(...chartData.map((d) => d.waveHeight_ft))
               : Math.max(...chartData.map((d) => d.waveHeight_m)),
             unitPreferences.waveHeight
           )}
-          // tick={() => {
-          //   return <text></text>;
-          // }}
+          tick={() => {
+            return <text></text>;
+          }}
         />
 
         <Tooltip
@@ -166,20 +141,8 @@ const AdvancedSwellChart = ({
           trigger="hover"
         />
 
-        <Line
-          dataKey={(d) =>
-            unitPreferences.waveHeight === "ft"
-              ? d.waveHeight_ft
-              : d.waveHeight_m
-          }
-          type="monotone"
-          stroke="#ff0000"
-          // xAxisId={0}
-        />
-
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
-          console.log({ eventData });
 
           const color = colorPalette[index % colorPalette.length]; // Cycle through palette
           const activeColor =

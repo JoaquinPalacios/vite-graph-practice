@@ -45,25 +45,6 @@ interface EventMap {
 }
 
 /**
- * Function to ensure the timestamp are in miliseconds
- * @param timeStep - The time step object.
- * @returns {number} - The timestamp in miliseconds.
- */
-function ensureTimestampInMs(timestamp: number) {
-  if (isNaN(timestamp)) {
-    console.warn("Invalid timestamp generated for timestep:", timestamp);
-    return; // Skip this iteration
-  }
-  // Check if input timestamp is likely seconds
-  if (timestamp < 31536000000) {
-    // Simple check for seconds timestamp
-    return timestamp * 1000;
-  } else {
-    return timestamp; // Assume already ms
-  }
-}
-
-/**
  * Process Swell Data
  * @param data - The input chartData array.
  * @param options - Thresholds for matching.
@@ -85,6 +66,17 @@ export default function processSwellData(
   let eventCounter = 0;
 
   data.forEach((timeStep, t) => {
+    // --- Get timestamp from dateTimeISO ---
+    const tsMs = new Date(timeStep.dateTimeISO).getTime(); // Use the reliable ISO string
+
+    if (isNaN(tsMs)) {
+      console.warn(
+        "Invalid timestamp parsed from dateTimeISO:",
+        timeStep.dateTimeISO
+      );
+      return; // Skip if parsing fails
+    }
+
     const currentSwells: CurrentSwell[] = [];
     const ranks: SwellRank[] = [
       "primary",
@@ -116,7 +108,7 @@ export default function processSwellData(
           height: unitPreference === "ft" ? metersToFeet(height) : height,
           direction: direction,
           period: period,
-          timestamp: ensureTimestampInMs(timeStep.timestamp) as number,
+          timestamp: tsMs,
           matched: false,
         });
       }
@@ -155,7 +147,7 @@ export default function processSwellData(
         // Found a match - continue the event
         bestMatch.matched = true;
         events[activeEvent.id].push({
-          timestamp: ensureTimestampInMs(bestMatch.timestamp) as number,
+          timestamp: bestMatch.timestamp,
           height: bestMatch.height,
           period: bestMatch.period,
           direction: bestMatch.direction,
@@ -186,7 +178,7 @@ export default function processSwellData(
         }_${currentSwell.period.toFixed(1)}`;
         events[newEventId] = [
           {
-            timestamp: ensureTimestampInMs(currentSwell.timestamp) as number,
+            timestamp: currentSwell.timestamp,
             height: currentSwell.height,
             period: currentSwell.period,
             direction: currentSwell.direction,
