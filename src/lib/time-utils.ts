@@ -10,7 +10,7 @@ import {
 } from "d3-time";
 
 interface TimeDataItem {
-  dateTimeISO: string;
+  localDateTimeISO: string;
   dateTime?: string; // Optional if it still exists
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Allow other properties
@@ -52,18 +52,21 @@ export function multiFormat(date: Date): string {
 }
 
 export function processTimeData<T extends TimeDataItem>(data: T[]) {
-  // Process the data to include CORRECT timestamps from dateTimeISO
+  // Process the data to include CORRECT timestamps from localDateTimeISO
   const processedData = data
     .map((item) => {
-      const timestampMs = new Date(item.dateTimeISO).getTime();
+      const timestampMs = new Date(item.localDateTimeISO).getTime();
       if (isNaN(timestampMs)) {
-        console.warn("Failed to parse dateTimeISO:", item.dateTimeISO);
+        console.warn(
+          "Failed to parse localDateTimeISO:",
+          item.localDateTimeISO
+        );
         // Return item with null/invalid timestamp or handle error appropriately
         return { ...item, timestamp: NaN };
       }
       return {
         ...item,
-        timestamp: timestampMs, // Use timestamp derived from dateTimeISO
+        timestamp: timestampMs, // Use timestamp derived from localDateTimeISO
       };
     })
     .filter((item) => !isNaN(item.timestamp)); // Filter out items where parsing failed

@@ -12,7 +12,7 @@ import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { dayTicks, generateTicks } from "@/utils/chart-utils";
+import { generateTicks } from "@/utils/chart-utils";
 import { chartArgs } from "@/lib/chart-args";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
@@ -34,9 +34,6 @@ const AdvancedSwellChart = ({
     () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
     [unitPreferences.waveHeight]
   );
-
-  console.log({ processedSwellData });
-  console.log({ dayTicks });
 
   const eventIds = Object.keys(processedSwellData);
 
@@ -140,6 +137,15 @@ const AdvancedSwellChart = ({
           }}
           trigger="hover"
         />
+        {/* 
+        <Line
+          type="monotone"
+          dataKey={"height"}
+          name="height"
+          strokeDasharray="5 5"
+          strokeWidth={10}
+          stroke="oklch(0.129 0.042 264.695)"
+        /> */}
 
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];

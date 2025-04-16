@@ -83,12 +83,27 @@ export const formatWaveHeight = (
 };
 
 export const formatDateTick = (value: string) => {
+  // Parse the date and convert to UTC to avoid DST issues
   const date = new Date(value);
-  const formattedDate = date
+  const utcDate = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      12,
+      0,
+      0,
+      0
+    )
+  );
+
+  // Format the date using UTC methods
+  const formattedDate = utcDate
     .toLocaleDateString("en-US", {
       weekday: "short",
       day: "numeric",
       month: "numeric",
+      timeZone: "UTC", // Ensure consistent formatting regardless of local timezone
     })
     .toLocaleUpperCase()
     .replace(",", "");
@@ -222,13 +237,14 @@ export { startDateObj, endDateObj, timeScale };
  */
 export const baseChartXAxisProps: Partial<XAxisProps> = {
   dataKey: "timestamp",
+  // dataKey: (item) => new Date(item.localDateTimeISO).getTime(),
   type: "number" as const,
   scale: timeScale,
   domain: timeScale.domain().map((date) => date.valueOf()),
-  padding: { left: 12 },
-  allowDataOverflow: true,
   interval: "preserveStart" as const,
+  padding: { left: 12 },
   allowDuplicatedCategory: false,
+  allowDataOverflow: true,
 };
 
 // Convert meters to feet with one decimal place precision

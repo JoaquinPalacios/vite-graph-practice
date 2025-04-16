@@ -11,7 +11,7 @@ export interface SwellData {
   date: string;
   time: string;
   dateTime: string;
-  dateTimeISO: string;
+  localDateTimeISO: string;
   timestamp: number;
   swellDirection: number;
   windDirection: number;

@@ -66,13 +66,13 @@ export default function processSwellData(
   let eventCounter = 0;
 
   data.forEach((timeStep, t) => {
-    // --- Get timestamp from dateTimeISO ---
-    const tsMs = new Date(timeStep.dateTimeISO).getTime(); // Use the reliable ISO string
+    // --- Get timestamp from localDateTimeISO ---
+    const tsMs = new Date(timeStep.localDateTimeISO).getTime(); // Use the reliable ISO string
 
     if (isNaN(tsMs)) {
       console.warn(
-        "Invalid timestamp parsed from dateTimeISO:",
-        timeStep.dateTimeISO
+        "Invalid timestamp parsed from localDateTimeISO:",
+        timeStep.localDateTimeISO
       );
       return; // Skip if parsing fails
     }
