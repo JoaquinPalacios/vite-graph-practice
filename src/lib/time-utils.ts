@@ -51,44 +51,86 @@ export function multiFormat(date: Date): string {
   return formatYear(date);
 }
 
-export function processTimeData<T extends { dateTime: string }>(data: T[]) {
-  // Process the data to include timestamps
-  const processedData = data.map((item) => ({
-    ...item,
-    timestamp: new Date(item.dateTime).getTime(),
-  }));
+export function processTimeData<T extends TimeDataItem>(data: T[]) {
+  // Process the data to include CORRECT timestamps from dateTimeISO
+  const processedData = data
+    .map((item) => {
+      const timestampMs = new Date(item.dateTimeISO).getTime();
+      if (isNaN(timestampMs)) {
+        console.warn("Failed to parse dateTimeISO:", item.dateTimeISO);
+        // Return item with null/invalid timestamp or handle error appropriately
+        return { ...item, timestamp: NaN };
+      }
+      return {
+        ...item,
+        timestamp: timestampMs, // Use timestamp derived from dateTimeISO
+      };
+    })
+    .filter((item) => !isNaN(item.timestamp)); // Filter out items where parsing failed
+
+  // Ensure there's valid data to process
+  if (processedData.length === 0) {
+    console.error("No valid data points found after processing timestamps.");
+    // Return default/empty values or throw error
+    const now = new Date();
+    const todayMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    ).getTime();
+    return {
+      processedData: [],
+      startDate: new Date(todayMidnight),
+      endDate: new Date(todayMidnight + 86400000), // Add one day
+      dayTicks: [todayMidnight, todayMidnight + 86400000],
+    };
+  }
 
   // Get the start and end timestamps
   const timeValues = processedData.map((row) => row.timestamp);
   const startTimestamp = Math.min(...timeValues);
   const endTimestamp = Math.max(...timeValues);
 
-  // Create Date objects for the start and end of the day
+  // Create Date objects for the start and end of the day range
+  // These Date objects will represent time based on the LOCAL timezone of the environment
+  // where the code is running, but derived from the correct absolute timestamps.
   const startDate = new Date(startTimestamp);
   const endDate = new Date(endTimestamp);
 
   // Set start date to beginning of day (00:00:00)
-  startDate.setDate(startDate.getDate());
+  // startDate.setDate(startDate.getDate());
+  // startDate.setHours(0, 0, 0, 0);
+
+  // Set start date to beginning of ITS local day (00:00:00)
+  // No need to change date, just time
   startDate.setHours(0, 0, 0, 0);
 
   // Set end date to beginning of next day (00:00:00)
-  endDate.setDate(endDate.getDate() + 1);
-  endDate.setHours(0, 0, 0, 0);
+  // endDate.setDate(endDate.getDate() + 1);
+  // endDate.setHours(0, 0, 0, 0);
 
-  // Generate ticks for each day
+  // Set end date to beginning of the day AFTER the last data point's day
+  // No need to change date, just time
+  endDate.setHours(0, 0, 0, 0);
+  endDate.setDate(endDate.getDate() + 1); // Move to midnight starting the next day
+
+  // Generate ticks for each LOCAL day's start within the range
   const dayTicks: number[] = [];
-  let currentDate = new Date(startDate);
-  while (currentDate <= endDate) {
+  // Start loop from the calculated start date (local midnight)
+  const currentDate = new Date(startDate);
+  // Loop until the currentDate exceeds the calculated end date (midnight after last data)
+  while (currentDate.getTime() < endDate.getTime()) {
+    // Use < to avoid including the end date itself if not needed
     dayTicks.push(currentDate.getTime());
-    currentDate = new Date(currentDate);
+    // Advance currentDate by exactly one day (handles DST correctly)
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return {
-    processedData,
-    startDate,
-    endDate,
-    dayTicks,
+    processedData, // Includes the correct ms timestamp
+    startDate, // Date object for local midnight start
+    endDate, // Date object for local midnight end (day after last data)
+    dayTicks, // Array of ms timestamps for local midnights
   };
 }
 
