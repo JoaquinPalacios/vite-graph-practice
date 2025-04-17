@@ -26,7 +26,6 @@ const AdvancedSwellChart = ({
 }) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [hoverEventId, setHoverEventId] = useState<string | null>(null);
-  const [isAdvancedChartHover, setIsAdvancedChartHover] = useState(false);
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -93,10 +92,6 @@ const AdvancedSwellChart = ({
         onMouseLeave={() => {
           console.log("mouse leave");
           setHoverIndex(null);
-          setIsAdvancedChartHover(false);
-        }}
-        onMouseEnter={() => {
-          setIsAdvancedChartHover(true);
         }}
       >
         <CartesianGrid
@@ -167,20 +162,8 @@ const AdvancedSwellChart = ({
               stroke={hoverIndex === index ? activeColor : color}
               strokeWidth={2}
               connectNulls={false}
-              dot={
-                <SwellArrowDot
-                  isHover={
-                    !isAdvancedChartHover
-                      ? true
-                      : hoverIndex === index
-                      ? true
-                      : false
-                  }
-                />
-              }
-              opacity={
-                !isAdvancedChartHover ? 1 : hoverIndex === index ? 1 : 0.25
-              }
+              dot={<SwellArrowDot isHover={hoverIndex === index} />}
+              opacity={hoverIndex === index ? 1 : 0.25}
               onMouseEnter={() => {
                 setHoverEventId(eventId);
                 setHoverIndex(index);
