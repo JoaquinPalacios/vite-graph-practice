@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { chartArgs } from "@/lib/chart-args";
 
 const AdvancedSwellChartYAxis = ({
   unitPreferences,
@@ -20,10 +21,20 @@ const AdvancedSwellChartYAxis = ({
   unitPreferences: UnitPreferences;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
-  // --- Process data to identify events ---
-  // useMemo prevents reprocessing on every render unless chartData changes
-  const processedSwellData = useMemo(() => processSwellData(chartData), []);
+
+  /**
+   * Process the swell data to identify events
+   * useMemo prevents reprocessing on every render unless chartData changes
+   */
+  const processedSwellData = useMemo(
+    () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
+    [unitPreferences.waveHeight]
+  );
+
   const eventIds = Object.keys(processedSwellData);
+
+  // Get all static args
+  const { xAxisArgsBackground, yAxisArgs } = chartArgs;
 
   return (
     <ResponsiveContainer
@@ -48,13 +59,10 @@ const AdvancedSwellChartYAxis = ({
           syncWithTicks
         />
 
-        <XAxis xAxisId={0} dataKey="timestamp" hide />
+        <XAxis {...xAxisArgsBackground} />
 
         <YAxis
-          tickLine={false}
-          axisLine={false}
-          type="number"
-          domain={[0, "dataMax"]}
+          {...yAxisArgs}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
           unit={unitPreferences.waveHeight}

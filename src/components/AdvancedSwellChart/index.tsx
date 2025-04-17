@@ -19,6 +19,13 @@ import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
 
+/**
+ * Advanced Swell Chart
+ *  @description - This is a line chart that shows the different incoming swells
+ * and their relative heights.
+ * @param unitPreferences - The unit preferences for the chart
+ * @returns The Advanced Swell Chart component
+ */
 const AdvancedSwellChart = ({
   unitPreferences,
 }: {
@@ -71,7 +78,7 @@ const AdvancedSwellChart = ({
   ];
 
   // Get all static args
-  const { xAxisArgsBackground } = chartArgs;
+  const { xAxisArgsBackground, yAxisArgs } = chartArgs;
 
   return (
     <ResponsiveContainer
@@ -108,10 +115,7 @@ const AdvancedSwellChart = ({
         <XAxis {...xAxisArgsBackground} />
 
         <YAxis
-          tickLine={false}
-          axisLine={false}
-          type="number"
-          domain={[0, "dataMax"]}
+          {...yAxisArgs}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
           interval="preserveStart"
