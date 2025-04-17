@@ -26,6 +26,7 @@ const AdvancedSwellChart = ({
 }) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [hoverEventId, setHoverEventId] = useState<string | null>(null);
+  const [isAdvancedChartHover, setIsAdvancedChartHover] = useState(false);
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -44,15 +45,15 @@ const AdvancedSwellChart = ({
    * Define the color palette of each event
    */
   const colorPalette = [
-    "oklch(25.8% 0.092 26.042)", // Tailwind red-950
-    "oklch(47.3% 0.137 46.201)", // Tailwind amber-800
-    "oklch(37.9% 0.146 265.522)", // Tailwind blue-900
-    "oklch(39.3% 0.095 152.535)", // Tailwind green-900
-    "oklch(38.1% 0.176 304.987)", // Tailwind purple-900
-    "oklch(40.8% 0.153 2.432)", // Tailwind pink-900
-    "oklch(20.8% 0.042 265.755)", // Tailwind slate-900
-    "oklch(39.8% 0.07 227.392)", // Tailwind cyan-900
-    "oklch(40.5% 0.101 131.063)", // Tailwind lime-900
+    "oklch(50.5% 0.213 27.518)", // Tailwind red-700
+    "oklch(55.5% 0.163 48.998)", // Tailwind amber-700
+    "oklch(48.8% 0.243 264.376)", // Tailwind blue-700
+    "oklch(52.7% 0.154 150.069)", // Tailwind green-700
+    "oklch(49.6% 0.265 301.924)", // Tailwind purple-700
+    "oklch(52.5% 0.223 3.958)", // Tailwind pink-700
+    "oklch(27.9% 0.041 260.031)", // Tailwind slate-800
+    "oklch(52% 0.105 223.128)", // Tailwind cyan-700
+    "oklch(53.2% 0.157 131.589)", // Tailwind lime-700
   ];
 
   /**
@@ -92,6 +93,10 @@ const AdvancedSwellChart = ({
         onMouseLeave={() => {
           console.log("mouse leave");
           setHoverIndex(null);
+          setIsAdvancedChartHover(false);
+        }}
+        onMouseEnter={() => {
+          setIsAdvancedChartHover(true);
         }}
       >
         <CartesianGrid
@@ -162,12 +167,25 @@ const AdvancedSwellChart = ({
               stroke={hoverIndex === index ? activeColor : color}
               strokeWidth={2}
               connectNulls={false}
-              dot={<SwellArrowDot isHover={hoverIndex === index} />}
-              opacity={hoverIndex === index ? 1 : 0.25}
+              dot={
+                <SwellArrowDot
+                  isHover={
+                    !isAdvancedChartHover
+                      ? true
+                      : hoverIndex === index
+                      ? true
+                      : false
+                  }
+                />
+              }
+              opacity={
+                !isAdvancedChartHover ? 1 : hoverIndex === index ? 1 : 0.25
+              }
               onMouseEnter={() => {
                 setHoverEventId(eventId);
                 setHoverIndex(index);
               }}
+              className="[&>g>svg]:transition-opacity [&>g>svg]:duration-150 [&>g>svg]:ease-in-out"
             />
           );
         })}
