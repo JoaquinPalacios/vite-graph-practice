@@ -47,8 +47,8 @@ export const chartArgs = {
         Date.UTC(
           date.getUTCFullYear(),
           date.getUTCMonth(),
-          date.getUTCDate(),
-          12,
+          date.getUTCDate() + 1,
+          0,
           0,
           0,
           0

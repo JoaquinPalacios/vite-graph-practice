@@ -237,7 +237,7 @@ export { startDateObj, endDateObj, timeScale };
  */
 export const baseChartXAxisProps: Partial<XAxisProps> = {
   dataKey: "timestamp",
-  // dataKey: (item) => new Date(item.localDateTimeISO).getTime(),
+  // dataKey: (item) => new Date(item.dateTimeISO).getTime(),
   type: "number" as const,
   scale: timeScale,
   domain: timeScale.domain().map((date) => date.valueOf()),
