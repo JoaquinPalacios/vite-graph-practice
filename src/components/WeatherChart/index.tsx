@@ -2,10 +2,10 @@ import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
 import { weatherData } from "@/data/weatherData";
-import { convertTo24Hour } from "@/lib/time-utils";
+import { multiFormat, convertTo24Hour } from "@/lib/time-utils";
 import { processTimeData } from "@/lib/time-utils";
 import WeatherBubble from "./WeatherBubble";
-import { chartArgs } from "@/lib/chart-args";
+import { dayTicks, timeScale } from "@/utils/chart-utils";
 
 const { processedData } = processTimeData(
   weatherData.map((item) => ({
@@ -16,71 +16,6 @@ const { processedData } = processTimeData(
 );
 
 const WeatherChart = () => {
-  // Get all static args
-  const { xAxisArgsBackground, yAxisArgs, mainChartArgs, cartesianGridArgs } =
-    chartArgs;
-
-  /**
-   * Scatter chart args
-   */
-  const dynamicScatterChartArgs = {
-    ...mainChartArgs,
-    margin: {
-      left: 0,
-      right: 0,
-      bottom: 16,
-      top: 0,
-    },
-  };
-
-  /**
-   * Cartesian grid args
-   */
-  const dynamicCartesianGridArgs = {
-    ...cartesianGridArgs,
-    verticalFill: [
-      "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-      "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-    ],
-    overflow: "visible",
-  };
-
-  /**
-   * XAxis args for the background stripes
-   */
-  const dynamicXAxisBackgroundArgs = {
-    ...xAxisArgsBackground,
-    xAxisId: 0,
-    hide: true,
-    allowDataOverflow: true,
-  };
-
-  /**
-   * Legend XAxis args
-   */
-  const dynamicXAxisLegendArgs = {
-    xAxisId: 1,
-    dataKey: "date",
-    hide: true,
-    tickLine: false,
-    axisLine: false,
-    interval: "preserveStart" as const,
-    overflow: "visible",
-    allowDataOverflow: true,
-  };
-
-  /**
-   * YAxis args
-   */
-  const dynamicYAxisArgs = {
-    ...yAxisArgs,
-    dataKey: "index",
-    height: 0,
-    domain: [1],
-    padding: { bottom: 16 },
-    opacity: 0,
-  };
-
   return (
     <ResponsiveContainer
       width={4848}
@@ -89,16 +24,55 @@ const WeatherChart = () => {
     >
       <ScatterChart
         data={processedData}
-        {...dynamicScatterChartArgs}
+        accessibilityLayer
+        margin={{
+          left: 0,
+          right: 0,
+          bottom: 16,
+          top: 0,
+        }}
         className="[&>svg]:focus:outline-none"
       >
-        <CartesianGrid {...dynamicCartesianGridArgs} />
+        <CartesianGrid
+          vertical={true}
+          horizontal={true}
+          verticalFill={[
+            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+          ]}
+          y={0}
+          height={64}
+          syncWithTicks
+          overflow="visible"
+        />
 
         {/* Background stripes XAxis */}
-        <XAxis {...dynamicXAxisBackgroundArgs} />
+        <XAxis
+          dataKey="timestamp"
+          type="number"
+          scale={timeScale}
+          domain={timeScale.domain().map((date) => date.valueOf())}
+          xAxisId={0}
+          hide
+          allowDataOverflow
+          ticks={dayTicks}
+          tickFormatter={multiFormat}
+          interval="preserveStart"
+          padding={{ left: 12 }}
+          allowDuplicatedCategory={false}
+        />
 
         {/* Legend XAxis */}
-        <XAxis {...dynamicXAxisLegendArgs} />
+        <XAxis
+          xAxisId={1}
+          dataKey="date"
+          hide
+          tickLine={false}
+          axisLine={false}
+          interval="preserveStart"
+          overflow="visible"
+          allowDataOverflow
+        />
 
         <Scatter
           dataKey="weatherId"
@@ -106,7 +80,16 @@ const WeatherChart = () => {
           overflow="visible"
         />
 
-        <YAxis {...dynamicYAxisArgs} />
+        <YAxis
+          dataKey="index"
+          height={0}
+          domain={[1]}
+          padding={{ bottom: 16 }}
+          opacity={0}
+          tickLine={false}
+          axisLine={false}
+          type="number"
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
