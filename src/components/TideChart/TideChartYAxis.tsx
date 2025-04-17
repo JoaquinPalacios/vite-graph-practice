@@ -88,6 +88,7 @@ const TideChartYAxis = () => {
           bottom: 16,
         }}
         className="[&>svg]:focus:outline-none"
+        width={60}
       >
         <CartesianGrid
           vertical={true}

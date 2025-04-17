@@ -12,7 +12,6 @@ import { generateTicks, processedData } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { chartArgs } from "@/lib/chart-args";
 
 /**
  * SwellChartYAxis component
@@ -29,97 +28,6 @@ const SwellChartYAxis = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
-  // Get all static args
-  const { yAxisArgs, cartesianGridArgs, mainChartArgs } = chartArgs;
-
-  /**
-   * YAxis args
-   */
-  const dynamicYAxisArgs = {
-    ...yAxisArgs,
-    tickMargin: isMobile || isLandscapeMobile ? 20 : 8,
-    minTickGap: 0,
-    unit: unitPreferences.waveHeight,
-    interval: "preserveStart" as const,
-    overflow: "visible",
-    allowDecimals: false,
-    ticks: generateTicks(
-      unitPreferences.waveHeight === "ft"
-        ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-        : Math.max(...chartData.map((d) => d.waveHeight_m)),
-      unitPreferences.waveHeight
-    ),
-    padding: {
-      top: 20,
-    },
-    tick: (value: {
-      x: number;
-      y: number;
-      index: number;
-      payload: { value: number };
-    }) => {
-      return value.index === 0 ? (
-        <g transform="translate(-10, 0)">
-          <GiBigWave
-            className="w-6 h-6"
-            x={value.x - 8}
-            y={value.y - 20}
-            size={20}
-            color="#666"
-          />
-          <LuWind
-            className="w-4 h-4"
-            x={value.x - 8}
-            y={value.y + 12}
-            size={20}
-            color="#666"
-          />
-          {unitPreferences.windSpeed === "knots" ? (
-            <text
-              x={value.x + 12}
-              y={value.y + 52}
-              dy={1}
-              textAnchor="end"
-              fontSize={10}
-            >
-              kts
-            </text>
-          ) : (
-            <text
-              x={value.x + 12}
-              y={value.y + 52}
-              dy={1}
-              textAnchor="end"
-              fontSize={10}
-            >
-              km/h
-            </text>
-          )}
-        </g>
-      ) : (
-        <text
-          x={value.x}
-          y={value.y}
-          dy={1}
-          textAnchor="end"
-          fontSize={12}
-          fill="#666"
-        >
-          {value.payload.value}
-          {unitPreferences.waveHeight}
-        </text>
-      );
-    },
-  };
-
-  /**
-   * BarChart args
-   */
-  const dynamicBarChartArgs = {
-    ...mainChartArgs,
-    width: 60,
-  };
-
   return (
     <ResponsiveContainer
       width={60}
@@ -128,10 +36,24 @@ const SwellChartYAxis = ({
     >
       <BarChart
         data={processedData}
-        {...dynamicBarChartArgs}
+        accessibilityLayer
+        margin={{
+          bottom: 12,
+        }}
+        width={60}
         className="[&>svg]:focus:outline-none"
       >
-        <CartesianGrid {...cartesianGridArgs} />
+        <CartesianGrid
+          vertical={true}
+          horizontal={true}
+          verticalFill={[
+            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+          ]}
+          y={0}
+          height={320}
+          syncWithTicks
+        />
 
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
         <XAxis xAxisId={0} dataKey="dateTime" hide />
@@ -176,7 +98,80 @@ const SwellChartYAxis = ({
           aria-hidden
         />
 
-        <YAxis {...dynamicYAxisArgs} />
+        <YAxis
+          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+          minTickGap={0}
+          unit={unitPreferences.waveHeight}
+          interval="preserveStart"
+          overflow="visible"
+          allowDecimals={false}
+          ticks={generateTicks(
+            unitPreferences.waveHeight === "ft"
+              ? Math.max(...chartData.map((d) => d.waveHeight_ft))
+              : Math.max(...chartData.map((d) => d.waveHeight_m)),
+            unitPreferences.waveHeight
+          )}
+          padding={{
+            top: 20,
+          }}
+          tickLine={false}
+          axisLine={false}
+          type="number"
+          domain={[0, "dataMax"]}
+          tick={(value) => {
+            return value.index === 0 ? (
+              <g transform="translate(-10, 0)">
+                <GiBigWave
+                  className="w-6 h-6"
+                  x={value.x - 8}
+                  y={value.y - 20}
+                  size={20}
+                  color="#666"
+                />
+                <LuWind
+                  className="w-4 h-4"
+                  x={value.x - 8}
+                  y={value.y + 12}
+                  size={20}
+                  color="#666"
+                />
+                {unitPreferences.windSpeed === "knots" ? (
+                  <text
+                    x={value.x + 12}
+                    y={value.y + 52}
+                    dy={1}
+                    textAnchor="end"
+                    fontSize={10}
+                  >
+                    kts
+                  </text>
+                ) : (
+                  <text
+                    x={value.x + 12}
+                    y={value.y + 52}
+                    dy={1}
+                    textAnchor="end"
+                    fontSize={10}
+                  >
+                    km/h
+                  </text>
+                )}
+              </g>
+            ) : (
+              <text
+                x={value.x}
+                y={value.y}
+                dy={1}
+                textAnchor="end"
+                fontSize={12}
+                fill="#666"
+              >
+                {value.payload.value}
+                {unitPreferences.waveHeight}
+              </text>
+            );
+          }}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
