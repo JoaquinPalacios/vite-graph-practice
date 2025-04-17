@@ -12,12 +12,12 @@ import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { generateTicks } from "@/utils/chart-utils";
-import { chartArgs } from "@/lib/chart-args";
+import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
+import { multiFormat } from "@/lib/time-utils";
 
 /**
  * Advanced Swell Chart
@@ -77,9 +77,6 @@ const AdvancedSwellChart = ({
     "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
   ];
 
-  // Get all static args
-  const { xAxisArgsBackground, yAxisArgs } = chartArgs;
-
   return (
     <ResponsiveContainer
       width={4848}
@@ -112,10 +109,26 @@ const AdvancedSwellChart = ({
           height={192}
           syncWithTicks
         />
-        <XAxis {...xAxisArgsBackground} />
+
+        {/* Background XAxis */}
+        <XAxis
+          dataKey="timestamp"
+          xAxisId={0}
+          type="number"
+          scale={timeScale}
+          domain={timeScale.domain().map((date) => date.valueOf())}
+          interval="preserveStart"
+          allowDuplicatedCategory={false}
+          allowDataOverflow
+          hide
+          ticks={dayTicks}
+          tickFormatter={multiFormat}
+          padding={{ left: 12 }}
+        />
 
         <YAxis
-          {...yAxisArgs}
+          type="number"
+          domain={[0, "dataMax"]}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
           interval="preserveStart"
@@ -132,6 +145,8 @@ const AdvancedSwellChart = ({
           tick={() => {
             return <text></text>;
           }}
+          tickLine={false}
+          axisLine={false}
         />
 
         <Tooltip
