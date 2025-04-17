@@ -8,6 +8,7 @@ import SwellChartYAxis from "./SwellChart/SwellChartYAxis";
 import { cn } from "@/utils/utils";
 import AdvancedSwellChart from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
+import TideChartYAxis from "./TideChart/TideChartYAxis";
 
 const ChartsContainer = ({
   unitPreferences,
@@ -29,7 +30,9 @@ const ChartsContainer = ({
         <AdvancedSwellChartYAxis unitPreferences={unitPreferences} />
 
         <WeatherChart />
+
         <TideChart />
+        <TideChartYAxis />
       </ChartsWrapper>
     </div>
   );

@@ -9,7 +9,6 @@ import {
 import { ResponsiveContainer } from "recharts";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
-import { TideAreaDot } from "./TideAreaDot";
 import { multiFormat } from "@/lib/time-utils";
 import { dayTicks, processTimeScaleData } from "@/utils/chart-utils";
 
@@ -73,9 +72,13 @@ const processedData = [
 const timeValues = processedData.map((row) => row.timestamp);
 const { timeScale } = processTimeScaleData(timeValues);
 
-const TideChart = () => {
+const TideChartYAxis = () => {
   return (
-    <ResponsiveContainer width={4848} height="100%" className="h-36 min-h-36">
+    <ResponsiveContainer
+      width={60}
+      height="100%"
+      className="h-36 min-h-36 max-h-36 absolute bottom-0 left-0 md:left-4 z-20"
+    >
       <AreaChart
         accessibilityLayer
         data={processedData}
@@ -96,6 +99,7 @@ const TideChart = () => {
           y={0}
           height={144}
           syncWithTicks
+          width={60}
         />
 
         {/* Background stripes XAxis */}
@@ -121,11 +125,6 @@ const TideChart = () => {
           dataKey="height"
           stroke="#008a93"
           fill="#008a93"
-          connectNulls
-          dot={(props) => {
-            if (props.key === "dot-0") return <span key={props.key} />;
-            return <TideAreaDot {...props} key={props.key} />;
-          }}
           isAnimationActive={false}
         />
 
@@ -135,10 +134,11 @@ const TideChart = () => {
           axisLine={false}
           domain={["dataMin - 0.2", "dataMax + 0.2"]}
           padding={{ top: 32 }}
+          fontSize={12}
         />
       </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-export default TideChart;
+export default TideChartYAxis;
