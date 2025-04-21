@@ -2,7 +2,7 @@ import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
 import { weatherData } from "@/data/weatherData";
-import { multiFormat, convertTo24Hour } from "@/lib/time-utils";
+import { multiFormat } from "@/lib/time-utils";
 import { processTimeData } from "@/lib/time-utils";
 import WeatherBubble from "./WeatherBubble";
 import { dayTicks, timeScale } from "@/utils/chart-utils";
@@ -10,8 +10,8 @@ import { dayTicks, timeScale } from "@/utils/chart-utils";
 const { processedData } = processTimeData(
   weatherData.map((item) => ({
     ...item,
-    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
-    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
+    dateTime: item.localDateTimeISO,
+    timestamp: new Date(item.localDateTimeISO).getTime(),
   }))
 );
 

@@ -8,8 +8,6 @@ export type UnitPreferences = {
 };
 
 export interface SwellData {
-  date: string;
-  time: string;
   dateTime: string;
   localDateTimeISO: string;
   timestamp: number;

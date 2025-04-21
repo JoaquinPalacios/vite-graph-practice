@@ -160,12 +160,3 @@ export const generateHourlyTicks = (
 
   return ticks;
 };
-
-export const convertTo24Hour = (time: string) => {
-  const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
-  if (!hours || !period) return time;
-  let hour = parseInt(hours);
-  if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
-  if (period.toLowerCase() === "am" && hour === 12) hour = 0;
-  return `${hour.toString().padStart(2, "0")}:00`;
-};

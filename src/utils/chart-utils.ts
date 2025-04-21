@@ -165,20 +165,6 @@ export const getWindColor = (windSpeed: number): string => {
 };
 
 /**
- * Convert a 12-hour time string to a 24-hour time string
- * @param time - The 12-hour time string
- * @returns The 24-hour time string
- */
-const convertTo24Hour = (time: string) => {
-  const [hours, period] = time.match(/(\d+)([ap]m)/i)?.slice(1) || [];
-  if (!hours || !period) return time;
-  let hour = parseInt(hours);
-  if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
-  if (period.toLowerCase() === "am" && hour === 12) hour = 0;
-  return `${hour.toString().padStart(2, "0")}:00`;
-};
-
-/**
  * Generic time processing utility that can be used for any time-series data
  */
 export const processTimeScaleData = (timestamps: number[]) => {
@@ -221,8 +207,8 @@ export const processTimeScaleData = (timestamps: number[]) => {
 export const { processedData, dayTicks } = processTimeData(
   chartData.map((item) => ({
     ...item,
-    dateTime: `${item.date} ${convertTo24Hour(item.time)}`,
-    timestamp: new Date(`${item.date} ${convertTo24Hour(item.time)}`).getTime(),
+    dateTime: item.localDateTimeISO,
+    timestamp: new Date(item.localDateTimeISO).getTime(),
   }))
 );
 

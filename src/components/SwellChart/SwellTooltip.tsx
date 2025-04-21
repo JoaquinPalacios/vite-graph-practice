@@ -23,11 +23,19 @@ export const SwellTooltip = ({
 }: TooltipProps<ValueType, NameType> & {
   unitPreferences: UnitPreferences;
 }) => {
+  console.log({ payload, label });
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">
         <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
-          {payload[0].payload.time}&nbsp;-&nbsp;
+          {new Date(label)
+            .toLocaleTimeString("en-US", {
+              hour: "numeric",
+              hour12: true,
+            })
+            .toLowerCase()
+            .replace(" ", "")}
+          &nbsp;-&nbsp;
           {new Date(label).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
