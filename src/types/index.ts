@@ -8,7 +8,6 @@ export type UnitPreferences = {
 
 export interface SwellData {
   localDateTimeISO: string;
-  timestamp: number;
   swellDirection: number;
   windDirection: number;
   windSpeed_kmh: number;
