@@ -1,12 +1,9 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { GiBigWave, GiHighTide, GiLowTide } from "react-icons/gi";
-import { LuWind } from "react-icons/lu";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
-import { formatWaveHeight } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
 
 /**
  * SwellTooltip component
@@ -18,18 +15,58 @@ export const AdvanceCustomTooltip = ({
   active,
   payload,
   label,
-  unitPreferences,
 }: TooltipProps<ValueType, NameType> & {
   unitPreferences: UnitPreferences;
   hoverEventId: string | null;
 }) => {
   console.log({ payload });
   if (active && payload && payload.length) {
-    // const activeDataKey = payload[0]?.name;
+    const getColorClass = (color: string) => {
+      switch (color) {
+        // Regular colors
+        case "oklch(50.5% 0.213 27.518)":
+          return "bg-red-700";
+        case "oklch(55.5% 0.163 48.998)":
+          return "bg-amber-700";
+        case "oklch(48.8% 0.243 264.376)":
+          return "bg-blue-700";
+        case "oklch(52.7% 0.154 150.069)":
+          return "bg-green-700";
+        case "oklch(49.6% 0.265 301.924)":
+          return "bg-purple-700";
+        case "oklch(52.5% 0.223 3.958)":
+          return "bg-pink-700";
+        case "oklch(27.9% 0.041 260.031)":
+          return "bg-slate-800";
+        case "oklch(52% 0.105 223.128)":
+          return "bg-cyan-700";
+        case "oklch(53.2% 0.157 131.589)":
+          return "bg-lime-700";
 
-    // const filteredPayload = payload.filter(
-    //   (item) => item.name === activeDataKey
-    // );
+        // Active colors
+        case "oklch(57.7% 0.245 27.325)":
+          return "bg-red-600";
+        case "oklch(66.6% 0.179 58.318)":
+          return "bg-amber-600";
+        case "oklch(54.6% 0.245 262.881)":
+          return "bg-blue-600";
+        case "oklch(62.7% 0.194 149.214)":
+          return "bg-green-600";
+        case "oklch(55.8% 0.288 302.321)":
+          return "bg-purple-600";
+        case "oklch(59.2% 0.249 0.584)":
+          return "bg-pink-600";
+        case "oklch(55.4% 0.046 257.417)":
+          return "bg-slate-500";
+        case "oklch(60.9% 0.126 221.723)":
+          return "bg-cyan-600";
+        case "oklch(76.8% 0.233 130.85)":
+          return "bg-lime-500";
+
+        default:
+          return "bg-slate-700";
+      }
+    };
 
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">
@@ -48,122 +85,27 @@ export const AdvanceCustomTooltip = ({
           })}
         </h5>
         <div className="flex flex-col bg-white p-2">
-          <div className="flex gap-1">
-            <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
-            <p className="ml-px text-xs">
-              {payload &&
-                formatWaveHeight(
-                  payload[0].payload.height as number,
-                  String(payload[0].unit || "m")
-                )}
-            </p>
-            <p className="text-xs">
-              {payload &&
-                degreesToCompassDirection(payload[0].payload.direction)}
-            </p>
-          </div>
-          {payload[0] && (
-            <div className="flex gap-1">
-              <LuWind className="w-3.5 h-3.5" color="#008a93" />
-              <p className="ml-px text-xs">
-                {unitPreferences.windSpeed === "knots"
-                  ? payload[0].payload.windSpeed_knots
-                  : payload[0].payload.windSpeed_kmh}
-                {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
-              </p>
-              <p className="text-xs">
-                {degreesToCompassDirection(payload[0].payload.windDirection)}
-              </p>
-            </div>
-          )}
-          {payload[0] && (
-            <div className="flex gap-1">
-              <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
-              <p className="ml-px text-xs">
-                {payload[0].payload.primarySwellHeight}m @
-              </p>
-              <p className="text-xs">
-                {payload[0].payload.primarySwellPeriod}s
-              </p>
-            </div>
-          )}
-          {payload[0].payload.secondarySwellHeight && (
-            <div className="flex gap-1">
-              <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
-              <p className="ml-px text-xs">
-                {payload[0].payload.secondarySwellHeight}m @
-              </p>
-              <p className="text-xs">
-                {payload[0].payload.secondarySwellPeriod}s
-              </p>
-            </div>
-          )}
-          {payload[0].payload.tertiarySwellHeight && (
-            <div className="flex gap-1">
-              <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
-              <p className="ml-px text-xs">
-                {payload[0].payload.tertiarySwellHeight}m @
-              </p>
-              <p className="text-xs">
-                {payload[0].payload.tertiarySwellPeriod}s
-              </p>
-            </div>
-          )}
-          {payload[0] && (
-            <>
-              {payload[0].payload.isRising ? (
-                <>
-                  {payload[0].payload.nextHighTideHeight && (
-                    <div className="flex gap-1">
-                      <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                      <p className="ml-px text-xs">
-                        {payload[0].payload.nextHighTideHeight}m @
-                      </p>
-                      <p className="text-xs">
-                        {payload[0].payload.nextHighTide}
-                      </p>
-                    </div>
+          {payload
+            .slice()
+            .sort((a, b) => (b.value as number) - (a.value as number))
+            .map((item) => (
+              <div className="flex gap-1 items-center">
+                <span
+                  className={cn(
+                    "w-2 h-2 rounded-xs",
+                    item.color && getColorClass(item.color || "")
                   )}
-                  {payload[0].payload.nextLowTideHeight && (
-                    <div className="flex gap-1">
-                      <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                      <p className="ml-px text-xs">
-                        {payload[0].payload.nextLowTideHeight}m @
-                      </p>
-                      <p className="text-xs">
-                        {payload[0].payload.nextLowTide}
-                      </p>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  {payload[0].payload.nextLowTideHeight && (
-                    <div className="flex gap-1">
-                      <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                      <p className="ml-px text-xs">
-                        {payload[0].payload.nextLowTideHeight}m @
-                      </p>
-                      <p className="text-xs">
-                        {payload[0].payload.nextLowTide}
-                      </p>
-                    </div>
-                  )}
-                  {payload[0].payload.nextHighTideHeight && (
-                    <div className="flex gap-1">
-                      <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                      <p className="ml-px text-xs">
-                        {payload[0].payload.nextHighTideHeight}m @
-                      </p>
-                      <p className="text-xs ">
-                        {payload[0].payload.nextHighTide}
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-            </>
-          )}
+                />
+                <p className="ml-px text-xs">{item.value}m</p>
+                <p className="ml-px text-xs">@</p>
+                <p className="ml-px text-xs">{item.payload.period}s</p>
+                <p className="text-xs">
+                  {item.payload &&
+                    degreesToCompassDirection(item.payload.direction)}
+                </p>
+                <p className="ml-px text-xs">({item.payload.direction}°)</p>
+              </div>
+            ))}
         </div>
       </div>
     );
