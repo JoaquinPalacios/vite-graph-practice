@@ -19,25 +19,29 @@ export const AdvanceCustomTooltip = ({
   payload,
   label,
   unitPreferences,
-}: //   hoverEventId,
-TooltipProps<ValueType, NameType> & {
+}: TooltipProps<ValueType, NameType> & {
   unitPreferences: UnitPreferences;
   hoverEventId: string | null;
 }) => {
+  console.log({ payload });
   if (active && payload && payload.length) {
-    const activeDataKey = payload[0]?.name;
+    // const activeDataKey = payload[0]?.name;
 
-    const filteredPayload = payload.filter(
-      (item) => item.name === activeDataKey
-    );
-
-    // console.log({ filteredPayload });
-    // console.log({ hoverEventId });
+    // const filteredPayload = payload.filter(
+    //   (item) => item.name === activeDataKey
+    // );
 
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">
         <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
-          {payload[0].payload.time}&nbsp;-&nbsp;
+          {new Date(payload[0].payload.localDateTimeISO)
+            .toLocaleTimeString("en-US", {
+              hour: "numeric",
+              hour12: true,
+            })
+            .toLowerCase()
+            .replace(" ", "")}
+          &nbsp;-&nbsp;
           {new Date(label).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -47,15 +51,15 @@ TooltipProps<ValueType, NameType> & {
           <div className="flex gap-1">
             <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
             <p className="ml-px text-xs">
-              {filteredPayload &&
+              {payload &&
                 formatWaveHeight(
-                  filteredPayload[0].payload.height as number,
+                  payload[0].payload.height as number,
                   String(payload[0].unit || "m")
                 )}
             </p>
             <p className="text-xs">
-              {filteredPayload &&
-                degreesToCompassDirection(filteredPayload[0].payload.direction)}
+              {payload &&
+                degreesToCompassDirection(payload[0].payload.direction)}
             </p>
           </div>
           {payload[0] && (

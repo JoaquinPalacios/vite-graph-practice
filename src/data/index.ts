@@ -2582,6 +2582,9 @@ const chartData = [
     secondarySwellHeight: 0.2, // Minor SE
     secondarySwellDirection: 145,
     secondarySwellPeriod: 4.5,
+    tertiarySwellHeight: 0.8, // Minor SE
+    tertiarySwellDirection: 145,
+    tertiarySwellPeriod: 4.5,
     nextHighTide: "1:30am",
     nextHighTideHeight: 1.3,
     nextLowTide: "6:30pm",
@@ -2602,8 +2605,11 @@ const chartData = [
     primarySwellDirection: 110,
     primarySwellPeriod: 5.5,
     secondarySwellHeight: 0.2, // Minor SE
-    secondarySwellDirection: 145,
+    secondarySwellDirection: 125,
     secondarySwellPeriod: 4.5,
+    tertiarySwellHeight: 1.1, // Minor SE
+    tertiarySwellDirection: 145,
+    tertiarySwellPeriod: 4.5,
     nextHighTide: "1:30am",
     nextHighTideHeight: 1.3,
     nextLowTide: "6:40pm",
@@ -2645,7 +2651,7 @@ const chartData = [
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
     primarySwellPeriod: 5.5,
-    secondarySwellHeight: 0.2, // Minor SE
+    secondarySwellHeight: 0.4, // Minor SE
     secondarySwellDirection: 145,
     secondarySwellPeriod: 4.5,
     nextHighTide: "1:30am",
@@ -2689,7 +2695,7 @@ const chartData = [
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
     primarySwellPeriod: 5.5,
-    secondarySwellHeight: 0.2, // Minor SE
+    secondarySwellHeight: 0.3, // Minor SE
     secondarySwellDirection: 145,
     secondarySwellPeriod: 4.5,
     nextHighTide: "1:30am",
@@ -2956,6 +2962,9 @@ const chartData = [
     secondarySwellHeight: 0.2, // Minor SE
     secondarySwellDirection: 145,
     secondarySwellPeriod: 4.5,
+    tertiarySwellHeight: 0.7, // Minor SE
+    tertiarySwellDirection: 145,
+    tertiarySwellPeriod: 4.5,
     nextHighTide: "1:30am",
     nextHighTideHeight: 1.3,
     nextLowTide: "9:20pm",
