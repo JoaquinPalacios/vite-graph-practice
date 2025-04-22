@@ -1,7 +1,7 @@
 import { cn } from "@/utils/utils";
 import { UnitPreferences } from "@/types";
 import React, { useState, useEffect } from "react";
-import { FaRuler, FaWind, FaThermometer, FaWater } from "react-icons/fa";
+import { FaRuler, FaWind, FaThermometer } from "react-icons/fa";
 
 type UnitSelectorProps = {
   onChange: (preferences: UnitPreferences) => void;
@@ -17,7 +17,6 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
           waveHeight: "ft",
           windSpeed: "knots",
           temperature: "°C",
-          tideHeight: "m",
           showAdvancedChart: true,
         };
   });
@@ -36,7 +35,6 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
       // Toggle between available options
       switch (key) {
         case "waveHeight":
-        case "tideHeight":
           newPrefs[key] = prev[key] === "ft" ? "m" : "ft";
           break;
         case "windSpeed":
@@ -89,16 +87,6 @@ export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
         Temp: {preferences.temperature}
       </button>
 
-      <button
-        onClick={() => toggleUnit("tideHeight")}
-        className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
-          preferences.tideHeight === "ft" ? "bg-teal-700" : "bg-blue-900"
-        )}
-      >
-        <FaWater className="text-xs" />
-        Tide: {preferences.tideHeight}
-      </button>
       <button
         onClick={() => toggleUnit("showAdvancedChart")}
         className={cn(
