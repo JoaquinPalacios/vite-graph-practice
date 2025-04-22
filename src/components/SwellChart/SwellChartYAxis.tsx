@@ -56,19 +56,19 @@ const SwellChartYAxis = ({
         />
 
         {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        <XAxis xAxisId={0} dataKey="dateTime" hide />
+        <XAxis xAxisId={0} dataKey="localDateTimeISO" hide />
 
         {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
-        <XAxis xAxisId={2} dataKey="dateTime" orientation="top" />
+        <XAxis xAxisId={2} dataKey="localDateTimeISO" orientation="top" />
 
         {/* This XAxis is the one that shows the time of the day */}
-        <XAxis xAxisId={1} dataKey="dateTime" orientation="top" />
+        <XAxis xAxisId={1} dataKey="localDateTimeISO" orientation="top" />
 
         {/* This XAxis is the one that shows the wind direction */}
-        <XAxis xAxisId={3} dataKey="dateTime" />
+        <XAxis xAxisId={3} dataKey="localDateTimeISO" />
 
         {/* This XAxis is the one that shows the wind speed */}
-        <XAxis xAxisId={4} dataKey="dateTime" />
+        <XAxis xAxisId={4} dataKey="localDateTimeISO" />
 
         <Bar
           dataKey={(d) =>

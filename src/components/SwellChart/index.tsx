@@ -11,21 +11,33 @@ import {
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
-import {
-  dayTicks,
-  endDateObj,
-  formatDateTick,
-  generateTicks,
-  processedData,
-  startDateObj,
-  timeScale,
-} from "@/utils/chart-utils";
+import { generateTicks, processedData } from "@/utils/chart-utils";
 import SwellLabel from "./SwellLabel";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
-import WindSpeedTick from "./WindSpeedTick";
-import { generateHourlyTicks, multiFormat } from "@/lib/time-utils";
 import SwellAxisTick from "./SwellAxisTick";
+import WindSpeedTick from "./WindSpeedTick";
+
+const formatDateTick = (value: string) => {
+  // Parse the ISO datetime string which includes timezone offset
+  const date = new Date(value);
+
+  // Format the date using local time methods
+  const formattedDate = date
+    .toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "numeric",
+    })
+    .toLocaleUpperCase()
+    .replace(",", "");
+
+  const [weekday, datePart] = formattedDate.split(" ");
+  const [month, day] = datePart.split("/");
+  const reversedDate = `${day}/${month.padStart(2, "0")}`;
+
+  return `${weekday} ${reversedDate}`;
+};
 
 const SwellChart = ({
   unitPreferences,
@@ -62,64 +74,50 @@ const SwellChart = ({
         />
 
         {/* Duplicate XAxis for the stripes in the background */}
-        <XAxis
-          dataKey="timestamp"
-          xAxisId={0}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          interval="preserveStart"
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-          hide
-          ticks={dayTicks}
-          tickFormatter={multiFormat}
-          padding={{ left: 12 }}
-        />
+        <XAxis dataKey="localDateTimeISO" xAxisId={0} interval={7} hide />
 
         {/* XAxis for the calendar date */}
         <XAxis
-          dataKey="timestamp"
+          dataKey="localDateTimeISO"
           xAxisId={2}
           tickLine={false}
           axisLine={false}
-          ticks={timeScale.ticks(16).map((date) => {
-            // Create a UTC date to avoid DST issues
-            const utcDate = new Date(
-              Date.UTC(
-                date.getUTCFullYear(),
-                date.getUTCMonth(),
-                date.getUTCDate() + 1,
-                0,
-                0,
-                0,
-                0
-              )
-            );
-            // Convert back to local time for display
-            return utcDate.getTime();
-          })}
           orientation="top"
           tickFormatter={formatDateTick}
           fontSize={12}
           fontWeight={700}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          interval="preserveStart"
           allowDuplicatedCategory={false}
-          allowDataOverflow
-          padding={{ left: 12 }}
+          textAnchor="middle"
+          ticks={
+            processedData
+              .reduce((acc: string[], curr) => {
+                const date = new Date(curr.localDateTimeISO)
+                  .toISOString()
+                  .split("T")[0];
+                // Only keep the first occurrence of each date
+                if (
+                  !acc.some(
+                    (existingDate) =>
+                      new Date(existingDate).toISOString().split("T")[0] ===
+                      date
+                  )
+                ) {
+                  acc.push(curr.localDateTimeISO);
+                }
+                return acc;
+              }, [])
+              .slice(1) // TODO - We remove the first tick due to being duplicated. We have to revise if this happens due to the time difference between the local time and UTC time.
+          }
         />
+
         {/* XAxis for the time of day */}
         <XAxis
-          dataKey="timestamp"
+          dataKey="localDateTimeISO"
           xAxisId={1}
           tickLine={false}
           axisLine={false}
-          ticks={generateHourlyTicks(startDateObj, endDateObj, [0, 6, 12, 18])}
-          tickFormatter={(timestamp: number) => {
-            const date = new Date(timestamp);
+          tickFormatter={(value: string) => {
+            const date = new Date(value);
             const hours = date.getHours();
             const period = hours >= 12 ? "pm" : "am";
             const hour = hours % 12 || 12;
@@ -127,21 +125,17 @@ const SwellChart = ({
           }}
           orientation="top"
           fontSize={12}
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
           interval="preserveStart"
           allowDuplicatedCategory={false}
           allowDataOverflow
-          padding={{ left: 12 }}
+          minTickGap={16}
+          tickCount={2}
         />
 
         {/* XAxis for the wind direction */}
         <XAxis
-          dataKey="timestamp"
+          dataKey="localDateTimeISO"
           xAxisId={3}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
           allowDuplicatedCategory={false}
           allowDataOverflow
           tickLine={false}
@@ -161,17 +155,12 @@ const SwellChart = ({
             );
           }}
           interval={0}
-          ticks={generateHourlyTicks(startDateObj, endDateObj)}
-          padding={{ left: 12 }}
         />
 
         {/* XAxis for the wind speed with dynamic values */}
         <XAxis
-          dataKey="timestamp"
+          dataKey="localDateTimeISO"
           xAxisId={4}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
             const data = processedData[index];
             if (!data) {
@@ -191,13 +180,11 @@ const SwellChart = ({
             );
           }}
           interval={0}
-          ticks={generateHourlyTicks(startDateObj, endDateObj)}
           axisLine={false}
           tickLine={false}
           tickMargin={16}
           allowDuplicatedCategory={false}
           allowDataOverflow
-          padding={{ left: 12 }}
         />
 
         <Tooltip

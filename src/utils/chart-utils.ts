@@ -83,6 +83,7 @@ export const formatWaveHeight = (
 };
 
 export const formatDateTick = (value: string) => {
+  console.log({ value });
   // Parse the date and convert to UTC to avoid DST issues
   const date = new Date(value);
   const utcDate = new Date(
@@ -90,7 +91,7 @@ export const formatDateTick = (value: string) => {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-      12,
+      0,
       0,
       0,
       0
