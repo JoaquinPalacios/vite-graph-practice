@@ -2,10 +2,9 @@ import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
 import { weatherData } from "@/data/weatherData";
-import { multiFormat } from "@/lib/time-utils";
 import { processTimeData } from "@/lib/time-utils";
 import WeatherBubble from "./WeatherBubble";
-import { dayTicks, timeScale } from "@/utils/chart-utils";
+import { formatDateTick } from "@/utils/chart-utils";
 
 const { processedData } = processTimeData(
   weatherData.map((item) => ({
@@ -43,35 +42,17 @@ const WeatherChart = () => {
           y={0}
           height={64}
           syncWithTicks
-          overflow="visible"
         />
 
         {/* Background stripes XAxis */}
         <XAxis
-          dataKey="timestamp"
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
+          dataKey="localDateTimeISO"
           xAxisId={0}
           hide
           allowDataOverflow
-          ticks={dayTicks}
-          tickFormatter={multiFormat}
-          interval="preserveStart"
-          padding={{ left: 12 }}
+          tickFormatter={formatDateTick}
           allowDuplicatedCategory={false}
-        />
-
-        {/* Legend XAxis */}
-        <XAxis
-          xAxisId={1}
-          dataKey="date"
-          hide
-          tickLine={false}
-          axisLine={false}
-          interval="preserveStart"
-          overflow="visible"
-          allowDataOverflow
+          interval={7}
         />
 
         <Scatter
