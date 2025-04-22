@@ -2,18 +2,9 @@ import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
 
 import { ResponsiveContainer } from "recharts";
 import { weatherData } from "@/data/weatherData";
-import { processTimeData } from "@/lib/time-utils";
 import WeatherBubble from "./WeatherBubble";
 import { formatDateTick } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
-
-const { processedData } = processTimeData(
-  weatherData.map((item) => ({
-    ...item,
-    dateTime: item.localDateTimeISO,
-    timestamp: new Date(item.localDateTimeISO).getTime(),
-  }))
-);
 
 const WeatherChart = () => {
   return (
@@ -26,7 +17,7 @@ const WeatherChart = () => {
       )}
     >
       <ScatterChart
-        data={processedData}
+        data={weatherData}
         accessibilityLayer
         margin={{
           left: 0,
