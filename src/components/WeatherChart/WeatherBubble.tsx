@@ -18,8 +18,7 @@ import {
 
 type WeatherData = {
   weatherId: number;
-  date: string;
-  time: string;
+  localDateTimeISO: string;
   currentTemp: number;
 };
 
@@ -60,13 +59,12 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
     );
   };
 
-  const dayOrNight =
-    props.payload.time === "6am" ||
-    props.payload.time === "9am" ||
-    props.payload.time === "12pm" ||
-    props.payload.time === "3pm"
-      ? "day"
-      : "night";
+  const dayOrNight = (() => {
+    const date = new Date(props.payload.localDateTimeISO);
+    const hours = date.getHours();
+    // Consider daytime between 6am and 6pm
+    return hours >= 6 && hours < 18 ? "day" : "night";
+  })();
 
   switch (props.payload.weatherId) {
     case 1:
