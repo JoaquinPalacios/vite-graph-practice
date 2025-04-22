@@ -11,33 +11,16 @@ import {
 import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
-import { generateTicks, processedData } from "@/utils/chart-utils";
+import {
+  formatDateTick,
+  generateTicks,
+  processedData,
+} from "@/utils/chart-utils";
 import SwellLabel from "./SwellLabel";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellAxisTick from "./SwellAxisTick";
 import WindSpeedTick from "./WindSpeedTick";
-
-const formatDateTick = (value: string) => {
-  // Parse the ISO datetime string which includes timezone offset
-  const date = new Date(value);
-
-  // Format the date using local time methods
-  const formattedDate = date
-    .toLocaleDateString("en-US", {
-      weekday: "short",
-      day: "numeric",
-      month: "numeric",
-    })
-    .toLocaleUpperCase()
-    .replace(",", "");
-
-  const [weekday, datePart] = formattedDate.split(" ");
-  const [month, day] = datePart.split("/");
-  const reversedDate = `${day}/${month.padStart(2, "0")}`;
-
-  return `${weekday} ${reversedDate}`;
-};
 
 const SwellChart = ({
   unitPreferences,

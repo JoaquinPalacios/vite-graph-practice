@@ -82,29 +82,50 @@ export const formatWaveHeight = (
   return `${height.toFixed(1)}${actualUnit}`;
 };
 
-export const formatDateTick = (value: string) => {
-  console.log({ value });
-  // Parse the date and convert to UTC to avoid DST issues
-  const date = new Date(value);
-  const utcDate = new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      0,
-      0,
-      0,
-      0
-    )
-  );
+// export const formatDateTick = (value: string) => {
+//   console.log({ value });
+//   // Parse the date and convert to UTC to avoid DST issues
+//   const date = new Date(value);
+//   const utcDate = new Date(
+//     Date.UTC(
+//       date.getUTCFullYear(),
+//       date.getUTCMonth(),
+//       date.getUTCDate(),
+//       0,
+//       0,
+//       0,
+//       0
+//     )
+//   );
 
-  // Format the date using UTC methods
-  const formattedDate = utcDate
+//   // Format the date using UTC methods
+//   const formattedDate = utcDate
+//     .toLocaleDateString("en-US", {
+//       weekday: "short",
+//       day: "numeric",
+//       month: "numeric",
+//       timeZone: "UTC", // Ensure consistent formatting regardless of local timezone
+//     })
+//     .toLocaleUpperCase()
+//     .replace(",", "");
+
+//   const [weekday, datePart] = formattedDate.split(" ");
+//   const [month, day] = datePart.split("/");
+//   const reversedDate = `${day}/${month.padStart(2, "0")}`;
+
+//   return `${weekday} ${reversedDate}`;
+// };
+
+export const formatDateTick = (value: string) => {
+  // Parse the ISO datetime string which includes timezone offset
+  const date = new Date(value);
+
+  // Format the date using local time methods
+  const formattedDate = date
     .toLocaleDateString("en-US", {
       weekday: "short",
       day: "numeric",
       month: "numeric",
-      timeZone: "UTC", // Ensure consistent formatting regardless of local timezone
     })
     .toLocaleUpperCase()
     .replace(",", "");

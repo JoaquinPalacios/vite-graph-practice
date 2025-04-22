@@ -12,12 +12,11 @@ import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { dayTicks, generateTicks, timeScale } from "@/utils/chart-utils";
+import { formatDateTick, generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
-import { multiFormat } from "@/lib/time-utils";
 
 /**
  * Advanced Swell Chart
@@ -94,7 +93,6 @@ const AdvancedSwellChart = ({
         }}
         className="[&>svg]:focus:outline-none"
         onMouseLeave={() => {
-          console.log("mouse leave");
           setHoverIndex(null);
         }}
       >
@@ -112,18 +110,14 @@ const AdvancedSwellChart = ({
 
         {/* Background XAxis */}
         <XAxis
-          dataKey="timestamp"
+          dataKey="localDateTimeISO"
           xAxisId={0}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          interval="preserveStart"
           allowDuplicatedCategory={false}
           allowDataOverflow
           hide
-          ticks={dayTicks}
-          tickFormatter={multiFormat}
-          padding={{ left: 12 }}
+          tickFormatter={formatDateTick}
+          padding={{ left: 19, right: 19 }}
+          interval={7}
         />
 
         <YAxis

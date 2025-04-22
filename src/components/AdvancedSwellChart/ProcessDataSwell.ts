@@ -17,7 +17,7 @@ import { metersToFeet } from "@/utils/chart-utils";
 type SwellRank = "primary" | "secondary" | "tertiary" | "fourth" | "fifth";
 
 interface SwellEvent {
-  timestamp: number;
+  localDateTimeISO: string;
   height: number;
   period: number;
   direction: number;
@@ -66,15 +66,12 @@ export default function processSwellData(
   let eventCounter = 0;
 
   data.forEach((timeStep, t) => {
-    // --- Get timestamp from localDateTimeISO ---
-    const tsMs = new Date(timeStep.localDateTimeISO).getTime(); // Use the reliable ISO string
+    // We'll use the ISO string directly instead of converting to timestamp
+    const localDateTimeISO = timeStep.localDateTimeISO;
 
-    if (isNaN(tsMs)) {
-      console.warn(
-        "Invalid timestamp parsed from localDateTimeISO:",
-        timeStep.localDateTimeISO
-      );
-      return; // Skip if parsing fails
+    if (!localDateTimeISO) {
+      console.warn("Missing localDateTimeISO:", timeStep);
+      return;
     }
 
     const currentSwells: CurrentSwell[] = [];
@@ -108,7 +105,7 @@ export default function processSwellData(
           height: unitPreference === "ft" ? metersToFeet(height) : height,
           direction: direction,
           period: period,
-          timestamp: tsMs,
+          timestamp: new Date(localDateTimeISO).getTime(), // Keep timestamp for internal comparisons
           matched: false,
         });
       }
@@ -117,7 +114,7 @@ export default function processSwellData(
     const nextActiveEvents = [];
     const matchedEventIdsThisStep = new Set();
 
-    // 1. Try to match current swells to active events from the previous step
+    // Match current swells to active events
     for (const activeEvent of activeEvents) {
       let bestMatch = null;
       let smallestDiff = Infinity;
@@ -129,12 +126,11 @@ export default function processSwellData(
           );
           const perDiff = Math.abs(currentSwell.period - activeEvent.lastPer);
 
-          // Simple matching criteria (adjust as needed)
           if (
             dirDiff <= options.dirThreshold &&
             perDiff <= options.periodThreshold
           ) {
-            const diffScore = dirDiff + perDiff * 5; // Weight period difference more? Tune this.
+            const diffScore = dirDiff + perDiff * 5;
             if (diffScore < smallestDiff) {
               smallestDiff = diffScore;
               bestMatch = currentSwell;
@@ -147,7 +143,7 @@ export default function processSwellData(
         // Found a match - continue the event
         bestMatch.matched = true;
         events[activeEvent.id].push({
-          timestamp: bestMatch.timestamp,
+          localDateTimeISO: localDateTimeISO, // Use ISO string instead of timestamp
           height: bestMatch.height,
           period: bestMatch.period,
           direction: bestMatch.direction,
@@ -157,19 +153,18 @@ export default function processSwellData(
         activeEvent.lastPer = bestMatch.period;
         activeEvent.lastT = t;
         activeEvent.gapCount = 0;
-        nextActiveEvents.push(activeEvent); // Keep it active
+        nextActiveEvents.push(activeEvent);
         matchedEventIdsThisStep.add(activeEvent.id);
       } else {
-        // No match found - increment gap count
         activeEvent.gapCount++;
         if (activeEvent.gapCount <= options.maxGap) {
-          nextActiveEvents.push(activeEvent); // Keep potentially active for a few steps
-          matchedEventIdsThisStep.add(activeEvent.id); // Still considered 'active' during gap
-        } // Else: event is considered ended, drop it
+          nextActiveEvents.push(activeEvent);
+          matchedEventIdsThisStep.add(activeEvent.id);
+        }
       }
     }
 
-    // 2. Any unmatched current swells are new events
+    // Create new events for unmatched swells
     for (const currentSwell of currentSwells) {
       if (!currentSwell.matched) {
         eventCounter++;
@@ -178,7 +173,7 @@ export default function processSwellData(
         }_${currentSwell.period.toFixed(1)}`;
         events[newEventId] = [
           {
-            timestamp: currentSwell.timestamp,
+            localDateTimeISO: localDateTimeISO, // Use ISO string instead of timestamp
             height: currentSwell.height,
             period: currentSwell.period,
             direction: currentSwell.direction,
@@ -196,7 +191,6 @@ export default function processSwellData(
       }
     }
 
-    // Update the list of active events for the next time step
     activeEvents = nextActiveEvents;
   });
 
