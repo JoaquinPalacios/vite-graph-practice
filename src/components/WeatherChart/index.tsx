@@ -5,6 +5,7 @@ import { weatherData } from "@/data/weatherData";
 import { processTimeData } from "@/lib/time-utils";
 import WeatherBubble from "./WeatherBubble";
 import { formatDateTick } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
 
 const { processedData } = processTimeData(
   weatherData.map((item) => ({
@@ -19,7 +20,10 @@ const WeatherChart = () => {
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="h-16 min-h-16 relative after:absolute after:z-0 after:h-16 after:w-[calc(100%-5rem)] after:top-0 after:left-[4.5rem] after:border-y after:border-slate-300 after:pointer-events-none"
+      className={cn(
+        "h-16 min-h-16 relative",
+        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
+      )}
     >
       <ScatterChart
         data={processedData}

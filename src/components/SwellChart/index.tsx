@@ -21,6 +21,7 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
 import SwellAxisTick from "./SwellAxisTick";
 import WindSpeedTick from "./WindSpeedTick";
+import { cn } from "@/utils/utils";
 
 const SwellChart = ({
   unitPreferences,
@@ -33,7 +34,10 @@ const SwellChart = ({
     <ResponsiveContainer
       width={4848}
       height="100%"
-      className="mb-0 h-80 min-h-80 relative after:absolute after:z-0 after:h-16 after:w-[calc(100%-5rem)] after:bottom-0 after:left-[4.5rem] after:border-b after:border-slate-300 after:pointer-events-none"
+      className={cn(
+        "mb-0 h-80 min-h-80 relative",
+        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:bottom-0 after:left-20 after:border-b after:border-slate-300 after:pointer-events-none"
+      )}
     >
       <BarChart
         accessibilityLayer
