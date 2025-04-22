@@ -1,7 +1,6 @@
 const chartData = [
   // April 1 (Tue) - Initial SW swell easing, small SE swell starting
   {
-    dateTime: "2024-04-01 00:00:00",
     localDateTimeISO: "2024-04-01T00:00:00+11:00",
     utc: "2024-04-01T00:00:00Z",
     timestamp: 1711929600000,
@@ -28,7 +27,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-01 03:00:00",
     localDateTimeISO: "2024-04-01T03:00:00+11:00",
     utc: "2024-04-01T03:00:00Z",
     timestamp: 1711940400000,
@@ -55,7 +53,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-01 06:00:00",
     localDateTimeISO: "2024-04-01T06:00:00+11:00",
     utc: "2024-04-01T06:00:00Z",
     timestamp: 1711951200000,
@@ -82,7 +79,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-01 09:00:00",
     localDateTimeISO: "2024-04-01T09:00:00+11:00",
     utc: "2024-04-01T09:00:00Z",
     timestamp: 1711962000000,
@@ -110,7 +106,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-01 12:00:00",
     localDateTimeISO: "2024-04-01T12:00:00+11:00",
     utc: "2024-04-01T12:00:00Z",
     timestamp: 1711972800000,
@@ -141,7 +136,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-01 15:00:00",
     localDateTimeISO: "2024-04-01T15:00:00+11:00",
     utc: "2024-04-01T15:00:00Z",
     timestamp: 1711983600000,
@@ -172,7 +166,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-01 18:00:00",
     localDateTimeISO: "2024-04-01T18:00:00+11:00",
     utc: "2024-04-01T18:00:00Z",
     timestamp: 1711994400000,
@@ -201,7 +194,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-01 21:00:00",
     localDateTimeISO: "2024-04-01T21:00:00+11:00",
     utc: "2024-04-01T21:00:00Z",
     timestamp: 1712005200000,
@@ -231,7 +223,6 @@ const chartData = [
   },
   // April 2 (Wed) - S swell peaks and starts easing, ENE swell builds
   {
-    dateTime: "2024-04-02 00:00:00",
     localDateTimeISO: "2024-04-02T00:00:00+11:00",
     utc: "2024-04-02T00:00:00Z",
     timestamp: 1712016000000,
@@ -262,7 +253,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-02 03:00:00",
     localDateTimeISO: "2024-04-02T03:00:00+11:00",
     utc: "2024-04-02T03:00:00Z",
     timestamp: 1712026800000,
@@ -293,7 +283,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-02 06:00:00",
     localDateTimeISO: "2024-04-02T06:00:00+11:00",
     utc: "2024-04-02T06:00:00Z",
     timestamp: 1712037600000,
@@ -321,7 +310,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-02 09:00:00",
     localDateTimeISO: "2024-04-02T09:00:00+11:00",
     utc: "2024-04-02T09:00:00Z",
     timestamp: 1712048400000,
@@ -349,7 +337,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-02 12:00:00",
     localDateTimeISO: "2024-04-02T12:00:00+11:00",
     utc: "2024-04-02T12:00:00Z",
     timestamp: 1712059200000,
@@ -376,7 +363,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-02 15:00:00",
     localDateTimeISO: "2024-04-02T15:00:00+11:00",
     utc: "2024-04-02T15:00:00Z",
     timestamp: 1712070000000,
@@ -403,7 +389,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-02 18:00:00",
     localDateTimeISO: "2024-04-02T18:00:00+11:00",
     utc: "2024-04-02T18:00:00Z",
     timestamp: 1712080800000,
@@ -428,7 +413,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-02 21:00:00",
     localDateTimeISO: "2024-04-02T21:00:00+11:00",
     utc: "2024-04-02T21:00:00Z",
     timestamp: 1712091600000,
@@ -456,7 +440,6 @@ const chartData = [
   },
   // April 3 (Thu) - S swell fades, SE becomes dominant, new Strong S swell approaches late
   {
-    dateTime: "2024-04-03 00:00:00",
     localDateTimeISO: "2024-04-03T00:00:00+11:00",
     utc: "2024-04-03T00:00:00Z",
     timestamp: 1712102400000,
@@ -484,7 +467,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-03 03:00:00",
     localDateTimeISO: "2024-04-03T03:00:00+11:00",
     utc: "2024-04-03T03:00:00Z",
     timestamp: 1712113200000,
@@ -513,7 +495,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-03 06:00:00",
     localDateTimeISO: "2024-04-03T06:00:00+11:00",
     utc: "2024-04-03T06:00:00Z",
     timestamp: 1712124000000,
@@ -540,7 +521,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-03 09:00:00",
     localDateTimeISO: "2024-04-03T09:00:00+11:00",
     utc: "2024-04-03T09:00:00Z",
     timestamp: 1712134800000,
@@ -570,7 +550,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-03 12:00:00",
     localDateTimeISO: "2024-04-03T12:00:00+11:00",
     utc: "2024-04-03T12:00:00Z",
     timestamp: 1712145600000,
@@ -596,7 +575,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-03 15:00:00",
     localDateTimeISO: "2024-04-03T15:00:00+11:00",
     utc: "2024-04-03T15:00:00Z",
     timestamp: 1712156400000,
@@ -622,7 +600,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-03 18:00:00",
     localDateTimeISO: "2024-04-03T18:00:00+11:00",
     utc: "2024-04-03T18:00:00Z",
     timestamp: 1712167200000,
@@ -646,7 +623,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-03 21:00:00",
     localDateTimeISO: "2024-04-03T21:00:00+11:00",
     utc: "2024-04-03T21:00:00Z",
     timestamp: 1712178000000,
@@ -671,7 +647,6 @@ const chartData = [
   },
   // April 4 (Fri) - Peak S swell, then slowly easing. Secondary swells minor.
   {
-    dateTime: "2024-04-04 00:00:00",
     localDateTimeISO: "2024-04-04T00:00:00+11:00",
     utc: "2024-04-04T00:00:00Z",
     timestamp: 1712188800000,
@@ -700,7 +675,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-04 03:00:00",
     localDateTimeISO: "2024-04-04T03:00:00+11:00",
     utc: "2024-04-04T03:00:00Z",
     timestamp: 1712199600000,
@@ -728,7 +702,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-04 06:00:00",
     localDateTimeISO: "2024-04-04T06:00:00+11:00",
     utc: "2024-04-04T06:00:00Z",
     timestamp: 1712210400000,
@@ -756,7 +729,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-04 09:00:00",
     localDateTimeISO: "2024-04-04T09:00:00+11:00",
     utc: "2024-04-04T09:00:00Z",
     timestamp: 1712221200000,
@@ -784,7 +756,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-04 12:00:00",
     localDateTimeISO: "2024-04-04T12:00:00+11:00",
     utc: "2024-04-04T12:00:00Z",
     timestamp: 1712232000000,
@@ -812,7 +783,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-04 15:00:00",
     localDateTimeISO: "2024-04-04T15:00:00+11:00",
     utc: "2024-04-04T15:00:00Z",
     timestamp: 1712242800000,
@@ -840,7 +810,6 @@ const chartData = [
     nextTideHeight: 0.5,
   },
   {
-    dateTime: "2024-04-04 18:00:00",
     localDateTimeISO: "2024-04-04T18:00:00+11:00",
     utc: "2024-04-04T18:00:00Z",
     timestamp: 1712253600000,
@@ -866,7 +835,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-04 21:00:00",
     localDateTimeISO: "2024-04-04T21:00:00+11:00",
     utc: "2024-04-04T21:00:00Z",
     timestamp: 1712264400000,
@@ -892,7 +860,6 @@ const chartData = [
   },
   // April 5 (Sat) - S swell continues easing, becoming secondary. Mix of smaller ENE/SE.
   {
-    dateTime: "2024-04-05 00:00:00",
     localDateTimeISO: "2024-04-05T00:00:00+11:00",
     utc: "2024-04-05T00:00:00Z",
     timestamp: 1712275200000,
@@ -922,7 +889,6 @@ const chartData = [
     nextTideHeight: 1.5,
   },
   {
-    dateTime: "2024-04-05 03:00:00",
     localDateTimeISO: "2024-04-05T03:00:00+11:00",
     utc: "2024-04-05T03:00:00Z",
     timestamp: 1712286000000,
@@ -950,7 +916,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-05 06:00:00",
     localDateTimeISO: "2024-04-05T06:00:00+11:00",
     utc: "2024-04-05T06:00:00Z",
     timestamp: 1712296800000,
@@ -978,7 +943,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-05 09:00:00",
     localDateTimeISO: "2024-04-05T09:00:00+11:00",
     utc: "2024-04-05T09:00:00Z",
     timestamp: 1712307600000,
@@ -1005,7 +969,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-05 12:00:00",
     localDateTimeISO: "2024-04-05T12:00:00+11:00",
     utc: "2024-04-05T12:00:00Z",
     timestamp: 1712318400000,
@@ -1032,7 +995,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-05 15:00:00",
     localDateTimeISO: "2024-04-05T15:00:00+11:00",
     utc: "2024-04-05T15:00:00Z",
     timestamp: 1712329200000,
@@ -1057,7 +1019,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-05 18:00:00",
     localDateTimeISO: "2024-04-05T18:00:00+11:00",
     utc: "2024-04-05T18:00:00Z",
     timestamp: 1712340000000,
@@ -1082,7 +1043,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-05 21:00:00",
     localDateTimeISO: "2024-04-05T21:00:00+11:00",
     utc: "2024-04-05T21:00:00Z",
     timestamp: 1712350800000,
@@ -1106,7 +1066,6 @@ const chartData = [
   },
   // April 6 (Sun) - Generally small, mixed swells
   {
-    dateTime: "2024-04-06 00:00:00",
     localDateTimeISO: "2024-04-06T00:00:00+11:00",
     utc: "2024-04-06T00:00:00Z",
     timestamp: 1712361600000,
@@ -1133,7 +1092,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-06 03:00:00",
     localDateTimeISO: "2024-04-06T03:00:00+11:00",
     utc: "2024-04-06T03:00:00Z",
     timestamp: 1712372400000,
@@ -1161,7 +1119,6 @@ const chartData = [
     isRising: false,
   },
   {
-    dateTime: "2024-04-06 06:00:00",
     localDateTimeISO: "2024-04-06T06:00:00+11:00",
     utc: "2024-04-06T06:00:00Z",
     timestamp: 1712383200000,
@@ -1188,7 +1145,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-06 09:00:00",
     localDateTimeISO: "2024-04-06T09:00:00+11:00",
     utc: "2024-04-06T09:00:00Z",
     timestamp: 1712394000000,
@@ -1212,7 +1168,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-06 12:00:00",
     localDateTimeISO: "2024-04-06T12:00:00+11:00",
     utc: "2024-04-06T12:00:00Z",
     timestamp: 1712404800000,
@@ -1239,7 +1194,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-06 15:00:00",
     localDateTimeISO: "2024-04-06T15:00:00+11:00",
     utc: "2024-04-06T15:00:00Z",
     timestamp: 1712415600000,
@@ -1263,7 +1217,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-06 18:00:00",
     localDateTimeISO: "2024-04-06T18:00:00+11:00",
     utc: "2024-04-06T18:00:00Z",
     timestamp: 1712426400000,
@@ -1287,7 +1240,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-06 21:00:00",
     localDateTimeISO: "2024-04-06T21:00:00+11:00",
     utc: "2024-04-06T21:00:00Z",
     timestamp: 1712437200000,
@@ -1312,7 +1264,6 @@ const chartData = [
   },
   // April 7 (Mon) - Daylight savings starts at 3am - Very small swells, potentially new small E swell build later
   {
-    dateTime: "2024-04-07 00:00:00",
     localDateTimeISO: "2024-04-07T00:00:00+11:00",
     utc: "2024-04-07T00:00:00Z",
     timestamp: 1712448000000,
@@ -1336,7 +1287,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 03:00:00",
     localDateTimeISO: "2024-04-07T03:00:00+10:00",
     utc: "2024-04-07T03:00:00Z",
     timestamp: 1712458800000,
@@ -1360,7 +1310,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 06:00:00",
     localDateTimeISO: "2024-04-07T06:00:00+10:00",
     utc: "2024-04-07T06:00:00Z",
     timestamp: 1712469600000,
@@ -1384,7 +1333,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 09:00:00",
     localDateTimeISO: "2024-04-07T09:00:00+10:00",
     utc: "2024-04-07T09:00:00Z",
     timestamp: 1712480400000,
@@ -1408,7 +1356,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 12:00:00",
     localDateTimeISO: "2024-04-07T12:00:00+10:00",
     utc: "2024-04-07T12:00:00Z",
     timestamp: 1712491200000,
@@ -1432,7 +1379,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 15:00:00",
     localDateTimeISO: "2024-04-07T15:00:00+10:00",
     utc: "2024-04-07T15:00:00Z",
     timestamp: 1712502000000,
@@ -1456,7 +1402,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 18:00:00",
     localDateTimeISO: "2024-04-07T18:00:00+10:00",
     utc: "2024-04-07T18:00:00Z",
     timestamp: 1712512800000,
@@ -1481,7 +1426,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-07 21:00:00",
     localDateTimeISO: "2024-04-07T21:00:00+10:00",
     utc: "2024-04-07T21:00:00Z",
     timestamp: 1712523600000,
@@ -1506,7 +1450,6 @@ const chartData = [
   },
   // April 8 (Tue) - Continued small, slight increase mid-day?
   {
-    dateTime: "2024-04-08 00:00:00",
     localDateTimeISO: "2024-04-08T00:00:00+10:00",
     utc: "2024-04-08T00:00:00Z",
     timestamp: 1712534400000,
@@ -1530,7 +1473,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 03:00:00",
     localDateTimeISO: "2024-04-08T03:00:00+10:00",
     utc: "2024-04-08T03:00:00Z",
     timestamp: 1712545200000,
@@ -1554,7 +1496,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 06:00:00",
     localDateTimeISO: "2024-04-08T06:00:00+10:00",
     utc: "2024-04-08T06:00:00Z",
     timestamp: 1712556000000,
@@ -1578,7 +1519,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 09:00:00",
     localDateTimeISO: "2024-04-08T09:00:00+10:00",
     utc: "2024-04-08T09:00:00Z",
     timestamp: 1712566800000,
@@ -1603,7 +1543,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 12:00:00",
     localDateTimeISO: "2024-04-08T12:00:00+10:00",
     utc: "2024-04-08T12:00:00Z",
     timestamp: 1712577600000,
@@ -1627,7 +1566,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 15:00:00",
     localDateTimeISO: "2024-04-08T15:00:00+10:00",
     utc: "2024-04-08T15:00:00Z",
     timestamp: 1712588400000,
@@ -1651,7 +1589,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 18:00:00",
     localDateTimeISO: "2024-04-08T18:00:00+10:00",
     utc: "2024-04-08T18:00:00Z",
     timestamp: 1712599200000,
@@ -1675,7 +1612,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-08 21:00:00",
     localDateTimeISO: "2024-04-08T21:00:00+10:00",
     utc: "2024-04-08T21:00:00Z",
     timestamp: 1712610000000,
@@ -1700,7 +1636,6 @@ const chartData = [
   },
   // April 9 (Tue) - Continued small E swell, minor background SE
   {
-    dateTime: "2024-04-09 00:00:00",
     localDateTimeISO: "2024-04-09T00:00:00+10:00",
     utc: "2024-04-09T00:00:00Z",
     timestamp: 1712620800000,
@@ -1724,7 +1659,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 03:00:00",
     localDateTimeISO: "2024-04-09T03:00:00+10:00",
     utc: "2024-04-09T03:00:00Z",
     timestamp: 1712631600000,
@@ -1748,7 +1682,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 06:00:00",
     localDateTimeISO: "2024-04-09T06:00:00+10:00",
     utc: "2024-04-09T06:00:00Z",
     timestamp: 1712642400000,
@@ -1772,7 +1705,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 09:00:00",
     localDateTimeISO: "2024-04-09T09:00:00+10:00",
     utc: "2024-04-09T09:00:00Z",
     timestamp: 1712653200000,
@@ -1796,7 +1728,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 12:00:00",
     localDateTimeISO: "2024-04-09T12:00:00+10:00",
     utc: "2024-04-09T12:00:00Z",
     timestamp: 1712664000000,
@@ -1820,7 +1751,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 15:00:00",
     localDateTimeISO: "2024-04-09T15:00:00+10:00",
     utc: "2024-04-09T15:00:00Z",
     timestamp: 1712674800000,
@@ -1844,7 +1774,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 18:00:00",
     localDateTimeISO: "2024-04-09T18:00:00+10:00",
     utc: "2024-04-09T18:00:00Z",
     timestamp: 1712685600000,
@@ -1868,7 +1797,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-09 21:00:00",
     localDateTimeISO: "2024-04-09T21:00:00+10:00",
     utc: "2024-04-09T21:00:00Z",
     timestamp: 1712696400000,
@@ -1893,7 +1821,6 @@ const chartData = [
   },
   // April 10 (Wed) - Continued very small E swell, minor background SE
   {
-    dateTime: "2024-04-10 00:00:00",
     localDateTimeISO: "2024-04-10T00:00:00+10:00",
     utc: "2024-04-10T00:00:00Z",
     timestamp: 1712707200000,
@@ -1917,7 +1844,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 03:00:00",
     localDateTimeISO: "2024-04-10T03:00:00+10:00",
     utc: "2024-04-10T03:00:00Z",
     timestamp: 1712718000000,
@@ -1941,7 +1867,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 06:00:00",
     localDateTimeISO: "2024-04-10T06:00:00+10:00",
     utc: "2024-04-10T06:00:00Z",
     timestamp: 1712728800000,
@@ -1965,7 +1890,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 09:00:00",
     localDateTimeISO: "2024-04-10T09:00:00+10:00",
     utc: "2024-04-10T09:00:00Z",
     timestamp: 1712739600000,
@@ -1989,7 +1913,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 12:00:00",
     localDateTimeISO: "2024-04-10T12:00:00+10:00",
     utc: "2024-04-10T12:00:00Z",
     timestamp: 1712750400000,
@@ -2013,7 +1936,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 15:00:00",
     localDateTimeISO: "2024-04-10T15:00:00+10:00",
     utc: "2024-04-10T15:00:00Z",
     timestamp: 1712761200000,
@@ -2037,7 +1959,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 18:00:00",
     localDateTimeISO: "2024-04-10T18:00:00+10:00",
     utc: "2024-04-10T18:00:00Z",
     timestamp: 1712772000000,
@@ -2061,7 +1982,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-10 21:00:00",
     localDateTimeISO: "2024-04-10T21:00:00+10:00",
     utc: "2024-04-10T21:00:00Z",
     timestamp: 1712782800000,
@@ -2086,7 +2006,6 @@ const chartData = [
   },
   // April 11 (Thu) - Small E swell, minor background SE. From late afternoon on, small southerly swell starts to build.
   {
-    dateTime: "2024-04-11 00:00:00",
     localDateTimeISO: "2024-04-11T00:00:00+10:00",
     utc: "2024-04-11T00:00:00Z",
     timestamp: 1712793600000,
@@ -2110,7 +2029,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 03:00:00",
     localDateTimeISO: "2024-04-11T03:00:00+10:00",
     utc: "2024-04-11T03:00:00Z",
     timestamp: 1712804400000,
@@ -2134,7 +2052,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 06:00:00",
     localDateTimeISO: "2024-04-11T06:00:00+10:00",
     utc: "2024-04-11T06:00:00Z",
     timestamp: 1712815200000,
@@ -2158,7 +2075,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 09:00:00",
     localDateTimeISO: "2024-04-11T09:00:00+10:00",
     utc: "2024-04-11T09:00:00Z",
     timestamp: 1712826000000,
@@ -2182,7 +2098,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 12:00:00",
     localDateTimeISO: "2024-04-11T12:00:00+10:00",
     utc: "2024-04-11T12:00:00Z",
     timestamp: 1712836800000,
@@ -2206,7 +2121,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 15:00:00",
     localDateTimeISO: "2024-04-11T15:00:00+10:00",
     utc: "2024-04-11T15:00:00Z",
     timestamp: 1712847600000,
@@ -2230,7 +2144,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 18:00:00",
     localDateTimeISO: "2024-04-11T18:00:00+10:00",
     utc: "2024-04-11T18:00:00Z",
     timestamp: 1712858400000,
@@ -2257,7 +2170,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-11 21:00:00",
     localDateTimeISO: "2024-04-11T21:00:00+10:00",
     utc: "2024-04-11T21:00:00Z",
     timestamp: 1712869200000,
@@ -2285,7 +2197,6 @@ const chartData = [
   },
   // April 12 (Fri) - Southerly swell starts to build. and becomes dominant.
   {
-    dateTime: "2024-04-12 00:00:00",
     localDateTimeISO: "2024-04-12T00:00:00+10:00",
     utc: "2024-04-12T00:00:00Z",
     timestamp: 1712880000000,
@@ -2311,7 +2222,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 03:00:00",
     localDateTimeISO: "2024-04-12T03:00:00+10:00",
     utc: "2024-04-12T03:00:00Z",
     timestamp: 1712890800000,
@@ -2338,7 +2248,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 06:00:00",
     localDateTimeISO: "2024-04-12T06:00:00+10:00",
     utc: "2024-04-12T06:00:00Z",
     timestamp: 1712901600000,
@@ -2365,7 +2274,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 09:00:00",
     localDateTimeISO: "2024-04-12T09:00:00+10:00",
     utc: "2024-04-12T09:00:00Z",
     timestamp: 1712912400000,
@@ -2392,7 +2300,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 12:00:00",
     localDateTimeISO: "2024-04-12T12:00:00+10:00",
     utc: "2024-04-12T12:00:00Z",
     timestamp: 1712923200000,
@@ -2416,7 +2323,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 15:00:00",
     localDateTimeISO: "2024-04-12T15:00:00+10:00",
     utc: "2024-04-12T15:00:00Z",
     timestamp: 1712934000000,
@@ -2440,7 +2346,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 18:00:00",
     localDateTimeISO: "2024-04-12T18:00:00+10:00",
     utc: "2024-04-12T18:00:00Z",
     timestamp: 1712944800000,
@@ -2464,7 +2369,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-12 21:00:00",
     localDateTimeISO: "2024-04-12T21:00:00+10:00",
     utc: "2024-04-12T21:00:00Z",
     timestamp: 1712955600000,
@@ -2492,7 +2396,6 @@ const chartData = [
   },
   // April 13 (Sat) - Small E/SE/SSE mix
   {
-    dateTime: "2024-04-13 00:00:00",
     localDateTimeISO: "2024-04-13T00:00:00+10:00",
     utc: "2024-04-13T00:00:00Z",
     timestamp: 1712966400000,
@@ -2519,7 +2422,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 03:00:00",
     localDateTimeISO: "2024-04-13T03:00:00+10:00",
     utc: "2024-04-13T03:00:00Z",
     timestamp: 1712977200000,
@@ -2543,7 +2445,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 06:00:00",
     localDateTimeISO: "2024-04-13T06:00:00+10:00",
     utc: "2024-04-13T06:00:00Z",
     timestamp: 1712988000000,
@@ -2567,7 +2468,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 09:00:00",
     localDateTimeISO: "2024-04-13T09:00:00+10:00",
     utc: "2024-04-13T09:00:00Z",
     timestamp: 1712998800000,
@@ -2591,7 +2491,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 12:00:00",
     localDateTimeISO: "2024-04-13T12:00:00+10:00",
     utc: "2024-04-13T12:00:00Z",
     timestamp: 1713009600000,
@@ -2615,7 +2514,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 15:00:00",
     localDateTimeISO: "2024-04-13T15:00:00+10:00",
     utc: "2024-04-13T15:00:00Z",
     timestamp: 1713020400000,
@@ -2639,7 +2537,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 18:00:00",
     localDateTimeISO: "2024-04-13T18:00:00+10:00",
     utc: "2024-04-13T18:00:00Z",
     timestamp: 1713031200000,
@@ -2663,7 +2560,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-13 21:00:00",
     localDateTimeISO: "2024-04-13T21:00:00+10:00",
     utc: "2024-04-13T21:00:00Z",
     timestamp: 1713042000000,
@@ -2687,7 +2583,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 00:00:00",
     localDateTimeISO: "2024-04-14T00:00:00+10:00",
     utc: "2024-04-14T00:00:00Z",
     timestamp: 1713052800000,
@@ -2711,7 +2606,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 03:00:00",
     localDateTimeISO: "2024-04-14T03:00:00+10:00",
     utc: "2024-04-14T03:00:00Z",
     timestamp: 1713063600000,
@@ -2735,7 +2629,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 06:00:00",
     localDateTimeISO: "2024-04-14T06:00:00+10:00",
     utc: "2024-04-14T06:00:00Z",
     timestamp: 1713074400000,
@@ -2759,7 +2652,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 09:00:00",
     localDateTimeISO: "2024-04-14T09:00:00+10:00",
     utc: "2024-04-14T09:00:00Z",
     timestamp: 1713085200000,
@@ -2783,7 +2675,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 12:00:00",
     localDateTimeISO: "2024-04-14T12:00:00+10:00",
     utc: "2024-04-14T12:00:00Z",
     timestamp: 1713096000000,
@@ -2807,7 +2698,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 15:00:00",
     localDateTimeISO: "2024-04-14T15:00:00+10:00",
     utc: "2024-04-14T15:00:00Z",
     timestamp: 1713106800000,
@@ -2831,7 +2721,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 18:00:00",
     localDateTimeISO: "2024-04-14T18:00:00+10:00",
     utc: "2024-04-14T18:00:00Z",
     timestamp: 1713117600000,
@@ -2855,7 +2744,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-14 21:00:00",
     localDateTimeISO: "2024-04-14T21:00:00+10:00",
     utc: "2024-04-14T21:00:00Z",
     timestamp: 1713128400000,
@@ -2879,7 +2767,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 00:00:00",
     localDateTimeISO: "2024-04-15T00:00:00+10:00",
     utc: "2024-04-15T00:00:00Z",
     timestamp: 1713139200000,
@@ -2903,7 +2790,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 03:00:00",
     localDateTimeISO: "2024-04-15T03:00:00+10:00",
     utc: "2024-04-15T03:00:00Z",
     timestamp: 1713150000000,
@@ -2927,7 +2813,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 06:00:00",
     localDateTimeISO: "2024-04-15T06:00:00+10:00",
     utc: "2024-04-15T06:00:00Z",
     timestamp: 1713160800000,
@@ -2951,7 +2836,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 09:00:00",
     localDateTimeISO: "2024-04-15T09:00:00+10:00",
     utc: "2024-04-15T09:00:00Z",
     timestamp: 1713171600000,
@@ -2975,7 +2859,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 12:00:00",
     localDateTimeISO: "2024-04-15T12:00:00+10:00",
     utc: "2024-04-15T12:00:00Z",
     timestamp: 1713182400000,
@@ -2999,7 +2882,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 15:00:00",
     localDateTimeISO: "2024-04-15T15:00:00+10:00",
     utc: "2024-04-15T15:00:00Z",
     timestamp: 1713193200000,
@@ -3023,7 +2905,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 18:00:00",
     localDateTimeISO: "2024-04-15T18:00:00+10:00",
     utc: "2024-04-15T18:00:00Z",
     timestamp: 1713204000000,
@@ -3047,7 +2928,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-15 21:00:00",
     localDateTimeISO: "2024-04-15T21:00:00+10:00",
     utc: "2024-04-15T21:00:00Z",
     timestamp: 1713214800000,
@@ -3071,7 +2951,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 00:00:00",
     localDateTimeISO: "2024-04-16T00:00:00+10:00",
     utc: "2024-04-16T00:00:00Z",
     timestamp: 1713225600000,
@@ -3095,7 +2974,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 03:00:00",
     localDateTimeISO: "2024-04-16T03:00:00+10:00",
     utc: "2024-04-16T03:00:00Z",
     timestamp: 1713236400000,
@@ -3119,7 +2997,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 06:00:00",
     localDateTimeISO: "2024-04-16T06:00:00+10:00",
     utc: "2024-04-16T06:00:00Z",
     timestamp: 1713247200000,
@@ -3143,7 +3020,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 09:00:00",
     localDateTimeISO: "2024-04-16T09:00:00+10:00",
     utc: "2024-04-16T09:00:00Z",
     timestamp: 1713258000000,
@@ -3167,7 +3043,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 12:00:00",
     localDateTimeISO: "2024-04-16T12:00:00+10:00",
     utc: "2024-04-16T12:00:00Z",
     timestamp: 1713268800000,
@@ -3191,7 +3066,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 15:00:00",
     localDateTimeISO: "2024-04-16T15:00:00+10:00",
     utc: "2024-04-16T15:00:00Z",
     timestamp: 1713279600000,
@@ -3215,7 +3089,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 18:00:00",
     localDateTimeISO: "2024-04-16T18:00:00+10:00",
     utc: "2024-04-16T18:00:00Z",
     timestamp: 1713290400000,
@@ -3239,7 +3112,6 @@ const chartData = [
     isRising: true,
   },
   {
-    dateTime: "2024-04-16 21:00:00",
     localDateTimeISO: "2024-04-16T21:00:00+10:00",
     utc: "2024-04-16T21:00:00Z",
     timestamp: 1713301200000,

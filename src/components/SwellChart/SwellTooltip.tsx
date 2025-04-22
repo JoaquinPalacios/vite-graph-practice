@@ -23,7 +23,6 @@ export const SwellTooltip = ({
 }: TooltipProps<ValueType, NameType> & {
   unitPreferences: UnitPreferences;
 }) => {
-  console.log({ payload, label });
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">
