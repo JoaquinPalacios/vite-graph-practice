@@ -85,9 +85,9 @@ const AdvancedSwellChart = ({
       <LineChart
         accessibilityLayer
         data={chartData}
-        margin={{
-          bottom: 12,
-        }}
+        // margin={{
+        //   bottom: 12,
+        // }}
         className="[&>svg]:focus:outline-none"
         onMouseLeave={() => {
           setHoverIndex(null);
@@ -113,7 +113,7 @@ const AdvancedSwellChart = ({
           allowDataOverflow
           hide
           tickFormatter={formatDateTick}
-          padding={{ left: 19, right: 19 }}
+          padding={{ left: 14, right: 14 }}
           interval={7}
         />
 
