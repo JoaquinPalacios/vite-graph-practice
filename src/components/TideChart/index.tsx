@@ -114,7 +114,7 @@ const TideChart = () => {
           padding={{ left: 12 }}
         />
 
-        <Tooltip content={<TideTooltip />} />
+        <Tooltip content={<TideTooltip />} isAnimationActive={false} />
 
         <Area
           type="monotone"
