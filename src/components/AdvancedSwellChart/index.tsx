@@ -43,7 +43,7 @@ const AdvancedSwellChart = ({
     null
   );
 
-  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
 
   /**
    * Process the swell data to identify events
@@ -120,11 +120,11 @@ const AdvancedSwellChart = ({
                     hoverIndex === index
                       ? activeColorPalette[index % activeColorPalette.length]
                       : colorPalette[index % colorPalette.length],
-                } as Payload<number, string>;
+                } as unknown as Payload<ValueType, NameType>;
               }
               return undefined;
             })
-            .filter((p): p is Payload<number, string> => p !== undefined);
+            .filter((p): p is Payload<ValueType, NameType> => p !== undefined);
 
           return (
             <AdvanceCustomTooltip {...props} payload={constructedPayload} />
@@ -222,14 +222,36 @@ const AdvancedSwellChart = ({
               type="monotone"
               dataKey={"height"}
               name={eventId}
-              stroke={hoverIndex === index ? activeColor : color}
+              stroke={
+                !isMobile &&
+                !isTablet &&
+                !isLandscapeMobile &&
+                hoverIndex === index
+                  ? activeColor
+                  : color
+              }
               strokeWidth={2}
               connectNulls={false}
-              dot={<SwellArrowDot isHover={hoverIndex === index} />}
+              dot={
+                <SwellArrowDot
+                  isHover={
+                    !isMobile &&
+                    !isTablet &&
+                    !isLandscapeMobile &&
+                    hoverIndex === index
+                  }
+                />
+              }
               activeDot={false}
-              opacity={hoverIndex === index ? 1 : 0.25}
+              opacity={
+                !isMobile &&
+                !isTablet &&
+                !isLandscapeMobile &&
+                hoverIndex === index
+                  ? 1
+                  : 0.25
+              }
               onMouseEnter={() => {
-                // setHoverEventId(eventId);
                 setHoverIndex(index);
               }}
               className="[&>g>svg]:transition-opacity [&>g>svg]:duration-150 [&>g>svg]:ease-in-out"
