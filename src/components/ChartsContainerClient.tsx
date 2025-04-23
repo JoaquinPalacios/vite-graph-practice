@@ -10,7 +10,6 @@ const SwellChartContainerLayout = () => {
     waveHeight: "ft",
     windSpeed: "knots",
     temperature: "°C",
-    tideHeight: "m",
     showAdvancedChart: true,
   });
 
