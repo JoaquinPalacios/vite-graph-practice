@@ -7,6 +7,11 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { TooltipProps } from "recharts";
+import {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
@@ -14,10 +19,11 @@ import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { formatDateTick, generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
 import CustomCursor from "./CustomCursor";
+import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
+import { Payload } from "recharts/types/component/DefaultTooltipContent";
 
 /**
  * Advanced Swell Chart
@@ -33,7 +39,9 @@ const AdvancedSwellChart = ({
   unitPreferences: UnitPreferences;
 }) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const [hoverEventId, setHoverEventId] = useState<string | null>(null);
+  const [tooltipHoveredIndex, setTooltipHoveredIndex] = useState<number | null>(
+    null
+  );
 
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -74,6 +82,58 @@ const AdvancedSwellChart = ({
     "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
     "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
   ];
+
+  /**
+   * Handles the tooltip content generation
+   * @param props - The tooltip props from Recharts
+   * @returns The tooltip content or null
+   */
+  const handleTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
+    if (props.active) {
+      // If we have payload data, use it directly
+      if (props.payload && props.payload.length > 0) {
+        return <AdvanceCustomTooltip {...props} />;
+      }
+
+      // If no payload but we have a hovered index, construct the payload
+      if (tooltipHoveredIndex !== null && props.label) {
+        const dataPoint = chartData[tooltipHoveredIndex];
+        if (dataPoint) {
+          const constructedPayload = eventIds
+            .map((eventId, index) => {
+              const eventData = processedSwellData[eventId];
+              const matchingPoint = eventData.find(
+                (point) => point.localDateTimeISO === dataPoint.localDateTimeISO
+              );
+
+              if (matchingPoint) {
+                return {
+                  name: eventId,
+                  value: matchingPoint.height,
+                  payload: {
+                    ...matchingPoint,
+                    direction: matchingPoint.direction,
+                    period: matchingPoint.period,
+                    localDateTimeISO: matchingPoint.localDateTimeISO,
+                  },
+                  color:
+                    hoverIndex === index
+                      ? activeColorPalette[index % activeColorPalette.length]
+                      : colorPalette[index % colorPalette.length],
+                } as Payload<number, string>;
+              }
+              return undefined;
+            })
+            .filter((p): p is Payload<number, string> => p !== undefined);
+
+          return (
+            <AdvanceCustomTooltip {...props} payload={constructedPayload} />
+          );
+        }
+      }
+    }
+    return null;
+  };
 
   return (
     <ResponsiveContainer
@@ -140,9 +200,12 @@ const AdvancedSwellChart = ({
 
         <Tooltip
           accessibilityLayer
-          content={<AdvanceCustomTooltip hoverEventId={hoverEventId} />}
-          cursor={<CustomCursor />}
+          content={handleTooltipContent}
+          cursor={
+            <CustomCursor setTooltipHoveredIndex={setTooltipHoveredIndex} />
+          }
           trigger="hover"
+          shared
         />
 
         {eventIds.map((eventId, index) => {
@@ -166,7 +229,7 @@ const AdvancedSwellChart = ({
               activeDot={false}
               opacity={hoverIndex === index ? 1 : 0.25}
               onMouseEnter={() => {
-                setHoverEventId(eventId);
+                // setHoverEventId(eventId);
                 setHoverIndex(index);
               }}
               className="[&>g>svg]:transition-opacity [&>g>svg]:duration-300 [&>g>svg]:ease-in-out"

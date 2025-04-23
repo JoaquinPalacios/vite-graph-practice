@@ -1,9 +1,13 @@
-type CursorProps = {
+interface CustomCursorProps {
   points?: { x: number; y: number }[];
-};
+  payloadIndex?: number;
+  setTooltipHoveredIndex: (index: number | null) => void;
+}
 
-const CustomCursor = (props: CursorProps) => {
-  const points = props.points ?? [];
+const CustomCursor = (props: CustomCursorProps) => {
+  const { points, setTooltipHoveredIndex, payloadIndex } = props;
+  setTooltipHoveredIndex(payloadIndex ?? 0);
+  const pointsArray = points ?? [];
   const width = 37.40625;
   const halfWidth = width / 2;
 
@@ -12,8 +16,8 @@ const CustomCursor = (props: CursorProps) => {
       pointerEvents="none"
       fill="oklch(0.129 0.042 264.695)"
       fillOpacity="0.1"
-      d={`M ${points[0].x - halfWidth},${
-        points[0].y - 5
+      d={`M ${pointsArray[0]?.x - halfWidth},${
+        pointsArray[0]?.y - 5
       } h ${width} v 192 h -${width} Z`}
     />
   );

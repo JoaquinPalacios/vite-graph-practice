@@ -9,17 +9,16 @@ import RenderCustomizedLabel from "../SwellChart/SwellLabel";
  * @param {TooltipProps<ValueType, NameType> } props - The props for the SwellTooltip component
  * @returns {React.ReactElement} The SwellTooltip component
  */
-export const AdvanceCustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<ValueType, NameType> & {
-  hoverEventId: string | null;
-}) => {
-  console.log({ payload, active, label });
+export const AdvanceCustomTooltip = (
+  props: TooltipProps<ValueType, NameType>
+) => {
+  const { active, payload, label } = props;
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-400 rounded-md overflow-hidden">
+      <div
+        className="bg-slate-400 rounded-md overflow-hidden"
+        style={{ visibility: "visible" }}
+      >
         <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
           {new Date(payload[0].payload.localDateTimeISO)
             .toLocaleTimeString("en-US", {
