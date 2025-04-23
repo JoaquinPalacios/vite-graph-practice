@@ -2,9 +2,7 @@ import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import { cn } from "@/utils/utils";
-import { getColorClass } from "@/utils/chart-utils";
-
+import RenderCustomizedLabel from "../SwellChart/SwellLabel";
 /**
  * SwellTooltip component
  * This component is used to display the tooltip of the SwellChart.
@@ -41,11 +39,9 @@ export const AdvanceCustomTooltip = ({
             .sort((a, b) => (b.value as number) - (a.value as number))
             .map((item) => (
               <div className="flex gap-1 items-center">
-                <span
-                  className={cn(
-                    "w-2 h-2 rounded-xs",
-                    item.color && getColorClass(item.color || "")
-                  )}
+                <RenderCustomizedLabel
+                  value={item.payload.direction}
+                  fill={item.color}
                 />
                 <p className="ml-px text-xs">{item.value}m</p>
                 <p className="ml-px text-xs">@</p>
