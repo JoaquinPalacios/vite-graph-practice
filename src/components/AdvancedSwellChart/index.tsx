@@ -85,9 +85,6 @@ const AdvancedSwellChart = ({
       <LineChart
         accessibilityLayer
         data={chartData}
-        // margin={{
-        //   bottom: 12,
-        // }}
         className="[&>svg]:focus:outline-none"
         onMouseLeave={() => {
           setHoverIndex(null);
