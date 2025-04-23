@@ -82,7 +82,7 @@ export const SwellTooltip = ({
               </p>
             </div>
           )}
-          {payload[0] && (
+          {payload[0] && !unitPreferences.showAdvancedChart && (
             <div className="flex gap-1">
               <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
               <p className="ml-px text-xs">
@@ -98,38 +98,40 @@ export const SwellTooltip = ({
               </p>
             </div>
           )}
-          {payload[0].payload.secondarySwellHeight && (
-            <div className="flex gap-1">
-              <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
-              <p className="ml-px text-xs">
-                {payload[0].payload.secondarySwellHeight}m @
-              </p>
-              <p className="text-xs">
-                {payload[0].payload.secondarySwellPeriod}s
-              </p>
-              <p className="text-xs">
-                <RenderCustomizedLabel
-                  value={payload[0].payload.secondarySwellDirection}
-                />
-              </p>
-            </div>
-          )}
-          {payload[0].payload.tertiarySwellHeight && (
-            <div className="flex gap-1">
-              <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
-              <p className="ml-px text-xs">
-                {payload[0].payload.tertiarySwellHeight}m @
-              </p>
-              <p className="text-xs">
-                {payload[0].payload.tertiarySwellPeriod}s
-              </p>
-              <p className="text-xs">
-                <RenderCustomizedLabel
-                  value={payload[0].payload.tertiarySwellDirection}
-                />
-              </p>
-            </div>
-          )}
+          {!unitPreferences.showAdvancedChart &&
+            payload[0].payload.secondarySwellHeight && (
+              <div className="flex gap-1">
+                <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
+                <p className="ml-px text-xs">
+                  {payload[0].payload.secondarySwellHeight}m @
+                </p>
+                <p className="text-xs">
+                  {payload[0].payload.secondarySwellPeriod}s
+                </p>
+                <p className="text-xs">
+                  <RenderCustomizedLabel
+                    value={payload[0].payload.secondarySwellDirection}
+                  />
+                </p>
+              </div>
+            )}
+          {!unitPreferences.showAdvancedChart &&
+            payload[0].payload.tertiarySwellHeight && (
+              <div className="flex gap-1">
+                <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
+                <p className="ml-px text-xs">
+                  {payload[0].payload.tertiarySwellHeight}m @
+                </p>
+                <p className="text-xs">
+                  {payload[0].payload.tertiarySwellPeriod}s
+                </p>
+                <p className="text-xs">
+                  <RenderCustomizedLabel
+                    value={payload[0].payload.tertiarySwellDirection}
+                  />
+                </p>
+              </div>
+            )}
           {payload[0] && (
             <>
               {payload[0].payload.isRising ? (
