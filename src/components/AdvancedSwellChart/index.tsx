@@ -232,8 +232,8 @@ const AdvancedSwellChart = ({
                 // setHoverEventId(eventId);
                 setHoverIndex(index);
               }}
-              className="[&>g>svg]:transition-opacity [&>g>svg]:duration-300 [&>g>svg]:ease-in-out"
-              animationDuration={300}
+              className="[&>g>svg]:transition-opacity [&>g>svg]:duration-150 [&>g>svg]:ease-in-out"
+              animationDuration={150}
             />
           );
         })}
