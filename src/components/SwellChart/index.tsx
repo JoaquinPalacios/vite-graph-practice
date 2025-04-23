@@ -47,6 +47,7 @@ const SwellChart = ({
           bottom: 12,
         }}
         className="[&>svg]:focus:outline-none"
+        syncId="swellnet"
       >
         <CartesianGrid
           vertical={true}

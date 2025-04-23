@@ -25,6 +25,27 @@ import { cn } from "@/utils/utils";
  * @param unitPreferences - The unit preferences for the chart
  * @returns The Advanced Swell Chart component
  */
+
+interface CursorProps {
+  points: { x: number; y: number }[];
+}
+
+const CustomCursor = ({ points }: CursorProps) => {
+  const width = 37.40625;
+  const halfWidth = width / 2;
+
+  return (
+    <path
+      pointerEvents="none"
+      fill="oklch(0.129 0.042 264.695)"
+      fillOpacity="0.1"
+      d={`M ${points[0].x - halfWidth},${
+        points[0].y - 5
+      } h ${width} v 192 h -${width} Z`}
+    />
+  );
+};
+
 const AdvancedSwellChart = ({
   unitPreferences,
 }: {
@@ -89,6 +110,7 @@ const AdvancedSwellChart = ({
         onMouseLeave={() => {
           setHoverIndex(null);
         }}
+        syncId="swellnet"
       >
         <CartesianGrid
           vertical={true}
@@ -137,11 +159,7 @@ const AdvancedSwellChart = ({
 
         <Tooltip
           content={<AdvanceCustomTooltip hoverEventId={hoverEventId} />}
-          cursor={{
-            fill: "oklch(0.129 0.042 264.695)",
-            fillOpacity: 0.1,
-            height: 280,
-          }}
+          cursor={<CustomCursor points={[]} />}
           trigger="hover"
         />
 
