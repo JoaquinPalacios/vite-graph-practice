@@ -6,7 +6,6 @@ export interface Point {
 }
 
 export interface ProcessedSwellDataPoint {
-  timestamp: number;
   direction: number;
   height: number;
   period: number;

@@ -166,6 +166,7 @@ const AdvancedSwellChart = ({
               strokeWidth={2}
               connectNulls={false}
               dot={<SwellArrowDot isHover={hoverIndex === index} />}
+              activeDot={false}
               opacity={hoverIndex === index ? 1 : 0.25}
               onMouseEnter={() => {
                 setHoverEventId(eventId);
