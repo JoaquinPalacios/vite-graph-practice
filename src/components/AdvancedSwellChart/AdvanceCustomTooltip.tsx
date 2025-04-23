@@ -16,7 +16,7 @@ export const AdvanceCustomTooltip = ({
 }: TooltipProps<ValueType, NameType> & {
   hoverEventId: string | null;
 }) => {
-  console.log({ payload });
+  console.log({ payload, active, label });
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">
