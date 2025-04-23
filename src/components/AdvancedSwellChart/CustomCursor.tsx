@@ -1,8 +1,9 @@
 type CursorProps = {
-  points: { x: number; y: number }[];
+  points?: { x: number; y: number }[];
 };
 
-const CustomCursor = ({ points }: CursorProps) => {
+const CustomCursor = (props: CursorProps) => {
+  const points = props.points ?? [];
   const width = 37.40625;
   const halfWidth = width / 2;
 

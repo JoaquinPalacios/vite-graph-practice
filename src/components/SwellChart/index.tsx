@@ -176,6 +176,7 @@ const SwellChart = ({
         />
 
         <Tooltip
+          accessibilityLayer
           content={<SwellTooltip unitPreferences={unitPreferences} />}
           cursor={{
             fill: "oklch(0.129 0.042 264.695)",

@@ -139,8 +139,9 @@ const AdvancedSwellChart = ({
         />
 
         <Tooltip
+          accessibilityLayer
           content={<AdvanceCustomTooltip hoverEventId={hoverEventId} />}
-          cursor={<CustomCursor points={[]} />}
+          cursor={<CustomCursor />}
           trigger="hover"
         />
 
