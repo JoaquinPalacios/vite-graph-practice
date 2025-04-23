@@ -38,7 +38,7 @@ export const AdvanceCustomTooltip = ({
             .slice()
             .sort((a, b) => (b.value as number) - (a.value as number))
             .map((item) => (
-              <div className="flex gap-1 items-center">
+              <div key={item.name} className="flex gap-1 items-center">
                 <RenderCustomizedLabel
                   value={item.payload.direction}
                   fill={item.color}
