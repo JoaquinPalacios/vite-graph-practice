@@ -2,14 +2,13 @@ import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
 import { getColorClass } from "@/utils/chart-utils";
 
 /**
  * SwellTooltip component
  * This component is used to display the tooltip of the SwellChart.
- * @param {TooltipProps<ValueType, NameType> & { unitPreferences: UnitPreferences }} props - The props for the SwellTooltip component
+ * @param {TooltipProps<ValueType, NameType> } props - The props for the SwellTooltip component
  * @returns {React.ReactElement} The SwellTooltip component
  */
 export const AdvanceCustomTooltip = ({
@@ -17,10 +16,8 @@ export const AdvanceCustomTooltip = ({
   payload,
   label,
 }: TooltipProps<ValueType, NameType> & {
-  unitPreferences: UnitPreferences;
   hoverEventId: string | null;
 }) => {
-  console.log({ payload });
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-400 rounded-md overflow-hidden">

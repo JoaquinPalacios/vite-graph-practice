@@ -7,7 +7,6 @@ import {
   YAxis,
 } from "recharts";
 import chartData from "@/data";
-import { UnitPreferences } from "@/types";
 import { GiBigWave } from "react-icons/gi";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
@@ -15,21 +14,14 @@ import { generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { chartArgs } from "@/lib/chart-args";
 
-const AdvancedSwellChartYAxis = ({
-  unitPreferences,
-}: {
-  unitPreferences: UnitPreferences;
-}) => {
+const AdvancedSwellChartYAxis = () => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   /**
    * Process the swell data to identify events
    * useMemo prevents reprocessing on every render unless chartData changes
    */
-  const processedSwellData = useMemo(
-    () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
-    [unitPreferences.waveHeight]
-  );
+  const processedSwellData = useMemo(() => processSwellData(chartData), []);
 
   const eventIds = Object.keys(processedSwellData);
 
@@ -65,16 +57,14 @@ const AdvancedSwellChartYAxis = ({
           {...yAxisArgs}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
-          unit={unitPreferences.waveHeight}
+          unit="m"
           interval="preserveStart"
           allowDecimals={false}
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
           ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-              : Math.max(...chartData.map((d) => d.waveHeight_m)),
-            unitPreferences.waveHeight
+            Math.max(...chartData.map((d) => d.waveHeight_m)),
+            "m"
           )}
           tick={(value: {
             x: number;
@@ -99,8 +89,7 @@ const AdvancedSwellChartYAxis = ({
                 fontSize={12}
                 fill="#666"
               >
-                {value.payload.value}
-                {unitPreferences.waveHeight}
+                {value.payload.value}m
               </text>
             );
           }}

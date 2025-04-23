@@ -39,10 +39,7 @@ const AdvancedSwellChart = ({
    * Process the swell data to identify events
    * useMemo prevents reprocessing on every render unless chartData changes
    */
-  const processedSwellData = useMemo(
-    () => processSwellData(chartData, undefined, unitPreferences.waveHeight),
-    [unitPreferences.waveHeight]
-  );
+  const processedSwellData = useMemo(() => processSwellData(chartData), []);
 
   const eventIds = Object.keys(processedSwellData);
 
@@ -131,10 +128,8 @@ const AdvancedSwellChart = ({
           overflow="visible"
           opacity={0}
           ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-              : Math.max(...chartData.map((d) => d.waveHeight_m)),
-            unitPreferences.waveHeight
+            Math.max(...chartData.map((d) => d.waveHeight_m)),
+            "m"
           )}
           tick={() => {
             return <text></text>;
@@ -144,12 +139,7 @@ const AdvancedSwellChart = ({
         />
 
         <Tooltip
-          content={
-            <AdvanceCustomTooltip
-              unitPreferences={unitPreferences}
-              hoverEventId={hoverEventId}
-            />
-          }
+          content={<AdvanceCustomTooltip hoverEventId={hoverEventId} />}
           cursor={{
             fill: "oklch(0.129 0.042 264.695)",
             fillOpacity: 0.1,

@@ -18,8 +18,6 @@ const SwellChartContainerLayout = () => {
       <UnitSelector onChange={setUnitPreferences} />
 
       <ChartsContainer unitPreferences={unitPreferences} />
-
-      {/* <TestChart /> */}
     </section>
   );
 };
