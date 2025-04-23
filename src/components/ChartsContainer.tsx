@@ -27,7 +27,7 @@ const ChartsContainer = ({
         <SwellChartYAxis unitPreferences={unitPreferences} />
 
         <AdvancedSwellChart unitPreferences={unitPreferences} />
-        <AdvancedSwellChartYAxis unitPreferences={unitPreferences} />
+        <AdvancedSwellChartYAxis />
 
         <WeatherChart />
 
