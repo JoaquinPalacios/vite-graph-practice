@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Line,
   LineChart,
@@ -206,6 +208,7 @@ const AdvancedSwellChart = ({
           }
           trigger="hover"
           shared
+          isAnimationActive={false}
         />
 
         {eventIds.map((eventId, index) => {

@@ -184,6 +184,7 @@ const SwellChart = ({
             height: 280,
           }}
           trigger="hover"
+          isAnimationActive={false}
         />
 
         <Bar
