@@ -82,40 +82,6 @@ export const formatWaveHeight = (
   return `${height.toFixed(1)}${actualUnit}`;
 };
 
-// export const formatDateTick = (value: string) => {
-//   console.log({ value });
-//   // Parse the date and convert to UTC to avoid DST issues
-//   const date = new Date(value);
-//   const utcDate = new Date(
-//     Date.UTC(
-//       date.getUTCFullYear(),
-//       date.getUTCMonth(),
-//       date.getUTCDate(),
-//       0,
-//       0,
-//       0,
-//       0
-//     )
-//   );
-
-//   // Format the date using UTC methods
-//   const formattedDate = utcDate
-//     .toLocaleDateString("en-US", {
-//       weekday: "short",
-//       day: "numeric",
-//       month: "numeric",
-//       timeZone: "UTC", // Ensure consistent formatting regardless of local timezone
-//     })
-//     .toLocaleUpperCase()
-//     .replace(",", "");
-
-//   const [weekday, datePart] = formattedDate.split(" ");
-//   const [month, day] = datePart.split("/");
-//   const reversedDate = `${day}/${month.padStart(2, "0")}`;
-
-//   return `${weekday} ${reversedDate}`;
-// };
-
 export const formatDateTick = (value: string) => {
   // Parse the ISO datetime string which includes timezone offset
   const date = new Date(value);
@@ -258,4 +224,110 @@ export const baseChartXAxisProps: Partial<XAxisProps> = {
 // Convert meters to feet with one decimal place precision
 export const metersToFeet = (meters: number): number => {
   return Number((meters * 3.28084).toFixed(1));
+};
+
+/**
+ * Calculates the coefficients for cubic spline interpolation
+ * @param x Array of x values (timestamps)
+ * @param y Array of y values (heights)
+ * @returns Array of coefficients for cubic spline interpolation
+ */
+const calculateSplineCoefficients = (x: number[], y: number[]) => {
+  const n = x.length;
+  const h: number[] = [];
+  const alpha: number[] = [];
+  const l: number[] = new Array(n).fill(0);
+  const mu: number[] = new Array(n).fill(0);
+  const z: number[] = new Array(n).fill(0);
+  const c: number[] = new Array(n).fill(0);
+  const b: number[] = new Array(n - 1).fill(0);
+  const d: number[] = new Array(n - 1).fill(0);
+
+  // Calculate h values
+  for (let i = 0; i < n - 1; i++) {
+    h[i] = x[i + 1] - x[i];
+  }
+
+  // Calculate alpha values
+  for (let i = 1; i < n - 1; i++) {
+    alpha[i] =
+      (3 / h[i]) * (y[i + 1] - y[i]) - (3 / h[i - 1]) * (y[i] - y[i - 1]);
+  }
+
+  // Calculate l, mu, and z values
+  l[0] = 1;
+  for (let i = 1; i < n - 1; i++) {
+    l[i] = 2 * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
+    mu[i] = h[i] / l[i];
+    z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+  }
+
+  // Calculate c, b, and d values
+  l[n - 1] = 1;
+  for (let j = n - 2; j >= 0; j--) {
+    c[j] = z[j] - mu[j] * c[j + 1];
+    b[j] = (y[j + 1] - y[j]) / h[j] - (h[j] * (c[j + 1] + 2 * c[j])) / 3;
+    d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+  }
+
+  return { b, c, d };
+};
+
+interface TideDataPoint {
+  height: number;
+  timestamp: number;
+  localDateTimeISO: string;
+  utc: string;
+}
+
+// Interpolate tide data with natural curves
+export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
+  if (data.length < 2) return data;
+
+  const result: TideDataPoint[] = [];
+  const POINTS_BETWEEN = 20; // Number of points to add between each actual data point
+
+  // Calculate spline coefficients using UTC timestamps for consistent intervals
+  const timestamps = data.map((point) => new Date(point.utc).getTime());
+  const heights = data.map((point) => point.height);
+  const { b, c, d } = calculateSplineCoefficients(timestamps, heights);
+
+  // Interpolate between each pair of points
+  for (let i = 0; i < data.length - 1; i++) {
+    const startPoint = data[i];
+    const endPoint = data[i + 1];
+
+    // Add the start point
+    result.push(startPoint);
+
+    // Calculate time step in milliseconds between the two points
+    const startTime = new Date(startPoint.utc).getTime();
+    const endTime = new Date(endPoint.utc).getTime();
+    const timeStep = (endTime - startTime) / (POINTS_BETWEEN + 1);
+
+    // Add interpolated points using cubic spline
+    for (let j = 1; j <= POINTS_BETWEEN; j++) {
+      const timestamp = startTime + timeStep * j;
+      const x = timestamp - timestamps[i]; // Use the same time base as coefficients
+
+      // Calculate height using cubic spline formula
+      const height = heights[i] + b[i] * x + c[i] * x * x + d[i] * x * x * x;
+
+      // Create proper UTC and local time strings
+      const utcDate = new Date(timestamp);
+      const localDate = new Date(timestamp + 11 * 60 * 60 * 1000); // Add 11 hours for +11:00 timezone
+
+      result.push({
+        height,
+        timestamp,
+        localDateTimeISO: localDate.toISOString().replace("Z", "+11:00"),
+        utc: utcDate.toISOString(),
+      });
+    }
+  }
+
+  // Add the last point
+  result.push(data[data.length - 1]);
+
+  return result;
 };

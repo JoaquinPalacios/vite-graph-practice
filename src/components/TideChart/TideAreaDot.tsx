@@ -2,13 +2,23 @@ type TideAreaDotProps = {
   cx?: number;
   cy?: number;
   payload?: {
-    time: string;
+    localDateTimeISO: string;
     height: number;
   };
 };
 
 export const TideAreaDot = ({ cx, cy, payload }: TideAreaDotProps) => {
   if (!cx || !cy || !payload) return null;
+
+  const date = new Date(payload.localDateTimeISO);
+  const formattedTime = date
+    .toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .toLowerCase();
+
   return (
     <g width={20} height={20} transform={`translate(${cx}, ${cy})`}>
       <text
@@ -35,7 +45,7 @@ export const TideAreaDot = ({ cx, cy, payload }: TideAreaDotProps) => {
           begin="0.1s"
           fill="freeze"
         />
-        {payload.time}
+        {formattedTime}
       </text>
       <text
         fill="#666"

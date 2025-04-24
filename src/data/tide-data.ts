@@ -312,7 +312,7 @@ const tideData = [
   },
   {
     localDateTimeISO: "2024-04-16T10:00:00+10:00",
-    utc: "2024-04-15T22:00:00Z",
+    utc: "2024-04-16T00:00:00Z",
     height: 1.2,
   },
   {

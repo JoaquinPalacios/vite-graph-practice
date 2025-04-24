@@ -10,13 +10,32 @@ import { ResponsiveContainer } from "recharts";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { TideAreaDot } from "./TideAreaDot";
-import { multiFormat } from "@/lib/time-utils";
-import { dayTicks, processTimeScaleData } from "@/utils/chart-utils";
+// import { multiFormat } from "@/lib/time-utils";
+import {
+  dayTicks,
+  processTimeScaleData,
+  interpolateTideData,
+} from "@/utils/chart-utils";
 
 interface TideDataItem {
   // dateTime: string;
   height: number;
   localDateTimeISO: string;
+  utc: string;
+}
+
+interface DotProps {
+  cx: number;
+  cy: number;
+  value: number;
+  key: string;
+  payload: {
+    height: number;
+    timestamp: number;
+    localDateTimeISO: string;
+    time?: string;
+    utc: string;
+  };
 }
 
 /**
@@ -53,16 +72,25 @@ const hoursToMidnight = (midnightTime - previousTideTime) / (1000 * 60 * 60);
 const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
 
 // Process the data to include timestamps
-const processedData = [
+const baseData = [
   {
     height: heightAtMidnight,
     timestamp: midnightTime,
+    localDateTimeISO:
+      firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00",
+    utc: new Date(
+      firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00"
+    ).toISOString(),
   },
   ...tideData.map((item: TideDataItem) => ({
     ...item,
     timestamp: new Date(item.localDateTimeISO).getTime(),
+    utc: item.utc,
   })),
 ];
+
+// Interpolate data for every 3 minutes
+const processedData = interpolateTideData(baseData);
 
 // Get time scale data
 const timeValues = processedData.map((row) => row.timestamp);
@@ -75,8 +103,6 @@ const TideChart = () => {
         accessibilityLayer
         data={processedData}
         margin={{
-          left: 0,
-          right: 0,
           bottom: 16,
         }}
         className="[&>svg]:focus:outline-none"
@@ -90,13 +116,32 @@ const TideChart = () => {
           ]}
           y={0}
           height={144}
-          syncWithTicks
+          width={300}
+          widths={300}
+          // syncWithTicks
         />
 
         {/* Background stripes XAxis */}
         <XAxis
           dataKey="timestamp"
           xAxisId={0}
+          type="number"
+          scale={timeScale}
+          domain={timeScale.domain().map((date) => date.valueOf())}
+          interval={"preserveStart"}
+          allowDuplicatedCategory={false}
+          allowDataOverflow
+          hide
+          ticks={dayTicks}
+          // tickFormatter={multiFormat}
+          padding={{ left: 19 }}
+          width={300}
+        />
+
+        {/* Background stripes XAxis */}
+        {/* <XAxis
+          dataKey="timestamp"
+          xAxisId={1}
           type="number"
           scale={timeScale}
           domain={timeScale.domain().map((date) => date.valueOf())}
@@ -107,7 +152,7 @@ const TideChart = () => {
           ticks={dayTicks}
           tickFormatter={multiFormat}
           padding={{ left: 19 }}
-        />
+        /> */}
 
         <Tooltip content={<TideTooltip />} isAnimationActive={false} />
 
@@ -117,9 +162,25 @@ const TideChart = () => {
           stroke="#008a93"
           fill="#008a93"
           connectNulls
-          dot={(props) => {
-            if (props.key === "dot-0") return <span key={props.key} />;
-            return <TideAreaDot {...props} key={props.key} />;
+          dot={(props: DotProps) => {
+            // Only show dots for original data points, not interpolated ones
+            if (!props.payload.localDateTimeISO || props.key === "dot-0")
+              return <span key={props.key} />;
+            const isOriginalPoint = tideData.some(
+              (item) => item.localDateTimeISO === props.payload.localDateTimeISO
+            );
+            if (isOriginalPoint) {
+              // Add the time property expected by TideAreaDot
+              const dotProps = {
+                ...props,
+                payload: {
+                  ...props.payload,
+                  time: props.payload.localDateTimeISO,
+                },
+              };
+              return <TideAreaDot {...dotProps} key={props.key} />;
+            }
+            return <span key={props.key} />;
           }}
           isAnimationActive={false}
         />
