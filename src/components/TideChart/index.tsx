@@ -27,11 +27,7 @@ interface TideDataItem {
  * @todo: Fix this
  */
 const previousTide = {
-  // date: "2024-03-31",
-  // time: "9:54pm",
-  // dateTime: "2024-03-31 21:54:00",
   localDateTimeISO: "2024-03-31T21:54:00+11:00",
-  timeStamp: 1711925640,
   height: 1.6,
 };
 
@@ -59,9 +55,6 @@ const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
 // Process the data to include timestamps
 const processedData = [
   {
-    // date: firstTide.date,
-    // time: "12:00am",
-    // dateTime: `${firstTide.date} 00:00:00`,
     height: heightAtMidnight,
     timestamp: midnightTime,
   },
@@ -113,7 +106,7 @@ const TideChart = () => {
           hide
           ticks={dayTicks}
           tickFormatter={multiFormat}
-          padding={{ left: 12 }}
+          padding={{ left: 19 }}
         />
 
         <Tooltip content={<TideTooltip />} isAnimationActive={false} />
