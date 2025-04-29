@@ -13,9 +13,8 @@ import { multiFormat } from "@/lib/time-utils";
 import { dayTicks, processTimeScaleData } from "@/utils/chart-utils";
 
 interface TideDataItem {
-  date: string;
-  time: string;
-  dateTime: string;
+  localDateTimeISO: string;
+  utc: string;
   height: number;
 }
 
@@ -39,8 +38,10 @@ const firstTide = tideData[0];
 
 // Calculate time differences in hours
 const previousTideTime = new Date(previousTide.dateTime).getTime();
-const firstTideTime = new Date(firstTide.dateTime).getTime();
-const midnightTime = new Date(`${firstTide.date} 00:00:00`).getTime();
+const firstTideTime = new Date(firstTide.localDateTimeISO).getTime();
+const midnightTime = new Date(
+  `${firstTide.localDateTimeISO.split("T")[0]} 00:00:00`
+).getTime();
 
 // Calculate rate of change (meters per hour)
 const totalHours = (firstTideTime - previousTideTime) / (1000 * 60 * 60);
@@ -56,15 +57,15 @@ const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
 // Process the data to include timestamps
 const processedData = [
   {
-    date: firstTide.date,
+    date: firstTide.localDateTimeISO.split("T")[0],
     time: "12:00am",
-    dateTime: `${firstTide.date} 00:00:00`,
+    dateTime: `${firstTide.localDateTimeISO.split("T")[0]} 00:00:00`,
     height: heightAtMidnight,
     timestamp: midnightTime,
   },
   ...tideData.map((item: TideDataItem) => ({
     ...item,
-    timestamp: new Date(item.dateTime).getTime(),
+    timestamp: new Date(item.localDateTimeISO).getTime(),
   })),
 ];
 
