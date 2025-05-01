@@ -99,8 +99,8 @@ export const chartArgs = {
       }
       return (
         <SwellAxisTick
-          payload={{ value: data.windDirection }}
-          windSpeed={data.windSpeedKnots || 0}
+          payload={{ value: data.wind.direction }}
+          windSpeed={data.wind.speedKnots || 0}
           x={x}
           y={y}
         />
@@ -129,7 +129,7 @@ export const chartArgs = {
           x={x}
           y={y}
           payload={{
-            value: data.windSpeedKnots,
+            value: data.wind.speedKnots,
           }}
         />
       );

@@ -9,9 +9,11 @@ export type UnitPreferences = {
 export interface SwellData {
   localDateTimeISO: string;
   swellDirection: number;
-  windDirection: number;
-  windSpeedKmh: number;
-  windSpeedKnots: number;
+  wind: {
+    direction: number;
+    speedKmh: number;
+    speedKnots: number;
+  };
   waveHeightMetres: number;
   waveHeightFeet: number;
   faceWaveHeight_ft?: number;

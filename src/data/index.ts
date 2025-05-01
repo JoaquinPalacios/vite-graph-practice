@@ -4,9 +4,11 @@ const chartData = [
     bulletinDatetimeUtc: "2024-03-31T11:00:00Z", // one time only, this is the previous bulletin datetime from where this data is coming.
     localDateTimeISO: "2024-04-01T00:00:00+11:00",
     utcDateTimeISO: "2024-03-31T13:00:00Z",
-    windDirection: 150,
-    windSpeedKmh: 8,
-    windSpeedKnots: 4,
+    wind: {
+      direction: 150,
+      speedKmh: 8,
+      speedKnots: 4,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "3-5ft",
@@ -68,9 +70,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T03:00:00+11:00",
     utcDateTimeISO: "2024-03-31T16:00:00Z",
     swellDirection: 97,
-    windDirection: 180,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 180,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 3.5,
       fullSurfHeightFeetLabelBin: "2-3ft",
@@ -131,9 +135,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T06:00:00+11:00",
     utcDateTimeISO: "2024-03-31T19:00:00Z",
     swellDirection: 167,
-    windDirection: 120,
-    windSpeedKmh: 12,
-    windSpeedKnots: 6,
+    wind: {
+      direction: 120,
+      speedKmh: 12,
+      speedKnots: 6,
+    },
     primary: {
       fullSurfHeightFeet: 3.5,
       fullSurfHeightFeetLabelBin: "2-3ft",
@@ -194,9 +200,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T09:00:00+11:00",
     utcDateTimeISO: "2024-03-31T22:00:00Z",
     swellDirection: 242,
-    windDirection: 260,
-    windSpeedKmh: 33,
-    windSpeedKnots: 18,
+    wind: {
+      direction: 260,
+      speedKmh: 33,
+      speedKnots: 18,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "3-5ft",
@@ -259,9 +267,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T12:00:00+11:00",
     utcDateTimeISO: "2024-04-01T01:00:00Z",
     swellDirection: 360,
-    windDirection: 290,
-    windSpeedKmh: 45,
-    windSpeedKnots: 21,
+    wind: {
+      direction: 290,
+      speedKmh: 45,
+      speedKnots: 21,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -331,9 +341,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T15:00:00+11:00",
     utcDateTimeISO: "2024-04-01T04:00:00Z",
     swellDirection: 301,
-    windDirection: 340,
-    windSpeedKmh: 41,
-    windSpeedKnots: 22,
+    wind: {
+      direction: 340,
+      speedKmh: 41,
+      speedKnots: 22,
+    },
     primary: {
       fullSurfHeightFeet: 7,
       fullSurfHeightFeetLabelBin: "7ft",
@@ -403,9 +415,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T18:00:00+11:00",
     utcDateTimeISO: "2024-04-01T07:00:00Z",
     swellDirection: 245,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -474,9 +488,11 @@ const chartData = [
     localDateTimeISO: "2024-04-01T21:00:00+11:00",
     utcDateTimeISO: "2024-04-01T10:00:00Z",
     swellDirection: 209,
-    windDirection: 320,
-    windSpeedKmh: 17,
-    windSpeedKnots: 9,
+    wind: {
+      direction: 320,
+      speedKmh: 17,
+      speedKnots: 9,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -546,9 +562,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T00:00:00+11:00",
     utcDateTimeISO: "2024-04-01T13:00:00Z",
     swellDirection: 59,
-    windDirection: 110,
-    windSpeedKmh: 14,
-    windSpeedKnots: 7,
+    wind: {
+      direction: 110,
+      speedKmh: 14,
+      speedKnots: 7,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -619,9 +637,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T03:00:00+11:00",
     utcDateTimeISO: "2024-04-01T16:00:00Z",
     swellDirection: 261,
-    windDirection: 190,
-    windSpeedKmh: 12,
-    windSpeedKnots: 6,
+    wind: {
+      direction: 190,
+      speedKmh: 12,
+      speedKnots: 6,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -692,9 +712,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T06:00:00+11:00",
     utcDateTimeISO: "2024-04-01T19:00:00Z",
     swellDirection: 327,
-    windDirection: 350,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 350,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -756,9 +778,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T09:00:00+11:00",
     utcDateTimeISO: "2024-04-01T22:00:00Z",
     swellDirection: 292,
-    windDirection: 210,
-    windSpeedKmh: 8,
-    windSpeedKnots: 4,
+    wind: {
+      direction: 210,
+      speedKmh: 8,
+      speedKnots: 4,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -820,9 +844,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T12:00:00+11:00",
     utcDateTimeISO: "2024-04-02T01:00:00Z",
     swellDirection: 342,
-    windDirection: 20,
-    windSpeedKmh: 8,
-    windSpeedKnots: 4,
+    wind: {
+      direction: 20,
+      speedKmh: 8,
+      speedKnots: 4,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -874,9 +900,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T15:00:00+11:00",
     utcDateTimeISO: "2024-04-02T04:00:00Z",
     swellDirection: 137,
-    windDirection: 220,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 220,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -928,9 +956,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T18:00:00+11:00",
     utcDateTimeISO: "2024-04-02T07:00:00Z",
     swellDirection: 120,
-    windDirection: 170,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 170,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -980,9 +1010,11 @@ const chartData = [
     localDateTimeISO: "2024-04-02T21:00:00+11:00",
     utcDateTimeISO: "2024-04-02T10:00:00Z",
     swellDirection: 138,
-    windDirection: 190,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 190,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1044,9 +1076,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T00:00:00+11:00",
     utcDateTimeISO: "2024-04-02T13:00:00Z",
     swellDirection: 146,
-    windDirection: 360,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 360,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1107,9 +1141,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T03:00:00+11:00",
     utcDateTimeISO: "2024-04-02T16:00:00Z",
     swellDirection: 349,
-    windDirection: 50,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 50,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1172,9 +1208,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T06:00:00+11:00",
     utcDateTimeISO: "2024-04-02T19:00:00Z",
     swellDirection: 243,
-    windDirection: 180,
-    windSpeedKmh: 30,
-    windSpeedKnots: 16,
+    wind: {
+      direction: 180,
+      speedKmh: 30,
+      speedKnots: 16,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1235,9 +1273,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T09:00:00+11:00",
     utcDateTimeISO: "2024-04-02T22:00:00Z",
     swellDirection: 89,
-    windDirection: 150,
-    windSpeedKmh: 47,
-    windSpeedKnots: 25,
+    wind: {
+      direction: 150,
+      speedKmh: 47,
+      speedKnots: 25,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1306,9 +1346,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T12:00:00+11:00",
     utcDateTimeISO: "2024-04-03T01:00:00Z",
     swellDirection: 137,
-    windDirection: 200,
-    windSpeedKmh: 80,
-    windSpeedKnots: 43,
+    wind: {
+      direction: 200,
+      speedKmh: 80,
+      speedKnots: 43,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1368,9 +1410,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T15:00:00+11:00",
     utcDateTimeISO: "2024-04-03T04:00:00Z",
     swellDirection: 224,
-    windDirection: 170,
-    windSpeedKmh: 60,
-    windSpeedKnots: 32,
+    wind: {
+      direction: 170,
+      speedKmh: 60,
+      speedKnots: 32,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1430,9 +1474,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T18:00:00+11:00",
     utcDateTimeISO: "2024-04-03T07:00:00Z",
     swellDirection: 138,
-    windDirection: 230,
-    windSpeedKmh: 29,
-    windSpeedKnots: 15,
+    wind: {
+      direction: 230,
+      speedKmh: 29,
+      speedKnots: 15,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1490,9 +1536,11 @@ const chartData = [
     localDateTimeISO: "2024-04-03T21:00:00+11:00",
     utcDateTimeISO: "2024-04-03T10:00:00Z",
     swellDirection: 317,
-    windDirection: 290,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 290,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1549,9 +1597,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T00:00:00+11:00",
     utcDateTimeISO: "2024-04-03T13:00:00Z",
     swellDirection: 215,
-    windDirection: 250,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 250,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1614,9 +1664,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T03:00:00+11:00",
     utcDateTimeISO: "2024-04-03T16:00:00Z",
     swellDirection: 75,
-    windDirection: 130,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 130,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1677,9 +1729,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T06:00:00+11:00",
     utcDateTimeISO: "2024-04-03T19:00:00Z",
     swellDirection: 303,
-    windDirection: 60,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 60,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1740,9 +1794,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T09:00:00+11:00",
     utcDateTimeISO: "2024-04-03T22:00:00Z",
     swellDirection: 122,
-    windDirection: 180,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 180,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1803,9 +1859,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T12:00:00+11:00",
     utcDateTimeISO: "2024-04-04T01:00:00Z",
     swellDirection: 315,
-    windDirection: 240,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 240,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1867,9 +1925,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T15:00:00+11:00",
     utcDateTimeISO: "2024-04-04T04:00:00Z",
     swellDirection: 54,
-    windDirection: 20,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 20,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1930,9 +1990,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T18:00:00+11:00",
     utcDateTimeISO: "2024-04-04T07:00:00Z",
     swellDirection: 165,
-    windDirection: 220,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 220,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -1992,9 +2054,11 @@ const chartData = [
     localDateTimeISO: "2024-04-04T21:00:00+11:00",
     utcDateTimeISO: "2024-04-04T10:00:00Z",
     swellDirection: 293,
-    windDirection: 310,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 310,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -2054,9 +2118,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T00:00:00+11:00",
     utcDateTimeISO: "2024-04-04T13:00:00Z",
     swellDirection: 247,
-    windDirection: 190,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 190,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 5,
       fullSurfHeightFeetLabelBin: "5ft",
@@ -2120,9 +2186,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T03:00:00+11:00",
     utcDateTimeISO: "2024-04-04T16:00:00Z",
     swellDirection: 325,
-    windDirection: 60,
-    windSpeedKmh: 24,
-    windSpeedKnots: 12,
+    wind: {
+      direction: 60,
+      speedKmh: 24,
+      speedKnots: 12,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2184,9 +2252,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T06:00:00+11:00",
     utcDateTimeISO: "2024-04-04T19:00:00Z",
     swellDirection: 181,
-    windDirection: 30,
-    windSpeedKmh: 28,
-    windSpeedKnots: 14,
+    wind: {
+      direction: 30,
+      speedKmh: 28,
+      speedKnots: 14,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2247,9 +2317,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T09:00:00+11:00",
     utcDateTimeISO: "2024-04-04T22:00:00Z",
     swellDirection: 98,
-    windDirection: 160,
-    windSpeedKmh: 32,
-    windSpeedKnots: 16,
+    wind: {
+      direction: 160,
+      speedKmh: 32,
+      speedKnots: 16,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2310,9 +2382,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T12:00:00+11:00",
     utcDateTimeISO: "2024-04-05T01:00:00Z",
     swellDirection: 288,
-    windDirection: 300,
-    windSpeedKmh: 36,
-    windSpeedKnots: 18,
+    wind: {
+      direction: 300,
+      speedKmh: 36,
+      speedKnots: 18,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2364,9 +2438,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T15:00:00+11:00",
     utcDateTimeISO: "2024-04-05T04:00:00Z",
     swellDirection: 149,
-    windDirection: 210,
-    windSpeedKmh: 28,
-    windSpeedKnots: 14,
+    wind: {
+      direction: 210,
+      speedKmh: 28,
+      speedKnots: 14,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2415,9 +2491,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T18:00:00+11:00",
     utcDateTimeISO: "2024-04-05T07:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2467,9 +2545,11 @@ const chartData = [
     localDateTimeISO: "2024-04-05T21:00:00+11:00",
     utcDateTimeISO: "2024-04-05T10:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2517,9 +2597,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T00:00:00+11:00",
     utcDateTimeISO: "2024-04-05T13:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2571,9 +2653,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T03:00:00+11:00",
     utcDateTimeISO: "2024-04-05T16:00:00Z",
     swellDirection: 197,
-    windDirection: 240,
-    windSpeedKmh: 12,
-    windSpeedKnots: 6,
+    wind: {
+      direction: 240,
+      speedKmh: 12,
+      speedKnots: 6,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2625,9 +2709,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T06:00:00+11:00",
     utcDateTimeISO: "2024-04-05T19:00:00Z",
     swellDirection: 177,
-    windDirection: 160,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 160,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2679,9 +2765,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T09:00:00+11:00",
     utcDateTimeISO: "2024-04-05T22:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2723,9 +2811,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T12:00:00+11:00",
     utcDateTimeISO: "2024-04-06T01:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2776,9 +2866,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T15:00:00+11:00",
     utcDateTimeISO: "2024-04-06T04:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2820,9 +2912,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T18:00:00+11:00",
     utcDateTimeISO: "2024-04-06T07:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2864,9 +2958,11 @@ const chartData = [
     localDateTimeISO: "2024-04-06T21:00:00+11:00",
     utcDateTimeISO: "2024-04-06T10:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2909,9 +3005,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T00:00:00+11:00",
     utcDateTimeISO: "2024-04-06T13:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2954,9 +3052,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T03:00:00+10:00",
     utcDateTimeISO: "2024-04-06T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -2998,9 +3098,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T06:00:00+10:00",
     utcDateTimeISO: "2024-04-06T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3043,9 +3145,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T09:00:00+10:00",
     utcDateTimeISO: "2024-04-06T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3087,9 +3191,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T12:00:00+10:00",
     utcDateTimeISO: "2024-04-07T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3132,9 +3238,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T15:00:00+10:00",
     utcDateTimeISO: "2024-04-07T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3176,9 +3284,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T18:00:00+10:00",
     utcDateTimeISO: "2024-04-07T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3222,9 +3332,11 @@ const chartData = [
     localDateTimeISO: "2024-04-07T21:00:00+10:00",
     utcDateTimeISO: "2024-04-07T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3268,9 +3380,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T00:00:00+10:00",
     utcDateTimeISO: "2024-04-07T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3312,9 +3426,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T03:00:00+10:00",
     utcDateTimeISO: "2024-04-07T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3356,9 +3472,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T06:00:00+10:00",
     utcDateTimeISO: "2024-04-07T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3400,9 +3518,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T09:00:00+10:00",
     utcDateTimeISO: "2024-04-07T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3445,9 +3565,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T12:00:00+10:00",
     utcDateTimeISO: "2024-04-08T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3489,9 +3611,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T15:00:00+10:00",
     utcDateTimeISO: "2024-04-08T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3533,9 +3657,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T18:00:00+10:00",
     utcDateTimeISO: "2024-04-08T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3577,9 +3703,11 @@ const chartData = [
     localDateTimeISO: "2024-04-08T21:00:00+10:00",
     utcDateTimeISO: "2024-04-08T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3622,9 +3750,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T00:00:00+10:00",
     utcDateTimeISO: "2024-04-08T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3666,9 +3796,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T03:00:00+10:00",
     utcDateTimeISO: "2024-04-08T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3710,9 +3842,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T06:00:00+10:00",
     utcDateTimeISO: "2024-04-08T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3754,9 +3888,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T09:00:00+10:00",
     utcDateTimeISO: "2024-04-08T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3798,9 +3934,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T12:00:00+10:00",
     utcDateTimeISO: "2024-04-09T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3842,9 +3980,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T15:00:00+10:00",
     utcDateTimeISO: "2024-04-09T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3886,9 +4026,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T18:00:00+10:00",
     utcDateTimeISO: "2024-04-09T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3931,9 +4073,11 @@ const chartData = [
     localDateTimeISO: "2024-04-09T21:00:00+10:00",
     utcDateTimeISO: "2024-04-09T08:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -3976,9 +4120,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T00:00:00+10:00",
     utcDateTimeISO: "2024-04-09T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4020,9 +4166,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T03:00:00+10:00",
     utcDateTimeISO: "2024-04-09T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4064,9 +4212,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T06:00:00+10:00",
     utcDateTimeISO: "2024-04-09T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4108,9 +4258,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T09:00:00+10:00",
     utcDateTimeISO: "2024-04-09T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4152,9 +4304,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T12:00:00+10:00",
     utcDateTimeISO: "2024-04-10T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4196,9 +4350,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T15:00:00+10:00",
     utcDateTimeISO: "2024-04-10T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4240,9 +4396,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T18:00:00+10:00",
     utcDateTimeISO: "2024-04-10T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4284,9 +4442,11 @@ const chartData = [
     localDateTimeISO: "2024-04-10T21:00:00+10:00",
     utcDateTimeISO: "2024-04-10T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4323,9 +4483,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T00:00:00+10:00",
     utcDateTimeISO: "2024-04-10T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4368,9 +4530,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T03:00:00+10:00",
     utcDateTimeISO: "2024-04-10T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4412,9 +4576,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T06:00:00+10:00",
     utcDateTimeISO: "2024-04-10T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4456,9 +4622,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T09:00:00+10:00",
     utcDateTimeISO: "2024-04-10T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4500,9 +4668,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T12:00:00+10:00",
     utcDateTimeISO: "2024-04-11T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4544,9 +4714,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T15:00:00+10:00",
     utcDateTimeISO: "2024-04-11T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4588,9 +4760,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T18:00:00+10:00",
     utcDateTimeISO: "2024-04-11T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4635,9 +4809,11 @@ const chartData = [
     localDateTimeISO: "2024-04-11T21:00:00+10:00",
     utcDateTimeISO: "2024-04-11T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4683,9 +4859,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T00:00:00+10:00",
     utcDateTimeISO: "2024-04-11T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4729,9 +4907,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T03:00:00+10:00",
     utcDateTimeISO: "2024-04-11T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4776,9 +4956,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T06:00:00+10:00",
     utcDateTimeISO: "2024-04-11T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4823,9 +5005,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T09:00:00+10:00",
     utcDateTimeISO: "2024-04-11T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4870,9 +5054,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T12:00:00+10:00",
     utcDateTimeISO: "2024-04-12T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4914,9 +5100,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T15:00:00+10:00",
     utcDateTimeISO: "2024-04-12T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -4958,9 +5146,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T18:00:00+10:00",
     utcDateTimeISO: "2024-04-12T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5002,9 +5192,11 @@ const chartData = [
     localDateTimeISO: "2024-04-12T21:00:00+10:00",
     utcDateTimeISO: "2024-04-12T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5056,9 +5248,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T00:00:00+10:00",
     utcDateTimeISO: "2024-04-12T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5109,9 +5303,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T03:00:00+10:00",
     utcDateTimeISO: "2024-04-12T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5153,9 +5349,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T06:00:00+10:00",
     utcDateTimeISO: "2024-04-12T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5204,9 +5402,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T09:00:00+10:00",
     utcDateTimeISO: "2024-04-12T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5248,9 +5448,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T12:00:00+10:00",
     utcDateTimeISO: "2024-04-13T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5293,9 +5495,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T15:00:00+10:00",
     utcDateTimeISO: "2024-04-13T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5337,9 +5541,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T18:00:00+10:00",
     utcDateTimeISO: "2024-04-13T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5381,9 +5587,11 @@ const chartData = [
     localDateTimeISO: "2024-04-13T21:00:00+10:00",
     utcDateTimeISO: "2024-04-13T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5415,13 +5623,16 @@ const chartData = [
     nextLowTideHeight: 0.2,
     isRising: true,
   },
+  // April 14 (Sun)
   {
     localDateTimeISO: "2024-04-14T00:00:00+10:00",
     utcDateTimeISO: "2024-04-13T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5457,9 +5668,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T03:00:00+10:00",
     utcDateTimeISO: "2024-04-13T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5496,9 +5709,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T06:00:00+10:00",
     utcDateTimeISO: "2024-04-13T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5534,9 +5749,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T09:00:00+10:00",
     utcDateTimeISO: "2024-04-13T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5572,9 +5789,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T12:00:00+10:00",
     utcDateTimeISO: "2024-04-14T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5613,9 +5832,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T15:00:00+10:00",
     utcDateTimeISO: "2024-04-14T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5654,9 +5875,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T18:00:00+10:00",
     utcDateTimeISO: "2024-04-14T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5692,9 +5915,11 @@ const chartData = [
     localDateTimeISO: "2024-04-14T21:00:00+10:00",
     utcDateTimeISO: "2024-04-14T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5726,13 +5951,16 @@ const chartData = [
     nextLowTideHeight: 0.2,
     isRising: true,
   },
+  // April 15 (Mon)
   {
     localDateTimeISO: "2024-04-15T00:00:00+10:00",
     utcDateTimeISO: "2024-04-14T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5768,9 +5996,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T03:00:00+10:00",
     utcDateTimeISO: "2024-04-14T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5806,9 +6036,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T06:00:00+10:00",
     utcDateTimeISO: "2024-04-14T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5844,9 +6076,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T09:00:00+10:00",
     utcDateTimeISO: "2024-04-14T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5882,9 +6116,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T12:00:00+10:00",
     utcDateTimeISO: "2024-04-15T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5920,9 +6156,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T15:00:00+10:00",
     utcDateTimeISO: "2024-04-15T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5958,9 +6196,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T18:00:00+10:00",
     utcDateTimeISO: "2024-04-15T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -5996,9 +6236,11 @@ const chartData = [
     localDateTimeISO: "2024-04-15T21:00:00+10:00",
     utcDateTimeISO: "2024-04-15T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6030,13 +6272,16 @@ const chartData = [
     nextLowTideHeight: 0.2,
     isRising: true,
   },
+  // April 16 (Tue)
   {
     localDateTimeISO: "2024-04-16T00:00:00+10:00",
     utcDateTimeISO: "2024-04-15T14:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6072,9 +6317,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T03:00:00+10:00",
     utcDateTimeISO: "2024-04-15T17:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6116,9 +6363,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T06:00:00+10:00",
     utcDateTimeISO: "2024-04-15T20:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6160,9 +6409,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T09:00:00+10:00",
     utcDateTimeISO: "2024-04-15T23:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6204,9 +6455,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T12:00:00+10:00",
     utcDateTimeISO: "2024-04-16T02:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6248,9 +6501,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T15:00:00+10:00",
     utcDateTimeISO: "2024-04-16T05:00:00Z",
     swellDirection: 227,
-    windDirection: 180,
-    windSpeedKmh: 20,
-    windSpeedKnots: 10,
+    wind: {
+      direction: 180,
+      speedKmh: 20,
+      speedKnots: 10,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6295,9 +6550,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T18:00:00+10:00",
     utcDateTimeISO: "2024-04-16T08:00:00Z",
     swellDirection: 293,
-    windDirection: 330,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 330,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",
@@ -6339,9 +6596,11 @@ const chartData = [
     localDateTimeISO: "2024-04-16T21:00:00+10:00",
     utcDateTimeISO: "2024-04-16T11:00:00Z",
     swellDirection: 335,
-    windDirection: 270,
-    windSpeedKmh: 10,
-    windSpeedKnots: 5,
+    wind: {
+      direction: 270,
+      speedKmh: 10,
+      speedKnots: 5,
+    },
     primary: {
       fullSurfHeightFeet: 4,
       fullSurfHeightFeetLabelBin: "4ft",

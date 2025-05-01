@@ -135,8 +135,8 @@ const SwellChart = ({
             }
             return (
               <SwellAxisTick
-                payload={{ value: data.windDirection }}
-                windSpeed={data.windSpeedKnots || 0}
+                payload={{ value: data.wind.direction }}
+                windSpeed={data.wind.speedKnots || 0}
                 x={x}
                 y={y}
               />
@@ -161,8 +161,8 @@ const SwellChart = ({
                 payload={{
                   value:
                     unitPreferences.windSpeed === "knots"
-                      ? data.windSpeedKnots
-                      : data.windSpeedKmh,
+                      ? data.wind.speedKnots
+                      : data.wind.speedKmh,
                 }}
               />
             );
