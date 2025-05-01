@@ -12,12 +12,6 @@ import TideTooltip from "./TideTooltip";
 import { multiFormat } from "@/lib/time-utils";
 import { dayTicks, processTimeScaleData } from "@/utils/chart-utils";
 
-interface TideDataItem {
-  localDateTimeISO: string;
-  utc: string;
-  height: number;
-}
-
 /**
  * Tide data for the previous tide
  * This needs to be fixed in the future when real data is fetched.
@@ -63,7 +57,7 @@ const processedData = [
     height: heightAtMidnight,
     timestamp: midnightTime,
   },
-  ...tideData.map((item: TideDataItem) => ({
+  ...tideData.map((item) => ({
     ...item,
     timestamp: new Date(item.localDateTimeISO).getTime(),
   })),

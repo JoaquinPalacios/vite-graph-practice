@@ -136,7 +136,7 @@ const SwellChart = ({
             return (
               <SwellAxisTick
                 payload={{ value: data.windDirection }}
-                windSpeed={data.windSpeed_knots || 0}
+                windSpeed={data.windSpeedKnots || 0}
                 x={x}
                 y={y}
               />
@@ -161,8 +161,8 @@ const SwellChart = ({
                 payload={{
                   value:
                     unitPreferences.windSpeed === "knots"
-                      ? data.windSpeed_knots
-                      : data.windSpeed_kmh,
+                      ? data.windSpeedKnots
+                      : data.windSpeedKmh,
                 }}
               />
             );
@@ -190,8 +190,8 @@ const SwellChart = ({
         <Bar
           dataKey={(d) =>
             unitPreferences.waveHeight === "ft"
-              ? d.waveHeight_ft
-              : d.waveHeight_m
+              ? d.primary.fullSurfHeightFeet
+              : d.primary.fullSurfHeightMetres
           }
           fill="#008993"
           unit={unitPreferences.waveHeight}
@@ -203,14 +203,15 @@ const SwellChart = ({
           animationDuration={220}
         >
           <LabelList
-            dataKey="swellDirection"
+            dataKey="primary.direction"
             position="top"
             fill="#008a93"
             content={({ x, y, value, fill, index }) => {
               if (typeof index === "undefined") return null;
               const data = chartData[index];
-              if (data.faceWaveHeight_ft && unitPreferences.waveHeight === "ft")
-                return null;
+
+              // We only display the label if there is no secondary swell
+              if (data.secondary) return null;
 
               return (
                 <SwellLabel
@@ -218,7 +219,7 @@ const SwellChart = ({
                   y={y}
                   value={value}
                   fill={fill}
-                  hasFaceWaveHeight={false}
+                  hasSecondary={false}
                   className="animate-in fade-in-0 duration-1000"
                 />
               );
@@ -228,8 +229,11 @@ const SwellChart = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-              ? d.faceWaveHeight_ft - d.waveHeight_ft
+            d.secondary
+              ? unitPreferences.waveHeight === "ft"
+                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
+                : d.secondary.fullSurfHeightMetres -
+                  d.primary.fullSurfHeightMetres
               : null
           }
           fill="#ffa800"
@@ -243,30 +247,22 @@ const SwellChart = ({
           animationEasing="ease-in-out"
         >
           <LabelList
-            dataKey="secondarySwellDirection"
+            dataKey="secondary.direction"
             position="top"
             fill="#ffa800"
             content={({ x, y, value, fill, index }) => {
               if (typeof index === "undefined") return null;
               const data = chartData[index];
 
-              if (
-                data.faceWaveHeight_ft &&
-                unitPreferences.waveHeight === "ft"
-              ) {
+              if (data.secondary) {
                 return (
                   <RenderCustomizedLabel
                     value={value}
                     x={x}
                     y={y}
                     fill={fill}
-                    hasFaceWaveHeight={
-                      unitPreferences.waveHeight === "ft" &&
-                      data?.faceWaveHeight_ft
-                        ? true
-                        : false
-                    }
-                    primarySwellDirection={data?.swellDirection}
+                    hasSecondary={data?.secondary ? true : false}
+                    primarySwellDirection={data?.primary.direction}
                   />
                 );
               }
@@ -295,8 +291,20 @@ const SwellChart = ({
           }}
           ticks={generateTicks(
             unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft ?? 0))
-              : Math.max(...chartData.map((d) => d.waveHeight_m ?? 0)),
+              ? Math.max(
+                  ...chartData.map((d) =>
+                    d.secondary
+                      ? d.secondary.fullSurfHeightFeet
+                      : d.primary.fullSurfHeightFeet
+                  )
+                )
+              : Math.max(
+                  ...chartData.map((d) =>
+                    d.secondary
+                      ? d.secondary.fullSurfHeightMetres
+                      : d.primary.fullSurfHeightMetres
+                  )
+                ),
             unitPreferences.waveHeight
           )}
         />

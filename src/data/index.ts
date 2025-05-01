@@ -1,15 +1,54 @@
 const chartData = [
   // April 1 (Tue) - Initial SW swell easing, small SE swell starting
   {
+    bulletinDatetimeUtc: "2024-03-31T11:00:00Z", // one time only, this is the previous bulletin datetime from where this data is coming.
     localDateTimeISO: "2024-04-01T00:00:00+11:00",
-    utc: "2024-03-31T13:00:00Z",
-    swellDirection: 222,
+    utcDateTimeISO: "2024-03-31T13:00:00Z",
     windDirection: 150,
-    windSpeed_kmh: 8,
-    windSpeed_knots: 4,
-    waveHeight_ft: 4,
-    faceWaveHeight_ft: 5,
-    waveHeight_m: 1.2,
+    windSpeedKmh: 8,
+    windSpeedKnots: 4,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "3-5ft",
+      fullSurfHeightFeetLabelDescriptive: "Shoulder-Head High",
+      fullSurfHeightMetres: 1.2,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      fullSurfHeightMetresLabelBin: "1m",
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0, // Significant wave height
+        peakPeriod: 12, // Peak period
+        direction: 225, // Direction
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5, // Significant wave height
+        peakPeriod: 8.0, // Peak period
+        direction: 140, // Direction
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2, // Significant wave height
+        peakPeriod: 6.0, // Peak period
+        direction: 90, // Direction
+      },
+    ],
+    swellDirection: 222,
+    waveHeightFeet: 4,
+    faceWaveHeightFeet: 5,
+    waveHeightMetres: 1.2,
     primarySwellHeight: 1.0, // SW swell (Easing)
     primarySwellDirection: 225,
     primarySwellPeriod: 12,
@@ -27,13 +66,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T03:00:00+11:00",
-    utc: "2024-03-31T16:00:00Z",
+    utcDateTimeISO: "2024-03-31T16:00:00Z",
     swellDirection: 97,
     windDirection: 180,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.1,
-    waveHeight_ft: 3.5,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 3.5,
+      fullSurfHeightFeetLabelBin: "2-3ft",
+      fullSurfHeightFeetLabelDescriptive: "Shoulder-Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 6,
+      fullSurfHeightFeetLabelBin: "6ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.8,
+      fullSurfHeightMetresLabelBin: "2m",
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 11.5,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.6,
+        peakPeriod: 8.5,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 1.1,
+    waveHeightFeet: 3.5,
     faceWaveHeight_ft: 7,
     primarySwellHeight: 0.9, // SW swell (Easing)
     primarySwellDirection: 225,
@@ -52,13 +129,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T06:00:00+11:00",
-    utc: "2024-03-31T19:00:00Z",
+    utcDateTimeISO: "2024-03-31T19:00:00Z",
     swellDirection: 167,
     windDirection: 120,
-    windSpeed_kmh: 12,
-    windSpeed_knots: 6,
-    waveHeight_m: 1.1,
-    waveHeight_ft: 3.5,
+    windSpeedKmh: 12,
+    windSpeedKnots: 6,
+    primary: {
+      fullSurfHeightFeet: 3.5,
+      fullSurfHeightFeetLabelBin: "2-3ft",
+      fullSurfHeightFeetLabelDescriptive: "Shoulder-Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 7,
+      fullSurfHeightFeetLabelBin: "7ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.1,
+      fullSurfHeightMetresLabelBin: "2m",
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.8,
+        peakPeriod: 11,
+        direction: 220,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.7,
+        peakPeriod: 6.5,
+        direction: 145,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.3,
+        peakPeriod: 6.5,
+        direction: 95,
+      },
+    ],
+    waveHeightMetres: 1.1,
+    waveHeightFeet: 3.5,
     faceWaveHeight_ft: 7,
     primarySwellHeight: 0.8, // SW swell (Easing)
     primarySwellDirection: 220,
@@ -77,13 +192,52 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T09:00:00+11:00",
-    utc: "2024-03-31T22:00:00Z",
+    utcDateTimeISO: "2024-03-31T22:00:00Z",
     swellDirection: 242,
     windDirection: 260,
-    windSpeed_kmh: 33,
-    windSpeed_knots: 18,
-    waveHeight_m: 1.3,
-    waveHeight_ft: 4,
+    windSpeedKmh: 33,
+    windSpeedKnots: 18,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "3-5ft",
+      fullSurfHeightFeetLabelDescriptive: "Shoulder-Head High",
+      fullSurfHeightMetres: 1.2,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 7,
+      fullSurfHeightFeetLabelBin: "7ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.1,
+      fullSurfHeightMetresLabelBin: "2m",
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 11.5,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.6,
+        peakPeriod: 8.5,
+        direction: 145,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.3,
+    waveHeightFeet: 4,
     faceWaveHeight_ft: 7,
     // ... SE swell becoming primary
     primarySwellHeight: 0.9, // SE swell (Building)
@@ -103,13 +257,56 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T12:00:00+11:00",
-    utc: "2024-04-01T01:00:00Z",
+    utcDateTimeISO: "2024-04-01T01:00:00Z",
     swellDirection: 360,
     windDirection: 290,
-    windSpeed_kmh: 45,
-    windSpeed_knots: 21,
-    waveHeight_m: 1.5,
-    waveHeight_ft: 5,
+    windSpeedKmh: 45,
+    windSpeedKnots: 21,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 1.5,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 8,
     // ... New longer period S swell starts arriving
     primarySwellHeight: 1.1, // SE swell (Peaking)
@@ -132,13 +329,56 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T15:00:00+11:00",
-    utc: "2024-04-01T04:00:00Z",
+    utcDateTimeISO: "2024-04-01T04:00:00Z",
     swellDirection: 301,
     windDirection: 340,
-    windSpeed_kmh: 41,
-    windSpeed_knots: 22,
-    waveHeight_m: 1.7,
-    waveHeight_ft: 5.5,
+    windSpeedKmh: 41,
+    windSpeedKnots: 22,
+    primary: {
+      fullSurfHeightFeet: 7,
+      fullSurfHeightFeetLabelBin: "7ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.1,
+      totalSigHeight: 1.9,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 1.7,
+    waveHeightFeet: 5.5,
     faceWaveHeight_ft: 7,
     // ... S swell building
     primarySwellHeight: 1.0, // SE swell (Easing)
@@ -161,13 +401,57 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T18:00:00+11:00",
-    utc: "2024-04-01T07:00:00Z",
+    utcDateTimeISO: "2024-04-01T07:00:00Z",
     swellDirection: 245,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.8,
-    waveHeight_ft: 6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 1.8,
+    waveHeightFeet: 6,
     faceWaveHeight_ft: 9,
     // ... S swell becomes primary
     primarySwellHeight: 1.1, // S swell (Building)
@@ -188,13 +472,57 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-01T21:00:00+11:00",
-    utc: "2024-04-01T10:00:00Z",
+    utcDateTimeISO: "2024-04-01T10:00:00Z",
     swellDirection: 209,
     windDirection: 320,
-    windSpeed_kmh: 17,
-    windSpeed_knots: 9,
-    waveHeight_m: 1.9,
-    waveHeight_ft: 6,
+    windSpeedKmh: 17,
+    windSpeedKnots: 9,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 1.9,
+    waveHeightFeet: 6,
     faceWaveHeight_ft: 9,
     // ... S swell keeps building
     primarySwellHeight: 1.4, // S swell (Still building)
@@ -216,13 +544,57 @@ const chartData = [
   // April 2 (Wed) - S swell peaks and starts easing, ENE swell builds
   {
     localDateTimeISO: "2024-04-02T00:00:00+11:00",
-    utc: "2024-04-01T13:00:00Z",
+    utcDateTimeISO: "2024-04-01T13:00:00Z",
     swellDirection: 59,
     windDirection: 110,
-    windSpeed_kmh: 14,
-    windSpeed_knots: 7,
-    waveHeight_m: 2,
-    waveHeight_ft: 7,
+    windSpeedKmh: 14,
+    windSpeedKnots: 7,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 2,
+    waveHeightFeet: 7,
     faceWaveHeight_ft: 9,
     // ... S swell peaks
     primarySwellHeight: 1.6, // S swell (Peak)
@@ -245,13 +617,57 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T03:00:00+11:00",
-    utc: "2024-04-01T16:00:00Z",
+    utcDateTimeISO: "2024-04-01T16:00:00Z",
     swellDirection: 261,
     windDirection: 190,
-    windSpeed_kmh: 12,
-    windSpeed_knots: 6,
-    waveHeight_m: 1.9,
-    waveHeight_ft: 6,
+    windSpeedKmh: 12,
+    windSpeedKnots: 6,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 1.9,
+    waveHeightFeet: 6,
     faceWaveHeight_ft: 9,
     // ... S swell peaks, and ENE windswell building
     primarySwellHeight: 1.5, // S swell (Easing)
@@ -274,13 +690,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T06:00:00+11:00",
-    utc: "2024-04-01T19:00:00Z",
+    utcDateTimeISO: "2024-04-01T19:00:00Z",
     swellDirection: 327,
     windDirection: 350,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.6,
-    waveHeight_ft: 5,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.6,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 6,
     // ... S swell easing, and ENE windswell building
     primarySwellHeight: 1.3, // S swell (Easing)
@@ -300,13 +754,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T09:00:00+11:00",
-    utc: "2024-04-01T22:00:00Z",
+    utcDateTimeISO: "2024-04-01T22:00:00Z",
     swellDirection: 292,
     windDirection: 210,
-    windSpeed_kmh: 8,
-    windSpeed_knots: 4,
-    waveHeight_m: 1.5,
-    waveHeight_ft: 5,
+    windSpeedKmh: 8,
+    windSpeedKnots: 4,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.5,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 6,
     // ... ENE swell potentially becoming primary
     primarySwellHeight: 1.1, // S swell (Easing)
@@ -326,13 +818,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T12:00:00+11:00",
-    utc: "2024-04-02T01:00:00Z",
+    utcDateTimeISO: "2024-04-02T01:00:00Z",
     swellDirection: 342,
     windDirection: 20,
-    windSpeed_kmh: 8,
-    windSpeed_knots: 4,
-    waveHeight_m: 1.4,
-    waveHeight_ft: 4,
+    windSpeedKmh: 8,
+    windSpeedKnots: 4,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.4,
+    waveHeightFeet: 4,
     // ... ENE is primary
     primarySwellHeight: 1.1, // ENE windswell (Peaking/Easing)
     primarySwellDirection: 75,
@@ -351,13 +872,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T15:00:00+11:00",
-    utc: "2024-04-02T04:00:00Z",
+    utcDateTimeISO: "2024-04-02T04:00:00Z",
     swellDirection: 137,
     windDirection: 220,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.3,
-    waveHeight_ft: 4,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.3,
+    waveHeightFeet: 4,
     // ... ENE windswell (Easing)
     primarySwellHeight: 1.0, // ENE windswell (Easing)
     primarySwellDirection: 80,
@@ -376,13 +926,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T18:00:00+11:00",
-    utc: "2024-04-02T07:00:00Z",
+    utcDateTimeISO: "2024-04-02T07:00:00Z",
     swellDirection: 120,
     windDirection: 170,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.2,
-    waveHeight_ft: 4,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.2,
+    waveHeightFeet: 4,
     // ... S swell regains primary briefly as ENE fades faster
     primarySwellHeight: 0.7, // S swell (Still easing)
     primarySwellDirection: 190,
@@ -399,13 +978,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-02T21:00:00+11:00",
-    utc: "2024-04-02T10:00:00Z",
+    utcDateTimeISO: "2024-04-02T10:00:00Z",
     swellDirection: 138,
     windDirection: 190,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.0,
-    waveHeight_ft: 6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 2.0,
+    waveHeightFeet: 6,
     faceWaveHeight_ft: 7,
     // ... ENE fading more
     primarySwellHeight: 0.6, // S swell (Easing)
@@ -425,13 +1042,50 @@ const chartData = [
   // April 3 (Thu) - S swell fades, SE becomes dominant, new Strong S swell approaches late
   {
     localDateTimeISO: "2024-04-03T00:00:00+11:00",
-    utc: "2024-04-02T13:00:00Z",
+    utcDateTimeISO: "2024-04-02T13:00:00Z",
     swellDirection: 146,
     windDirection: 360,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.0,
-    waveHeight_ft: 3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 1.0,
+    waveHeightFeet: 3,
     faceWaveHeight_ft: 4,
     // ... SE swell takes over
     primarySwellHeight: 0.6, // Background SE (now primary)
@@ -451,13 +1105,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T03:00:00+11:00",
-    utc: "2024-04-02T16:00:00Z",
+    utcDateTimeISO: "2024-04-02T16:00:00Z",
     swellDirection: 349,
     windDirection: 50,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.9,
-    waveHeight_ft: 3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 0.9,
+    waveHeightFeet: 3,
     faceWaveHeight_ft: 4,
     // ... SE swell (Holding/slight pulse)
     primarySwellHeight: 0.7, // SE swell (Holding/slight pulse)
@@ -478,13 +1170,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T06:00:00+11:00",
-    utc: "2024-04-02T19:00:00Z",
+    utcDateTimeISO: "2024-04-02T19:00:00Z",
     swellDirection: 243,
     windDirection: 180,
-    windSpeed_kmh: 30,
-    windSpeed_knots: 16,
-    waveHeight_m: 0.8,
-    waveHeight_ft: 3,
+    windSpeedKmh: 30,
+    windSpeedKnots: 16,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 0.8,
+    waveHeightFeet: 3,
     // ... Conditions relatively small before new swell
     primarySwellHeight: 0.6, // SE swell (Easing)
     primarySwellDirection: 155,
@@ -503,13 +1233,56 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T09:00:00+11:00",
-    utc: "2024-04-02T22:00:00Z",
+    utcDateTimeISO: "2024-04-02T22:00:00Z",
     swellDirection: 89,
     windDirection: 150,
-    windSpeed_kmh: 47,
-    windSpeed_knots: 25,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2,
+    windSpeedKmh: 47,
+    windSpeedKnots: 25,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+      {
+        trainDelta: 4,
+        sigHeight: 0.4,
+        peakPeriod: 7.0,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2,
     // ... Start seeing signs of new powerful S groundswell
     primarySwellHeight: 0.5, // SE swell (Easing)
     primarySwellDirection: 155,
@@ -531,13 +1304,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T12:00:00+11:00",
-    utc: "2024-04-03T01:00:00Z",
+    utcDateTimeISO: "2024-04-03T01:00:00Z",
     swellDirection: 137,
     windDirection: 200,
-    windSpeed_kmh: 80,
-    windSpeed_knots: 43,
-    waveHeight_m: 1.0,
-    waveHeight_ft: 3,
+    windSpeedKmh: 80,
+    windSpeedKnots: 43,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.0,
+    waveHeightFeet: 3,
     faceWaveHeight_ft: 4,
     // ... New S swell building rapidly
     primarySwellHeight: 0.8, // New S swell (Building)
@@ -555,13 +1366,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T15:00:00+11:00",
-    utc: "2024-04-03T04:00:00Z",
+    utcDateTimeISO: "2024-04-03T04:00:00Z",
     swellDirection: 224,
     windDirection: 170,
-    windSpeed_kmh: 60,
-    windSpeed_knots: 32,
-    waveHeight_m: 1.6,
-    waveHeight_ft: 5,
+    windSpeedKmh: 60,
+    windSpeedKnots: 32,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.6,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 7,
     // ... New S swell clearly primary
     primarySwellHeight: 1.5, // New S swell (Building strongly)
@@ -579,13 +1428,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T18:00:00+11:00",
-    utc: "2024-04-03T07:00:00Z",
+    utcDateTimeISO: "2024-04-03T07:00:00Z",
     swellDirection: 138,
     windDirection: 230,
-    windSpeed_kmh: 29,
-    windSpeed_knots: 15,
-    waveHeight_m: 2.3,
-    waveHeight_ft: 7,
+    windSpeedKmh: 29,
+    windSpeedKnots: 15,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 2.3,
+    waveHeightFeet: 7,
     faceWaveHeight_ft: 10,
     // ... New S swell continues to build
     primarySwellHeight: 2.2, // New S swell (Building)
@@ -601,17 +1488,53 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-03T21:00:00+11:00",
-    utc: "2024-04-03T10:00:00Z",
+    utcDateTimeISO: "2024-04-03T10:00:00Z",
     swellDirection: 317,
     windDirection: 290,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.6,
-    waveHeight_ft: 8,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 2.6,
+    waveHeightFeet: 8,
     faceWaveHeight_ft: 11,
     // ... Approaching peak of S swell
-    primarySwellHeight: 2.8, // New S swell (Near peak)
-    primarySwellDirection: 180,
     primarySwellPeriod: 15,
     secondarySwellHeight: 0.4, // Background windswell NNE/E
     secondarySwellDirection: 40,
@@ -624,13 +1547,51 @@ const chartData = [
   // April 4 (Fri) - Peak S swell, then slowly easing. Secondary swells minor.
   {
     localDateTimeISO: "2024-04-04T00:00:00+11:00",
-    utc: "2024-04-03T13:00:00Z",
+    utcDateTimeISO: "2024-04-03T13:00:00Z",
     swellDirection: 215,
     windDirection: 250,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 3.1,
-    waveHeight_ft: 10,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 3.1,
+    waveHeightFeet: 10,
     faceWaveHeight_ft: 12,
     // ... Peak S swell
     primarySwellHeight: 3.0, // S swell (Peak)
@@ -651,13 +1612,50 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T03:00:00+11:00",
-    utc: "2024-04-03T16:00:00Z",
+    utcDateTimeISO: "2024-04-03T16:00:00Z",
     swellDirection: 75,
     windDirection: 130,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 3.0,
-    waveHeight_ft: 9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 3.0,
+    waveHeightFeet: 9,
     faceWaveHeight_ft: 12,
     // ... Start easing S swell
     primarySwellHeight: 2.9, // S swell (Easing)
@@ -677,13 +1675,50 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T06:00:00+11:00",
-    utc: "2024-04-03T19:00:00Z",
+    utcDateTimeISO: "2024-04-03T19:00:00Z",
     swellDirection: 303,
     windDirection: 60,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.8,
-    waveHeight_ft: 9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 2.8,
+    waveHeightFeet: 9,
     faceWaveHeight_ft: 11,
     // ... S swell continues to ease
     primarySwellHeight: 2.7, // S swell (Easing)
@@ -703,13 +1738,50 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T09:00:00+11:00",
-    utc: "2024-04-03T22:00:00Z",
+    utcDateTimeISO: "2024-04-03T22:00:00Z",
     swellDirection: 122,
     windDirection: 180,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.5,
-    waveHeight_ft: 8,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 2.5,
+    waveHeightFeet: 8,
     faceWaveHeight_ft: 11,
     // ... S swell continues to ease
     primarySwellHeight: 2.4, // S swell (Easing)
@@ -729,13 +1801,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T12:00:00+11:00",
-    utc: "2024-04-04T01:00:00Z",
+    utcDateTimeISO: "2024-04-04T01:00:00Z",
     swellDirection: 315,
     windDirection: 240,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.2,
-    waveHeight_ft: 7,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 2.2,
+    waveHeightFeet: 7,
     faceWaveHeight_ft: 11,
     // ... S swell continues to ease
     primarySwellHeight: 2.1, // S swell (Easing)
@@ -755,13 +1865,50 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T15:00:00+11:00",
-    utc: "2024-04-04T04:00:00Z",
+    utcDateTimeISO: "2024-04-04T04:00:00Z",
     swellDirection: 54,
     windDirection: 20,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.9,
-    waveHeight_ft: 6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+    waveHeightMetres: 1.9,
+    waveHeightFeet: 6,
     faceWaveHeight_ft: 9,
     // ... S swell continues to ease
     primarySwellHeight: 1.8, // S swell (Easing)
@@ -781,13 +1928,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T18:00:00+11:00",
-    utc: "2024-04-04T07:00:00Z",
+    utcDateTimeISO: "2024-04-04T07:00:00Z",
     swellDirection: 165,
     windDirection: 220,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.7,
-    waveHeight_ft: 5,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 225,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 140,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.0,
+        direction: 90,
+      },
+    ],
+
+    waveHeightMetres: 1.7,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 9,
     // ... S swell continues to ease
     primarySwellHeight: 1.6, // S swell (Easing)
@@ -805,13 +1990,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-04T21:00:00+11:00",
-    utc: "2024-04-04T10:00:00Z",
+    utcDateTimeISO: "2024-04-04T10:00:00Z",
     swellDirection: 293,
     windDirection: 310,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.5,
-    waveHeight_ft: 5,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.5,
+        peakPeriod: 8.0,
+        direction: 155,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.3,
+        peakPeriod: 6.0,
+        direction: 70,
+      },
+    ],
+
+    waveHeightMetres: 1.5,
+    waveHeightFeet: 5,
     faceWaveHeight_ft: 9,
     // ... S swell continues to ease
     primarySwellHeight: 1.4, // S swell (Easing)
@@ -829,13 +2052,51 @@ const chartData = [
   // April 5 (Sat) - S swell continues easing, becoming secondary. Mix of smaller ENE/SE.
   {
     localDateTimeISO: "2024-04-05T00:00:00+11:00",
-    utc: "2024-04-04T13:00:00Z",
+    utcDateTimeISO: "2024-04-04T13:00:00Z",
     swellDirection: 247,
     windDirection: 190,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.3,
-    waveHeight_ft: 4.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 5,
+      fullSurfHeightFeetLabelBin: "5ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.5,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.4,
+        peakPeriod: 6.5,
+        direction: 70,
+      },
+    ],
+
+    waveHeightMetres: 1.3,
+    waveHeightFeet: 4.3,
     faceWaveHeight_ft: 6,
     // S swell (Still primary but easing)
     primarySwellHeight: 1.2, // S swell (Still primary but easing)
@@ -857,13 +2118,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T03:00:00+11:00",
-    utc: "2024-04-04T16:00:00Z",
+    utcDateTimeISO: "2024-04-04T16:00:00Z",
     swellDirection: 325,
     windDirection: 60,
-    windSpeed_kmh: 24,
-    windSpeed_knots: 12,
-    waveHeight_m: 1.1,
-    waveHeight_ft: 3.5,
+    windSpeedKmh: 24,
+    windSpeedKnots: 12,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.4,
+        peakPeriod: 6.5,
+        direction: 70,
+      },
+    ],
+
+    waveHeightMetres: 1.1,
+    waveHeightFeet: 3.5,
     faceWaveHeight_ft: 6,
     // S swell (Easing)
     primarySwellHeight: 1.0, // S swell (Easing)
@@ -883,13 +2182,50 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T06:00:00+11:00",
-    utc: "2024-04-04T19:00:00Z",
+    utcDateTimeISO: "2024-04-04T19:00:00Z",
     swellDirection: 181,
     windDirection: 30,
-    windSpeed_kmh: 28,
-    windSpeed_knots: 14,
-    waveHeight_m: 1.0,
-    waveHeight_ft: 3.3,
+    windSpeedKmh: 28,
+    windSpeedKnots: 14,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "South Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 1.0,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.4,
+        peakPeriod: 6.5,
+        direction: 70,
+      },
+    ],
+    waveHeightMetres: 1.0,
+    waveHeightFeet: 3.3,
     faceWaveHeight_ft: 4,
     // S swell (Easing)
     primarySwellHeight: 0.9, // S swell (Easing)
@@ -909,13 +2245,51 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T09:00:00+11:00",
-    utc: "2024-04-04T22:00:00Z",
+    utcDateTimeISO: "2024-04-04T22:00:00Z",
     swellDirection: 98,
     windDirection: 160,
-    windSpeed_kmh: 32,
-    windSpeed_knots: 16,
-    waveHeight_m: 0.9,
-    waveHeight_ft: 3,
+    windSpeedKmh: 32,
+    windSpeedKnots: 16,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    secondary: {
+      fullSurfHeightFeet: 8,
+      fullSurfHeightFeetLabelBin: "8ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 2.4,
+      totalSigHeight: 1.9,
+      direction: 335,
+      directionLabel: "North Facing Beaches",
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 0.9,
+    waveHeightFeet: 3,
     // ENE likely becoming primary
     primarySwellHeight: 0.7, // ENE (Holding/Easing slightly)
     primarySwellDirection: 80,
@@ -934,13 +2308,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T12:00:00+11:00",
-    utc: "2024-04-05T01:00:00Z",
+    utcDateTimeISO: "2024-04-05T01:00:00Z",
     swellDirection: 288,
     windDirection: 300,
-    windSpeed_kmh: 36,
-    windSpeed_knots: 18,
-    waveHeight_m: 0.8,
-    waveHeight_ft: 2.6,
+    windSpeedKmh: 36,
+    windSpeedKnots: 18,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 0.8,
+    waveHeightFeet: 2.6,
     // ENE primary
     primarySwellHeight: 0.7, // ENE (Easing)
     primarySwellDirection: 85,
@@ -959,13 +2362,41 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T15:00:00+11:00",
-    utc: "2024-04-05T04:00:00Z",
+    utcDateTimeISO: "2024-04-05T04:00:00Z",
     swellDirection: 149,
     windDirection: 210,
-    windSpeed_kmh: 28,
-    windSpeed_knots: 14,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 28,
+    windSpeedKnots: 14,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // ENE primary
     primarySwellHeight: 0.6, // ENE (Easing)
     primarySwellDirection: 90,
@@ -982,13 +2413,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T18:00:00+11:00",
-    utc: "2024-04-05T07:00:00Z",
+    utcDateTimeISO: "2024-04-05T07:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 2,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 2,
     // ENE primary
     primarySwellHeight: 0.5, // ENE (Fading)
     primarySwellDirection: 90,
@@ -1005,13 +2465,41 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-05T21:00:00+11:00",
-    utc: "2024-04-05T10:00:00Z",
+    utcDateTimeISO: "2024-04-05T10:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // SE might be primary
     primarySwellHeight: 0.4, // Minor SE
     primarySwellDirection: 155,
@@ -1027,13 +2515,42 @@ const chartData = [
   // April 6 (Sun) - Generally small, mixed swells
   {
     localDateTimeISO: "2024-04-06T00:00:00+11:00",
-    utc: "2024-04-05T13:00:00Z",
+    utcDateTimeISO: "2024-04-05T13:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Minor SE (Holding/Slight build?)
     primarySwellHeight: 0.5, // Minor SE (Holding/Slight build?)
     primarySwellDirection: 155,
@@ -1052,13 +2569,41 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T03:00:00+11:00",
-    utc: "2024-04-05T16:00:00Z",
+    utcDateTimeISO: "2024-04-05T16:00:00Z",
     swellDirection: 197,
     windDirection: 240,
-    windSpeed_kmh: 12,
-    windSpeed_knots: 6,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 12,
+    windSpeedKnots: 6,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Minor SE (Easing after high)
     primarySwellHeight: 0.5, // Minor SE (Easing after high)
     primarySwellDirection: 160,
@@ -1078,13 +2623,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T06:00:00+11:00",
-    utc: "2024-04-05T19:00:00Z",
+    utcDateTimeISO: "2024-04-05T19:00:00Z",
     swellDirection: 177,
     windDirection: 160,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Minor SE (Easing)
     primarySwellHeight: 0.4, // Minor SE (Easing)
     primarySwellDirection: 160,
@@ -1103,13 +2677,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T09:00:00+11:00",
-    utc: "2024-04-05T22:00:00Z",
+    utcDateTimeISO: "2024-04-05T22:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Minor SE (Bottoming out)
     primarySwellHeight: 0.4, // Minor SE (Bottoming out)
     primarySwellDirection: 165,
@@ -1125,13 +2721,41 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T12:00:00+11:00",
-    utc: "2024-04-06T01:00:00Z",
+    utcDateTimeISO: "2024-04-06T01:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.2,
+        peakPeriod: 6.5,
+        direction: 100,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Slight pulse in background E?
     primarySwellHeight: 0.4, // Small background E
     primarySwellDirection: 100,
@@ -1150,13 +2774,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T15:00:00+11:00",
-    utc: "2024-04-06T04:00:00Z",
+    utcDateTimeISO: "2024-04-06T04:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Small background E (Peaking)
     primarySwellHeight: 0.5, // Small background E (Peaking)
     primarySwellDirection: 100,
@@ -1172,13 +2818,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T18:00:00+11:00",
-    utc: "2024-04-06T07:00:00Z",
+    utcDateTimeISO: "2024-04-06T07:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small background E (Easing)
     primarySwellHeight: 0.5, // Small background E (Easing)
     primarySwellDirection: 105,
@@ -1194,13 +2862,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-06T21:00:00+11:00",
-    utc: "2024-04-06T10:00:00Z",
+    utcDateTimeISO: "2024-04-06T10:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small background E (Easing)
     primarySwellHeight: 0.4, // Small background E (Easing)
     primarySwellDirection: 110,
@@ -1217,13 +2907,36 @@ const chartData = [
   // April 7 (Mon) - Daylight savings starts at 3am - Very small swells, potentially new small E swell build later
   {
     localDateTimeISO: "2024-04-07T00:00:00+11:00",
-    utc: "2024-04-06T13:00:00Z",
+    utcDateTimeISO: "2024-04-06T13:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small background E
     primarySwellHeight: 0.3, // Small background E
     primarySwellDirection: 110,
@@ -1239,13 +2952,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T03:00:00+10:00",
-    utc: "2024-04-06T17:00:00Z",
+    utcDateTimeISO: "2024-04-06T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small background E
     primarySwellHeight: 0.3, // Small background E
     primarySwellDirection: 115,
@@ -1261,13 +2996,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T06:00:00+10:00",
-    utc: "2024-04-06T20:00:00Z",
+    utcDateTimeISO: "2024-04-06T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small background E building slightly?
     primarySwellHeight: 0.4, // Small background E building slightly?
     primarySwellDirection: 110,
@@ -1283,13 +3041,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T09:00:00+10:00",
-    utc: "2024-04-06T23:00:00Z",
+    utcDateTimeISO: "2024-04-06T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small background E holding
     primarySwellHeight: 0.4, // Small background E holding
     primarySwellDirection: 105,
@@ -1305,13 +3085,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T12:00:00+10:00",
-    utc: "2024-04-07T02:00:00Z",
+    utcDateTimeISO: "2024-04-07T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E swell peaks?
     primarySwellHeight: 0.5, // Small background E peaking
     primarySwellDirection: 100,
@@ -1327,13 +3130,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T15:00:00+10:00",
-    utc: "2024-04-07T05:00:00Z",
+    utcDateTimeISO: "2024-04-07T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small background E easing
     primarySwellHeight: 0.4, // Small background E easing
     primarySwellDirection: 105,
@@ -1349,13 +3174,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T18:00:00+10:00",
-    utc: "2024-04-07T08:00:00Z",
+    utcDateTimeISO: "2024-04-07T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.6,
     // Small background E easing
     primarySwellHeight: 0.3, // Small background E easing
     primarySwellDirection: 110,
@@ -1372,13 +3220,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-07T21:00:00+10:00",
-    utc: "2024-04-07T11:00:00Z",
+    utcDateTimeISO: "2024-04-07T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small background E steady
     primarySwellHeight: 0.3, // Small background E steady
     primarySwellDirection: 110,
@@ -1395,13 +3266,35 @@ const chartData = [
   // April 8 (Tue) - Continued small, slight increase mid-day?
   {
     localDateTimeISO: "2024-04-08T00:00:00+10:00",
-    utc: "2024-04-07T14:00:00Z",
+    utcDateTimeISO: "2024-04-07T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E
     primarySwellHeight: 0.4, // Small E
     primarySwellDirection: 110,
@@ -1417,13 +3310,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T03:00:00+10:00",
-    utc: "2024-04-07T17:00:00Z",
+    utcDateTimeISO: "2024-04-07T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E holding
     primarySwellHeight: 0.4, // Small E holding
     primarySwellDirection: 110,
@@ -1439,13 +3354,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T06:00:00+10:00",
-    utc: "2024-04-07T20:00:00Z",
+    utcDateTimeISO: "2024-04-07T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Small E peaking
     primarySwellHeight: 0.6, // Small E peaking
     primarySwellDirection: 105,
@@ -1461,13 +3398,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T09:00:00+10:00",
-    utc: "2024-04-07T23:00:00Z",
+    utcDateTimeISO: "2024-04-07T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Small E holding/easing
     primarySwellHeight: 0.6, // Small E holding/easing
     primarySwellDirection: 100,
@@ -1484,13 +3443,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T12:00:00+10:00",
-    utc: "2024-04-08T02:00:00Z",
+    utcDateTimeISO: "2024-04-08T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E easing
     primarySwellHeight: 0.5, // Small E easing
     primarySwellDirection: 95,
@@ -1506,13 +3487,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T15:00:00+10:00",
-    utc: "2024-04-08T05:00:00Z",
+    utcDateTimeISO: "2024-04-08T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E steady
     primarySwellHeight: 0.5, // Small E steady
     primarySwellDirection: 100,
@@ -1528,13 +3531,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T18:00:00+10:00",
-    utc: "2024-04-08T08:00:00Z",
+    utcDateTimeISO: "2024-04-08T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E easing
     primarySwellHeight: 0.4, // Small E easing
     primarySwellDirection: 105,
@@ -1550,13 +3575,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-08T21:00:00+10:00",
-    utc: "2024-04-08T11:00:00Z",
+    utcDateTimeISO: "2024-04-08T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.4, // Small E steady
     primarySwellDirection: 110,
@@ -1573,13 +3620,35 @@ const chartData = [
   // April 9 (Tue) - Continued small E swell, minor background SE
   {
     localDateTimeISO: "2024-04-09T00:00:00+10:00",
-    utc: "2024-04-08T14:00:00Z",
+    utcDateTimeISO: "2024-04-08T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.4, // Small E steady
     primarySwellDirection: 110,
@@ -1595,13 +3664,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T03:00:00+10:00",
-    utc: "2024-04-08T17:00:00Z",
+    utcDateTimeISO: "2024-04-08T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.4, // Small E steady
     primarySwellDirection: 115,
@@ -1617,13 +3708,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T06:00:00+10:00",
-    utc: "2024-04-08T20:00:00Z",
+    utcDateTimeISO: "2024-04-08T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.6,
     // Small E easing
     primarySwellHeight: 0.3, // Small E easing
     primarySwellDirection: 110,
@@ -1639,13 +3752,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T09:00:00+10:00",
-    utc: "2024-04-08T23:00:00Z",
+    utcDateTimeISO: "2024-04-08T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1661,13 +3796,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T12:00:00+10:00",
-    utc: "2024-04-09T02:00:00Z",
+    utcDateTimeISO: "2024-04-09T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E pulse?
     primarySwellHeight: 0.4, // Small E pulse?
     primarySwellDirection: 110,
@@ -1683,13 +3840,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T15:00:00+10:00",
-    utc: "2024-04-09T05:00:00Z",
+    utcDateTimeISO: "2024-04-09T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E holding
     primarySwellHeight: 0.4, // Small E holding
     primarySwellDirection: 105,
@@ -1705,13 +3884,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T18:00:00+10:00",
-    utc: "2024-04-09T08:00:00Z",
+    utcDateTimeISO: "2024-04-09T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E easing
     primarySwellHeight: 0.3, // Small E easing
     primarySwellDirection: 110,
@@ -1727,13 +3929,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-09T21:00:00+10:00",
-    utc: "2024-04-09T08:00:00Z",
+    utcDateTimeISO: "2024-04-09T08:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1750,13 +3974,35 @@ const chartData = [
   // April 10 (Wed) - Continued very small E swell, minor background SE
   {
     localDateTimeISO: "2024-04-10T00:00:00+10:00",
-    utc: "2024-04-09T14:00:00Z",
+    utcDateTimeISO: "2024-04-09T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1772,13 +4018,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T03:00:00+10:00",
-    utc: "2024-04-09T17:00:00Z",
+    utcDateTimeISO: "2024-04-09T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1794,13 +4062,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T06:00:00+10:00",
-    utc: "2024-04-09T20:00:00Z",
+    utcDateTimeISO: "2024-04-09T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1816,13 +4106,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T09:00:00+10:00",
-    utc: "2024-04-09T23:00:00Z",
+    utcDateTimeISO: "2024-04-09T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1838,13 +4150,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T12:00:00+10:00",
-    utc: "2024-04-10T02:00:00Z",
+    utcDateTimeISO: "2024-04-10T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.4,
-    waveHeight_ft: 4.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.4,
+    waveHeightFeet: 4.6,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1860,13 +4194,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T15:00:00+10:00",
-    utc: "2024-04-10T05:00:00Z",
+    utcDateTimeISO: "2024-04-10T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1882,13 +4238,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T18:00:00+10:00",
-    utc: "2024-04-10T08:00:00Z",
+    utcDateTimeISO: "2024-04-10T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1904,13 +4282,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-10T21:00:00+10:00",
-    utc: "2024-04-10T11:00:00Z",
+    utcDateTimeISO: "2024-04-10T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1927,14 +4321,37 @@ const chartData = [
   // April 11 (Thu) - Small E swell, minor background SE. From late afternoon on, small southerly swell starts to build.
   {
     localDateTimeISO: "2024-04-11T00:00:00+10:00",
-    utc: "2024-04-10T14:00:00Z",
+    utcDateTimeISO: "2024-04-10T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
     // Small E steady
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
+
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
     primarySwellPeriod: 5,
@@ -1949,13 +4366,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T03:00:00+10:00",
-    utc: "2024-04-10T17:00:00Z",
+    utcDateTimeISO: "2024-04-10T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1971,13 +4410,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T06:00:00+10:00",
-    utc: "2024-04-10T20:00:00Z",
+    utcDateTimeISO: "2024-04-10T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4,
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.4,
+    waveHeightFeet: 1.3,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -1993,13 +4454,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T09:00:00+10:00",
-    utc: "2024-04-10T23:00:00Z",
+    utcDateTimeISO: "2024-04-10T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2015,13 +4498,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T12:00:00+10:00",
-    utc: "2024-04-11T02:00:00Z",
+    utcDateTimeISO: "2024-04-11T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5,
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.5,
+    waveHeightFeet: 1.6,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2037,13 +4542,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T15:00:00+10:00",
-    utc: "2024-04-11T05:00:00Z",
+    utcDateTimeISO: "2024-04-11T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E steady
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2059,13 +4586,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T18:00:00+10:00",
-    utc: "2024-04-11T08:00:00Z",
+    utcDateTimeISO: "2024-04-11T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6,
-    waveHeight_ft: 1.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.6,
+    waveHeightFeet: 1.9,
     // Small E steady. From late afternoon on, small southerly swell starts to build.
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2084,13 +4633,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-11T21:00:00+10:00",
-    utc: "2024-04-11T11:00:00Z",
+    utcDateTimeISO: "2024-04-11T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Small E steady. From late afternoon on, small southerly swell starts to build.
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2110,13 +4681,35 @@ const chartData = [
   // April 12 (Fri) - Southerly swell starts to build. and becomes dominant.
   {
     localDateTimeISO: "2024-04-12T00:00:00+10:00",
-    utc: "2024-04-11T14:00:00Z",
+    utcDateTimeISO: "2024-04-11T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7,
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
     primarySwellPeriod: 5,
@@ -2134,13 +4727,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T03:00:00+10:00",
-    utc: "2024-04-11T17:00:00Z",
+    utcDateTimeISO: "2024-04-11T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.9,
-    waveHeight_ft: 2.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 0.9,
+    waveHeightFeet: 2.9,
     // Small E steady. Southerly swell starts to build.
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2159,13 +4774,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T06:00:00+10:00",
-    utc: "2024-04-11T20:00:00Z",
+    utcDateTimeISO: "2024-04-11T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.2,
-    waveHeight_ft: 3.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.2,
+    waveHeightFeet: 3.9,
     // Southerly swell starts to build.
     primarySwellHeight: 1.0, // Southerly become primary
     primarySwellDirection: 180,
@@ -2184,13 +4821,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T09:00:00+10:00",
-    utc: "2024-04-11T23:00:00Z",
+    utcDateTimeISO: "2024-04-11T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.5,
-    waveHeight_ft: 4.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.5,
+    waveHeightFeet: 4.9,
     // Southerly swell starts to build.
     primarySwellHeight: 1.0, // Southerly become primary
     primarySwellDirection: 180,
@@ -2209,13 +4868,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T12:00:00+10:00",
-    utc: "2024-04-12T02:00:00Z",
+    utcDateTimeISO: "2024-04-12T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.4,
-    waveHeight_ft: 4.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.4,
+    waveHeightFeet: 4.6,
     // Southerly swell starts to build.
     primarySwellHeight: 1.0, // Southerly become primary
     primarySwellDirection: 180,
@@ -2231,13 +4912,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T15:00:00+10:00",
-    utc: "2024-04-12T05:00:00Z",
+    utcDateTimeISO: "2024-04-12T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.8,
-    waveHeight_ft: 5.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.8,
+    waveHeightFeet: 5.9,
     // Southerly swell starts to build.
     primarySwellHeight: 1.6, // Southerly become primary
     primarySwellDirection: 180,
@@ -2253,13 +4956,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T18:00:00+10:00",
-    utc: "2024-04-12T08:00:00Z",
+    utcDateTimeISO: "2024-04-12T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.0,
-    waveHeight_ft: 6.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 2.0,
+    waveHeightFeet: 6.6,
     // Southerly close to reach peak.
     primarySwellHeight: 1.8, // Southerly become primary
     primarySwellDirection: 180,
@@ -2275,13 +5000,41 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-12T21:00:00+10:00",
-    utc: "2024-04-12T11:00:00Z",
+    utcDateTimeISO: "2024-04-12T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.3,
-    waveHeight_ft: 7.5,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.1,
+        peakPeriod: 8.86,
+        direction: 218,
+      },
+    ],
+    waveHeightMetres: 2.3,
+    waveHeightFeet: 7.5,
     // Southerly close to reach peak.
     primarySwellHeight: 1.8, // Southerly become primary
     primarySwellDirection: 180,
@@ -2301,13 +5054,41 @@ const chartData = [
   // April 13 (Sat) - Small E/SE/SSE mix
   {
     localDateTimeISO: "2024-04-13T00:00:00+10:00",
-    utc: "2024-04-12T14:00:00Z",
+    utcDateTimeISO: "2024-04-12T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 2.0,
-    waveHeight_ft: 6.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.1,
+        peakPeriod: 8.86,
+        direction: 218,
+      },
+    ],
+    waveHeightMetres: 2.0,
+    waveHeightFeet: 6.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E steady
     primarySwellDirection: 115,
@@ -2326,13 +5107,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T03:00:00+10:00",
-    utc: "2024-04-12T17:00:00Z",
+    utcDateTimeISO: "2024-04-12T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 2.0,
-    waveHeight_ft: 6.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 2.0,
+    waveHeightFeet: 6.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2348,13 +5151,42 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T06:00:00+10:00",
-    utc: "2024-04-12T20:00:00Z",
+    utcDateTimeISO: "2024-04-12T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.7,
-    waveHeight_ft: 5.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+      {
+        trainDelta: 3,
+        sigHeight: 0.1,
+        peakPeriod: 8.86,
+        direction: 218,
+      },
+    ],
+
+    waveHeightMetres: 1.7,
+    waveHeightFeet: 5.6,
     // Small E pulse
     primarySwellHeight: 0.4, // Small E pulse
     primarySwellDirection: 105,
@@ -2370,13 +5202,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T09:00:00+10:00",
-    utc: "2024-04-12T23:00:00Z",
+    utcDateTimeISO: "2024-04-12T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.5,
-    waveHeight_ft: 4.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.5,
+    waveHeightFeet: 4.9,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2392,13 +5246,36 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T12:00:00+10:00",
-    utc: "2024-04-13T02:00:00Z",
+    utcDateTimeISO: "2024-04-13T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.4,
-    waveHeight_ft: 4.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+
+    waveHeightMetres: 1.4,
+    waveHeightFeet: 4.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2414,13 +5291,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T15:00:00+10:00",
-    utc: "2024-04-13T05:00:00Z",
+    utcDateTimeISO: "2024-04-13T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.4,
-    waveHeight_ft: 4.6,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.4,
+    waveHeightFeet: 4.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2436,13 +5335,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T18:00:00+10:00",
-    utc: "2024-04-13T08:00:00Z",
+    utcDateTimeISO: "2024-04-13T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.2,
-    waveHeight_ft: 3.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.4,
+        peakPeriod: 8.0,
+        direction: 160,
+      },
+    ],
+    waveHeightMetres: 1.2,
+    waveHeightFeet: 3.9,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2458,13 +5379,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-13T21:00:00+10:00",
-    utc: "2024-04-13T11:00:00Z",
+    utcDateTimeISO: "2024-04-13T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.1,
-    waveHeight_ft: 3.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.1,
+    waveHeightFeet: 3.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2480,13 +5417,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T00:00:00+10:00",
-    utc: "2024-04-13T14:00:00Z",
+    utcDateTimeISO: "2024-04-13T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.2,
-    waveHeight_ft: 3.9,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.2,
+    waveHeightFeet: 3.9,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2502,13 +5455,30 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T03:00:00+10:00",
-    utc: "2024-04-13T17:00:00Z",
+    utcDateTimeISO: "2024-04-13T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.2,
-    waveHeight_ft: 3.9,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+
+    waveHeightMetres: 1.2,
+    waveHeightFeet: 3.9,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2524,13 +5494,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T06:00:00+10:00",
-    utc: "2024-04-13T20:00:00Z",
+    utcDateTimeISO: "2024-04-13T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.0,
-    waveHeight_ft: 3.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.0,
+    waveHeightFeet: 3.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2546,13 +5532,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T09:00:00+10:00",
-    utc: "2024-04-13T23:00:00Z",
+    utcDateTimeISO: "2024-04-13T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.9,
-    waveHeight_ft: 3.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.9,
+    waveHeightFeet: 3.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2568,13 +5570,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T12:00:00+10:00",
-    utc: "2024-04-14T02:00:00Z",
+    utcDateTimeISO: "2024-04-14T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.8, // Small E/SE/SSE mix
-    waveHeight_ft: 2.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.8, // Small E/SE/SSE mix
+    waveHeightFeet: 2.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2593,13 +5611,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T15:00:00+10:00",
-    utc: "2024-04-14T05:00:00Z",
+    utcDateTimeISO: "2024-04-14T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.7, // Small E/SE/SSE mix
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.7, // Small E/SE/SSE mix
+    waveHeightFeet: 2.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2618,13 +5652,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T18:00:00+10:00",
-    utc: "2024-04-14T08:00:00Z",
+    utcDateTimeISO: "2024-04-14T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6, // Small E/SE/SSE mix
-    waveHeight_ft: 2.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.6, // Small E/SE/SSE mix
+    waveHeightFeet: 2.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2640,13 +5690,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-14T21:00:00+10:00",
-    utc: "2024-04-14T11:00:00Z",
+    utcDateTimeISO: "2024-04-14T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5, // Small E/SE/SSE mix
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.5, // Small E/SE/SSE mix
+    waveHeightFeet: 1.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2662,13 +5728,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T00:00:00+10:00",
-    utc: "2024-04-14T14:00:00Z",
+    utcDateTimeISO: "2024-04-14T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4, // Small E/SE/SSE mix
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.4, // Small E/SE/SSE mix
+    waveHeightFeet: 1.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2684,13 +5766,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T03:00:00+10:00",
-    utc: "2024-04-14T17:00:00Z",
+    utcDateTimeISO: "2024-04-14T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.3, // Small E/SE/SSE mix
-    waveHeight_ft: 1.0,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.3, // Small E/SE/SSE mix
+    waveHeightFeet: 1.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2706,13 +5804,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T06:00:00+10:00",
-    utc: "2024-04-14T20:00:00Z",
+    utcDateTimeISO: "2024-04-14T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.2, // Small E/SE/SSE mix
-    waveHeight_ft: 0.7,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.2, // Small E/SE/SSE mix
+    waveHeightFeet: 0.7,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2728,13 +5842,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T09:00:00+10:00",
-    utc: "2024-04-14T23:00:00Z",
+    utcDateTimeISO: "2024-04-14T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.4, // Small E/SE/SSE mix
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.4, // Small E/SE/SSE mix
+    waveHeightFeet: 1.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2750,13 +5880,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T12:00:00+10:00",
-    utc: "2024-04-15T02:00:00Z",
+    utcDateTimeISO: "2024-04-15T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.5, // Small E/SE/SSE mix
-    waveHeight_ft: 1.6,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.5, // Small E/SE/SSE mix
+    waveHeightFeet: 1.6,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2772,13 +5918,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T15:00:00+10:00",
-    utc: "2024-04-15T05:00:00Z",
+    utcDateTimeISO: "2024-04-15T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.4, // Small E/SE/SSE mix
-    waveHeight_ft: 1.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.4, // Small E/SE/SSE mix
+    waveHeightFeet: 1.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2794,13 +5956,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T18:00:00+10:00",
-    utc: "2024-04-15T08:00:00Z",
+    utcDateTimeISO: "2024-04-15T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6, // Small E/SE/SSE mix
-    waveHeight_ft: 2.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.6, // Small E/SE/SSE mix
+    waveHeightFeet: 2.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2816,13 +5994,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-15T21:00:00+10:00",
-    utc: "2024-04-15T11:00:00Z",
+    utcDateTimeISO: "2024-04-15T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6, // Small E/SE/SSE mix
-    waveHeight_ft: 2.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.6, // Small E/SE/SSE mix
+    waveHeightFeet: 2.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2838,13 +6032,29 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T00:00:00+10:00",
-    utc: "2024-04-15T14:00:00Z",
+    utcDateTimeISO: "2024-04-15T14:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7, // Small E/SE/SSE mix
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.7,
+    waveHeightFeet: 2.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2860,13 +6070,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T03:00:00+10:00",
-    utc: "2024-04-15T17:00:00Z",
+    utcDateTimeISO: "2024-04-15T17:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 0.7, // Small E/SE/SSE mix
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.7, // Small E/SE/SSE mix
+    waveHeightFeet: 2.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2882,13 +6114,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T06:00:00+10:00",
-    utc: "2024-04-15T20:00:00Z",
+    utcDateTimeISO: "2024-04-15T20:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.6, // Small E/SE/SSE mix
-    waveHeight_ft: 2.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.6, // Small E/SE/SSE mix
+    waveHeightFeet: 2.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2904,13 +6158,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T09:00:00+10:00",
-    utc: "2024-04-15T23:00:00Z",
+    utcDateTimeISO: "2024-04-15T23:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 0.7, // Small E/SE/SSE mix
-    waveHeight_ft: 2.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 0.7, // Small E/SE/SSE mix
+    waveHeightFeet: 2.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2926,13 +6202,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T12:00:00+10:00",
-    utc: "2024-04-16T02:00:00Z",
+    utcDateTimeISO: "2024-04-16T02:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.2, // Small E/SE/SSE mix
-    waveHeight_ft: 4.0,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.2, // Small E/SE/SSE mix
+    waveHeightFeet: 4.0,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2948,13 +6246,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T15:00:00+10:00",
-    utc: "2024-04-16T05:00:00Z",
+    utcDateTimeISO: "2024-04-16T05:00:00Z",
     swellDirection: 227,
     windDirection: 180,
-    windSpeed_kmh: 20,
-    windSpeed_knots: 10,
-    waveHeight_m: 1.0, // Small E/SE/SSE mix
-    waveHeight_ft: 3.3,
+    windSpeedKmh: 20,
+    windSpeedKnots: 10,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.0, // Small E/SE/SSE mix
+    waveHeightFeet: 3.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2973,13 +6293,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T18:00:00+10:00",
-    utc: "2024-04-16T08:00:00Z",
+    utcDateTimeISO: "2024-04-16T08:00:00Z",
     swellDirection: 293,
     windDirection: 330,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.0, // Small E/SE/SSE mix
-    waveHeight_ft: 3.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.0, // Small E/SE/SSE mix
+    waveHeightFeet: 3.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,
@@ -2995,13 +6337,35 @@ const chartData = [
   },
   {
     localDateTimeISO: "2024-04-16T21:00:00+10:00",
-    utc: "2024-04-16T11:00:00Z",
+    utcDateTimeISO: "2024-04-16T11:00:00Z",
     swellDirection: 335,
     windDirection: 270,
-    windSpeed_kmh: 10,
-    windSpeed_knots: 5,
-    waveHeight_m: 1.0, // Small E/SE/SSE mix
-    waveHeight_ft: 3.3,
+    windSpeedKmh: 10,
+    windSpeedKnots: 5,
+    primary: {
+      fullSurfHeightFeet: 4,
+      fullSurfHeightFeetLabelBin: "4ft",
+      fullSurfHeightFeetLabelDescriptive: "Head High",
+      fullSurfHeightMetres: 1.1,
+      totalSigHeight: 1.2,
+      direction: 222,
+    },
+    trainData: [
+      {
+        trainDelta: 1,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+      {
+        trainDelta: 2,
+        sigHeight: 0.9,
+        peakPeriod: 12,
+        direction: 195,
+      },
+    ],
+    waveHeightMetres: 1.0, // Small E/SE/SSE mix
+    waveHeightFeet: 3.3,
     // Small E/SE/SSE mix
     primarySwellHeight: 0.3, // Small E
     primarySwellDirection: 110,

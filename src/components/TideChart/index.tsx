@@ -17,13 +17,6 @@ import {
   interpolateTideData,
 } from "@/utils/chart-utils";
 
-interface TideDataItem {
-  // dateTime: string;
-  height: number;
-  localDateTimeISO: string;
-  utc: string;
-}
-
 interface DotProps {
   cx: number;
   cy: number;
@@ -34,7 +27,7 @@ interface DotProps {
     timestamp: number;
     localDateTimeISO: string;
     time?: string;
-    utc: string;
+    utcDateTimeISO: string;
   };
 }
 
@@ -78,14 +71,14 @@ const baseData = [
     timestamp: midnightTime,
     localDateTimeISO:
       firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00",
-    utc: new Date(
+    utcDateTimeISO: new Date(
       firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00"
     ).toISOString(),
   },
-  ...tideData.map((item: TideDataItem) => ({
+  ...tideData.map((item) => ({
     ...item,
     timestamp: new Date(item.localDateTimeISO).getTime(),
-    utc: item.utc,
+    utcDateTimeISO: item.utcDateTimeISO,
   })),
 ];
 

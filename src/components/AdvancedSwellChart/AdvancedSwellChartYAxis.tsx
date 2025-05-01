@@ -63,7 +63,7 @@ const AdvancedSwellChartYAxis = () => {
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
           ticks={generateTicks(
-            Math.max(...chartData.map((d) => d.waveHeight_m)),
+            Math.max(...chartData.map((d) => d.waveHeightMetres ?? 0)),
             "m"
           )}
           tick={(value: {

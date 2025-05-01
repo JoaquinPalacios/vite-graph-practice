@@ -73,8 +73,8 @@ const SwellChartYAxis = ({
         <Bar
           dataKey={(d) =>
             unitPreferences.waveHeight === "ft"
-              ? d.waveHeight_ft
-              : d.waveHeight_m
+              ? d.primary.fullSurfHeightFeet
+              : d.primary.fullSurfHeightMetres
           }
           stackId="b"
           name="Y Wave Height"
@@ -86,8 +86,11 @@ const SwellChartYAxis = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-              ? d.faceWaveHeight_ft - d.waveHeight_ft
+            d.secondary
+              ? unitPreferences.waveHeight === "ft"
+                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
+                : d.secondary.fullSurfHeightMetres -
+                  d.primary.fullSurfHeightMetres
               : null
           }
           stackId="b"
@@ -107,8 +110,20 @@ const SwellChartYAxis = ({
           allowDecimals={false}
           ticks={generateTicks(
             unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-              : Math.max(...chartData.map((d) => d.waveHeight_m)),
+              ? Math.max(
+                  ...chartData.map((d) =>
+                    d.secondary
+                      ? d.secondary.fullSurfHeightFeet
+                      : d.primary.fullSurfHeightFeet
+                  )
+                )
+              : Math.max(
+                  ...chartData.map((d) =>
+                    d.secondary
+                      ? d.secondary.fullSurfHeightMetres
+                      : d.primary.fullSurfHeightMetres
+                  )
+                ),
             unitPreferences.waveHeight
           )}
           padding={{

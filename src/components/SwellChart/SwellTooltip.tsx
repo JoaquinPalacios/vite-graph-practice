@@ -54,20 +54,22 @@ export const SwellTooltip = memo(
               </p>
               <p className="text-xs">
                 {payload[0] &&
-                  degreesToCompassDirection(payload[0].payload.swellDirection)}
+                  degreesToCompassDirection(
+                    payload[0].payload.primary.direction
+                  )}
               </p>
             </div>
             {payload && payload[1] && (
               <div className="flex gap-1">
                 <GiBigWave className="w-3.5 h-3.5" color={"#ffa800"} />
                 <p className="ml-px text-xs">
-                  {formatWaveHeight(
-                    (payload[1].value as number) +
-                      (payload[0].payload.waveHeight_ft as number),
-                    String(payload[1].unit || "ft")
-                  )}
+                  {unitPreferences.waveHeight === "ft"
+                    ? payload[0].payload.secondary.fullSurfHeightFeetLabelBin
+                    : payload[0].payload.secondary.fullSurfHeightMetresLabelBin}
                 </p>
-                <p className="text-xs">South Facing Beaches</p>
+                <p className="text-xs">
+                  {payload[0].payload.secondary.directionLabel}
+                </p>
               </div>
             )}
             {payload[0] && (
@@ -75,8 +77,8 @@ export const SwellTooltip = memo(
                 <LuWind className="w-3.5 h-3.5" color="#008a93" />
                 <p className="ml-px text-xs">
                   {unitPreferences.windSpeed === "knots"
-                    ? payload[0].payload.windSpeed_knots
-                    : payload[0].payload.windSpeed_kmh}
+                    ? payload[0].payload.windSpeedKnots
+                    : payload[0].payload.windSpeedKmh}
                   {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
                 </p>
                 <p className="text-xs">
@@ -88,48 +90,48 @@ export const SwellTooltip = memo(
               <div className="flex gap-1">
                 <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
                 <p className="ml-px text-xs">
-                  {payload[0].payload.primarySwellHeight}m @
+                  {payload[0].payload.trainData[0].sigHeight}m @
                 </p>
                 <p className="text-xs">
-                  {payload[0].payload.primarySwellPeriod}s
+                  {payload[0].payload.trainData[0].peakPeriod}s
                 </p>
                 <p className="text-xs">
                   <RenderCustomizedLabel
-                    value={payload[0].payload.primarySwellDirection}
+                    value={payload[0].payload.trainData[0].direction}
                   />
                 </p>
               </div>
             )}
             {!unitPreferences.showAdvancedChart &&
-              payload[0].payload.secondarySwellHeight && (
+              payload[0].payload.trainData[1] && (
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
                   <p className="ml-px text-xs">
-                    {payload[0].payload.secondarySwellHeight}m @
+                    {payload[0].payload.trainData[1].sigHeight}m @
                   </p>
                   <p className="text-xs">
-                    {payload[0].payload.secondarySwellPeriod}s
+                    {payload[0].payload.trainData[1].peakPeriod}s
                   </p>
                   <p className="text-xs">
                     <RenderCustomizedLabel
-                      value={payload[0].payload.secondarySwellDirection}
+                      value={payload[0].payload.trainData[1].direction}
                     />
                   </p>
                 </div>
               )}
             {!unitPreferences.showAdvancedChart &&
-              payload[0].payload.tertiarySwellHeight && (
+              payload[0].payload.trainData[2] && (
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
                   <p className="ml-px text-xs">
-                    {payload[0].payload.tertiarySwellHeight}m @
+                    {payload[0].payload.trainData[2].sigHeight}m @
                   </p>
                   <p className="text-xs">
-                    {payload[0].payload.tertiarySwellPeriod}s
+                    {payload[0].payload.trainData[2].peakPeriod}s
                   </p>
                   <p className="text-xs">
                     <RenderCustomizedLabel
-                      value={payload[0].payload.tertiarySwellDirection}
+                      value={payload[0].payload.trainData[2].direction}
                     />
                   </p>
                 </div>

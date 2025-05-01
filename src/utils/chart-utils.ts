@@ -277,7 +277,7 @@ interface TideDataPoint {
   height: number;
   timestamp: number;
   localDateTimeISO: string;
-  utc: string;
+  utcDateTimeISO: string;
 }
 
 // Interpolate tide data with natural curves
@@ -288,7 +288,9 @@ export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
   const POINTS_BETWEEN = 20; // Number of points to add between each actual data point
 
   // Calculate spline coefficients using UTC timestamps for consistent intervals
-  const timestamps = data.map((point) => new Date(point.utc).getTime());
+  const timestamps = data.map((point) =>
+    new Date(point.utcDateTimeISO).getTime()
+  );
   const heights = data.map((point) => point.height);
   const { b, c, d } = calculateSplineCoefficients(timestamps, heights);
 
@@ -301,8 +303,8 @@ export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
     result.push(startPoint);
 
     // Calculate time step in milliseconds between the two points
-    const startTime = new Date(startPoint.utc).getTime();
-    const endTime = new Date(endPoint.utc).getTime();
+    const startTime = new Date(startPoint.utcDateTimeISO).getTime();
+    const endTime = new Date(endPoint.utcDateTimeISO).getTime();
     const timeStep = (endTime - startTime) / (POINTS_BETWEEN + 1);
 
     // Add interpolated points using cubic spline
@@ -321,7 +323,7 @@ export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
         height,
         timestamp,
         localDateTimeISO: localDate.toISOString().replace("Z", "+11:00"),
-        utc: utcDate.toISOString(),
+        utcDateTimeISO: utcDate.toISOString(),
       });
     }
   }

@@ -10,10 +10,10 @@ export interface SwellData {
   localDateTimeISO: string;
   swellDirection: number;
   windDirection: number;
-  windSpeed_kmh: number;
-  windSpeed_knots: number;
-  waveHeight_m: number;
-  waveHeight_ft: number;
+  windSpeedKmh: number;
+  windSpeedKnots: number;
+  waveHeightMetres: number;
+  waveHeightFeet: number;
   faceWaveHeight_ft?: number;
   isRising: boolean;
   nextHighTide?: string;
@@ -42,6 +42,28 @@ export interface SwellData {
   fifthSwellHeight?: number;
   fifthSwellDirection?: number;
   fifthSwellPeriod?: number;
+  primary: {
+    fullSurfHeightFeet: number;
+    fullSurfHeightFeetLabelBin: string;
+    fullSurfHeightFeetLabelDescriptive: string;
+    fullSurfHeightMetres: number;
+    totalSigHeight: number;
+    direction: number;
+  };
+  secondary?: {
+    fullSurfHeightFeet: number;
+    fullSurfHeightFeetLabelBin: string;
+    fullSurfHeightFeetLabelDescriptive: string;
+    fullSurfHeightMetres: number;
+    totalSigHeight: number;
+    direction: number;
+  } | null;
+  trainData: {
+    trainDelta: number;
+    sigHeight: number;
+    peakPeriod: number;
+    direction: number;
+  }[];
 }
 
 export type ChartData = SwellData[];

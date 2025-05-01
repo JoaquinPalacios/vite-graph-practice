@@ -190,7 +190,7 @@ const AdvancedSwellChart = ({
           overflow="visible"
           opacity={0}
           ticks={generateTicks(
-            Math.max(...chartData.map((d) => d.waveHeight_m)),
+            Math.max(...chartData.map((d) => d.waveHeightMetres)),
             "m"
           )}
           tick={() => {
