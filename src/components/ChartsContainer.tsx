@@ -1,20 +1,28 @@
 import { UnitPreferences } from "@/types";
 
-import TideChart from "./TideChart";
-import WeatherChart from "./WeatherChart";
 import ChartsWrapper from "./ChartsWrapper";
 import SwellChart from "./SwellChart";
 import SwellChartYAxis from "./SwellChart/SwellChartYAxis";
 import { cn } from "@/utils/utils";
-import AdvancedSwellChart from "./AdvancedSwellChart";
-import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
-import TideChartYAxis from "./TideChart/TideChartYAxis";
+import { ChartDataItem } from "@/types/index.ts";
+import { processTimeData } from "@/lib/time-utils";
 
 const ChartsContainer = ({
   unitPreferences,
+  chartData,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
 }) => {
+  // Update the existing swell chart data processing to use the new utility
+  // const { processedData, dayTicks } = processTimeData(
+  const { processedData } = processTimeData(
+    chartData.map((item) => ({
+      ...item,
+      dateTime: item.localDateTimeISO,
+      timestamp: new Date(item.localDateTimeISO).getTime(),
+    }))
+  );
   return (
     <div
       className={cn(
@@ -23,16 +31,22 @@ const ChartsContainer = ({
       )}
     >
       <ChartsWrapper>
-        <SwellChart unitPreferences={unitPreferences} />
-        <SwellChartYAxis unitPreferences={unitPreferences} />
+        <SwellChart
+          unitPreferences={unitPreferences}
+          chartData={processedData}
+        />
+        <SwellChartYAxis
+          unitPreferences={unitPreferences}
+          chartData={processedData}
+        />
 
-        <AdvancedSwellChart unitPreferences={unitPreferences} />
+        {/* <AdvancedSwellChart unitPreferences={unitPreferences} />
         <AdvancedSwellChartYAxis />
 
         <WeatherChart />
 
         <TideChart />
-        <TideChartYAxis />
+        <TideChartYAxis /> */}
       </ChartsWrapper>
     </div>
   );

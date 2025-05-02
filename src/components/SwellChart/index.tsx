@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import chartData from "@/data";
+// import chartData from "@/data";
 import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
 import {
@@ -22,11 +22,14 @@ import { SwellTooltip } from "./SwellTooltip";
 import SwellAxisTick from "./SwellAxisTick";
 import WindSpeedTick from "./WindSpeedTick";
 import { cn } from "@/utils/utils";
+import { ChartDataItem } from "@/types/index.ts";
 
 const SwellChart = ({
   unitPreferences,
+  chartData,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -41,7 +44,7 @@ const SwellChart = ({
     >
       <BarChart
         accessibilityLayer
-        data={processedData}
+        data={chartData}
         barCategoryGap={1}
         margin={{
           bottom: 12,
@@ -160,7 +163,7 @@ const SwellChart = ({
                 y={y}
                 payload={{
                   value:
-                    unitPreferences.windSpeed === "knots"
+                    unitPreferences.units.wind === "knots"
                       ? data.wind.speedKnots
                       : data.wind.speedKmh,
                 }}
@@ -189,12 +192,12 @@ const SwellChart = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft"
+            unitPreferences.units.surfHeight === "ft"
               ? d.primary.fullSurfHeightFeet
               : d.primary.fullSurfHeightMetres
           }
           fill="#008993"
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           activeBar={{
             fill: "#00b4c6",
           }}
@@ -230,14 +233,14 @@ const SwellChart = ({
         <Bar
           dataKey={(d) =>
             d.secondary
-              ? unitPreferences.waveHeight === "ft"
+              ? unitPreferences.units.surfHeight === "ft"
                 ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
                 : d.secondary.fullSurfHeightMetres -
                   d.primary.fullSurfHeightMetres
               : null
           }
           fill="#ffa800"
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           activeBar={{
             fill: "#ffc95d",
           }}
@@ -278,34 +281,36 @@ const SwellChart = ({
           domain={[0, "dataMax"]}
           minTickGap={0}
           padding={{
-            top: unitPreferences.waveHeight === "ft" ? 32 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
           }}
           interval="preserveStart"
           overflow="visible"
           opacity={0}
           allowDecimals={false}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           tick={() => {
             return <text></text>;
           }}
           ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
+            unitPreferences.units.surfHeight === "ft"
               ? Math.max(
-                  ...chartData.map((d) =>
-                    d.secondary
-                      ? d.secondary.fullSurfHeightFeet
-                      : d.primary.fullSurfHeightFeet
+                  ...chartData.map(
+                    (d) =>
+                      d.secondary?.fullSurfHeightFeet ??
+                      d.primary.fullSurfHeightFeet ??
+                      0
                   )
                 )
               : Math.max(
-                  ...chartData.map((d) =>
-                    d.secondary
-                      ? d.secondary.fullSurfHeightMetres
-                      : d.primary.fullSurfHeightMetres
+                  ...chartData.map(
+                    (d) =>
+                      d.secondary?.fullSurfHeightMetres ??
+                      d.primary.fullSurfHeightMetres ??
+                      0
                   )
                 ),
-            unitPreferences.waveHeight
+            unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
           )}
         />
       </BarChart>

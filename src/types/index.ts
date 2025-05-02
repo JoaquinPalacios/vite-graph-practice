@@ -1,8 +1,10 @@
 // Define types for our unit options
 export type UnitPreferences = {
-  waveHeight: "ft" | "m";
-  windSpeed: "knots" | "km/h";
-  temperature: "°C" | "°F";
+  units: {
+    surfHeight: "ft" | "m";
+    temperature: "celsius" | "fahrenheit";
+    wind: "knots" | "kmh";
+  };
   showAdvancedChart: boolean;
 };
 
@@ -69,3 +71,69 @@ export interface SwellData {
 }
 
 export type ChartData = SwellData[];
+
+export interface DrupalApiData {
+  location: {
+    name: string;
+    timezone: string;
+  };
+  forecasts: {
+    ecmwf: {
+      bulletinTimeUtc: string;
+      forecastSteps: ChartDataItem[];
+    };
+    gfs: {
+      bulletinTimeUtc: string;
+      forecastSteps: ChartDataItem[];
+    };
+  };
+  preferences: {
+    units: {
+      surfHeight: "ft" | "m";
+      temperature: "celsius" | "fahrenheit";
+      wind: "knots" | "kmh";
+    };
+  };
+  error: string | null;
+}
+
+export interface ChartDataItem {
+  bulletinDatetimeUtc?: string; // Only on the first item
+  localDateTimeISO: string;
+  utcDateTimeISO: string; // Needs to be derived or present in API data
+  wind: {
+    direction: number | null;
+    speedKmh: number | null;
+    speedKnots: number | null;
+  };
+  primary: {
+    fullSurfHeightFeet: number | null;
+    fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFeetLabelDescriptive?: string;
+    fullSurfHeightMetres?: number | null;
+    fullSurfHeightMetresLabelBin?: string;
+    totalSigHeight?: number | null;
+    direction: number | null;
+  };
+  secondary?: {
+    fullSurfHeightFeet: number | null;
+    fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFeetLabelDescriptive?: string;
+    fullSurfHeightMetres?: number | null;
+    fullSurfHeightMetresLabelBin?: string;
+    totalSigHeight?: number | null;
+    direction: number | null;
+  };
+  trainData?: {
+    trainDelta: number;
+    sigHeight: number | null;
+    peakPeriod: number | null;
+    direction: number | null;
+  }[];
+}
+
+declare global {
+  interface Window {
+    swellnetRawData: DrupalApiData;
+  }
+}

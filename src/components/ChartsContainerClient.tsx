@@ -4,20 +4,29 @@ import { useState } from "react";
 import ChartsContainer from "./ChartsContainer";
 import { UnitPreferences } from "@/types";
 import { UnitSelector } from "./UnitSelector";
+import { ChartDataItem } from "@/types/index.ts";
 
-const SwellChartContainerLayout = () => {
-  const [unitPreferences, setUnitPreferences] = useState<UnitPreferences>({
-    waveHeight: "ft",
-    windSpeed: "knots",
-    temperature: "°C",
-    showAdvancedChart: true,
-  });
+const SwellChartContainerLayout = ({
+  chartData,
+  defaultPreferences,
+}: {
+  chartData: ChartDataItem[];
+  defaultPreferences: UnitPreferences;
+}) => {
+  const [unitPreferences, setUnitPreferences] =
+    useState<UnitPreferences>(defaultPreferences);
 
   return (
     <section className="flex flex-col gap-4 w-full">
-      <UnitSelector onChange={setUnitPreferences} />
+      <UnitSelector
+        onChange={setUnitPreferences}
+        defaultValues={unitPreferences}
+      />
 
-      <ChartsContainer unitPreferences={unitPreferences} />
+      <ChartsContainer
+        unitPreferences={unitPreferences}
+        chartData={chartData}
+      />
     </section>
   );
 };

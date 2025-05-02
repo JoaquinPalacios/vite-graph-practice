@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/profiles/swellnet/modules/custom/swellnet_location_forecast_v2/js/dist/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -12,6 +13,7 @@ export default defineConfig({
     },
   },
   build: {
+    manifest: true,
     rollupOptions: {
       output: {
         manualChunks: (id) => {

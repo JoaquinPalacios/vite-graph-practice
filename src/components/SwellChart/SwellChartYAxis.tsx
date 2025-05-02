@@ -6,12 +6,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import chartData from "@/data";
 import { UnitPreferences } from "@/types";
-import { generateTicks, processedData } from "@/utils/chart-utils";
+import { generateTicks } from "@/utils/chart-utils";
 import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { ChartDataItem } from "@/types/index.ts";
 
 /**
  * SwellChartYAxis component
@@ -23,8 +23,10 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
  */
 const SwellChartYAxis = ({
   unitPreferences,
+  chartData,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -35,7 +37,7 @@ const SwellChartYAxis = ({
       className="mb-0 absolute top-0 left-0 md:left-4 z-10 h-80 min-h-80 max-h-80"
     >
       <BarChart
-        data={processedData}
+        data={chartData}
         accessibilityLayer
         margin={{
           bottom: 12,
@@ -72,14 +74,14 @@ const SwellChartYAxis = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft"
+            unitPreferences.units.surfHeight === "ft"
               ? d.primary.fullSurfHeightFeet
               : d.primary.fullSurfHeightMetres
           }
           stackId="b"
           name="Y Wave Height"
           id="y-wave-height"
-          key={`y-wave-height-${unitPreferences.waveHeight}`}
+          key={`y-wave-height-${unitPreferences.units.surfHeight}`}
           hide
           aria-hidden
         />
@@ -87,7 +89,7 @@ const SwellChartYAxis = ({
         <Bar
           dataKey={(d) =>
             d.secondary
-              ? unitPreferences.waveHeight === "ft"
+              ? unitPreferences.units.surfHeight === "ft"
                 ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
                 : d.secondary.fullSurfHeightMetres -
                   d.primary.fullSurfHeightMetres
@@ -96,7 +98,7 @@ const SwellChartYAxis = ({
           stackId="b"
           name="Y Face Wave Height"
           id="y-face-wave-height"
-          key={`y-face-wave-height-${unitPreferences.waveHeight}`}
+          key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
           hide
           aria-hidden
         />
@@ -104,27 +106,29 @@ const SwellChartYAxis = ({
         <YAxis
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           interval="preserveStart"
           overflow="visible"
           allowDecimals={false}
           ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
+            unitPreferences.units.surfHeight === "ft"
               ? Math.max(
-                  ...chartData.map((d) =>
-                    d.secondary
-                      ? d.secondary.fullSurfHeightFeet
-                      : d.primary.fullSurfHeightFeet
+                  ...chartData.map(
+                    (d) =>
+                      d.secondary?.fullSurfHeightFeet ??
+                      d.primary.fullSurfHeightFeet ??
+                      0
                   )
                 )
               : Math.max(
-                  ...chartData.map((d) =>
-                    d.secondary
-                      ? d.secondary.fullSurfHeightMetres
-                      : d.primary.fullSurfHeightMetres
+                  ...chartData.map(
+                    (d) =>
+                      d.secondary?.fullSurfHeightMetres ??
+                      d.primary.fullSurfHeightMetres ??
+                      0
                   )
                 ),
-            unitPreferences.waveHeight
+            unitPreferences.units.surfHeight
           )}
           padding={{
             top: 20,
@@ -150,7 +154,7 @@ const SwellChartYAxis = ({
                   size={20}
                   color="#666"
                 />
-                {unitPreferences.windSpeed === "knots" ? (
+                {unitPreferences.units.wind === "knots" ? (
                   <text
                     x={value.x + 12}
                     y={value.y + 52}
@@ -182,7 +186,7 @@ const SwellChartYAxis = ({
                 fill="#666"
               >
                 {value.payload.value}
-                {unitPreferences.waveHeight}
+                {unitPreferences.units.surfHeight}
               </text>
             );
           }}

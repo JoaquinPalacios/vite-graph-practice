@@ -7,7 +7,6 @@ import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import RenderCustomizedLabel from "./SwellLabel";
 import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
-import { formatWaveHeight } from "@/utils/chart-utils";
 import { memo } from "react";
 
 /**
@@ -46,11 +45,9 @@ export const SwellTooltip = memo(
             <div className="flex gap-1">
               <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
               <p className="ml-px text-xs">
-                {payload &&
-                  formatWaveHeight(
-                    payload[0].value as number,
-                    String(payload[0].unit || "m")
-                  )}
+                {unitPreferences.units.surfHeight === "ft"
+                  ? payload[0].payload.primary.fullSurfHeightFeetLabelBin
+                  : payload[0].payload.primary.fullSurfHeightMetresLabelBin}
               </p>
               <p className="text-xs">
                 {payload[0] &&
@@ -58,17 +55,32 @@ export const SwellTooltip = memo(
                     payload[0].payload.primary.direction
                   )}
               </p>
+              <p className="text-xs">
+                ({payload[0].payload.primary.fullSurfHeightFeetLabelDescriptive}
+                )
+              </p>
             </div>
             {payload && payload[1] && (
               <div className="flex gap-1">
                 <GiBigWave className="w-3.5 h-3.5" color={"#ffa800"} />
                 <p className="ml-px text-xs">
-                  {unitPreferences.waveHeight === "ft"
+                  {unitPreferences.units.surfHeight === "ft"
                     ? payload[0].payload.secondary.fullSurfHeightFeetLabelBin
                     : payload[0].payload.secondary.fullSurfHeightMetresLabelBin}
                 </p>
                 <p className="text-xs">
-                  {payload[0].payload.secondary.directionLabel}
+                  {payload[0] &&
+                    degreesToCompassDirection(
+                      payload[0].payload.secondary.direction
+                    )}
+                </p>
+                <p className="text-xs">
+                  (
+                  {
+                    payload[0].payload.secondary
+                      .fullSurfHeightFeetLabelDescriptive
+                  }
+                  )
                 </p>
               </div>
             )}
@@ -76,13 +88,13 @@ export const SwellTooltip = memo(
               <div className="flex gap-1">
                 <LuWind className="w-3.5 h-3.5" color="#008a93" />
                 <p className="ml-px text-xs">
-                  {unitPreferences.windSpeed === "knots"
-                    ? payload[0].payload.windSpeedKnots
-                    : payload[0].payload.windSpeedKmh}
-                  {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
+                  {unitPreferences.units.wind === "knots"
+                    ? Math.round(payload[0].payload.wind.speedKnots)
+                    : Math.round(payload[0].payload.wind.speedKmh)}
+                  {unitPreferences.units.wind === "knots" ? "kts" : "km/h"}
                 </p>
                 <p className="text-xs">
-                  {degreesToCompassDirection(payload[0].payload.windDirection)}
+                  {degreesToCompassDirection(payload[0].payload.wind.direction)}
                 </p>
               </div>
             )}
@@ -90,7 +102,8 @@ export const SwellTooltip = memo(
               <div className="flex gap-1">
                 <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
                 <p className="ml-px text-xs">
-                  {payload[0].payload.trainData[0].sigHeight}m @
+                  {Number(payload[0].payload.trainData[0].sigHeight).toFixed(1)}
+                  m @
                 </p>
                 <p className="text-xs">
                   {payload[0].payload.trainData[0].peakPeriod}s
@@ -107,7 +120,10 @@ export const SwellTooltip = memo(
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
                   <p className="ml-px text-xs">
-                    {payload[0].payload.trainData[1].sigHeight}m @
+                    {Number(payload[0].payload.trainData[1].sigHeight).toFixed(
+                      1
+                    )}
+                    m @
                   </p>
                   <p className="text-xs">
                     {payload[0].payload.trainData[1].peakPeriod}s
@@ -124,7 +140,10 @@ export const SwellTooltip = memo(
                 <div className="flex gap-1">
                   <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
                   <p className="ml-px text-xs">
-                    {payload[0].payload.trainData[2].sigHeight}m @
+                    {Number(payload[0].payload.trainData[2].sigHeight).toFixed(
+                      1
+                    )}
+                    m @
                   </p>
                   <p className="text-xs">
                     {payload[0].payload.trainData[2].peakPeriod}s
