@@ -4,10 +4,11 @@ import { LuWind } from "react-icons/lu";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import RenderCustomizedLabel from "./SwellLabel";
+// import RenderCustomizedLabel from "./SwellLabel";
 import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
 import { memo } from "react";
+import { SwellLabel } from "./SwellLabel";
 
 /**
  * SwellTooltip component
@@ -109,7 +110,7 @@ export const SwellTooltip = memo(
                   {payload[0].payload.trainData[0].peakPeriod}s
                 </p>
                 <p className="text-xs">
-                  <RenderCustomizedLabel
+                  <SwellLabel
                     value={payload[0].payload.trainData[0].direction}
                   />
                 </p>
@@ -129,7 +130,7 @@ export const SwellTooltip = memo(
                     {payload[0].payload.trainData[1].peakPeriod}s
                   </p>
                   <p className="text-xs">
-                    <RenderCustomizedLabel
+                    <SwellLabel
                       value={payload[0].payload.trainData[1].direction}
                     />
                   </p>
@@ -149,7 +150,7 @@ export const SwellTooltip = memo(
                     {payload[0].payload.trainData[2].peakPeriod}s
                   </p>
                   <p className="text-xs">
-                    <RenderCustomizedLabel
+                    <SwellLabel
                       value={payload[0].payload.trainData[2].direction}
                     />
                   </p>

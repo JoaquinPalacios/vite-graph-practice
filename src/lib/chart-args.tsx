@@ -1,5 +1,5 @@
-import SwellAxisTick from "@/components/SwellChart/SwellAxisTick";
-import WindSpeedTick from "@/components/SwellChart/WindSpeedTick";
+import { SwellAxisTick } from "@/components/SwellChart/SwellAxisTick";
+import { WindSpeedTick } from "@/components/SwellChart/WindSpeedTick";
 import { generateHourlyTicks, multiFormat } from "@/lib/time-utils";
 import {
   baseChartXAxisProps,

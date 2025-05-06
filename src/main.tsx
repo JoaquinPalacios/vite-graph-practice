@@ -126,10 +126,36 @@ function initGraph() {
     console.log("Raw API data received from Drupal:", rawApiData);
 
     // Transform the raw forecast steps into the structure the graph needs
-    const processedChartData: ChartDataItem[] = processApiDataToChartData(
+    const ecmwfChartData: ChartDataItem[] = processApiDataToChartData(
+      rawApiData,
+      // "gfs"
+      "ecmwf"
+    );
+    const gfsChartData: ChartDataItem[] = processApiDataToChartData(
       rawApiData,
       "gfs"
     );
+
+    const allChartData = [...ecmwfChartData, ...gfsChartData];
+
+    const maxSurfHeight =
+      rawApiData.preferences.units.surfHeight === "ft"
+        ? Math.max(
+            ...allChartData.map(
+              (d) =>
+                d.secondary?.fullSurfHeightFeet ??
+                d.primary.fullSurfHeightFeet ??
+                0
+            )
+          )
+        : Math.max(
+            ...allChartData.map(
+              (d) =>
+                d.secondary?.fullSurfHeightMetres ??
+                d.primary.fullSurfHeightMetres ??
+                0
+            )
+          );
 
     // Store the raw API data globally for forecast type switching
     (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData =
@@ -137,7 +163,7 @@ function initGraph() {
 
     // Prepare props for the App component
     const appProps = {
-      chartData: processedChartData,
+      chartData: ecmwfChartData,
       locationName: rawApiData.location.name,
       timezone: rawApiData.location.timezone,
       defaultPreferences: {
@@ -150,6 +176,7 @@ function initGraph() {
         },
         showAdvancedChart: false,
       },
+      maxSurfHeight: maxSurfHeight,
     };
 
     // Render the React component

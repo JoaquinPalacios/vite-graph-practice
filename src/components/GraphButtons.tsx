@@ -49,7 +49,7 @@ const GraphButtons = ({
     ) as HTMLElement;
     if (container) {
       // Each day has 8 data points (every 3 hours) and each bar is 298px wide.
-      const dayWidth = 1 * 298; // 298px per day
+      const dayWidth = 1 * 256; // 256px per day
       const scrollAmount = direction === "left" ? -dayWidth : dayWidth;
 
       container.scrollBy({

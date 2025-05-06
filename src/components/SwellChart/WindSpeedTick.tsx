@@ -4,7 +4,7 @@
  * @param {WindSpeedTickProps} props - The props for the WindSpeedTick component
  * @returns {React.ReactElement} The WindSpeedTick component
  */
-const WindSpeedTick = ({
+export const WindSpeedTick = ({
   x,
   y,
   payload,
@@ -19,5 +19,3 @@ const WindSpeedTick = ({
     </text>
   );
 };
-
-export default WindSpeedTick;

@@ -17,7 +17,7 @@ type SwellAxisTickProps = {
  * @returns {React.ReactElement} The SwellAxisTick component
  * @todo: Revise the use of this component
  */
-const SwellAxisTick = ({
+export const SwellAxisTick = ({
   payload,
   x,
   y,
@@ -81,5 +81,3 @@ const SwellAxisTick = ({
     </g>
   );
 };
-
-export default SwellAxisTick;

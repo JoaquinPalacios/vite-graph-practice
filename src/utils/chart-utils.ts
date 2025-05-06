@@ -191,7 +191,7 @@ export const processTimeScaleData = (timestamps: number[]) => {
   };
 };
 
-// Update the existing swell chart data processing to use the new utility
+// TODO - Remove this once we have the new utility working
 export const { processedData, dayTicks } = processTimeData(
   chartData.map((item) => ({
     ...item,
@@ -332,4 +332,20 @@ export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
   result.push(data[data.length - 1]);
 
   return result;
+};
+
+/**
+ * Calculates the chart width based on number of days in the data.
+ * @param dataLength Number of 3-hour data points
+ * @param widthPerDay Width in px for each day (default 294)
+ * @param extraSpace Additional px to add for chart padding/margins (default 0)
+ * @returns Total width in px for the chart
+ */
+export const getChartWidth = (
+  dataLength: number,
+  widthPerDay = 256,
+  extraSpace = 0
+): number => {
+  const days = Math.ceil(dataLength / 8);
+  return days * widthPerDay + extraSpace;
 };

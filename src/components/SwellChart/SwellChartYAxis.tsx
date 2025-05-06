@@ -21,12 +21,14 @@ import { ChartDataItem } from "@/types/index.ts";
  * @param {UnitPreferences} unitPreferences - The unit preferences for the chart
  * @returns {React.ReactElement} The SwellChartYAxis component
  */
-const SwellChartYAxis = ({
+export const SwellChartYAxis = ({
   unitPreferences,
   chartData,
+  maxSurfHeight,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
+  maxSurfHeight: number;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -34,7 +36,7 @@ const SwellChartYAxis = ({
     <ResponsiveContainer
       width={60}
       height="100%"
-      className="mb-0 absolute top-0 left-0 md:left-4 z-10 h-80 min-h-80 max-h-80"
+      className="mb-0 absolute top-0 left-0 md:left-4 z-20 h-80 min-h-80 max-h-80"
     >
       <BarChart
         data={chartData}
@@ -110,26 +112,7 @@ const SwellChartYAxis = ({
           interval="preserveStart"
           overflow="visible"
           allowDecimals={false}
-          ticks={generateTicks(
-            unitPreferences.units.surfHeight === "ft"
-              ? Math.max(
-                  ...chartData.map(
-                    (d) =>
-                      d.secondary?.fullSurfHeightFeet ??
-                      d.primary.fullSurfHeightFeet ??
-                      0
-                  )
-                )
-              : Math.max(
-                  ...chartData.map(
-                    (d) =>
-                      d.secondary?.fullSurfHeightMetres ??
-                      d.primary.fullSurfHeightMetres ??
-                      0
-                  )
-                ),
-            unitPreferences.units.surfHeight
-          )}
+          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
             top: 20,
           }}
@@ -195,5 +178,3 @@ const SwellChartYAxis = ({
     </ResponsiveContainer>
   );
 };
-
-export default SwellChartYAxis;

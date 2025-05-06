@@ -73,7 +73,6 @@ export function processTimeData<T extends TimeDataItem>(data: T[]) {
 
   // Ensure there's valid data to process
   if (processedData.length === 0) {
-    console.error("No valid data points found after processing timestamps.");
     // Return default/empty values or throw error
     const now = new Date();
     const todayMidnight = new Date(

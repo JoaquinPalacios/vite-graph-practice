@@ -11,7 +11,7 @@ interface SwellLabelProps extends LabelProps {
  * @param {SwellLabelProps} props - The props for the SwellLabel component
  * @returns {React.ReactElement} The SwellLabel component
  */
-const SwellLabel = (props: SwellLabelProps) => {
+export const SwellLabel = (props: SwellLabelProps) => {
   const { x, y, value, fill, hasSecondary, primarySwellDirection } = props;
 
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
@@ -137,5 +137,3 @@ const SwellLabel = (props: SwellLabelProps) => {
     );
   }
 };
-
-export default SwellLabel;

@@ -9,33 +9,41 @@ import {
   YAxis,
 } from "recharts";
 // import chartData from "@/data";
-import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
 import {
   formatDateTick,
   generateTicks,
-  processedData,
+  getChartWidth,
+  // processedData,
 } from "@/utils/chart-utils";
-import SwellLabel from "./SwellLabel";
+import { SwellLabel } from "./SwellLabel";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
-import SwellAxisTick from "./SwellAxisTick";
-import WindSpeedTick from "./WindSpeedTick";
+import { SwellAxisTick } from "./SwellAxisTick";
+import { WindSpeedTick } from "./WindSpeedTick";
 import { cn } from "@/utils/utils";
 import { ChartDataItem } from "@/types/index.ts";
 
-const SwellChart = ({
+export const SwellChart = ({
   unitPreferences,
   chartData,
+  maxSurfHeight,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
+  maxSurfHeight: number;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
+  console.log({ chartData });
+
+  if (getChartWidth(chartData.length) === 0) {
+    return null;
+  }
+
   return (
     <ResponsiveContainer
-      width={4848}
+      width={getChartWidth(chartData.length, 256, 60)}
       height="100%"
       className={cn(
         "mb-0 h-80 min-h-80 relative",
@@ -80,7 +88,7 @@ const SwellChart = ({
           allowDuplicatedCategory={false}
           textAnchor="middle"
           ticks={
-            processedData
+            chartData
               .reduce((acc: string[], curr) => {
                 const date = new Date(curr.localDateTimeISO)
                   .toISOString()
@@ -132,13 +140,13 @@ const SwellChart = ({
           tickLine={false}
           axisLine={false}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = processedData[index];
+            const data = chartData[index];
             if (!data) {
               return <g />;
             }
             return (
               <SwellAxisTick
-                payload={{ value: data.wind.direction }}
+                payload={{ value: data.wind.direction ?? 0 }}
                 windSpeed={data.wind.speedKnots || 0}
                 x={x}
                 y={y}
@@ -153,7 +161,7 @@ const SwellChart = ({
           dataKey="localDateTimeISO"
           xAxisId={4}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = processedData[index];
+            const data = chartData[index];
             if (!data) {
               return <g />;
             }
@@ -164,8 +172,8 @@ const SwellChart = ({
                 payload={{
                   value:
                     unitPreferences.units.wind === "knots"
-                      ? data.wind.speedKnots
-                      : data.wind.speedKmh,
+                      ? Math.round(data.wind.speedKnots ?? 0)
+                      : Math.round(data.wind.speedKmh ?? 0),
                 }}
               />
             );
@@ -259,7 +267,7 @@ const SwellChart = ({
 
               if (data.secondary) {
                 return (
-                  <RenderCustomizedLabel
+                  <SwellLabel
                     value={value}
                     x={x}
                     y={y}
@@ -293,23 +301,7 @@ const SwellChart = ({
             return <text></text>;
           }}
           ticks={generateTicks(
-            unitPreferences.units.surfHeight === "ft"
-              ? Math.max(
-                  ...chartData.map(
-                    (d) =>
-                      d.secondary?.fullSurfHeightFeet ??
-                      d.primary.fullSurfHeightFeet ??
-                      0
-                  )
-                )
-              : Math.max(
-                  ...chartData.map(
-                    (d) =>
-                      d.secondary?.fullSurfHeightMetres ??
-                      d.primary.fullSurfHeightMetres ??
-                      0
-                  )
-                ),
+            maxSurfHeight,
             unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
           )}
         />
@@ -317,5 +309,3 @@ const SwellChart = ({
     </ResponsiveContainer>
   );
 };
-
-export default SwellChart;
