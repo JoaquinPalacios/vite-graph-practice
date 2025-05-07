@@ -10,8 +10,8 @@ const TideTooltip = memo(
       const date = new Date(payload[0].payload.localDateTimeISO);
 
       return (
-        <div className="bg-slate-400 rounded-md overflow-hidden">
-          <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
+        <div className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden">
+          <h5 className="tw:mb-2 tw:px-2 tw:pt-2 tw:text-center tw:text-white tw:font-medium tw:text-xs">
             {date
               .toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -25,10 +25,10 @@ const TideTooltip = memo(
               day: "numeric",
             })}
           </h5>
-          <div className="flex flex-col bg-white p-2">
-            <div className="flex gap-1">
-              <LuWaves className="w-3.5 h-3.5" color="#008a93" />
-              <p className="ml-px text-xs">
+          <div className="tw:flex tw:flex-col tw:bg-white tw:p-2">
+            <div className="tw:flex tw:gap-1">
+              <LuWaves className="tw:w-3.5 tw:h-3.5" color="#008a93" />
+              <p className="tw:ml-px tw:text-xs">
                 {payload[0].value && Number(payload[0].value).toFixed(1)}m
               </p>
             </div>

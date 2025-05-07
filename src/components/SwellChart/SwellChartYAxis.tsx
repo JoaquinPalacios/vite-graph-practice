@@ -36,7 +36,7 @@ export const SwellChartYAxis = ({
     <ResponsiveContainer
       width={60}
       height="100%"
-      className="mb-0 absolute top-0 left-0 md:left-4 z-20 h-80 min-h-80 max-h-80"
+      className="tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80"
     >
       <BarChart
         data={chartData}
@@ -45,7 +45,7 @@ export const SwellChartYAxis = ({
           bottom: 12,
         }}
         width={60}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}
@@ -124,14 +124,14 @@ export const SwellChartYAxis = ({
             return value.index === 0 ? (
               <g transform="translate(-10, 0)">
                 <GiBigWave
-                  className="w-6 h-6"
+                  className="tw:w-6 tw:h-6"
                   x={value.x - 8}
                   y={value.y - 20}
                   size={20}
                   color="#666"
                 />
                 <LuWind
-                  className="w-4 h-4"
+                  className="tw:w-4 tw:h-4"
                   x={value.x - 8}
                   y={value.y + 12}
                   size={20}

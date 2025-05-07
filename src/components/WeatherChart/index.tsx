@@ -12,8 +12,8 @@ const WeatherChart = () => {
       width={4848}
       height="100%"
       className={cn(
-        "h-16 min-h-16 relative",
-        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
+        "tw:h-16 tw:min-h-16 tw:relative",
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-6rem)] tw:after:top-0 tw:after:left-20 tw:after:border-y tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <ScatterChart
@@ -25,7 +25,7 @@ const WeatherChart = () => {
           bottom: 16,
           top: 0,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}

@@ -76,6 +76,7 @@ export interface DrupalApiData {
   location: {
     name: string;
     timezone: string;
+    localDateTime: string;
   };
   forecasts: {
     ecmwf: {

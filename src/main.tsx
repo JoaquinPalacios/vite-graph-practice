@@ -23,9 +23,13 @@ interface ApiStep extends ChartDataItem {
   bulletin?: ApiBulletin;
 }
 
-// --- Data Transformation Function ---
-// This function takes the raw API data steps and transforms them
-// into the array structure the graph expects.
+/**
+ * This function takes the raw API data steps and transforms them
+ * into the array structure the graph expects.
+ * @param apiData - The raw API data steps
+ * @param forecastType - The forecast type to process
+ * @returns The transformed chart data
+ */
 function processApiDataToChartData(
   apiData: DrupalApiData,
   forecastType: "gfs" | "ecmwf" = "gfs"
@@ -107,7 +111,12 @@ function processApiDataToChartData(
   return chartData;
 }
 
-// --- Initialization Function ---
+/**
+ * This function initializes the graph by getting the container and
+ * the Drupal settings. It then checks if the container and settings are valid
+ * and if the API data is valid. If so, it transforms the raw forecast steps
+ * into the structure the graph needs and renders the React component.
+ */
 function initGraph() {
   const container = document.getElementById("swell-graph-container");
   const drupalSettings = (
@@ -123,7 +132,7 @@ function initGraph() {
     !drupalSettings.apiData.error
   ) {
     const rawApiData: DrupalApiData = drupalSettings.apiData;
-    console.log("Raw API data received from Drupal:", rawApiData);
+    console.log("Vite: 1 - Raw API data received from Drupal:", rawApiData);
 
     // Transform the raw forecast steps into the structure the graph needs
     const ecmwfChartData: ChartDataItem[] = processApiDataToChartData(
@@ -161,11 +170,14 @@ function initGraph() {
     (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData =
       rawApiData;
 
+    console.log("Vite: Raw API data before init:", rawApiData);
+
     // Prepare props for the App component
     const appProps = {
       chartData: ecmwfChartData,
       locationName: rawApiData.location.name,
       timezone: rawApiData.location.timezone,
+      localDateTimeISO: ecmwfChartData[0].localDateTimeISO,
       defaultPreferences: {
         units: {
           surfHeight: (rawApiData.preferences.units.surfHeight === "ft"

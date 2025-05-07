@@ -16,10 +16,10 @@ export const AdvanceCustomTooltip = memo(
     if (active && payload && payload.length) {
       return (
         <div
-          className="bg-slate-400 rounded-md overflow-hidden"
+          className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden"
           style={{ visibility: "visible" }}
         >
-          <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
+          <h5 className="tw:mb-2 tw:px-2 tw:pt-2 tw:text-center tw:text-white tw:font-medium tw:text-xs">
             {new Date(payload[0].payload.localDateTimeISO)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -33,24 +33,29 @@ export const AdvanceCustomTooltip = memo(
               day: "numeric",
             })}
           </h5>
-          <div className="flex flex-col bg-white p-2">
+          <div className="tw:flex tw:flex-col tw:bg-white tw:p-2">
             {payload
               .slice()
               .sort((a, b) => (b.value as number) - (a.value as number))
               .map((item) => (
-                <div key={item.name} className="flex gap-1 items-center">
+                <div
+                  key={item.name}
+                  className="tw:flex tw:gap-1 tw:items-center"
+                >
                   <SwellLabel
                     value={item.payload.direction}
                     fill={item.color}
                   />
-                  <p className="ml-px text-xs">{item.value}m</p>
-                  <p className="ml-px text-xs">@</p>
-                  <p className="ml-px text-xs">{item.payload.period}s</p>
-                  <p className="text-xs">
+                  <p className="tw:ml-px tw:text-xs">{item.value}m</p>
+                  <p className="tw:ml-px tw:text-xs">@</p>
+                  <p className="tw:ml-px tw:text-xs">{item.payload.period}s</p>
+                  <p className="tw:text-xs">
                     {item.payload &&
                       degreesToCompassDirection(item.payload.direction)}
                   </p>
-                  <p className="ml-px text-xs">({item.payload.direction}°)</p>
+                  <p className="tw:ml-px tw:text-xs">
+                    ({item.payload.direction}°)
+                  </p>
                 </div>
               ))}
           </div>

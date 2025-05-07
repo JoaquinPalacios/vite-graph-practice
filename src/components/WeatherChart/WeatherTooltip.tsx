@@ -11,8 +11,8 @@ const WeatherTooltip = ({
   if (!active || !payload) return null;
 
   return (
-    <div className="rounded-md bg-white shadow-md overflow-hidden">
-      <h5 className="text-xs bg-slate-400 text-white p-2 text-center">
+    <div className="tw:rounded-md tw:bg-white tw:shadow-md tw:overflow-hidden">
+      <h5 className="tw:text-xs tw:bg-slate-400 tw:text-white tw:p-2 tw:text-center">
         {new Date(payload[0].payload.localDateTimeISO).toLocaleDateString(
           "en-US",
           {
@@ -28,10 +28,10 @@ const WeatherTooltip = ({
           })
           .toLowerCase()}
       </h5>
-      <p className="text-xs pt-2 pl-4 pr-2 relative before:absolute before:bg-swell/50 before:left-1 before:top-3 before:w-2 before:h-2 before:z-10 before:rounded-xs">
+      <p className="tw:text-xs tw:pt-2 tw:pl-4 tw:pr-2 tw:relative tw:before:absolute tw:before:bg-swell/50 tw:before:left-1 tw:before:top-3 tw:before:w-2 tw:before:h-2 tw:before:z-10 tw:before:rounded-xs">
         {formatWeatherText(payload[0].payload.weather)}
       </p>
-      <p className="text-xs pl-4 pr-2 pb-2 relative before:absolute before:bg-swell/50 before:left-1 before:top-1 before:w-2 before:h-2 before:z-10 before:rounded-xs">
+      <p className="tw:text-xs tw:pl-4 tw:pr-2 tw:pb-2 tw:relative tw:before:absolute tw:before:bg-swell/50 tw:before:left-1 tw:before:top-1 tw:before:w-2 tw:before:h-2 tw:before:z-10 tw:before:rounded-xs">
         {payload[0].payload.minTemp}°C / {payload[0].payload.maxTemp}°C
       </p>
     </div>

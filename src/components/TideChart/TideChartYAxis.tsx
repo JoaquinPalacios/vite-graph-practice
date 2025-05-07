@@ -72,7 +72,7 @@ const TideChartYAxis = () => {
     <ResponsiveContainer
       width={60}
       height="100%"
-      className="h-36 min-h-36 max-h-36 absolute bottom-0 left-0 md:left-4 z-20"
+      className="tw:h-36 tw:min-h-36 tw:max-h-36 tw:absolute tw:bottom-0 tw:left-0 tw:md:left-4 tw:z-20"
     >
       <AreaChart
         accessibilityLayer
@@ -82,7 +82,7 @@ const TideChartYAxis = () => {
           right: 0,
           bottom: 16,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
         width={60}
       >
         <CartesianGrid

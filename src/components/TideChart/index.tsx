@@ -91,14 +91,18 @@ const { timeScale } = processTimeScaleData(timeValues);
 
 const TideChart = () => {
   return (
-    <ResponsiveContainer width={4848} height="100%" className="h-36 min-h-36">
+    <ResponsiveContainer
+      width={4848}
+      height="100%"
+      className="tw:h-36 tw:min-h-36"
+    >
       <AreaChart
         accessibilityLayer
         data={processedData}
         margin={{
           bottom: 16,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}

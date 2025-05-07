@@ -142,14 +142,14 @@ const AdvancedSwellChart = ({
       width={4848}
       height="100%"
       className={cn(
-        "mb-0 h-48 min-h-48 transition-[height,min-height] duration-300 ease-in-out",
-        !unitPreferences.showAdvancedChart && "!h-0 !min-h-0"
+        "tw:mb-0 tw:h-48 tw:min-h-48 tw:transition-[height,min-height] tw:duration-300 tw:ease-in-out",
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:!min-h-0"
       )}
     >
       <LineChart
         accessibilityLayer
         data={chartData}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
         onMouseLeave={() => {
           setHoverIndex(null);
         }}
@@ -257,7 +257,7 @@ const AdvancedSwellChart = ({
               onMouseEnter={() => {
                 setHoverIndex(index);
               }}
-              className="[&>g>svg]:transition-opacity [&>g>svg]:duration-150 [&>g>svg]:ease-in-out"
+              className="tw:[&>g>svg]:transition-opacity tw:[&>g>svg]:duration-150 tw:[&>g>svg]:ease-in-out"
               animationDuration={150}
             />
           );

@@ -32,7 +32,7 @@ const AdvancedSwellChartYAxis = () => {
     <ResponsiveContainer
       width={60}
       height="100%"
-      className="mb-0 absolute top-80 left-0 md:left-4 z-10 h-48 min-h-48 max-h-48"
+      className="tw:mb-0 tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10 tw:h-48 tw:min-h-48 tw:max-h-48"
     >
       <LineChart
         accessibilityLayer
@@ -41,7 +41,7 @@ const AdvancedSwellChartYAxis = () => {
           bottom: 12,
           left: 11,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}
@@ -74,7 +74,7 @@ const AdvancedSwellChartYAxis = () => {
           }) => {
             return value.index === 0 ? (
               <GiBigWave
-                className="w-6 h-6"
+                className="tw:w-6 tw:h-6"
                 x={value.x - 30}
                 y={value.y - 20}
                 size={20}
@@ -93,7 +93,7 @@ const AdvancedSwellChartYAxis = () => {
               </text>
             );
           }}
-          className="transition-opacity ease-in-out duration-200"
+          className="tw:transition-opacity tw:ease-in-out tw:duration-200"
         />
 
         {eventIds.map((eventId, index) => {

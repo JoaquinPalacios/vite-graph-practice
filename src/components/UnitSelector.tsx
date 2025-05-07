@@ -10,7 +10,7 @@ export const UnitSelector = ({
   defaultValues,
 }: UnitSelectorProps) => {
   return (
-    <div className="flex gap-4 items-center">
+    <div className="tw:flex tw:gap-4 tw:items-center">
       <button
         onClick={() =>
           onChange({
@@ -18,7 +18,7 @@ export const UnitSelector = ({
             showAdvancedChart: !defaultValues.showAdvancedChart,
           })
         }
-        className="p-2 rounded border border-gray-300 hover:bg-gray-100"
+        className="tw:p-2 tw:rounded tw:border tw:border-gray-300 tw:hover:bg-gray-100"
       >
         {defaultValues.showAdvancedChart ? "Hide" : "Show"} Advanced Chart
       </button>

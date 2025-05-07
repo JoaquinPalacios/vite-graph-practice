@@ -37,7 +37,7 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
   const IconWrapper = ({ children }: { children: React.ReactNode }) => (
     <g
       transform={`translate(${(props.x || 0) - 7}, ${props.y || 0})`}
-      className="hover:[&>svg]:fill-gray-800 hover:[&>text]:fill-gray-800 [&>svg]:transition-colors"
+      className="tw:hover:[&>svg]:fill-gray-800 tw:hover:[&>text]:fill-gray-800 tw:[&>svg]:transition-colors"
     >
       {/* Invisible hit area */}
       <rect width="24" height="40" fill="transparent" />
@@ -48,7 +48,7 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
   const CurrentTemp = ({ payload }: { payload: WeatherData }) => {
     return (
       <text
-        className="transition-colors"
+        className="tw:transition-colors"
         fill="#666"
         dy={36}
         dx={4}

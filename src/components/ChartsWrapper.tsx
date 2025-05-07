@@ -67,7 +67,7 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps) => {
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
 
       <div
-        className="p-0 w-full overflow-y-auto no-scrollbar chart-scroll-container [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-track]:bg-transparent"
+        className="tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:chart-scroll-container tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent"
         onScroll={handleScroll}
       >
         {children}

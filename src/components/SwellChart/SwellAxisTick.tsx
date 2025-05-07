@@ -27,7 +27,7 @@ export const SwellAxisTick = ({
 
   return (
     <g
-      className="flex flex-col-reverse items-center justify-center"
+      className="tw:flex tw:flex-col-reverse tw:items-center tw:justify-center"
       textAnchor="middle"
     >
       <svg

@@ -46,8 +46,8 @@ export const SwellChart = ({
       width={getChartWidth(chartData.length, 256, 60)}
       height="100%"
       className={cn(
-        "mb-0 h-80 min-h-80 relative",
-        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:bottom-0 after:left-20 after:border-b after:border-slate-300 after:pointer-events-none"
+        "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-6rem)] tw:after:bottom-0 tw:after:left-20 tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <BarChart
@@ -57,7 +57,7 @@ export const SwellChart = ({
         margin={{
           bottom: 12,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
         syncId="swellnet"
       >
         <CartesianGrid
@@ -231,7 +231,7 @@ export const SwellChart = ({
                   value={value}
                   fill={fill}
                   hasSecondary={false}
-                  className="animate-in fade-in-0 duration-1000"
+                  className="tw:animate-in tw:fade-in-0 tw:duration-1000"
                 />
               );
             }}
@@ -252,7 +252,7 @@ export const SwellChart = ({
           activeBar={{
             fill: "#ffc95d",
           }}
-          className="w-7 min-w-7"
+          className="tw:w-7 tw:min-w-7"
           stackId="a"
           animationBegin={210}
           animationEasing="ease-in-out"
