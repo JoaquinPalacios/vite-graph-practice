@@ -3,111 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { DrupalApiData } from "./types/index.ts";
-import { ChartDataItem } from "./types/index.ts";
-
-interface ApiTrainData {
-  train_delta?: string;
-  trainDelta?: string;
-  sig_height?: string;
-  sigHeight?: string;
-  peak_period?: string;
-  peakPeriod?: string;
-  direction: string;
-}
-
-interface ApiBulletin {
-  trainData: ApiTrainData[];
-}
-
-interface ApiStep extends ChartDataItem {
-  bulletin?: ApiBulletin;
-}
-
-/**
- * This function takes the raw API data steps and transforms them
- * into the array structure the graph expects.
- * @param apiData - The raw API data steps
- * @param forecastType - The forecast type to process
- * @returns The transformed chart data
- */
-function processApiDataToChartData(
-  apiData: DrupalApiData,
-  forecastType: "gfs" | "ecmwf" = "gfs"
-): ChartDataItem[] {
-  const forecastData = apiData.forecasts[forecastType];
-
-  if (
-    !forecastData ||
-    !forecastData.forecastSteps ||
-    forecastData.forecastSteps.length === 0
-  ) {
-    console.warn(
-      `Vite: No forecast received from API data for ${forecastType}.`
-    );
-    return [];
-  }
-
-  const chartData: ChartDataItem[] = forecastData.forecastSteps.map(
-    (apiStep: ApiStep, index) => {
-      const chartItem: ChartDataItem = {
-        localDateTimeISO: apiStep.localDateTimeISO || "",
-        utcDateTimeISO: apiStep.utcDateTimeISO,
-
-        wind: {
-          direction: apiStep.wind?.direction ?? null,
-          speedKmh: apiStep.wind?.speedKmh ?? null,
-          speedKnots: apiStep.wind?.speedKnots ?? null,
-        },
-
-        primary: {
-          fullSurfHeightFeet: apiStep.primary?.fullSurfHeightFeet ?? null,
-          direction: apiStep.primary?.direction ?? null,
-          fullSurfHeightFeetLabelBin:
-            apiStep.primary?.fullSurfHeightFeetLabelBin || undefined,
-          fullSurfHeightFeetLabelDescriptive:
-            apiStep.primary?.fullSurfHeightFeetLabelDescriptive || undefined,
-          fullSurfHeightMetres: apiStep.primary?.fullSurfHeightMetres ?? null,
-          fullSurfHeightMetresLabelBin:
-            apiStep.primary?.fullSurfHeightMetresLabelBin || undefined,
-          totalSigHeight: apiStep.primary?.totalSigHeight ?? null,
-        },
-
-        secondary: apiStep.secondary
-          ? {
-              fullSurfHeightFeet: apiStep.secondary?.fullSurfHeightFeet ?? null,
-              direction: apiStep.secondary?.direction ?? null,
-              fullSurfHeightFeetLabelBin:
-                apiStep.secondary?.fullSurfHeightFeetLabelBin || undefined,
-              fullSurfHeightFeetLabelDescriptive:
-                apiStep.secondary?.fullSurfHeightFeetLabelDescriptive ||
-                undefined,
-              fullSurfHeightMetres:
-                apiStep.secondary?.fullSurfHeightMetres ?? null,
-              fullSurfHeightMetresLabelBin:
-                apiStep.secondary?.fullSurfHeightMetresLabelBin || undefined,
-              totalSigHeight: apiStep.secondary?.totalSigHeight ?? null,
-            }
-          : undefined,
-
-        trainData:
-          apiStep.bulletin?.trainData?.map((train: ApiTrainData) => ({
-            trainDelta: Number(train.trainDelta || train.train_delta || 0),
-            sigHeight: Number(train.sigHeight || train.sig_height || 0),
-            peakPeriod: Number(train.peakPeriod || train.peak_period || 0),
-            direction: Number(train.direction || 0),
-          })) || [],
-
-        ...(index === 0 && forecastData.bulletinDateTimeUtc
-          ? { bulletinDateTimeUtc: forecastData.bulletinDateTimeUtc }
-          : {}),
-      };
-
-      return chartItem;
-    }
-  );
-
-  return chartData;
-}
 
 /**
  * This function initializes the graph by getting the container and
@@ -131,23 +26,17 @@ function initGraph() {
   ) {
     const rawApiData: DrupalApiData = drupalSettings.apiData;
 
-    // Transform the raw forecast steps into the structure the graph needs
-    const ecmwfChartData: ChartDataItem[] = processApiDataToChartData(
-      rawApiData,
-      // "gfs"
-      "ecmwf"
-    );
-    const gfsChartData: ChartDataItem[] = processApiDataToChartData(
-      rawApiData,
-      "gfs"
-    );
-
-    const allChartData = [...ecmwfChartData, ...gfsChartData];
-
+    // Calculate max surf height from both models
     const maxSurfHeight =
       rawApiData.preferences.units.surfHeight === "ft"
         ? Math.max(
-            ...allChartData.map(
+            ...rawApiData.forecasts.gfs.forecastSteps.map(
+              (d) =>
+                d.secondary?.fullSurfHeightFeet ??
+                d.primary.fullSurfHeightFeet ??
+                0
+            ),
+            ...rawApiData.forecasts.ecmwf.forecastSteps.map(
               (d) =>
                 d.secondary?.fullSurfHeightFeet ??
                 d.primary.fullSurfHeightFeet ??
@@ -155,7 +44,13 @@ function initGraph() {
             )
           )
         : Math.max(
-            ...allChartData.map(
+            ...rawApiData.forecasts.gfs.forecastSteps.map(
+              (d) =>
+                d.secondary?.fullSurfHeightMetres ??
+                d.primary.fullSurfHeightMetres ??
+                0
+            ),
+            ...rawApiData.forecasts.ecmwf.forecastSteps.map(
               (d) =>
                 d.secondary?.fullSurfHeightMetres ??
                 d.primary.fullSurfHeightMetres ??
@@ -171,10 +66,11 @@ function initGraph() {
 
     // Prepare props for the App component
     const appProps = {
-      chartData: gfsChartData,
+      rawApiData,
       locationName: rawApiData.location.name,
       timezone: rawApiData.location.timezone,
-      localDateTimeISO: gfsChartData[0].localDateTimeISO,
+      localDateTimeISO:
+        rawApiData.forecasts.gfs.forecastSteps[0].localDateTimeISO,
       bulletinDateTimeUtc: rawApiData.forecasts.gfs.bulletinDateTimeUtc
         ? rawApiData.forecasts.gfs.bulletinDateTimeUtc
         : "unknown",
