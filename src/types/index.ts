@@ -80,11 +80,11 @@ export interface DrupalApiData {
   };
   forecasts: {
     ecmwf: {
-      bulletinTimeUtc: string;
+      bulletinDateTimeUtc: string;
       forecastSteps: ChartDataItem[];
     };
     gfs: {
-      bulletinTimeUtc: string;
+      bulletinDateTimeUtc: string;
       forecastSteps: ChartDataItem[];
     };
   };
@@ -99,7 +99,6 @@ export interface DrupalApiData {
 }
 
 export interface ChartDataItem {
-  bulletinDatetimeUtc?: string; // Only on the first item
   localDateTimeISO: string;
   utcDateTimeISO: string; // Needs to be derived or present in API data
   wind: {

@@ -19,7 +19,7 @@ export const AdvanceCustomTooltip = memo(
           className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden"
           style={{ visibility: "visible" }}
         >
-          <h5 className="tw:mb-2 tw:px-2 tw:pt-2 tw:text-center tw:text-white tw:font-medium tw:text-xs">
+          <h5 className="text-color-white margin-none tw:p-2 tw:text-center tw:font-medium tw:text-xs">
             {new Date(payload[0].payload.localDateTimeISO)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",

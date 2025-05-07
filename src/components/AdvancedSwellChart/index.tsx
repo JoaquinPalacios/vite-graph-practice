@@ -14,12 +14,15 @@ import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-import chartData from "@/data";
-import { UnitPreferences } from "@/types";
+import { ChartDataItem, UnitPreferences } from "@/types";
 import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { formatDateTick, generateTicks } from "@/utils/chart-utils";
+import {
+  formatDateTick,
+  generateTicks,
+  getChartWidth,
+} from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
@@ -37,8 +40,12 @@ import { Payload } from "recharts/types/component/DefaultTooltipContent";
 
 const AdvancedSwellChart = ({
   unitPreferences,
+  chartData,
+  maxSurfHeight,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
+  maxSurfHeight: number;
 }) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [tooltipHoveredIndex, setTooltipHoveredIndex] = useState<number | null>(
@@ -51,7 +58,10 @@ const AdvancedSwellChart = ({
    * Process the swell data to identify events
    * useMemo prevents reprocessing on every render unless chartData changes
    */
-  const processedSwellData = useMemo(() => processSwellData(chartData), []);
+  const processedSwellData = useMemo(
+    () => processSwellData(chartData),
+    [chartData]
+  );
 
   const eventIds = Object.keys(processedSwellData);
 
@@ -137,9 +147,15 @@ const AdvancedSwellChart = ({
     return null;
   };
 
+  if (getChartWidth(chartData.length) === 0) {
+    return null;
+  }
+
+  console.log({ chartData });
+
   return (
     <ResponsiveContainer
-      width={4848}
+      width={getChartWidth(chartData.length, 256, 60)}
       height="100%"
       className={cn(
         "tw:mb-0 tw:h-48 tw:min-h-48 tw:transition-[height,min-height] tw:duration-300 tw:ease-in-out",
@@ -175,7 +191,7 @@ const AdvancedSwellChart = ({
           allowDataOverflow
           hide
           tickFormatter={formatDateTick}
-          padding={{ left: 14, right: 14 }}
+          padding={{ left: 11, right: 11 }}
           interval={7}
         />
 
@@ -190,8 +206,8 @@ const AdvancedSwellChart = ({
           overflow="visible"
           opacity={0}
           ticks={generateTicks(
-            Math.max(...chartData.map((d) => d.waveHeightMetres)),
-            "m"
+            maxSurfHeight,
+            unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
           )}
           tick={() => {
             return <text></text>;

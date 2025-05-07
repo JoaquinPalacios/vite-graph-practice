@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
-import "./App.css";
 import { ChartDataItem, UnitPreferences } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
+import { formatBulletinDateTime } from "./lib/time-utils";
 
 export interface AppProps {
   chartData: ChartDataItem[]; // Expects the processed array
@@ -11,6 +11,7 @@ export interface AppProps {
   defaultPreferences: UnitPreferences;
   maxSurfHeight: number;
   localDateTimeISO: string;
+  bulletinDateTimeUtc: string;
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -21,6 +22,7 @@ function App({
   maxSurfHeight,
   locationName,
   localDateTimeISO,
+  bulletinDateTimeUtc,
 }: AppProps) {
   return (
     <div className="App">
@@ -34,11 +36,8 @@ function App({
           {locationName} Surf Forecast
         </h2>
         <p className="tw:text-sm tw:mb-4">
-          Model run time{" "}
-          {chartData[0].bulletinDatetimeUtc
-            ? chartData[0].bulletinDatetimeUtc
-            : "unknown"}
-          , next model run at..
+          Model run time {formatBulletinDateTime(bulletinDateTimeUtc)}, next
+          model run at..
         </p>
         <ChartsContainer
           chartData={chartData}

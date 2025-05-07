@@ -8,13 +8,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-// import chartData from "@/data";
 import { UnitPreferences } from "@/types";
 import {
   formatDateTick,
   generateTicks,
   getChartWidth,
-  // processedData,
 } from "@/utils/chart-utils";
 import { SwellLabel } from "./SwellLabel";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
@@ -34,8 +32,6 @@ export const SwellChart = ({
   maxSurfHeight: number;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
-
-  console.log({ chartData });
 
   if (getChartWidth(chartData.length) === 0) {
     return null;
@@ -57,7 +53,7 @@ export const SwellChart = ({
         margin={{
           bottom: 12,
         }}
-        className="tw:[&>svg]:focus:outline-none"
+        className="swellnet-bar-chart tw:[&>svg]:focus:outline-none"
         syncId="swellnet"
       >
         <CartesianGrid

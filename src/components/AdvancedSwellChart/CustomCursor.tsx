@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
 interface CustomCursorProps {
   points?: { x: number; y: number }[];
   payloadIndex?: number;
@@ -6,10 +10,23 @@ interface CustomCursorProps {
 
 const CustomCursor = (props: CustomCursorProps) => {
   const { points, setTooltipHoveredIndex, payloadIndex } = props;
-  setTooltipHoveredIndex(payloadIndex ?? 0);
-  const pointsArray = points ?? [];
-  const width = 37.40625;
+  const [width, setWidth] = useState(32);
   const halfWidth = width / 2;
+
+  useEffect(() => {
+    setTooltipHoveredIndex(payloadIndex ?? 0);
+
+    // Get the tooltip cursor element fromm the bar chart
+    const tooltipCursor = document.querySelector(
+      ".swellnet-bar-chart .recharts-tooltip-cursor"
+    );
+    if (tooltipCursor) {
+      const rect = tooltipCursor.getBoundingClientRect();
+      setWidth(rect.width);
+    }
+  }, [payloadIndex, setTooltipHoveredIndex]);
+
+  const pointsArray = points ?? [];
 
   return (
     <path

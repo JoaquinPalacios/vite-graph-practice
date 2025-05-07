@@ -28,7 +28,7 @@ export const SwellTooltip = memo(
     if (active && payload && payload.length) {
       return (
         <div className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden">
-          <h5 className="tw:mb-2 tw:px-2 tw:pt-2 tw:text-center tw:text-white tw:font-medium tw:text-xs">
+          <h5 className="text-color-white margin-none tw:p-2 tw:text-center tw:font-medium tw:text-xs">
             {new Date(label)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",

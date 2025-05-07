@@ -34,7 +34,6 @@ function processApiDataToChartData(
   apiData: DrupalApiData,
   forecastType: "gfs" | "ecmwf" = "gfs"
 ): ChartDataItem[] {
-  console.log("Vite: Processing API data to chart data:", apiData);
   const forecastData = apiData.forecasts[forecastType];
 
   if (
@@ -98,8 +97,8 @@ function processApiDataToChartData(
             direction: Number(train.direction || 0),
           })) || [],
 
-        ...(index === 0 && forecastData.bulletinTimeUtc
-          ? { bulletinDatetimeUtc: forecastData.bulletinTimeUtc }
+        ...(index === 0 && forecastData.bulletinDateTimeUtc
+          ? { bulletinDateTimeUtc: forecastData.bulletinDateTimeUtc }
           : {}),
       };
 
@@ -107,7 +106,6 @@ function processApiDataToChartData(
     }
   );
 
-  console.log("Vite: Transformed chartData:", chartData);
   return chartData;
 }
 
@@ -132,7 +130,6 @@ function initGraph() {
     !drupalSettings.apiData.error
   ) {
     const rawApiData: DrupalApiData = drupalSettings.apiData;
-    console.log("Vite: 1 - Raw API data received from Drupal:", rawApiData);
 
     // Transform the raw forecast steps into the structure the graph needs
     const ecmwfChartData: ChartDataItem[] = processApiDataToChartData(
@@ -174,10 +171,13 @@ function initGraph() {
 
     // Prepare props for the App component
     const appProps = {
-      chartData: ecmwfChartData,
+      chartData: gfsChartData,
       locationName: rawApiData.location.name,
       timezone: rawApiData.location.timezone,
-      localDateTimeISO: ecmwfChartData[0].localDateTimeISO,
+      localDateTimeISO: gfsChartData[0].localDateTimeISO,
+      bulletinDateTimeUtc: rawApiData.forecasts.gfs.bulletinDateTimeUtc
+        ? rawApiData.forecasts.gfs.bulletinDateTimeUtc
+        : "unknown",
       defaultPreferences: {
         units: {
           surfHeight: (rawApiData.preferences.units.surfHeight === "ft"
