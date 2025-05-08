@@ -1,15 +1,16 @@
 import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
-
 import { ResponsiveContainer } from "recharts";
-import { weatherData } from "@/data/weatherData";
+// import { weatherData } from "@/data/weatherData";
 import WeatherBubble from "./WeatherBubble";
-import { formatDateTick } from "@/utils/chart-utils";
+import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
+import { WeatherData } from "@/types";
 
-const WeatherChart = () => {
+const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
+  console.log({ weatherData });
   return (
     <ResponsiveContainer
-      width={4848}
+      width={getChartWidth(weatherData.length, 256, 60)}
       height="100%"
       className={cn(
         "tw:h-16 tw:min-h-16 tw:relative",

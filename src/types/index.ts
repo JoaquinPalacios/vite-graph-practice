@@ -96,6 +96,13 @@ export interface DrupalApiData {
     };
   };
   error: string | null;
+  weather: {
+    hourly: {
+      temperature_2m: number[];
+      time: string[];
+      weather_code: number[];
+    };
+  };
 }
 
 export interface ChartDataItem {
@@ -130,6 +137,13 @@ export interface ChartDataItem {
     peakPeriod: number | null;
     direction: number | null;
   }[];
+}
+
+export interface WeatherData {
+  index: number;
+  localDateTimeISO: string;
+  currentTemp: number;
+  weatherId: number;
 }
 
 declare global {

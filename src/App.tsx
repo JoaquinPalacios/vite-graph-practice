@@ -1,19 +1,20 @@
 import { lazy, Suspense, useState } from "react";
-import { UnitPreferences, DrupalApiData } from "./types/index.ts";
+import { UnitPreferences, DrupalApiData, WeatherData } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
 import { formatBulletinDateTime } from "./lib/time-utils";
 import { cn } from "./utils/utils.ts";
 import { processApiDataToChartData } from "./lib/data-processing.ts";
 
-export interface AppProps {
+interface AppProps {
   rawApiData: DrupalApiData;
-  locationName: string;
-  timezone: string;
   defaultPreferences: UnitPreferences;
   maxSurfHeight: number;
+  locationName: string;
   localDateTimeISO: string;
   bulletinDateTimeUtc: string;
+  chartWidth: number;
+  weatherData: WeatherData[];
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -25,6 +26,8 @@ function App({
   locationName,
   localDateTimeISO,
   bulletinDateTimeUtc,
+  chartWidth,
+  weatherData,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
 
@@ -32,7 +35,7 @@ function App({
   const chartData = processApiDataToChartData(rawApiData, modelType);
 
   return (
-    <div className="App">
+    <div className="tw:max-w-[86.75rem] tw:mx-auto tw:px-6">
       <Suspense fallback={<GraphSkeleton />}>
         <SurfReport
           localDateTimeISO={localDateTimeISO}
@@ -76,6 +79,8 @@ function App({
           chartData={chartData}
           defaultPreferences={defaultPreferences}
           maxSurfHeight={maxSurfHeight}
+          chartWidth={chartWidth}
+          weatherData={weatherData}
         />
       </Suspense>
     </div>

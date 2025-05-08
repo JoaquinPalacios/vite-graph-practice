@@ -33,10 +33,6 @@ export const SwellChart = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
-  if (getChartWidth(chartData.length) === 0) {
-    return null;
-  }
-
   return (
     <ResponsiveContainer
       width={getChartWidth(chartData.length, 256, 60)}
@@ -287,7 +283,7 @@ export const SwellChart = ({
           padding={{
             top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
           }}
-          interval="preserveStart"
+          interval="preserveEnd"
           overflow="visible"
           opacity={0}
           allowDecimals={false}

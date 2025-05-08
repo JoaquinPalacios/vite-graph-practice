@@ -3,6 +3,17 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { DrupalApiData } from "./types/index.ts";
+import { getChartWidth } from "./utils/chart-utils";
+
+/**
+ * Ensures we only use complete days of data (8 data points per day)
+ * @param data - Array of data points
+ * @returns Array trimmed to complete days
+ */
+function trimToCompleteDays<T>(data: T[]): T[] {
+  const completeDays = Math.floor(data.length / 8);
+  return data.slice(0, completeDays * 8);
+}
 
 /**
  * This function initializes the graph by getting the container and
@@ -17,6 +28,8 @@ function initGraph() {
       Drupal?: { settings?: { swellnetGraph?: { apiData?: DrupalApiData } } };
     }
   ).Drupal?.settings?.swellnetGraph;
+
+  console.log("Vite: Drupal settings:", drupalSettings);
 
   if (
     container &&
@@ -58,6 +71,16 @@ function initGraph() {
             )
           );
 
+    // Calculate chart width based on the model with the most complete days
+    const gfsDataLength = trimToCompleteDays(
+      rawApiData.forecasts.gfs.forecastSteps
+    ).length;
+    const ecmwfDataLength = trimToCompleteDays(
+      rawApiData.forecasts.ecmwf.forecastSteps
+    ).length;
+    const maxDataLength = Math.max(gfsDataLength, ecmwfDataLength);
+    const chartWidth = getChartWidth(maxDataLength);
+
     // Store the raw API data globally for forecast type switching
     (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData =
       rawApiData;
@@ -85,6 +108,23 @@ function initGraph() {
         showAdvancedChart: false,
       },
       maxSurfHeight: maxSurfHeight,
+      chartWidth: chartWidth,
+      weatherData: rawApiData.weather.hourly
+        ? (() => {
+            const isEcmwf = rawApiData.forecasts.ecmwf.forecastSteps.length > 0;
+            const maxHours = isEcmwf
+              ? 240
+              : rawApiData.weather.hourly.time.length;
+            return rawApiData.weather.hourly.time
+              .slice(0, maxHours)
+              .map((time: string, index: number) => ({
+                index: 1,
+                localDateTimeISO: time,
+                currentTemp: rawApiData.weather.hourly.temperature_2m[index],
+                weatherId: rawApiData.weather.hourly.weather_code[index],
+              }));
+          })()
+        : [],
     };
 
     // Render the React component

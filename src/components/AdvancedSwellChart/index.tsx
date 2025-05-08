@@ -151,8 +151,6 @@ const AdvancedSwellChart = ({
     return null;
   }
 
-  console.log({ chartData });
-
   return (
     <ResponsiveContainer
       width={getChartWidth(chartData.length, 256, 60)}
@@ -200,7 +198,7 @@ const AdvancedSwellChart = ({
           domain={[0, "dataMax"]}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
-          interval="preserveStart"
+          interval="preserveEnd"
           allowDecimals={false}
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
@@ -274,7 +272,8 @@ const AdvancedSwellChart = ({
                 setHoverIndex(index);
               }}
               className="tw:[&>g>svg]:transition-opacity tw:[&>g>svg]:duration-150 tw:[&>g>svg]:ease-in-out"
-              animationDuration={150}
+              // animationDuration={150}
+              isAnimationActive={false}
             />
           );
         })}

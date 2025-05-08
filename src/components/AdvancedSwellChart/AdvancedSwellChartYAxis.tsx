@@ -6,7 +6,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { GiBigWave } from "react-icons/gi";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { formatDateTick, generateTicks } from "@/utils/chart-utils";
@@ -69,53 +68,6 @@ const AdvancedSwellChartYAxis = ({
           interval={7}
         />
 
-        <YAxis
-          type="number"
-          domain={[0, "dataMax"]}
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          minTickGap={0}
-          interval="preserveStart"
-          allowDecimals={false}
-          padding={{ bottom: 16, top: 20 }}
-          overflow="visible"
-          opacity={0}
-          ticks={generateTicks(
-            maxSurfHeight,
-            unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
-          )}
-          unit={unitPreferences.units.surfHeight}
-          tickLine={false}
-          axisLine={false}
-          tick={(value: {
-            x: number;
-            y: number;
-            index: number;
-            payload: { value: number };
-          }) => {
-            return value.index === 0 ? (
-              <GiBigWave
-                className="tw:w-6 tw:h-6"
-                x={value.x - 30}
-                y={value.y - 20}
-                size={20}
-                color="#666"
-              />
-            ) : (
-              <text
-                x={value.x - 11}
-                y={value.y}
-                dy={1}
-                textAnchor="end"
-                fontSize={12}
-                fill="#666"
-              >
-                {value.payload.value}m
-              </text>
-            );
-          }}
-          className="tw:transition-opacity tw:ease-in-out tw:duration-200"
-        />
-
         {eventIds.map((eventId, index) => {
           const eventData = processedSwellData[eventId];
 
@@ -130,6 +82,40 @@ const AdvancedSwellChartYAxis = ({
             />
           );
         })}
+
+        <YAxis
+          type="number"
+          domain={[0, "dataMax"]}
+          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+          minTickGap={0}
+          interval="preserveEnd"
+          allowDecimals={false}
+          padding={{ bottom: 16, top: 20 }}
+          overflow="visible"
+          ticks={generateTicks(maxSurfHeight, "m")}
+          unit="m"
+          axisLine={false}
+          tick={(value: {
+            x: number;
+            y: number;
+            index: number;
+            payload: { value: number };
+          }) => (
+            <text
+              x={value.x - 11}
+              y={value.y}
+              dy={1}
+              textAnchor="end"
+              fontSize={12}
+              fill="#666"
+              fillOpacity={unitPreferences.showAdvancedChart ? 1 : 0}
+              className="tw:transition-opacity tw:ease tw:duration-300"
+            >
+              {value.payload.value}m
+            </text>
+          )}
+          className="tw:transition-opacity tw:ease-in-out tw:duration-200"
+        />
       </LineChart>
     </ResponsiveContainer>
   );

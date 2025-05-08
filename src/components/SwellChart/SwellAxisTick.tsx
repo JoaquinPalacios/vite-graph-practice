@@ -38,6 +38,7 @@ export const SwellAxisTick = ({
         height={20}
         width={20}
         fill={color || "currentColor"}
+        className="tw:transition-colors tw:duration-200 tw:ease"
       >
         <path
           d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
@@ -51,6 +52,7 @@ export const SwellAxisTick = ({
           style={{
             transformOrigin: "center",
           }}
+          className="tw:transition-transform tw:duration-150 tw:ease"
         />
         <path
           d="M7.65 10h5v7.5h-5z"

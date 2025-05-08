@@ -1,4 +1,4 @@
-import { formatWeatherText } from "@/utils/chart-utils";
+// import { formatWeatherText } from "@/utils/chart-utils";
 import { TooltipProps } from "recharts";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
@@ -9,6 +9,8 @@ const WeatherTooltip = ({
   payload,
 }: TooltipProps<ValueType, NameType>) => {
   if (!active || !payload) return null;
+
+  console.log({ payload });
 
   return (
     <div className="tw:rounded-md tw:bg-white tw:shadow-md tw:overflow-hidden">
@@ -29,10 +31,11 @@ const WeatherTooltip = ({
           .toLowerCase()}
       </h5>
       <p className="tw:text-xs tw:pt-2 tw:pl-4 tw:pr-2 tw:relative tw:before:absolute tw:before:bg-swell/50 tw:before:left-1 tw:before:top-3 tw:before:w-2 tw:before:h-2 tw:before:z-10 tw:before:rounded-xs">
-        {formatWeatherText(payload[0].payload.weather)}
+        ID: {payload[0].payload.weatherId}
       </p>
+
       <p className="tw:text-xs tw:pl-4 tw:pr-2 tw:pb-2 tw:relative tw:before:absolute tw:before:bg-swell/50 tw:before:left-1 tw:before:top-1 tw:before:w-2 tw:before:h-2 tw:before:z-10 tw:before:rounded-xs">
-        {payload[0].payload.minTemp}°C / {payload[0].payload.maxTemp}°C
+        {payload[0].payload.currentTemp}°C
       </p>
     </div>
   );

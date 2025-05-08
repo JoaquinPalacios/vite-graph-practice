@@ -8,7 +8,6 @@ import {
 } from "recharts";
 import { UnitPreferences } from "@/types";
 import { generateTicks } from "@/utils/chart-utils";
-import { GiBigWave } from "react-icons/gi";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { ChartDataItem } from "@/types/index.ts";
@@ -109,37 +108,29 @@ export const SwellChartYAxis = ({
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
           unit={unitPreferences.units.surfHeight}
-          interval="preserveStart"
+          interval="preserveEnd"
           overflow="visible"
           allowDecimals={false}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
             top: 20,
           }}
-          tickLine={false}
           axisLine={false}
           type="number"
           domain={[0, "dataMax"]}
           tick={(value) => {
             return value.index === 0 ? (
               <g transform="translate(-10, 0)">
-                <GiBigWave
-                  className="tw:w-6 tw:h-6"
-                  x={value.x - 8}
-                  y={value.y - 20}
-                  size={20}
-                  color="#666"
-                />
                 <LuWind
                   className="tw:w-4 tw:h-4"
-                  x={value.x - 8}
-                  y={value.y + 12}
+                  x={value.x - 6}
+                  y={value.y + 16}
                   size={20}
                   color="#666"
                 />
                 {unitPreferences.units.wind === "knots" ? (
                   <text
-                    x={value.x + 12}
+                    x={value.x + 10}
                     y={value.y + 52}
                     dy={1}
                     textAnchor="end"

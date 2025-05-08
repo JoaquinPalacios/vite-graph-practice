@@ -1,19 +1,18 @@
 import { IoCloudOfflineOutline } from "react-icons/io5";
 import {
-  WiDayCloudyHigh,
-  WiNightCloudyHigh,
   WiDayCloudy,
-  WiNightCloudy,
   WiDaySunny,
-  WiNightClear,
-  WiShowers,
   WiDaySunnyOvercast,
-  WiNightPartlyCloudy,
   WiRain,
-  WiNightFog,
   WiDayFog,
-  WiWindy,
   WiCloudy,
+  WiCloudyWindy,
+  WiDaySprinkle,
+  WiDayShowers,
+  WiSnow,
+  WiRainWind,
+  WiThunderstorm,
+  WiStormShowers,
 } from "react-icons/wi";
 
 type WeatherData = {
@@ -29,6 +28,35 @@ type WeatherBubbleProps = {
   cy?: number;
   payload?: WeatherData;
 };
+
+const weatherConfig = {
+  0: { icon: WiDaySunny, label: "Clear" },
+  1: { icon: WiDaySunnyOvercast, label: "Mostly Clear" },
+  2: { icon: WiDayCloudy, label: "Partly Cloudy" },
+  3: { icon: WiCloudy, label: "Overcast" },
+  45: { icon: WiDayFog, label: "Fog" },
+  48: { icon: WiCloudyWindy, label: "Icy Fog" },
+  51: { icon: WiDaySprinkle, label: "Light Drizzle" },
+  53: { icon: WiDaySprinkle, label: "Drizzle" },
+  55: { icon: WiDayShowers, label: "Heavy Drizzle" },
+  56: { icon: WiSnow, label: "Light Icy Drizzle" },
+  57: { icon: WiSnow, label: "Icy Drizzle" },
+  61: { icon: WiDayShowers, label: "Light Rain" },
+  63: { icon: WiRain, label: "Rain" },
+  65: { icon: WiRainWind, label: "Heavy Rain" },
+  66: { icon: WiSnow, label: "Light Icy Rain" },
+  67: { icon: WiSnow, label: "Icy Rain" },
+  71: { icon: WiSnow, label: "Light Snow" },
+  73: { icon: WiSnow, label: "Snow" },
+  75: { icon: WiSnow, label: "Heavy Snow" },
+  77: { icon: WiSnow, label: "Snow grains" },
+  80: { icon: WiRain, label: "Light Showers" },
+  81: { icon: WiDayShowers, label: "Showers" },
+  82: { icon: WiRainWind, label: "Heavy Showers" },
+  95: { icon: WiThunderstorm, label: "Thunderstorm" },
+  96: { icon: WiStormShowers, label: "Thunderstorm + Light Hail" },
+  99: { icon: WiStormShowers, label: "Thunderstorm + Hail" },
+} as const;
 
 const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!props.payload) return null;
@@ -54,175 +82,38 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
         dx={4}
         fontSize={10}
       >
-        {payload.currentTemp}°
+        {Math.round(payload.currentTemp)}°
       </text>
     );
   };
 
-  const dayOrNight = (() => {
-    const date = new Date(props.payload.localDateTimeISO);
-    const hours = date.getHours();
-    // Consider daytime between 6am and 6pm
-    return hours >= 6 && hours < 18 ? "day" : "night";
-  })();
+  // const dayOrNight = (() => {
+  //   const date = new Date(props.payload.localDateTimeISO);
+  //   const hours = date.getHours();
+  //   // Consider daytime between 6am and 6pm
+  //   return hours >= 6 && hours < 18 ? "day" : "night";
+  // })();
 
-  switch (props.payload.weatherId) {
-    case 1:
-      return (
-        <IconWrapper>
-          <WiRain size={24} color="#666" aria-label="Rain" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 2:
-      return (
-        <IconWrapper>
-          <WiCloudy size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 3:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDaySunny size={24} color="#666" aria-label="Sunny" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightClear size={24} color="#666" aria-label="Clear" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 4:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDayCloudyHigh size={24} color="#666" aria-label="Cloudy" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightCloudyHigh size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 5:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDayCloudy size={24} color="#666" aria-label="Cloudy" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightCloudy size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 6:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDayFog size={24} color="#666" aria-label="Fog" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightFog size={24} color="#666" aria-label="Fog" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 7:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiWindy size={24} color="#666" aria-label="Windy" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightFog size={24} color="#666" aria-label="Fog" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 8:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDayFog size={24} color="#666" aria-label="Fog" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightFog size={24} color="#666" aria-label="Fog" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 9:
-      return (
-        <IconWrapper>
-          <WiShowers size={24} color="#666" aria-label="Showers" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 10:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDaySunnyOvercast size={24} color="#666" aria-label="Sunny" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightPartlyCloudy size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 11:
-      return (
-        <IconWrapper>
-          <WiDayCloudyHigh size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    case 12:
-      if (dayOrNight === "day") {
-        return (
-          <IconWrapper>
-            <WiDayCloudyHigh size={24} color="#666" aria-label="Cloudy" />
-            <CurrentTemp payload={props.payload} />
-          </IconWrapper>
-        );
-      }
-      return (
-        <IconWrapper>
-          <WiNightPartlyCloudy size={24} color="#666" aria-label="Cloudy" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
-    default:
-      return (
-        <IconWrapper>
-          <IoCloudOfflineOutline size={20} color="#666" aria-label="Cloud" />
-          <CurrentTemp payload={props.payload} />
-        </IconWrapper>
-      );
+  const weatherInfo =
+    weatherConfig[props.payload.weatherId as keyof typeof weatherConfig];
+
+  if (!weatherInfo) {
+    return (
+      <IconWrapper>
+        <IoCloudOfflineOutline size={20} color="#666" aria-label="Cloud" />
+        <CurrentTemp payload={props.payload} />
+      </IconWrapper>
+    );
   }
+
+  const Icon = weatherInfo.icon;
+
+  return (
+    <IconWrapper>
+      <Icon size={24} color="#666" aria-label={weatherInfo.label} />
+      <CurrentTemp payload={props.payload} />
+    </IconWrapper>
+  );
 };
 
 export default WeatherBubble;

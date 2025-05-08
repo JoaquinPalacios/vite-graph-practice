@@ -19,6 +19,16 @@ interface ApiStep extends ChartDataItem {
 }
 
 /**
+ * Ensures we only use complete days of data (8 data points per day)
+ * @param data - Array of data points
+ * @returns Array trimmed to complete days
+ */
+function trimToCompleteDays<T>(data: T[]): T[] {
+  const completeDays = Math.floor(data.length / 8);
+  return data.slice(0, completeDays * 8);
+}
+
+/**
  * This function takes the raw API data steps and transforms them
  * into the array structure the graph expects.
  * @param apiData - The raw API data steps
@@ -42,7 +52,10 @@ export function processApiDataToChartData(
     return [];
   }
 
-  const chartData: ChartDataItem[] = forecastData.forecastSteps.map(
+  // Trim the data to complete days
+  const completeData = trimToCompleteDays(forecastData.forecastSteps);
+
+  const chartData: ChartDataItem[] = completeData.map(
     (apiStep: ApiStep, index) => {
       const chartItem: ChartDataItem = {
         localDateTimeISO: apiStep.localDateTimeISO || "",
