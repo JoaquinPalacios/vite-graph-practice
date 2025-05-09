@@ -46,7 +46,6 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
   const baseSize = 8;
   const size = baseSize + period * 1; // Scale size based on period
   const clampedSize = Math.max(5, Math.min(18, size));
-  const rotation = direction - 45;
 
   const activeDot = isHover ? 1 : 0.4;
 
@@ -65,14 +64,14 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
       opacity={activeDot}
     >
       <path
-        transform={`rotate(${rotation}, 0, 0)`}
+        transform={`rotate(${direction}, 0, 0)`}
         style={{
           transformOrigin: "center",
         }}
         d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
       ></path>
       <path
-        transform={`rotate(${rotation}, 0, 0)`}
+        transform={`rotate(${direction}, 0, 0)`}
         style={{
           transformOrigin: "center",
         }}

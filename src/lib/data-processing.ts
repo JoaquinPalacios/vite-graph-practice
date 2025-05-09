@@ -23,7 +23,7 @@ interface ApiStep extends ChartDataItem {
  * @param data - Array of data points
  * @returns Array trimmed to complete days
  */
-function trimToCompleteDays<T>(data: T[]): T[] {
+export function trimToCompleteDays<T>(data: T[]): T[] {
   const completeDays = Math.floor(data.length / 8);
   return data.slice(0, completeDays * 8);
 }

@@ -1,4 +1,3 @@
-// import { formatWeatherText } from "@/utils/chart-utils";
 import { TooltipProps } from "recharts";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 

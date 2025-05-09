@@ -4,16 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { DrupalApiData } from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
-
-/**
- * Ensures we only use complete days of data (8 data points per day)
- * @param data - Array of data points
- * @returns Array trimmed to complete days
- */
-function trimToCompleteDays<T>(data: T[]): T[] {
-  const completeDays = Math.floor(data.length / 8);
-  return data.slice(0, completeDays * 8);
-}
+import { trimToCompleteDays } from "./lib/data-processing.ts";
 
 /**
  * This function initializes the graph by getting the container and
@@ -40,36 +31,32 @@ function initGraph() {
     const rawApiData: DrupalApiData = drupalSettings.apiData;
 
     // Calculate max surf height from both models
-    const maxSurfHeight =
-      rawApiData.preferences.units.surfHeight === "ft"
-        ? Math.max(
-            ...rawApiData.forecasts.gfs.forecastSteps.map(
-              (d) =>
-                d.secondary?.fullSurfHeightFeet ??
-                d.primary.fullSurfHeightFeet ??
-                0
-            ),
-            ...rawApiData.forecasts.ecmwf.forecastSteps.map(
-              (d) =>
-                d.secondary?.fullSurfHeightFeet ??
-                d.primary.fullSurfHeightFeet ??
-                0
-            )
-          )
-        : Math.max(
-            ...rawApiData.forecasts.gfs.forecastSteps.map(
-              (d) =>
-                d.secondary?.fullSurfHeightMetres ??
-                d.primary.fullSurfHeightMetres ??
-                0
-            ),
-            ...rawApiData.forecasts.ecmwf.forecastSteps.map(
-              (d) =>
-                d.secondary?.fullSurfHeightMetres ??
-                d.primary.fullSurfHeightMetres ??
-                0
-            )
-          );
+    const maxSurfHeight = {
+      feet: Math.max(
+        ...rawApiData.forecasts.gfs.forecastSteps.map(
+          (d) =>
+            d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
+        ),
+        ...rawApiData.forecasts.ecmwf.forecastSteps.map(
+          (d) =>
+            d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
+        )
+      ),
+      meters: Math.max(
+        ...rawApiData.forecasts.gfs.forecastSteps.map(
+          (d) =>
+            d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0
+        ),
+        ...rawApiData.forecasts.ecmwf.forecastSteps.map(
+          (d) =>
+            d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0
+        )
+      ),
+    };
 
     // Calculate chart width based on the model with the most complete days
     const gfsDataLength = trimToCompleteDays(

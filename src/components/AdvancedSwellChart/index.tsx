@@ -203,10 +203,7 @@ const AdvancedSwellChart = ({
           padding={{ bottom: 16, top: 20 }}
           overflow="visible"
           opacity={0}
-          ticks={generateTicks(
-            maxSurfHeight,
-            unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
-          )}
+          ticks={generateTicks(maxSurfHeight, "m")}
           tick={() => {
             return <text></text>;
           }}

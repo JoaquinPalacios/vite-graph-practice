@@ -22,7 +22,10 @@ const ChartsContainer = ({
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
-  maxSurfHeight: number;
+  maxSurfHeight: {
+    feet: number;
+    meters: number;
+  };
   chartWidth: number;
   weatherData: WeatherData[];
 }) => {
@@ -55,22 +58,30 @@ const ChartsContainer = ({
           <SwellChart
             unitPreferences={unitPreferences}
             chartData={processedData}
-            maxSurfHeight={maxSurfHeight}
+            maxSurfHeight={
+              unitPreferences.units.surfHeight === "ft"
+                ? maxSurfHeight.feet
+                : maxSurfHeight.meters
+            }
           />
           <SwellChartYAxis
             unitPreferences={unitPreferences}
             chartData={processedData}
-            maxSurfHeight={maxSurfHeight}
+            maxSurfHeight={
+              unitPreferences.units.surfHeight === "ft"
+                ? maxSurfHeight.feet
+                : maxSurfHeight.meters
+            }
           />
 
           <AdvancedSwellChart
             unitPreferences={unitPreferences}
             chartData={processedData}
-            maxSurfHeight={maxSurfHeight}
+            maxSurfHeight={maxSurfHeight.meters}
           />
           <AdvancedSwellChartYAxis
             chartData={processedData}
-            maxSurfHeight={maxSurfHeight}
+            maxSurfHeight={maxSurfHeight.meters}
             unitPreferences={unitPreferences}
           />
 

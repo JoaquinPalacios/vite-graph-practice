@@ -36,9 +36,16 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps) => {
           rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
           rect.setAttribute("x", "0");
           rect.setAttribute("y", "0");
+          const isAdvanced = axis.classList.contains("advance-y-axis"); // The advanced Y axis needs to be 60px wide
           rect.setAttribute(
             "width",
-            isLandscapeMobile || isMobile ? "48" : "64"
+            isLandscapeMobile || isMobile
+              ? isAdvanced
+                ? "60"
+                : "48"
+              : isAdvanced
+              ? "60"
+              : "64"
           );
           rect.setAttribute("height", "320");
           rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");

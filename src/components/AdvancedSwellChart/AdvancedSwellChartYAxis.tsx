@@ -11,6 +11,7 @@ import processSwellData from "./ProcessDataSwell";
 import { formatDateTick, generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { ChartDataItem, UnitPreferences } from "@/types";
+import { cn } from "@/utils/utils";
 
 const AdvancedSwellChartYAxis = ({
   chartData,
@@ -36,22 +37,21 @@ const AdvancedSwellChartYAxis = ({
 
   return (
     <ResponsiveContainer
-      width={60}
+      width={72}
       height="100%"
-      className="tw:mb-0 tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10 tw:h-48 tw:min-h-48 tw:max-h-48"
+      className={cn(
+        "tw:mb-0 tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10 tw:h-48 tw:min-h-48 tw:max-h-48",
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:!min-h-0"
+      )}
     >
       <LineChart
         accessibilityLayer
         data={chartData}
-        margin={{
-          bottom: 12,
-          left: 11,
-        }}
         className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
-          vertical={true}
-          horizontal={true}
+          vertical={false}
+          horizontal={false}
           y={0}
           height={192}
           syncWithTicks
@@ -66,6 +66,7 @@ const AdvancedSwellChartYAxis = ({
           tickFormatter={formatDateTick}
           padding={{ left: 14, right: 14 }}
           interval={7}
+          opacity={0}
         />
 
         {eventIds.map((eventId, index) => {
@@ -79,6 +80,7 @@ const AdvancedSwellChartYAxis = ({
               dataKey="height"
               name={eventId}
               activeDot={false}
+              opacity={0}
             />
           );
         })}
@@ -95,26 +97,31 @@ const AdvancedSwellChartYAxis = ({
           ticks={generateTicks(maxSurfHeight, "m")}
           unit="m"
           axisLine={false}
+          transform="translate(-5, 0)"
           tick={(value: {
             x: number;
             y: number;
             index: number;
             payload: { value: number };
-          }) => (
-            <text
-              x={value.x - 11}
-              y={value.y}
-              dy={1}
-              textAnchor="end"
-              fontSize={12}
-              fill="#666"
-              fillOpacity={unitPreferences.showAdvancedChart ? 1 : 0}
-              className="tw:transition-opacity tw:ease tw:duration-300"
-            >
-              {value.payload.value}m
-            </text>
-          )}
-          className="tw:transition-opacity tw:ease-in-out tw:duration-200"
+          }) =>
+            value.index !== 0 ? (
+              <text
+                x={value.x - 2}
+                y={value.y}
+                dy={1}
+                textAnchor="end"
+                fontSize={12}
+                fill="#666"
+                fillOpacity={unitPreferences.showAdvancedChart ? 1 : 0}
+                className="tw:transition-opacity tw:ease tw:duration-300"
+              >
+                {value.payload.value}m
+              </text>
+            ) : (
+              <text></text>
+            )
+          }
+          className="advance-y-axis tw:transition-opacity tw:ease-in-out tw:duration-200"
         />
       </LineChart>
     </ResponsiveContainer>

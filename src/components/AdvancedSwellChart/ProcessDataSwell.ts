@@ -1,18 +1,4 @@
-/**
- * Data Processing Function
- * Identifies and groups swell events from time series data.
- * @param {Array} data - The input chartData array.
- * @param {object} options - Thresholds for matching.
- * @param {number} options.dirThreshold - Max direction difference (degrees).
- * @param {number} options.periodThreshold - Max period difference (seconds).
- * @param {number} options.minHeight - Minimum height (meters) to track.
- * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
- * @param {string} unitPreference - The preferred unit for wave height ('m' or 'ft').
- * @returns {object} - Object where keys are event IDs and values are arrays of data points.
- */
-
 import { ChartDataItem } from "@/types";
-import { metersToFeet } from "@/utils/chart-utils";
 
 interface SwellEvent {
   localDateTimeISO: string;
@@ -44,11 +30,28 @@ interface EventMap {
 }
 
 /**
- * Process Swell Data
- * @param data - The input chartData array.
- * @param options - Thresholds for matching.
- * @param unitPreference - The preferred unit for wave height ('m' or 'ft').
- * @returns {object} - Object where keys are event IDs and values are arrays of data points.
+ * @author - Joaquin Palacios
+ * @name - Process Swell Data
+ * @description Analyzes wave data over time to identify and track distinct swell events.
+ * The function groups waves into "events" based on similar characteristics (direction, period, and height),
+ * making it easier to track how specific swell patterns evolve over time, grouping them by direction, height and period.
+ *
+ * For example, if you have a week of wave data, this function will help identify:
+ * - When a new swell arrives
+ * - How long it lasts
+ * - How its characteristics change over time
+ * - When it fades away
+ *
+ * The result is a collection of swell events, each containing a series of measurements
+ * that show how that particular swell pattern developed.
+ *
+ * @param data - Array of wave measurements over time
+ * @param options - Configuration settings for matching waves into events
+ * @param {number} options.dirThreshold - Max direction difference (degrees).
+ * @param {number} options.periodThreshold - Max period difference (seconds).
+ * @param {number} options.minHeight - Minimum height (meters) to track.
+ * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
+ * @returns {object} - Collection of swell events, where each event contains its complete history
  */
 export default function processSwellData(
   data: ChartDataItem[],
@@ -58,8 +61,7 @@ export default function processSwellData(
     minHeight: 0.15,
     maxGap: 2,
     maxTimeGap: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
-  },
-  unitPreference: "m" | "ft" = "m"
+  }
 ) {
   const events: EventMap = {};
   let activeEvents: ActiveEvent[] = [];
@@ -90,10 +92,7 @@ export default function processSwellData(
         ) {
           currentSwells.push({
             trainDelta: train.trainDelta || 0,
-            height:
-              unitPreference === "ft"
-                ? metersToFeet(train.sigHeight)
-                : train.sigHeight,
+            height: train.sigHeight,
             direction: train.direction,
             period: train.peakPeriod,
             timestamp: currentTimestamp,

@@ -9,7 +9,10 @@ import { processApiDataToChartData } from "./lib/data-processing.ts";
 interface AppProps {
   rawApiData: DrupalApiData;
   defaultPreferences: UnitPreferences;
-  maxSurfHeight: number;
+  maxSurfHeight: {
+    feet: number;
+    meters: number;
+  };
   locationName: string;
   localDateTimeISO: string;
   bulletinDateTimeUtc: string;

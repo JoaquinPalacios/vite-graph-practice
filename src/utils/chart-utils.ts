@@ -52,36 +52,6 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   }
 };
 
-/**
- * Formats the wave height for the tooltip
- * @param height - The wave height
- * @param unit - The unit of the wave height
- * @returns The formatted wave height
- */
-export const formatWaveHeight = (
-  height: number | undefined,
-  unit: string | undefined
-) => {
-  if (!height) return "0m"; // Handle undefined height
-  const actualUnit = unit || "m"; // Default to meters if unit is undefined
-
-  if (actualUnit === "ft") {
-    // For feet, show as a range (e.g., 2-3ft)
-    const lowerBound = Math.floor(height);
-    const upperBound = Math.ceil(height);
-
-    // If the height is already a whole number, just return that value
-    if (lowerBound === upperBound) {
-      return `${lowerBound}${actualUnit}`;
-    }
-
-    return `${lowerBound}-${upperBound}${actualUnit}`;
-  }
-
-  // For meters, show one decimal place
-  return `${height.toFixed(1)}${actualUnit}`;
-};
-
 export const formatDateTick = (value: string) => {
   // Parse the ISO datetime string which includes timezone offset
   const date = new Date(value);
@@ -101,13 +71,6 @@ export const formatDateTick = (value: string) => {
   const reversedDate = `${day}/${month.padStart(2, "0")}`;
 
   return `${weekday} ${reversedDate}`;
-};
-
-export const formatWeatherText = (text: string) => {
-  return text
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 };
 
 /**

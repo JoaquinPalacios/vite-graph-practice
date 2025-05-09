@@ -13,6 +13,7 @@ import { memo } from "react";
 export const AdvanceCustomTooltip = memo(
   (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload, label } = props;
+    console.log({ payload });
     if (active && payload && payload.length) {
       return (
         <div
@@ -46,15 +47,27 @@ export const AdvanceCustomTooltip = memo(
                     value={item.payload.direction}
                     fill={item.color}
                   />
-                  <p className="tw:ml-px tw:text-xs">{item.value}m</p>
-                  <p className="tw:ml-px tw:text-xs">@</p>
-                  <p className="tw:ml-px tw:text-xs">{item.payload.period}s</p>
-                  <p className="tw:text-xs">
-                    {item.payload &&
-                      degreesToCompassDirection(item.payload.direction)}
+                  <p className="tw:ml-px tw:text-xs margin-none">
+                    {item.value}m
                   </p>
-                  <p className="tw:ml-px tw:text-xs">
-                    ({item.payload.direction}°)
+                  <p className="tw:ml-px tw:text-xs margin-none">@</p>
+                  <p className="tw:ml-px tw:text-xs margin-none">
+                    {item.payload.period}s
+                  </p>
+                  <p className="tw:text-xs margin-none">
+                    {item.payload &&
+                      degreesToCompassDirection(
+                        item.payload.direction > 180
+                          ? item.payload.direction - 180
+                          : item.payload.direction + 180
+                      )}
+                  </p>
+                  <p className="tw:ml-px tw:text-xs margin-none">
+                    (
+                    {item.payload.direction > 180
+                      ? item.payload.direction - 180
+                      : item.payload.direction + 180}
+                    °)
                   </p>
                 </div>
               ))}
