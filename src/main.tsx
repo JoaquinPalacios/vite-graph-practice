@@ -98,18 +98,14 @@ function initGraph() {
       chartWidth: chartWidth,
       weatherData: rawApiData.weather.hourly
         ? (() => {
-            const isEcmwf = rawApiData.forecasts.ecmwf.forecastSteps.length > 0;
-            const maxHours = isEcmwf
-              ? 240
-              : rawApiData.weather.hourly.time.length;
-            return rawApiData.weather.hourly.time
-              .slice(0, maxHours)
-              .map((time: string, index: number) => ({
+            return rawApiData.weather.hourly.time.map(
+              (time: string, index: number) => ({
                 index: 1,
                 localDateTimeISO: time,
                 currentTemp: rawApiData.weather.hourly.temperature_2m[index],
                 weatherId: rawApiData.weather.hourly.weather_code[index],
-              }));
+              })
+            );
           })()
         : [],
     };

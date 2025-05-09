@@ -12,7 +12,7 @@ import TideTooltip from "./TideTooltip";
 import { TideAreaDot } from "./TideAreaDot";
 // import { multiFormat } from "@/lib/time-utils";
 import {
-  dayTicks,
+  // dayTicks,
   processTimeScaleData,
   interpolateTideData,
 } from "@/utils/chart-utils";
@@ -129,7 +129,7 @@ const TideChart = () => {
           allowDuplicatedCategory={false}
           allowDataOverflow
           hide
-          ticks={dayTicks}
+          // ticks={dayTicks}
           // tickFormatter={multiFormat}
           padding={{ left: 19 }}
           width={300}

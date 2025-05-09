@@ -1,7 +1,13 @@
-import chartData from "@/data";
-import { processTimeData } from "@/lib/time-utils";
+// import { processTimeData } from "@/lib/time-utils";
 import { scaleTime } from "d3-scale";
-import { XAxisProps } from "recharts";
+// import { XAxisProps } from "recharts";
+
+interface TideDataPoint {
+  height: number;
+  timestamp: number;
+  localDateTimeISO: string;
+  utcDateTimeISO: string;
+}
 
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
@@ -155,39 +161,19 @@ export const processTimeScaleData = (timestamps: number[]) => {
 };
 
 // TODO - Remove this once we have the new utility working
-export const { processedData, dayTicks } = processTimeData(
-  chartData.map((item) => ({
-    ...item,
-    dateTime: item.localDateTimeISO,
-    timestamp: new Date(item.localDateTimeISO).getTime(),
-  }))
-);
+// export const { processedData, dayTicks } = processTimeData(
+//   chartData.map((item) => ({
+//     ...item,
+//     dateTime: item.localDateTimeISO,
+//     timestamp: new Date(item.localDateTimeISO).getTime(),
+//   }))
+// );
 
-const timeValues = processedData.map((row) => row.timestamp);
-const { startDateObj, endDateObj, timeScale } =
-  processTimeScaleData(timeValues);
+// const timeValues = processedData.map((row) => row.timestamp);
+// const { startDateObj, endDateObj, timeScale } =
+//   processTimeScaleData(timeValues);
 
-export { startDateObj, endDateObj, timeScale };
-
-/**
- * Base XAxis configuration
- */
-export const baseChartXAxisProps: Partial<XAxisProps> = {
-  dataKey: "timestamp",
-  // dataKey: (item) => new Date(item.dateTimeISO).getTime(),
-  type: "number" as const,
-  scale: timeScale,
-  domain: timeScale.domain().map((date) => date.valueOf()),
-  interval: "preserveStart" as const,
-  padding: { left: 12 },
-  allowDuplicatedCategory: false,
-  allowDataOverflow: true,
-};
-
-// Convert meters to feet with one decimal place precision
-export const metersToFeet = (meters: number): number => {
-  return Number((meters * 3.28084).toFixed(1));
-};
+// export { startDateObj, endDateObj, timeScale };
 
 /**
  * Calculates the coefficients for cubic spline interpolation
@@ -235,13 +221,6 @@ const calculateSplineCoefficients = (x: number[], y: number[]) => {
 
   return { b, c, d };
 };
-
-interface TideDataPoint {
-  height: number;
-  timestamp: number;
-  localDateTimeISO: string;
-  utcDateTimeISO: string;
-}
 
 // Interpolate tide data with natural curves
 export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {

@@ -10,7 +10,7 @@ import { ResponsiveContainer } from "recharts";
 import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { multiFormat } from "@/lib/time-utils";
-import { dayTicks, processTimeScaleData } from "@/utils/chart-utils";
+import { processTimeScaleData } from "@/utils/chart-utils";
 
 /**
  * Tide data for the previous tide
@@ -109,7 +109,7 @@ const TideChartYAxis = () => {
           allowDuplicatedCategory={false}
           allowDataOverflow
           hide
-          ticks={dayTicks}
+          // ticks={dayTicks}
           tickFormatter={multiFormat}
           padding={{ left: 12 }}
         />

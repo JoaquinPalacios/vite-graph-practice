@@ -37,6 +37,8 @@ function App({
   // Process the data based on the selected model type
   const chartData = processApiDataToChartData(rawApiData, modelType);
 
+  const chartDataLength = chartData.length;
+
   return (
     <div className="tw:max-w-[86.75rem] tw:mx-auto tw:px-6">
       <Suspense fallback={<GraphSkeleton />}>
@@ -83,7 +85,7 @@ function App({
           defaultPreferences={defaultPreferences}
           maxSurfHeight={maxSurfHeight}
           chartWidth={chartWidth}
-          weatherData={weatherData}
+          weatherData={weatherData.slice(0, chartDataLength)}
         />
       </Suspense>
     </div>
