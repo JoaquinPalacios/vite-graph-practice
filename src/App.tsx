@@ -1,5 +1,10 @@
 import { lazy, Suspense, useState } from "react";
-import { UnitPreferences, DrupalApiData, WeatherData } from "./types/index.ts";
+import {
+  UnitPreferences,
+  DrupalApiData,
+  WeatherData,
+  TideData,
+} from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
 import { formatBulletinDateTime } from "./lib/time-utils";
@@ -18,6 +23,7 @@ interface AppProps {
   bulletinDateTimeUtc: string;
   chartWidth: number;
   weatherData: WeatherData[];
+  tideData: TideData[];
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -31,6 +37,7 @@ function App({
   bulletinDateTimeUtc,
   chartWidth,
   weatherData,
+  tideData,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
 
@@ -87,6 +94,7 @@ function App({
           maxSurfHeight={maxSurfHeight}
           chartWidth={chartWidth}
           weatherData={weatherData.slice(0, chartDataLength)}
+          tideData={tideData}
         />
       </Suspense>
     </div>

@@ -16,6 +16,7 @@ import {
   processTimeScaleData,
   interpolateTideData,
 } from "@/utils/chart-utils";
+import { TideData } from "@/types";
 
 interface DotProps {
   cx: number;
@@ -89,7 +90,8 @@ const processedData = interpolateTideData(baseData);
 const timeValues = processedData.map((row) => row.timestamp);
 const { timeScale } = processTimeScaleData(timeValues);
 
-const TideChart = () => {
+const TideChart = ({ tideData }: { tideData: TideData[] }) => {
+  console.log({ tideData });
   return (
     <ResponsiveContainer
       width={4848}

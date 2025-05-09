@@ -8,6 +8,24 @@ export type UnitPreferences = {
   showAdvancedChart: boolean;
 };
 
+export interface TideData {
+  sort: number[];
+  _id: string; // "5646465"
+  _index: string; // "tide-data-2025-05-09"
+  _score: null; // null
+  _source: {
+    "@timestamp": string; // "2025-05-09T00:00:00.000Z"
+    "@version": string; // "1"
+    aac: string; // ""NSW_TP029""
+    area: string; // "Kingscliff"
+    id: number; // 1234657
+    instance: "low" | "high"; // "low"
+    sequence: number; // 1
+    time_local: string; // "2025-05-09T00:00:00.000Z"
+    value: string; // "1.0" in meters
+  };
+}
+
 export interface DrupalApiData {
   location: {
     name: string;
@@ -39,7 +57,7 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
-  tide?: unknown;
+  tide: TideData[];
 }
 
 export interface ChartDataItem {

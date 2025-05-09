@@ -108,6 +108,7 @@ function initGraph() {
             );
           })()
         : [],
+      tideData: rawApiData.tide,
     };
 
     // Render the React component
