@@ -39,6 +39,7 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
+  tide?: unknown;
 }
 
 export interface ChartDataItem {
