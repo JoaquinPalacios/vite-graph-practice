@@ -50,7 +50,7 @@ const ChartsContainer = ({
 
       <div
         className={cn(
-          "tw:w-full tw:relative tw:bg-slate-100 tw:border-slate-700 tw:max-w-full tw:h-auto tw:mx-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:rounded-lg tw:border tw:overflow-hidden"
+          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mx-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden"
         )}
         style={{ width: chartWidth }}
       >
