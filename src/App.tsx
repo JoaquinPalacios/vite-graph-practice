@@ -37,6 +37,7 @@ function App({
   // Process the data based on the selected model type
   const chartData = processApiDataToChartData(rawApiData, modelType);
 
+  // Get the length of the chart data in order to limit the weather data to the same length
   const chartDataLength = chartData.length;
 
   return (
