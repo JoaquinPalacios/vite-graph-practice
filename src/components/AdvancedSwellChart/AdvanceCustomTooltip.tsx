@@ -13,7 +13,6 @@ import { memo } from "react";
 export const AdvanceCustomTooltip = memo(
   (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload, label } = props;
-    console.log({ payload });
     if (active && payload && payload.length) {
       return (
         <div

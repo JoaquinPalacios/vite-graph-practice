@@ -99,17 +99,9 @@ export function processTimeData<T extends TimeDataItem>(data: T[]) {
   const startDate = new Date(startTimestamp);
   const endDate = new Date(endTimestamp);
 
-  // Set start date to beginning of day (00:00:00)
-  // startDate.setDate(startDate.getDate());
-  // startDate.setHours(0, 0, 0, 0);
-
   // Set start date to beginning of ITS local day (00:00:00)
   // No need to change date, just time
   startDate.setHours(0, 0, 0, 0);
-
-  // Set end date to beginning of next day (00:00:00)
-  // endDate.setDate(endDate.getDate() + 1);
-  // endDate.setHours(0, 0, 0, 0);
 
   // Set end date to beginning of the day AFTER the last data point's day
   // No need to change date, just time
@@ -135,30 +127,6 @@ export function processTimeData<T extends TimeDataItem>(data: T[]) {
     dayTicks, // Array of ms timestamps for local midnights
   };
 }
-
-export const generateHourlyTicks = (
-  startDate: Date,
-  endDate: Date,
-  hours: number[] = [0, 3, 6, 9, 12, 15, 18, 21]
-) => {
-  const ticks: number[] = [];
-  const currentDate = new Date(startDate);
-  const lastValidTimestamp = endDate.getTime();
-
-  while (currentDate <= endDate) {
-    hours.forEach((hour) => {
-      const date = new Date(currentDate);
-      date.setHours(hour, 0, 0, 0);
-      const timestamp = date.getTime();
-      if (timestamp <= lastValidTimestamp) {
-        ticks.push(timestamp);
-      }
-    });
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return ticks;
-};
 
 export const formatBulletinDateTime = (dateTimeUtc: string): string => {
   const date = new Date(dateTimeUtc);
