@@ -1,6 +1,6 @@
 "use client";
 
-import { TideData, UnitPreferences, WeatherData } from "@/types";
+import { TideDataFromDrupal, UnitPreferences, WeatherData } from "@/types";
 import ChartsWrapper from "./ChartsWrapper";
 import { SwellChart } from "./SwellChart";
 import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
@@ -12,7 +12,9 @@ import { useState } from "react";
 import AdvancedSwellChart from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
-import TideChart from "./TideChart";
+// import TideChart from "./TideChart";
+// import TideChartYAxis from "./TideChart/TideChartYAxis";
+import { DthreeChart } from "./TideChart/DthreeChart";
 
 const ChartsContainer = ({
   defaultPreferences,
@@ -30,7 +32,7 @@ const ChartsContainer = ({
   };
   chartWidth: number;
   weatherData: WeatherData[];
-  tideData: TideData[];
+  tideData: TideDataFromDrupal[];
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -88,8 +90,18 @@ const ChartsContainer = ({
             unitPreferences={unitPreferences}
           />
 
-          <TideChart tideData={tideData} />
           <WeatherChart weatherData={weatherData} />
+          <DthreeChart
+            tideData={tideData}
+            swellData={processedData}
+            length={processedData.length}
+          />
+          {/* <TideChart
+            tideData={tideData}
+            length={processedData.length}
+            swellData={processedData}
+          /> */}
+          {/* <TideChartYAxis tideData={tideData} /> */}
         </ChartsWrapper>
       </div>
     </section>

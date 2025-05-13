@@ -1,86 +1,97 @@
 import {
   Area,
-  AreaChart,
   CartesianGrid,
   YAxis,
   XAxis,
   Tooltip,
+  ComposedChart,
 } from "recharts";
 import { ResponsiveContainer } from "recharts";
-import tideData from "@/data/tide-data";
 import TideTooltip from "./TideTooltip";
 import { multiFormat } from "@/lib/time-utils";
-import { processTimeScaleData } from "@/utils/chart-utils";
+import { processTimeScaleData, generateTideTicks } from "@/utils/chart-utils";
+import { TideDataFromDrupal } from "@/types";
 
-/**
- * Tide data for the previous tide
- * This needs to be fixed in the future when real data is fetched.
- * We will need to somehow store the previous tide data
- * and use that to calculate the height at midnight.
- * @todo: Fix this
- */
-const previousTide = {
-  date: "2024-03-31",
-  time: "9:54pm",
-  dateTime: "2024-03-31 21:54:00",
-  timeStamp: 1711925640,
-  height: 1.6,
-};
+const TideChartYAxis = ({ tideData }: { tideData: TideDataFromDrupal[] }) => {
+  if (!tideData || tideData.length === 0) {
+    return null;
+  }
 
-// First tide data
-const firstTide = tideData[0];
+  /**
+   * Tide data for the previous tide
+   * This needs to be fixed in the future when real data is fetched.
+   * We will need to somehow store the previous tide data
+   * and use that to calculate the height at midnight.
+   * @todo: Fix this
+   */
+  const previousTide = {
+    date: "2024-03-31",
+    time: "9:54pm",
+    dateTime: "2024-03-31 21:54:00",
+    timeStamp: 1711925640,
+    height: 1.6,
+  };
 
-// Calculate time differences in hours
-const previousTideTime = new Date(previousTide.dateTime).getTime();
-const firstTideTime = new Date(firstTide.localDateTimeISO).getTime();
-const midnightTime = new Date(
-  `${firstTide.localDateTimeISO.split("T")[0]} 00:00:00`
-).getTime();
+  // First tide data
+  const firstTide = tideData[0];
+  const firstTideLocalTime = firstTide._source.time_local;
+  const firstTideHeight = parseFloat(firstTide._source.value);
 
-// Calculate rate of change (meters per hour)
-const totalHours = (firstTideTime - previousTideTime) / (1000 * 60 * 60);
-const heightChange = firstTide.height - previousTide.height;
-const rateOfChange = heightChange / totalHours;
+  // Calculate time differences in hours
+  const previousTideTime = new Date(previousTide.dateTime).getTime();
+  const firstTideTime = new Date(firstTideLocalTime).getTime();
+  const firstTideDate = firstTideLocalTime.split("T")[0];
+  const midnightTime = new Date(`${firstTideDate}T00:00:00.000Z`).getTime();
 
-// Calculate hours from previous tide to midnight
-const hoursToMidnight = (midnightTime - previousTideTime) / (1000 * 60 * 60);
+  // Calculate rate of change (meters per hour)
+  const totalHours = (firstTideTime - previousTideTime) / (1000 * 60 * 60);
+  const heightChange = firstTideHeight - previousTide.height;
+  const rateOfChange = heightChange / totalHours;
 
-// Calculate height at midnight
-const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
+  // Calculate hours from previous tide to midnight
+  const hoursToMidnight = (midnightTime - previousTideTime) / (1000 * 60 * 60);
 
-// Process the data to include timestamps
-const processedData = [
-  {
-    date: firstTide.localDateTimeISO.split("T")[0],
-    time: "12:00am",
-    dateTime: `${firstTide.localDateTimeISO.split("T")[0]} 00:00:00`,
-    height: heightAtMidnight,
-    timestamp: midnightTime,
-  },
-  ...tideData.map((item) => ({
-    ...item,
-    timestamp: new Date(item.localDateTimeISO).getTime(),
-  })),
-];
+  // Calculate height at midnight
+  const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
 
-// Get time scale data
-const timeValues = processedData.map((row) => row.timestamp);
-const { timeScale } = processTimeScaleData(timeValues);
+  // Process the data to include timestamps
+  const processedData = [
+    {
+      date: firstTideDate,
+      time: "12:00am",
+      dateTime: `${firstTideDate}T00:00:00.000Z`,
+      height: heightAtMidnight,
+      timestamp: midnightTime,
+    },
+    ...tideData.map((item) => ({
+      date: item._source.time_local.split("T")[0],
+      time: new Date(item._source.time_local).toLocaleTimeString(),
+      dateTime: item._source.time_local,
+      height: parseFloat(item._source.value),
+      timestamp: new Date(item._source.time_local).getTime(),
+      instance: item._source.instance,
+    })),
+  ];
 
-const TideChartYAxis = () => {
+  // Get time scale data
+  const timeValues = processedData.map((row) => row.timestamp);
+  const { timeScale } = processTimeScaleData(timeValues);
+
+  // Find the maximum height in the data
+  const maxHeight = Math.max(...processedData.map((item) => item.height));
+
   return (
     <ResponsiveContainer
       width={60}
       height="100%"
       className="tw:h-36 tw:min-h-36 tw:max-h-36 tw:absolute tw:bottom-0 tw:left-0 tw:md:left-4 tw:z-20"
     >
-      <AreaChart
+      <ComposedChart
         accessibilityLayer
         data={processedData}
         margin={{
-          left: 0,
-          right: 0,
           bottom: 16,
+          left: 0,
         }}
         className="tw:[&>svg]:focus:outline-none"
         width={60}
@@ -128,11 +139,37 @@ const TideChartYAxis = () => {
           dataKey="height"
           unit="m"
           axisLine={false}
-          domain={["dataMin - 0.2", "dataMax + 0.2"]}
+          domain={[0, "dataMax"]}
           padding={{ top: 32 }}
           fontSize={12}
+          allowDecimals={true}
+          ticks={generateTideTicks(maxHeight)}
+          interval={0}
+          tickCount={Math.ceil(maxHeight * 2) + 1}
+          tick={(value) => {
+            // Skip rendering the first tick (0m)
+            if (value.index === 0) {
+              return <text></text>;
+            }
+
+            const isWholeNumber = Number.isInteger(value.payload.value);
+            return (
+              <text
+                x={value.x}
+                y={value.y}
+                dy={1}
+                textAnchor="end"
+                fontSize={12}
+                fill="#666"
+              >
+                {isWholeNumber
+                  ? `${value.payload.value}m`
+                  : `${value.payload.value.toFixed(1)}m`}
+              </text>
+            );
+          }}
         />
-      </AreaChart>
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };

@@ -3,7 +3,7 @@ import {
   UnitPreferences,
   DrupalApiData,
   WeatherData,
-  TideData,
+  TideDataFromDrupal,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
@@ -23,7 +23,7 @@ interface AppProps {
   bulletinDateTimeUtc: string;
   chartWidth: number;
   weatherData: WeatherData[];
-  tideData: TideData[];
+  tideData: TideDataFromDrupal[];
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));

@@ -7,14 +7,13 @@ import { cn } from "@/utils/utils";
 import { WeatherData } from "@/types";
 
 const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
-  console.log({ weatherData });
   return (
     <ResponsiveContainer
       width={getChartWidth(weatherData.length, 256, 60)}
       height="100%"
       className={cn(
         "tw:h-16 tw:min-h-16 tw:relative",
-        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-6rem)] tw:after:top-0 tw:after:left-20 tw:after:border-y tw:after:border-slate-300 tw:after:pointer-events-none"
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <ScatterChart

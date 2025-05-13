@@ -8,7 +8,7 @@ export type UnitPreferences = {
   showAdvancedChart: boolean;
 };
 
-export interface TideData {
+export interface TideDataFromDrupal {
   sort: number[];
   _id: string; // "5646465"
   _index: string; // "tide-data-2025-05-09"
@@ -23,6 +23,19 @@ export interface TideData {
     sequence: number; // 1
     time_local: string; // "2025-05-09T00:00:00.000Z"
     value: string; // "1.0" in meters
+  };
+}
+
+export interface TideData {
+  id: string; // Using _id as the main identifier since it's a string and more unique
+  index: string; // Renamed from _index for consistency
+  source: {
+    timestamp: string; // Renamed from @timestamp for cleaner access
+    aac: string; // Area code
+    area: string; // Location name
+    instance: "low" | "high";
+    localTimeISO: string; // Renamed from time_local for consistency
+    value: string; // Tide height in meters
   };
 }
 
@@ -57,7 +70,7 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
-  tide: TideData[];
+  tide: TideDataFromDrupal[];
 }
 
 export interface ChartDataItem {

@@ -33,13 +33,15 @@ export const SwellChart = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
+  console.log("Swell Chart length: ", chartData.length);
+
   return (
     <ResponsiveContainer
       width={getChartWidth(chartData.length, 256, 60)}
       height="100%"
       className={cn(
         "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
-        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-6rem)] tw:after:bottom-0 tw:after:left-20 tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <BarChart
