@@ -18,6 +18,7 @@ const parseDateTime = (isoString: string): Date | null => {
 
 /**
  * D3 Chart Tide Component
+ * @description It takes the tide data and swell data and renders the chart.
  * @param tideData - Tide data from Drupal
  * @param swellData - Swells data from Drupal
  * @param length - Number of data points to display
@@ -178,7 +179,7 @@ export const DthreeChart = ({
 
   /**
    * Third, D3 Rendering Effect
-   * @description It takes the SVG, chart area, and data and renders the chart
+   * @description It takes the SVG, chart area, and data and renders the chart.
    */
   useEffect(() => {
     if (
@@ -273,39 +274,6 @@ export const DthreeChart = ({
       )
       .lower();
 
-    // --- Top X-Axis (Date Labels) ---
-    // const xAxisTop = d3
-    //   .axisTop(
-    //     d3
-    //       .scaleLinear()
-    //       .domain([0, numDays])
-    //       .range([0, numDays * PIXELS_PER_DAY])
-    //   )
-    //   .ticks(numDays)
-    //   .tickFormat((d) => {
-    //     const date = new Date(
-    //       timeDomain[0].getTime() + (d as number) * 24 * 60 * 60 * 1000
-    //     );
-    //     return formatDateTick(date.toISOString());
-    //   })
-    //   .tickSize(0);
-
-    // chartArea
-    //   .append("g")
-    //   .attr("class", "x-axis-top")
-    //   .call(xAxisTop)
-    //   .call((g) => g.select(".domain").remove())
-    //   .call((g) =>
-    //     g
-    //       .selectAll(".tick text")
-    //       .attr("dy", "-0.8em")
-    //       .attr("font-size", "12px")
-    //       .attr("font-weight", "700")
-    //       .attr("text-anchor", "middle")
-    //       .attr("transform", `translate(20, 0)`) // Center label in the 256px stripe
-    //       .attr("fill", "currentColor")
-    //   );
-
     // --- Clip Path for Tide Area ---
     const clipPathId = `tide-clip-${Math.random()
       .toString(36)
@@ -353,7 +321,6 @@ export const DthreeChart = ({
       .attr("font-family", "sans-serif")
       .attr("font-size", 10)
       .attr("text-anchor", "middle");
-    // .attr("clip-path", `url(#${clipPathId})`);
 
     labelGroup
       .selectAll("text.tide-label-item")
@@ -498,7 +465,10 @@ export const DthreeChart = ({
     }
   }, [svgDimensions, transformedData, labelData, timeDomain, length]);
 
-  // --- 4. Resize Observer ---
+  /**
+   * Fourth, Resize Observer
+   * @description It takes the container and sets the SVG dimensions
+   */
   useEffect(() => {
     if (!containerRef.current) return;
     const observer = new ResizeObserver((entries) => {
@@ -513,7 +483,10 @@ export const DthreeChart = ({
     };
   }, []);
 
-  // --- Render ---
+  /**
+   * Fifth, Render
+   * @description It takes the container and renders the chart.
+   */
   if (!transformedData.length && length <= 0) {
     // Check length too
     return (
