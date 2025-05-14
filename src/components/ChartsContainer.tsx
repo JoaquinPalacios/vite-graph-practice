@@ -91,11 +91,7 @@ const ChartsContainer = ({
           />
 
           <WeatherChart weatherData={weatherData} />
-          <DthreeChart
-            tideData={tideData}
-            swellData={processedData}
-            length={processedData.length}
-          />
+          <DthreeChart tideData={tideData} swellData={processedData} />
           {/* <TideChart
             tideData={tideData}
             length={processedData.length}

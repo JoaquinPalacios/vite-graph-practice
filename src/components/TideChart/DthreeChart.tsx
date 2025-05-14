@@ -21,22 +21,22 @@ const parseDateTime = (isoString: string): Date | null => {
  * @description It takes the tide data and swell data and renders the chart.
  * @param tideData - Tide data from Drupal
  * @param swellData - Swells data from Drupal
- * @param length - Number of data points to display
  * @returns Tide chart component
  */
 export const DthreeChart = ({
   tideData,
   swellData,
-  length, // Number of data points to display
 }: {
   tideData: TideDataFromDrupal[];
   swellData: ChartDataItem[];
-  length: number; // Updated comment to reflect actual usage
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const yAxisRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
+
+  const length = swellData.length;
 
   /**
    * First, transform the tide data into a format that can be used by D3
@@ -64,6 +64,19 @@ export const DthreeChart = ({
     }
     if (tideData.length < 2) return [];
 
+    // Get the time range from swell data to ensure we only show tide data within that range
+    const swellTimeRange = swellData?.slice(0, length).reduce(
+      (acc, curr) => {
+        const time = new Date(curr.localDateTimeISO).getTime();
+        return {
+          min: Math.min(acc.min, time),
+          max: Math.max(acc.max, time),
+        };
+      },
+      { min: Infinity, max: -Infinity }
+    );
+
+    // First, process the initial points for interpolation
     const prevTide = tideData[0];
     const nextTide = tideData[1];
     const prevDate = parseDateTime(prevTide._source.time_local);
@@ -102,21 +115,32 @@ export const DthreeChart = ({
       isBoundary: true,
     };
 
+    // Now filter the rest of the data points based on the swell time range
     const rest = tideData
-      .slice(1)
+      .slice(1) // Start from index 1 since we've already processed the first point
       .map((point) => {
         const pointDate = parseDateTime(point._source.time_local);
-        return {
-          height: Math.max(0, parseFloat(point._source.value)),
-          timestamp: pointDate?.getTime() ?? 0,
-          localDateTimeISO: point._source.time_local,
-          utcDateTimeISO: pointDate?.toISOString() ?? "",
-        };
+        const pointTime = pointDate?.getTime() ?? 0;
+        // Only include points within the swell time range
+        if (
+          pointTime >= (swellTimeRange?.min ?? -Infinity) &&
+          pointTime <= (swellTimeRange?.max ?? Infinity)
+        ) {
+          return {
+            height: Math.max(0, parseFloat(point._source.value)),
+            timestamp: pointTime,
+            localDateTimeISO: point._source.time_local,
+            utcDateTimeISO: pointDate?.toISOString() ?? "",
+          };
+        }
+        return null;
       })
-      .filter((p) => p.timestamp !== 0);
+      .filter(
+        (p): p is TransformedTidePoint => p !== null && p.timestamp !== 0
+      );
 
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
-  }, [tideData]);
+  }, [tideData, swellData, length]);
 
   const labelData = useMemo(() => {
     return transformedData.filter((d) => !d.isBoundary);
@@ -184,6 +208,7 @@ export const DthreeChart = ({
   useEffect(() => {
     if (
       !svgRef.current ||
+      !yAxisRef.current ||
       svgDimensions.width === 0 ||
       svgDimensions.height === 0 ||
       transformedData.length === 0 ||
@@ -193,7 +218,9 @@ export const DthreeChart = ({
     }
 
     const svg = d3.select(svgRef.current);
+    const yAxisSvg = d3.select(yAxisRef.current);
     svg.selectAll("*").remove();
+    yAxisSvg.selectAll("*").remove();
 
     const PIXELS_PER_DAY = 256; // Exact width per day in pixels
     const margin = { top: 20, right: 0, bottom: 5, left: 76 };
@@ -232,8 +259,26 @@ export const DthreeChart = ({
       .axisLeft(yScale)
       .ticks(5)
       .tickPadding(8)
-      .tickFormat((d) => (d === 0 ? "" : d + "m"));
-    const yAxisG = chartArea.append("g").attr("class", "y-axis").call(yAxis);
+      .tickFormat((d) => (d === 0 ? "" : d + "m"))
+      .tickSize(6);
+
+    // Create a group for the Y-axis in its own SVG
+    const yAxisG = yAxisSvg
+      .append("rect")
+      .attr("class", "y-axis-rect-left")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 64)
+      .attr("height", svgDimensions.height)
+      .attr("fill", "oklch(0.968 0.007 247.896)");
+
+    // Add background rectangle to Y-axis
+    yAxisSvg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", "translate(64, 20)")
+      .call(yAxis);
+
     // Hide the 0m label but keep its tick line
     yAxisG
       .selectAll(".tick text")
@@ -335,7 +380,6 @@ export const DthreeChart = ({
     const labelGroup = chartArea
       .append("g")
       .attr("class", "tide-labels")
-      .attr("font-family", "sans-serif")
       .attr("font-size", 10)
       .attr("text-anchor", "middle");
 
@@ -352,7 +396,7 @@ export const DthreeChart = ({
           (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
         const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
         const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
-        return `translate(${x},${yScale(d.height) - 16})`;
+        return `translate(${x},${yScale(d.height) - 20})`;
       })
       .attr("dy", "-8px")
       .call((text) =>
@@ -360,14 +404,13 @@ export const DthreeChart = ({
           .append("tspan")
           .attr("x", 0)
           .attr("dy", 0)
-          .attr("font-weight", "semibold")
           .text((d) => {
             const date = parseDateTime(d.localDateTimeISO);
             return date
               ? date
                   .toLocaleTimeString("en-AU", {
-                    day: "2-digit",
-                    month: "2-digit",
+                    // day: "2-digit",
+                    // month: "2-digit",
                     hour: "numeric",
                     minute: "2-digit",
                     hour12: true,
@@ -532,37 +575,43 @@ export const DthreeChart = ({
   }
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "relative",
-        height: "100%",
-        overflow: "hidden",
-      }}
-      className="tw:h-36 tw:min-h-36"
-    >
-      <svg
-        ref={svgRef}
-        width={svgDimensions.width}
-        height={svgDimensions.height}
-        style={{ display: "block" }}
-      >
-        {/* D3 renders here */}
-      </svg>
+    <>
       <div
-        ref={tooltipRef}
+        ref={containerRef}
         style={{
-          position: "absolute",
-          display: "none",
-          backgroundColor: "rgba(0,0,0,0.7)",
-          color: "white",
-          padding: "4px 8px",
-          fontSize: "10px",
-          borderRadius: "3px",
-          pointerEvents: "none",
-          whiteSpace: "nowrap",
+          position: "relative",
+          height: "100%",
+          overflow: "hidden",
         }}
-      ></div>
-    </div>
+        className="tw:h-36 tw:min-h-36"
+      >
+        <svg
+          ref={svgRef}
+          width={svgDimensions.width}
+          height={svgDimensions.height}
+        >
+          {/* D3 renders here */}
+        </svg>
+
+        <div
+          ref={tooltipRef}
+          style={{
+            position: "absolute",
+            display: "none",
+            backgroundColor: "rgba(0,0,0,0.7)",
+            color: "white",
+            padding: "4px 8px",
+            fontSize: "10px",
+            borderRadius: "3px",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        ></div>
+      </div>
+      {/* Y-axis container */}
+      <div className="tw:w-16 tw:h-fit tw:absolute tw:left-3.5 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+        <svg ref={yAxisRef} width="64" height={svgDimensions.height} />
+      </div>
+    </>
   );
 };

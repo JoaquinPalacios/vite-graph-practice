@@ -38,7 +38,8 @@
 }
 
 .y-grid path.domain,
-.y-grid .tick line {
+.y-grid .tick line,
+.y-axis .tick line {
   stroke: oklch(86.9% 0.022 252.894);
   stroke-opacity: 0.5;
 }
