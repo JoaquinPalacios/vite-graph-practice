@@ -196,7 +196,7 @@ export const DthreeChart = ({
     svg.selectAll("*").remove();
 
     const PIXELS_PER_DAY = 256; // Exact width per day in pixels
-    const margin = { top: 45, right: 0, bottom: 5, left: 76 };
+    const margin = { top: 20, right: 0, bottom: 5, left: 76 };
 
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
@@ -212,7 +212,7 @@ export const DthreeChart = ({
 
     // The height available for drawing
     const chartDrawingHeight =
-      svgDimensions.height - margin.top - margin.bottom;
+      svgDimensions.height - margin.top - margin.bottom - 20;
 
     // Create the chart area with proper translation
     const chartArea = svg
@@ -240,20 +240,17 @@ export const DthreeChart = ({
       .filter((d) => d === 0)
       .text("");
 
-    // --- Background Stripes ---
+    // --- Background Stripes (rendered first, always at the back) ---
     const dayStarts: Date[] = [];
     const currentIterDay = new Date(timeDomain[0].getTime()); // Start from domainStart
     const numDays = Math.ceil(
       (timeDomain[1].getTime() - timeDomain[0].getTime()) /
         (24 * 60 * 60 * 1000)
     );
-
     for (let i = 0; i < numDays; i++) {
       dayStarts.push(new Date(currentIterDay.getTime()));
       currentIterDay.setDate(currentIterDay.getDate() + 1);
     }
-
-    // Update the day stripes to use exact pixel positions
     chartArea
       .append("g")
       .attr("class", "day-stripes")
@@ -261,7 +258,7 @@ export const DthreeChart = ({
       .data(dayStarts)
       .enter()
       .append("rect")
-      .attr("x", (_, i) => i * PIXELS_PER_DAY) // Use exact pixel positions
+      .attr("x", (_, i) => i * PIXELS_PER_DAY)
       .attr("y", -20)
       .attr("width", PIXELS_PER_DAY)
       .attr("height", chartDrawingHeight + 20)
@@ -273,6 +270,26 @@ export const DthreeChart = ({
             : "oklch(0.968 0.007 247.896)" // Tailwind Slate 300
       )
       .lower();
+
+    // --- Y Grid Lines (rendered after stripes, before data) ---
+    // Draw horizontal grid lines for each Y tick, for visual clarity
+    const maxTickValue = Math.ceil(maxTide);
+    const yGridG = chartArea
+      .append("g")
+      .attr("class", "y-grid")
+      .call(
+        d3
+          .axisLeft(yScale)
+          .ticks(5)
+          .tickSize(-chartDrawingWidth)
+          .tickFormat(() => "") // Only lines, no labels
+      );
+    // Remove grid lines for 0 and the top tick
+    yGridG.selectAll(".tick").each(function (d) {
+      if (d === 0 || d === maxTickValue) {
+        d3.select(this).select("line").remove();
+      }
+    });
 
     // --- Clip Path for Tide Area ---
     const clipPathId = `tide-clip-${Math.random()

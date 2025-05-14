@@ -36,3 +36,13 @@
 .recharts-cartesian-axis-tick-line {
   opacity: 0.5;
 }
+
+.y-grid path.domain,
+.y-grid .tick line {
+  stroke: oklch(86.9% 0.022 252.894);
+  stroke-opacity: 0.5;
+}
+
+.y-axis path.domain {
+  stroke: none;
+}
