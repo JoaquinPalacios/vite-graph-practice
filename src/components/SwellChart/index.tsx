@@ -33,8 +33,6 @@ export const SwellChart = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
-  console.log("Swell Chart length: ", chartData.length);
-
   return (
     <ResponsiveContainer
       width={getChartWidth(chartData.length, 256, 60)}
@@ -44,6 +42,7 @@ export const SwellChart = ({
         unitPreferences.showAdvancedChart &&
           "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
+      minHeight={320}
     >
       <BarChart
         accessibilityLayer
