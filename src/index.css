@@ -2,6 +2,10 @@
 
 @plugin "tailwindcss-animate";
 
+:root {
+  font-size: 16px;
+}
+
 @theme {
   --tw-color-swell: #008a93;
 }
@@ -36,4 +40,22 @@
 
 .y-axis path.domain {
   stroke: none;
+}
+
+.y-axis-tick-animation {
+  fill-opacity: 0;
+  transition: fill-opacity 0.275s ease-in;
+}
+
+.advance-y-axis.tick-visible .y-axis-tick-animation {
+  fill-opacity: 1;
+}
+
+.advance-y-axis .recharts-cartesian-axis-tick-line {
+  opacity: 0;
+  transition: opacity 0.275s ease-in;
+}
+
+.advance-y-axis.tick-visible .recharts-cartesian-axis-tick-line {
+  opacity: 1;
 }

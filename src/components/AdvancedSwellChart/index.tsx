@@ -154,10 +154,10 @@ const AdvancedSwellChart = ({
   return (
     <ResponsiveContainer
       width={getChartWidth(chartData.length, 256, 60)}
-      height="100%"
+      height={unitPreferences.showAdvancedChart ? "100%" : 0}
       className={cn(
-        "tw:mb-0 tw:h-48 tw:min-h-48 tw:transition-[height,min-height] tw:duration-300 tw:ease-in-out",
-        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:!min-h-0"
+        "tw:mb-0 tw:h-48 tw:min-h-48 tw:transition-[height,min-height] tw:duration-250 tw:ease-out",
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:min-h-0"
       )}
     >
       <LineChart
@@ -268,8 +268,8 @@ const AdvancedSwellChart = ({
               onMouseEnter={() => {
                 setHoverIndex(index);
               }}
-              className="tw:[&>g>svg]:transition-opacity tw:[&>g>svg]:duration-150 tw:[&>g>svg]:ease-in-out"
-              // animationDuration={150}
+              className="tw:transition-all tw:duration-300 tw:[&>g>svg]:transition-opacity tw:[&>g>svg]:duration-250 tw:[&>g>svg]:ease-in-out"
+              animationDuration={250}
               isAnimationActive={false}
             />
           );

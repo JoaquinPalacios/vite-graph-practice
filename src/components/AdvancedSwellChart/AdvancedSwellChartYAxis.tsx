@@ -6,7 +6,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { formatDateTick, generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
@@ -24,6 +24,14 @@ const AdvancedSwellChartYAxis = ({
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsVisible(unitPreferences.showAdvancedChart);
+    }, 50);
+  }, [unitPreferences.showAdvancedChart]);
+
   /**
    * Process the swell data to identify events
    * useMemo prevents reprocessing on every render unless chartData changes
@@ -38,10 +46,11 @@ const AdvancedSwellChartYAxis = ({
   return (
     <ResponsiveContainer
       width={72}
-      height="100%"
+      height={unitPreferences.showAdvancedChart ? "100%" : 0}
       className={cn(
-        "tw:mb-0 tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10 tw:h-48 tw:min-h-48 tw:max-h-48",
-        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:!min-h-0"
+        "tw:mb-0 tw:h-48 tw:min-h-48 tw:max-h-48 tw:transition-[height,min-height] tw:duration-250 tw:ease-out",
+        "tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10",
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:min-h-0"
       )}
     >
       <LineChart
@@ -64,7 +73,7 @@ const AdvancedSwellChartYAxis = ({
           allowDataOverflow
           hide
           tickFormatter={formatDateTick}
-          padding={{ left: 14, right: 14 }}
+          padding={{ left: 11, right: 11 }}
           interval={7}
           opacity={0}
         />
@@ -112,8 +121,8 @@ const AdvancedSwellChartYAxis = ({
                 textAnchor="end"
                 fontSize={12}
                 fill="#666"
-                fillOpacity={unitPreferences.showAdvancedChart ? 1 : 0}
-                className="tw:transition-opacity tw:ease tw:duration-300"
+                fillOpacity={isVisible ? 1 : 0}
+                className="y-axis-tick-animation"
               >
                 {value.payload.value}m
               </text>
@@ -121,7 +130,10 @@ const AdvancedSwellChartYAxis = ({
               <text></text>
             )
           }
-          className="advance-y-axis tw:transition-opacity tw:ease-in-out tw:duration-200"
+          className={cn(
+            "advance-y-axis tw:transition-opacity tw:ease-in tw:duration-300 tw:delay-150",
+            isVisible && "tick-visible"
+          )}
         />
       </LineChart>
     </ResponsiveContainer>

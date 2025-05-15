@@ -2,157 +2,191 @@
 
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import GraphButtons from "./GraphButtons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import type { ReactElement } from "react";
 
 interface ChartsWrapperProps {
   children: React.ReactNode;
 }
 
-const ChartsWrapper = ({ children }: ChartsWrapperProps) => {
-  const [isAtStart, setIsAtStart] = useState(true);
-  const [isAtEnd, setIsAtEnd] = useState(false);
+interface ContainerDimensions {
+  scrollWidth: number;
+  scrollLeft: number;
+  clientWidth: number;
+}
+
+const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
+  const [isAtStart, setIsAtStart] = useState<boolean>(true);
+  const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const prevScrollWidth = useRef<number>(0);
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
-  const checkScrollLimits = (e?: React.UIEvent<HTMLDivElement>) => {
-    const container =
-      (e?.target as HTMLElement) ||
-      (document.querySelector(".chart-scroll-container") as HTMLElement);
-    if (!container) return;
+  // Memoize the container selector to avoid repeated DOM queries
+  const getContainer = useCallback((): HTMLElement | null => {
+    return document.querySelector(".chart-scroll-container") as HTMLElement;
+  }, []);
 
-    const scrollLeft = container.scrollLeft;
-    const scrollWidth = container.scrollWidth;
-    const clientWidth = container.clientWidth;
+  // Memoize the check scroll limits function
+  const checkScrollLimits = useCallback(
+    (e?: React.UIEvent<HTMLDivElement>): void => {
+      const container = (e?.target as HTMLElement) || getContainer();
+      if (!container) return;
 
-    setIsAtStart(scrollLeft === 0);
-    setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10); // -10 for some buffer
-  };
-
-  // Check scroll limits and adjust scroll position when children (data) changes
-  useEffect(() => {
-    const container = document.querySelector(
-      ".chart-scroll-container"
-    ) as HTMLElement;
-    if (!container) return;
-
-    // Small delay to ensure the DOM has updated
-    const timeoutId = setTimeout(() => {
-      const currentScrollWidth = container.scrollWidth;
-      const currentScrollLeft = container.scrollLeft;
+      const scrollLeft = container.scrollLeft;
+      const scrollWidth = container.scrollWidth;
       const clientWidth = container.clientWidth;
 
+      setIsAtStart(scrollLeft === 0);
+      setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10); // -10 for some buffer
+    },
+    [getContainer]
+  );
+
+  // Memoize the get axis width function
+  const getAxisWidth = useCallback(
+    (isAdvanced: boolean): string => {
+      if (isLandscapeMobile || isMobile) {
+        return isAdvanced ? "60" : "48";
+      }
+      return isAdvanced ? "60" : "64";
+    },
+    [isMobile, isLandscapeMobile]
+  );
+
+  // Memoize the create rect function
+  const createRect = useCallback(
+    (axis: HTMLElement, isAdvanced: boolean): SVGRectElement => {
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
+      rect.setAttribute("x", "0");
+      rect.setAttribute("y", "0");
+      rect.setAttribute("width", getAxisWidth(isAdvanced));
+      rect.setAttribute("height", "320");
+      rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
+      rect.setAttribute("class", "y-axis-rect-left");
+      axis.insertBefore(rect, axis.firstChild);
+      return rect;
+    },
+    [getAxisWidth]
+  );
+
+  // Memoize the update Y-axis position function
+  const updateYAxisPosition = useCallback(
+    (scrollLeft: number): void => {
+      const axes = document.querySelectorAll(
+        ".recharts-yAxis"
+      ) as NodeListOf<HTMLElement>;
+
+      axes.forEach((axis) => {
+        if (!axis) return;
+
+        const isAdvanced = axis.classList.contains("advance-y-axis");
+
+        // For advanced axis, check if it's actually visible
+        if (isAdvanced) {
+          const computedStyle = window.getComputedStyle(axis);
+          const height = computedStyle.height;
+          const opacity = computedStyle.opacity;
+
+          // Only create rect if the axis is actually visible
+          if (height === "0px" || opacity === "0") {
+            return;
+          }
+        }
+
+        let rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
+        if (!rect) {
+          rect = createRect(axis, isAdvanced);
+        }
+
+        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
+      });
+
+      // Handle weather-rect
+      const weatherRect = document.querySelector(
+        ".weather-rect"
+      ) as HTMLElement;
+      if (weatherRect) {
+        let rect = weatherRect.querySelector(
+          ".y-axis-rect-left"
+        ) as SVGRectElement;
+        if (!rect) {
+          rect = createRect(weatherRect, false);
+          rect.setAttribute("height", "80");
+        }
+        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
+      }
+    },
+    [createRect]
+  );
+
+  // Memoize the handle scroll function
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>): void => {
+      const scrollLeft = (e.target as HTMLElement).scrollLeft;
+      checkScrollLimits(e);
+
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+
+      updateYAxisPosition(scrollLeft);
+    },
+    [checkScrollLimits, updateYAxisPosition]
+  );
+
+  // Effect to handle children changes and scroll adjustments
+  useEffect(() => {
+    const container = getContainer();
+    if (!container) return;
+
+    const timeoutId = setTimeout(() => {
+      const dimensions: ContainerDimensions = {
+        scrollWidth: container.scrollWidth,
+        scrollLeft: container.scrollLeft,
+        clientWidth: container.clientWidth,
+      };
+
       // If we're switching to a model with less data
-      if (prevScrollWidth.current > currentScrollWidth) {
-        // Calculate the distance from the end in the previous model
+      if (prevScrollWidth.current > dimensions.scrollWidth) {
         const distanceFromEnd =
-          prevScrollWidth.current - (currentScrollLeft + clientWidth);
-        // Calculate the width difference between models
-        const widthDifference = prevScrollWidth.current - currentScrollWidth;
+          prevScrollWidth.current -
+          (dimensions.scrollLeft + dimensions.clientWidth);
+        const widthDifference =
+          prevScrollWidth.current - dimensions.scrollWidth;
+        const buffer = 256; // One day width
 
-        // Add a small buffer (256px = one day width) to handle edge cases
-        const buffer = 256;
-
-        // If we're close to the end (within buffer + width difference)
         if (distanceFromEnd <= widthDifference + buffer) {
-          // Calculate how much we need to scroll back
           const scrollAdjustment = Math.min(
-            widthDifference + buffer, // Add buffer to ensure we don't see blank space
-            currentScrollLeft // Don't scroll back more than the current scroll position
+            widthDifference + buffer,
+            dimensions.scrollLeft
           );
 
-          // Smoothly scroll to the new position
           container.scrollTo({
-            left: currentScrollLeft - scrollAdjustment,
+            left: dimensions.scrollLeft - scrollAdjustment,
             behavior: "smooth",
           });
         }
       }
 
-      // Update the previous scroll width for next comparison
-      prevScrollWidth.current = currentScrollWidth;
-
-      // Check scroll limits after adjusting position
+      prevScrollWidth.current = dimensions.scrollWidth;
       checkScrollLimits();
+
+      // Wait for transitions to complete
+      setTimeout(() => {
+        updateYAxisPosition(dimensions.scrollLeft);
+      }, 20);
     }, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [children]);
-
-  /**
-   * Update the Y-axis position based on the scroll position
-   * @param scrollLeft - The scroll position of the container
-   */
-  const updateYAxisPosition = (scrollLeft: number) => {
-    // Handle Y-axis rects
-    const axes = document.querySelectorAll(
-      ".recharts-yAxis"
-    ) as NodeListOf<HTMLElement>;
-
-    axes.forEach((axis) => {
-      if (axis) {
-        let rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
-        if (!rect) {
-          rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          rect.setAttribute("x", "0");
-          rect.setAttribute("y", "0");
-          const isAdvanced = axis.classList.contains("advance-y-axis"); // The advanced Y axis needs to be 60px wide
-          rect.setAttribute(
-            "width",
-            isLandscapeMobile || isMobile
-              ? isAdvanced
-                ? "60"
-                : "48"
-              : isAdvanced
-              ? "60"
-              : "64"
-          );
-          rect.setAttribute("height", "320");
-          rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
-          rect.setAttribute("class", "y-axis-rect-left");
-          axis.insertBefore(rect, axis.firstChild);
-        }
-
-        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
-      }
-    });
-
-    // Handle weather-rect
-    const weatherRect = document.querySelector(".weather-rect") as HTMLElement;
-    if (weatherRect) {
-      let rect = weatherRect.querySelector(
-        ".y-axis-rect-left"
-      ) as SVGRectElement;
-      if (!rect) {
-        rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", "0");
-        rect.setAttribute("y", "0");
-        rect.setAttribute("width", isLandscapeMobile || isMobile ? "48" : "64");
-        rect.setAttribute("height", "80");
-        rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
-        rect.setAttribute("class", "y-axis-rect-left");
-        weatherRect.appendChild(rect);
-      }
-
-      rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
-    }
-  };
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollLeft = (e.target as HTMLElement).scrollLeft;
-    checkScrollLimits(e);
-
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
-    }
-
-    updateYAxisPosition(scrollLeft);
-  };
+  }, [children, checkScrollLimits, getContainer, updateYAxisPosition]);
 
   return (
     <>
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
-
       <div
         className="chart-scroll-container tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent"
         onScroll={handleScroll}
