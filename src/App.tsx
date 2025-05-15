@@ -48,7 +48,7 @@ function App({
   const chartDataLength = chartData.length;
 
   return (
-    <div className="tw:max-w-[86.75rem] tw:mx-auto tw:px-6">
+    <div className="tw:max-w-[86.75rem] tw:mx-auto">
       <Suspense fallback={<GraphSkeleton />}>
         <SurfReport
           localDateTimeISO={localDateTimeISO}

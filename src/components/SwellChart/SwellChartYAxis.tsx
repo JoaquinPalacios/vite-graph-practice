@@ -32,140 +32,144 @@ export const SwellChartYAxis = ({
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   return (
-    <ResponsiveContainer
-      width={60}
-      height="100%"
-      className="tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80"
-    >
-      <BarChart
-        data={chartData}
-        accessibilityLayer
-        margin={{
-          bottom: 12,
-        }}
-        width={60}
-        className="tw:[&>svg]:focus:outline-none"
-      >
-        <CartesianGrid
-          vertical={true}
-          horizontal={true}
-          verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-          ]}
-          y={0}
+    <div className="tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80">
+      <ResponsiveContainer width={60} height={320}>
+        <BarChart
+          data={chartData}
+          accessibilityLayer
+          margin={{
+            bottom: 12,
+          }}
+          width={60}
+          className="tw:[&>svg]:focus:outline-none"
           height={320}
-          syncWithTicks
-        />
+        >
+          <CartesianGrid
+            vertical={true}
+            horizontal={true}
+            verticalFill={[
+              "oklch(0.968 0.007 247.896)", // Tailwind slate-200
+              "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+            ]}
+            y={0}
+            height={320}
+            syncWithTicks
+          />
 
-        {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
-        <XAxis xAxisId={0} dataKey="localDateTimeISO" hide />
+          {/* Duplicate XAxis for the stripes in the background. This is one in charge of the background stripes */}
+          <XAxis xAxisId={0} dataKey="localDateTimeISO" hide />
 
-        {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
-        <XAxis xAxisId={2} dataKey="localDateTimeISO" orientation="top" />
+          {/* Duplicate XAxis for the legend. This XAxis is the one that shows the calendar date */}
+          <XAxis xAxisId={2} dataKey="localDateTimeISO" orientation="top" />
 
-        {/* This XAxis is the one that shows the time of the day */}
-        <XAxis xAxisId={1} dataKey="localDateTimeISO" orientation="top" />
+          {/* This XAxis is the one that shows the time of the day */}
+          <XAxis xAxisId={1} dataKey="localDateTimeISO" orientation="top" />
 
-        {/* This XAxis is the one that shows the wind direction */}
-        <XAxis xAxisId={3} dataKey="localDateTimeISO" />
+          {/* This XAxis is the one that shows the wind direction */}
+          <XAxis xAxisId={3} dataKey="localDateTimeISO" />
 
-        {/* This XAxis is the one that shows the wind speed */}
-        <XAxis xAxisId={4} dataKey="localDateTimeISO" />
+          {/* This XAxis is the one that shows the wind speed */}
+          <XAxis xAxisId={4} dataKey="localDateTimeISO" />
 
-        <Bar
-          dataKey={(d) =>
-            unitPreferences.units.surfHeight === "ft"
-              ? d.primary.fullSurfHeightFeet
-              : d.primary.fullSurfHeightMetres
-          }
-          stackId="b"
-          name="Y Wave Height"
-          id="y-wave-height"
-          key={`y-wave-height-${unitPreferences.units.surfHeight}`}
-          hide
-          aria-hidden
-        />
+          <Bar
+            dataKey={(d) =>
+              unitPreferences.units.surfHeight === "ft"
+                ? d.primary.fullSurfHeightFeet
+                : d.primary.fullSurfHeightMetres
+            }
+            stackId="b"
+            name="Y Wave Height"
+            id="y-wave-height"
+            key={`y-wave-height-${unitPreferences.units.surfHeight}`}
+            hide
+            aria-hidden
+          />
 
-        <Bar
-          dataKey={(d) =>
-            d.secondary
-              ? unitPreferences.units.surfHeight === "ft"
-                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
-                : d.secondary.fullSurfHeightMetres -
-                  d.primary.fullSurfHeightMetres
-              : null
-          }
-          stackId="b"
-          name="Y Face Wave Height"
-          id="y-face-wave-height"
-          key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
-          hide
-          aria-hidden
-        />
+          <Bar
+            dataKey={(d) =>
+              d.secondary
+                ? unitPreferences.units.surfHeight === "ft"
+                  ? d.secondary.fullSurfHeightFeet -
+                    d.primary.fullSurfHeightFeet
+                  : d.secondary.fullSurfHeightMetres -
+                    d.primary.fullSurfHeightMetres
+                : null
+            }
+            stackId="b"
+            name="Y Face Wave Height"
+            id="y-face-wave-height"
+            key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
+            hide
+            aria-hidden
+          />
 
-        <YAxis
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          minTickGap={0}
-          unit={unitPreferences.units.surfHeight}
-          interval="preserveEnd"
-          overflow="visible"
-          allowDecimals={false}
-          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
-          padding={{
-            top: 20,
-          }}
-          axisLine={false}
-          type="number"
-          domain={[0, "dataMax"]}
-          tick={(value) => {
-            return value.index === 0 ? (
-              <g transform="translate(-10, 0)">
-                <LuWind
-                  className="tw:w-4 tw:h-4"
-                  x={value.x - 6}
-                  y={value.y + 16}
-                  size={20}
-                  color="#666"
-                />
-                {unitPreferences.units.wind === "knots" ? (
-                  <text
-                    x={value.x + 10}
-                    y={value.y + 52}
-                    dy={1}
-                    textAnchor="end"
-                    fontSize={10}
-                  >
-                    kts
-                  </text>
-                ) : (
-                  <text
-                    x={value.x + 12}
-                    y={value.y + 52}
-                    dy={1}
-                    textAnchor="end"
-                    fontSize={10}
-                  >
-                    km/h
-                  </text>
-                )}
-              </g>
-            ) : (
-              <text
-                x={value.x}
-                y={value.y}
-                dy={1}
-                textAnchor="end"
-                fontSize={12}
-                fill="#666"
-              >
-                {value.payload.value}
-                {unitPreferences.units.surfHeight}
-              </text>
-            );
-          }}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+          <YAxis
+            tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+            minTickGap={0}
+            unit={unitPreferences.units.surfHeight}
+            interval="preserveEnd"
+            overflow="visible"
+            allowDecimals={false}
+            ticks={generateTicks(
+              maxSurfHeight,
+              unitPreferences.units.surfHeight
+            )}
+            padding={{
+              top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
+            }}
+            height={320}
+            axisLine={false}
+            type="number"
+            domain={[0, "dataMax"]}
+            tick={(value) => {
+              return value.index === 0 ? (
+                <g transform="translate(-10, 0)">
+                  <LuWind
+                    className="tw:w-4 tw:h-4"
+                    x={value.x - 6}
+                    y={value.y + 16}
+                    size={20}
+                    color="#666"
+                  />
+                  {unitPreferences.units.wind === "knots" ? (
+                    <text
+                      x={value.x + 10}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                      fontSize={10}
+                    >
+                      kts
+                    </text>
+                  ) : (
+                    <text
+                      x={value.x + 12}
+                      y={value.y + 52}
+                      dy={1}
+                      textAnchor="end"
+                      fontSize={10}
+                    >
+                      km/h
+                    </text>
+                  )}
+                </g>
+              ) : (
+                <text
+                  x={value.x}
+                  y={value.y}
+                  dy={1}
+                  textAnchor="end"
+                  fontSize={12}
+                  fill="#666"
+                >
+                  {value.payload.value}
+                  {unitPreferences.units.surfHeight}
+                </text>
+              );
+            }}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };

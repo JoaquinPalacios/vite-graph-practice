@@ -41,7 +41,8 @@ export const SwellChart = ({
       height="100%"
       className={cn(
         "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
-        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
+        unitPreferences.showAdvancedChart &&
+          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <BarChart
@@ -294,10 +295,7 @@ export const SwellChart = ({
           tick={() => {
             return <text></text>;
           }}
-          ticks={generateTicks(
-            maxSurfHeight,
-            unitPreferences.units.surfHeight === "ft" ? "ft" : "m"
-          )}
+          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
         />
       </BarChart>
     </ResponsiveContainer>

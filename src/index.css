@@ -2,16 +2,6 @@
 
 @plugin "tailwindcss-animate";
 
-@layer base {
-  :root {
-    --tw-chart-1: 183 100% 29%;
-    --tw-chart-2: 173 58% 39%;
-    --tw-chart-3: 197 37% 24%;
-    --tw-chart-4: 43 74% 66%;
-    --tw-chart-5: 27 87% 67%;
-  }
-}
-
 @theme {
   --tw-color-swell: #008a93;
 }

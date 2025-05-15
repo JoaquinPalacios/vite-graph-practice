@@ -609,7 +609,7 @@ export const DthreeChart = ({
         ></div>
       </div>
       {/* Y-axis container */}
-      <div className="tw:w-16 tw:h-fit tw:absolute tw:left-3.5 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+      <div className="tw:w-16 tw:h-fit tw:absolute tw:left-3 tw:bottom-0 tw:z-10 tw:pointer-events-none">
         <svg ref={yAxisRef} width="64" height={svgDimensions.height} />
       </div>
     </>
