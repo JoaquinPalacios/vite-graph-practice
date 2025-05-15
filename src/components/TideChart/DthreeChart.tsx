@@ -68,9 +68,10 @@ export const DthreeChart = ({
     const swellTimeRange = swellData?.slice(0, length).reduce(
       (acc, curr) => {
         const time = new Date(curr.localDateTimeISO).getTime();
+        const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000; // 2h 59m in milliseconds - so now the limit instead of being 9pm it is 11:59pm to catch the last tide of the day
         return {
           min: Math.min(acc.min, time),
-          max: Math.max(acc.max, time),
+          max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
         };
       },
       { min: Infinity, max: -Infinity }

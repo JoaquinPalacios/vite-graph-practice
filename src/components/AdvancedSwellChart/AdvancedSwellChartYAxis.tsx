@@ -27,9 +27,23 @@ const AdvancedSwellChartYAxis = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsVisible(unitPreferences.showAdvancedChart);
-    }, 50);
+    let timeoutId: NodeJS.Timeout;
+
+    if (unitPreferences.showAdvancedChart) {
+      // For showing: small delay to ensure proper mount
+      timeoutId = setTimeout(() => {
+        setIsVisible(true);
+      }, 50);
+    } else {
+      // For hiding: no delay needed
+      setIsVisible(false);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [unitPreferences.showAdvancedChart]);
 
   /**
