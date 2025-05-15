@@ -1,4 +1,3 @@
-import { IoCloudOfflineOutline } from "react-icons/io5";
 import {
   WiDayCloudy,
   WiDaySunny,
@@ -14,6 +13,7 @@ import {
   WiThunderstorm,
   WiStormShowers,
 } from "react-icons/wi";
+import { AiOutlineStop } from "react-icons/ai";
 
 type WeatherData = {
   weatherId: number;
@@ -100,7 +100,7 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!weatherInfo) {
     return (
       <IconWrapper>
-        <IoCloudOfflineOutline size={20} color="#666" aria-label="Cloud" />
+        <AiOutlineStop size={20} color="#666" aria-label="Cloud" />
         <CurrentTemp payload={props.payload} />
       </IconWrapper>
     );

@@ -11,7 +11,7 @@ export const SurfReport = ({
   defaultPreferences: UnitPreferences;
 }) => {
   return (
-    <section className="tw:mb-4 tw:max-w-[1340px] tw:h-auto tw:mx-auto tw:w-full">
+    <section className="tw:mb-4 tw:max-w-[1340px] tw:h-auto tw:mx-auto tw:w-full tw:max-md:px-5">
       <div className="">
         <div className="tw:grid tw:md:grid-cols-3 tw:gap-6">
           <div className="tw:col-span-2">

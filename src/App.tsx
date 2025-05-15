@@ -55,10 +55,10 @@ function App({
           chartData={chartData[0]}
           defaultPreferences={defaultPreferences}
         />
-        <h2 className="tw:text-2xl tw:font-semibold tw:mb-4">
+        <h2 className="tw:text-2xl tw:font-semibold tw:mb-4 tw:max-md:px-5">
           {locationName} Surf Forecast
         </h2>
-        <div className="tw:flex tw:items-center tw:gap-2 tw:justify-between">
+        <div className="tw:flex tw:items-center tw:gap-2 tw:justify-between tw:max-md:px-5">
           <p className="tw:text-sm tw:mb-4">
             Model run time {formatBulletinDateTime(bulletinDateTimeUtc)}, next
             model run at..

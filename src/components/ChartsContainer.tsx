@@ -91,16 +91,15 @@ const ChartsContainer = ({
           />
 
           <WeatherChart weatherData={weatherData} />
-          <div className="tw:absolute tw:left-3 tw:bottom-[8.75rem] tw:z-10 tw:pointer-events-none tw:h-20 [&]:tw:w-16">
+          <div
+            className={cn(
+              "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
+              "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-[8.75rem] tw:z-10"
+            )}
+          >
             <svg className="weather-rect" width="100%" height="100%"></svg>
           </div>
           <DthreeChart tideData={tideData} swellData={processedData} />
-          {/* <TideChart
-            tideData={tideData}
-            length={processedData.length}
-            swellData={processedData}
-          /> */}
-          {/* <TideChartYAxis tideData={tideData} /> */}
         </ChartsWrapper>
       </div>
     </section>

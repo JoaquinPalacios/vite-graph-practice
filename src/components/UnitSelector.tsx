@@ -10,7 +10,7 @@ export const UnitSelector = ({
   defaultValues,
 }: UnitSelectorProps) => {
   return (
-    <div className="tw:flex tw:gap-4 tw:items-center">
+    <div className="tw:flex tw:gap-4 tw:items-center tw:max-md:px-5">
       <button
         onClick={() =>
           onChange({

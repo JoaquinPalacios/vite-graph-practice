@@ -1,6 +1,7 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import { ChartDataItem, TideDataFromDrupal } from "@/types";
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 
 interface TransformedTidePoint {
   height: number;
@@ -35,6 +36,7 @@ export const DthreeChart = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   const length = swellData.length;
 
@@ -277,7 +279,10 @@ export const DthreeChart = ({
     yAxisSvg
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", "translate(64, 20)")
+      .attr(
+        "transform",
+        `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 20)`
+      )
       .call(yAxis);
 
     // Hide the 0m label but keep its tick line
@@ -610,8 +615,13 @@ export const DthreeChart = ({
         ></div>
       </div>
       {/* Y-axis container */}
-      <div className="tw:w-16 tw:h-fit tw:absolute tw:left-3 tw:bottom-0 tw:z-10 tw:pointer-events-none">
-        <svg ref={yAxisRef} width="64" height={svgDimensions.height} />
+      <div className="tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+        <svg
+          ref={yAxisRef}
+          width={isMobile || isLandscapeMobile ? 48 : 64}
+          height={svgDimensions.height}
+          className="tw:w-12 tw:md:w-16"
+        />
       </div>
     </>
   );
