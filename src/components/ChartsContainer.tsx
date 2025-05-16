@@ -8,13 +8,14 @@ import { cn } from "@/utils/utils";
 import { ChartDataItem } from "@/types/index.ts";
 import { processTimeData } from "@/lib/time-utils";
 import { UnitSelector } from "./UnitSelector";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import AdvancedSwellChart from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
 // import TideChart from "./TideChart";
 // import TideChartYAxis from "./TideChart/TideChartYAxis";
 import { DthreeChart } from "./TideChart/DthreeChart";
+import GraphSkeleton from "./GraphSkeleton";
 
 const ChartsContainer = ({
   defaultPreferences,
@@ -59,48 +60,50 @@ const ChartsContainer = ({
         )}
         style={{ width: chartWidth }}
       >
-        <ChartsWrapper>
-          <SwellChart
-            unitPreferences={unitPreferences}
-            chartData={processedData}
-            maxSurfHeight={
-              unitPreferences.units.surfHeight === "ft"
-                ? maxSurfHeight.feet
-                : maxSurfHeight.meters
-            }
-          />
-          <SwellChartYAxis
-            unitPreferences={unitPreferences}
-            chartData={processedData}
-            maxSurfHeight={
-              unitPreferences.units.surfHeight === "ft"
-                ? maxSurfHeight.feet
-                : maxSurfHeight.meters
-            }
-          />
+        <Suspense fallback={<GraphSkeleton />}>
+          <ChartsWrapper>
+            <SwellChart
+              unitPreferences={unitPreferences}
+              chartData={processedData}
+              maxSurfHeight={
+                unitPreferences.units.surfHeight === "ft"
+                  ? maxSurfHeight.feet
+                  : maxSurfHeight.meters
+              }
+            />
+            <SwellChartYAxis
+              unitPreferences={unitPreferences}
+              chartData={processedData}
+              maxSurfHeight={
+                unitPreferences.units.surfHeight === "ft"
+                  ? maxSurfHeight.feet
+                  : maxSurfHeight.meters
+              }
+            />
 
-          <AdvancedSwellChart
-            unitPreferences={unitPreferences}
-            chartData={processedData}
-            maxSurfHeight={maxSurfHeight.meters}
-          />
-          <AdvancedSwellChartYAxis
-            chartData={processedData}
-            maxSurfHeight={maxSurfHeight.meters}
-            unitPreferences={unitPreferences}
-          />
+            <AdvancedSwellChart
+              unitPreferences={unitPreferences}
+              chartData={processedData}
+              maxSurfHeight={maxSurfHeight.meters}
+            />
+            <AdvancedSwellChartYAxis
+              chartData={processedData}
+              maxSurfHeight={maxSurfHeight.meters}
+              unitPreferences={unitPreferences}
+            />
 
-          <WeatherChart weatherData={weatherData} />
-          <div
-            className={cn(
-              "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
-              "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-[8.75rem] tw:z-10"
-            )}
-          >
-            <svg className="weather-rect" width="100%" height="100%"></svg>
-          </div>
-          <DthreeChart tideData={tideData} swellData={processedData} />
-        </ChartsWrapper>
+            <WeatherChart weatherData={weatherData} />
+            <div
+              className={cn(
+                "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
+                "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-[8.75rem] tw:z-10"
+              )}
+            >
+              <svg className="weather-rect" width="100%" height="100%"></svg>
+            </div>
+            <DthreeChart tideData={tideData} swellData={processedData} />
+          </ChartsWrapper>
+        </Suspense>
       </div>
     </section>
   );

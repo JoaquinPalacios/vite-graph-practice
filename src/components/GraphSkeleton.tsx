@@ -1,12 +1,15 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
+
 const GraphSkeleton = () => {
+  const { isExtraLargeDesktop } = useScreenDetector();
   // Determine roughly how many placeholder bars/items to show
   const placeholderCount = 33; // Adjust based on desired density
 
   return (
     // Outermost container - mimic general padding/background if needed
-    <div className="tw:w-full tw:bg-white tw:py-4 tw:pr-4 tw:pl-12 tw:rounded-lg tw:overflow-hidden">
+    <div className="tw:w-full tw:pl-4 tw:bg-slate-50 tw:overflow-hidden tw:h-[33rem]">
       {/* Top Axis (Time Labels) */}
-      <div className="tw:flex tw:justify-around tw:mb-2 tw:pl-8 tw:h-5">
+      <div className="tw:flex tw:justify-around tw:mt-3 tw:mb-2 tw:pl-8 tw:h-5">
         {[...Array(4)].map(
           (
             _,
@@ -14,7 +17,7 @@ const GraphSkeleton = () => {
           ) => (
             <div
               key={`time-${i}`}
-              className="tw:h-4 tw:w-10 tw:bg-gray-200 tw:rounded tw:animate-pulse"
+              className="tw:h-4 tw:w-10 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"
             ></div>
           )
         )}
@@ -26,15 +29,13 @@ const GraphSkeleton = () => {
         {/* Adjust height as needed */}
         {/* Left Axis (Height Labels) - Optional but good for layout */}
         <div className="tw:flex tw:flex-col tw:justify-between tw:h-full">
-          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>
-          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>
-          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>
-          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>
-          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>
+          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>
+          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>
+          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>
+          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>
+          <div className="tw:h-3 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>
         </div>
         {/* Graph Background & Bars Area */}
-        {/* Simple version: single pulsing background */}
-        {/* <div className="flex-1 bg-gray-100 animate-pulse rounded"></div> */}
         {/* More complex version: attempt day/night bands + bars */}
         <div className="tw:flex-1 tw:flex tw:items-end tw:justify-start tw:space-x-1 tw:overflow-hidden tw:relative tw:h-full">
           {/* Background Bands (simplified) */}
@@ -75,13 +76,37 @@ const GraphSkeleton = () => {
               key={`wind-${i}`}
               className="tw:flex tw:flex-col tw:items-center tw:space-y-1"
             >
-              <div className="tw:h-4 tw:w-4 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>{" "}
+              <div className="tw:h-4 tw:w-4 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>{" "}
               {/* Arrow */}
-              <div className="tw:h-2 tw:w-3 tw:bg-gray-200 tw:rounded tw:animate-pulse"></div>{" "}
+              <div className="tw:h-2 tw:w-3 tw:bg-gray-200 tw:rounded-xs tw:animate-pulse"></div>{" "}
               {/* Text */}
             </div>
           )
         )}
+      </div>
+
+      {/* Weather Chart Skeleton */}
+      <div className="tw:py-4 tw:ml-5 tw:flex tw:flex-row tw:items-center tw:gap-2 tw:justify-start tw:border-y tw:border-slate-200/50 tw:overflow-hidden">
+        {[...Array(isExtraLargeDesktop ? 40 : 32)].map((_, i) => (
+          <div
+            key={`weather-skel-${i}`}
+            className="tw:flex tw:flex-col tw:items-center tw:gap-1"
+          >
+            <div className="tw:w-6 tw:h-6 tw:bg-slate-200 tw:rounded-full tw:animate-pulse tw:aspect-square"></div>
+            <div className="tw:w-3 tw:h-2 tw:bg-slate-200/80 tw:rounded-full tw:animate-pulse tw:aspect-video"></div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tide Chart Skeleton */}
+      <div className="tw:mt-2 tw:ml-4 tw:flex tw:flex-row tw:items-end tw:gap-1 tw:justify-center tw:h-16">
+        {[...Array(80)].map((_, i) => (
+          <div
+            key={`tide-skel-${i}`}
+            className="tw:w-3 tw:bg-slate-200 tw:rounded tw:animate-pulse"
+            style={{ height: `${Math.abs(Math.sin(i / 5)) * 32 + 4}px` }}
+          ></div>
+        ))}
       </div>
     </div>
   );
