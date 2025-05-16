@@ -100,7 +100,7 @@ const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!weatherInfo) {
     return (
       <IconWrapper>
-        <AiOutlineStop size={20} color="#666" aria-label="Cloud" />
+        <AiOutlineStop size={16} color="#666" y={3} aria-label="Cloud" />
         <CurrentTemp payload={props.payload} />
       </IconWrapper>
     );
