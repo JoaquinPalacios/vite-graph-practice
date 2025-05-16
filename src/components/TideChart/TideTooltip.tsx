@@ -11,7 +11,7 @@ const TideTooltip = memo(
 
       return (
         <div className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden">
-          <h5 className="tw:mb-2 tw:px-2 tw:pt-2 tw:text-center tw:text-white tw:font-medium tw:text-xs">
+          <h6 className="margin-none text-color-white tw:p-2 tw:text-center tw:font-medium tw:text-xs">
             {date
               .toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -24,11 +24,11 @@ const TideTooltip = memo(
               month: "short",
               day: "numeric",
             })}
-          </h5>
+          </h6>
           <div className="tw:flex tw:flex-col tw:bg-white tw:p-2">
-            <div className="tw:flex tw:gap-1">
+            <div className="tw:flex tw:gap-1 tw:items-center">
               <LuWaves className="tw:w-3.5 tw:h-3.5" color="#008a93" />
-              <p className="tw:ml-px tw:text-xs">
+              <p className="margin-bottom-none tw:ml-px tw:text-xs">
                 {payload[0].value && Number(payload[0].value).toFixed(1)}m
               </p>
             </div>

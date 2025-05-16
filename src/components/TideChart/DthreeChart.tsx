@@ -1,7 +1,10 @@
-import { useMemo, useRef, useEffect, useState } from "react";
+import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
 import * as d3 from "d3";
 import { ChartDataItem, TideDataFromDrupal } from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import TideTooltip from "./TideTooltip";
+import { bisector } from "d3-array";
+import { timeFormat } from "d3-time-format";
 
 interface TransformedTidePoint {
   height: number;
@@ -9,6 +12,7 @@ interface TransformedTidePoint {
   localDateTimeISO: string; // Local ISO string, e.g., "YYYY-MM-DDTHH:MM:SS+HH:MM"
   utcDateTimeISO: string; // Corresponding UTC ISO string
   isBoundary?: boolean; // Flag for interpolated/boundary points
+  isInterpolated?: boolean; // Flag for interpolated points
 }
 
 // --- Helper: Function to parse ISO string robustly ---
@@ -34,11 +38,28 @@ export const DthreeChart = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
   const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const [tooltipState, setTooltipState] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    data: TransformedTidePoint | null;
+  }>({ visible: false, x: 0, y: 0, data: null });
+  const tooltipDivRef = useRef<HTMLDivElement>(null);
 
   const length = swellData.length;
+
+  const PIXELS_PER_DAY = 256; // Exact width per day in pixels
+
+  // Add bisector for efficient point lookup
+  const bisectTime = useMemo(
+    () => bisector((d: TransformedTidePoint) => d.timestamp).left,
+    []
+  );
+
+  // Formatter for tooltip date
+  const tooltipDateFormat = useMemo(() => timeFormat("%a %d %b, %I:%M %p"), []);
 
   /**
    * First, transform the tide data into a format that can be used by D3
@@ -145,8 +166,18 @@ export const DthreeChart = ({
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
   }, [tideData, swellData, length]);
 
+  // Only show a dot if it's at least 15 minutes from the previous one (for real points)
   const labelData = useMemo(() => {
-    return transformedData.filter((d) => !d.isBoundary);
+    const MIN_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
+    const filtered: TransformedTidePoint[] = [];
+    let lastTimestamp = -Infinity;
+    for (const d of transformedData) {
+      if (!d.isBoundary && d.timestamp - lastTimestamp >= MIN_INTERVAL_MS) {
+        filtered.push(d);
+        lastTimestamp = d.timestamp;
+      }
+    }
+    return filtered;
   }, [transformedData]);
 
   /**
@@ -225,7 +256,6 @@ export const DthreeChart = ({
     svg.selectAll("*").remove();
     yAxisSvg.selectAll("*").remove();
 
-    const PIXELS_PER_DAY = 256; // Exact width per day in pixels
     const margin = { top: 20, right: 0, bottom: 5, left: 76 };
 
     // Calculate the exact width needed for the chart area
@@ -382,6 +412,11 @@ export const DthreeChart = ({
       .attr("d", areaGenerator)
       .attr("clip-path", `url(#${clipPathId})`);
 
+    // Get the DOM node for the area path for curve sampling
+    const areaPathNode = chartArea
+      .select(".tide-area")
+      .node() as SVGPathElement | null;
+
     // --- Tide Labels (Time, Date, and Height) ---
     const labelGroup = chartArea
       .append("g")
@@ -438,27 +473,12 @@ export const DthreeChart = ({
     const hoverDot = chartArea
       .append("circle")
       .attr("class", "tide-hover-dot")
-      .attr("r", 4)
+      .attr("r", 3)
       .attr("fill", "#008a93")
       .attr("stroke", "white")
       .attr("stroke-width", 1.5)
       .attr("opacity", 0)
       .attr("pointer-events", "none");
-
-    // Update Delaunay to use exact pixel positions
-    const delaunay = d3.Delaunay.from(
-      labelData,
-      (d) => {
-        const dayIndex = Math.floor(
-          (d.timestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
-        );
-        const dayProgress =
-          (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
-        const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
-        return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
-      },
-      (d) => yScale(d.height)
-    );
 
     chartArea
       .append("rect")
@@ -476,53 +496,70 @@ export const DthreeChart = ({
           pointerY > chartDrawingHeight
         ) {
           hoverDot.attr("opacity", 0);
-          if (tooltipRef.current)
-            d3.select(tooltipRef.current).style("display", "none");
+          setTooltipState((prev) => ({ ...prev, visible: false }));
           return;
         }
-        const nearestIndex = delaunay.find(pointerX, pointerY);
-        const nearestDataPoint = labelData[nearestIndex];
 
-        if (nearestDataPoint) {
-          const dayIndex = Math.floor(
-            (nearestDataPoint.timestamp - timeDomain[0].getTime()) /
-              (24 * 60 * 60 * 1000)
-          );
-          const dayProgress =
-            (nearestDataPoint.timestamp - timeDomain[0].getTime()) %
-            (24 * 60 * 60 * 1000);
-          const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
-          const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
-
-          hoverDot
-            .attr("cx", x)
-            .attr("cy", yScale(nearestDataPoint.height))
-            .attr("opacity", 1);
-          if (tooltipRef.current) {
-            const tooltipDiv = d3.select(tooltipRef.current);
-            tooltipDiv
-              .style("display", "block")
-              .style("left", `${event.pageX + 15}px`)
-              .style("top", `${event.pageY - 15}px`);
-            const timeStr = parseDateTime(nearestDataPoint.localDateTimeISO)
-              ?.toLocaleTimeString("en-AU", {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              })
-              .toLowerCase();
-            tooltipDiv.html(
-              `<div>${nearestDataPoint.height.toFixed(
-                2
-              )}m</div><div>${timeStr}</div>`
-            );
+        // --- New: Find the closest point on the area curve to the mouse X ---
+        if (areaPathNode) {
+          const totalLength = areaPathNode.getTotalLength();
+          // Binary search for the length where x is closest to pointerX
+          let start = 0;
+          let end = totalLength;
+          let best = { x: 0, y: 0, len: 0, dist: Infinity };
+          for (let iter = 0; iter < 10; iter++) {
+            const mid = (start + end) / 2;
+            const pt = areaPathNode.getPointAtLength(mid);
+            const dist = Math.abs(pt.x - pointerX);
+            if (dist < best.dist) {
+              best = { x: pt.x, y: pt.y, len: mid, dist };
+            }
+            if (pt.x < pointerX) {
+              start = mid;
+            } else {
+              end = mid;
+            }
           }
+          // Find the closest data point for tooltip info
+          // Convert best.x back to timestamp
+          const dayIndex = Math.floor(best.x / PIXELS_PER_DAY);
+          const dayProgress = best.x % PIXELS_PER_DAY;
+          const dayFraction = dayProgress / PIXELS_PER_DAY;
+          const mouseTimestamp =
+            timeDomain[0].getTime() +
+            dayIndex * 24 * 60 * 60 * 1000 +
+            dayFraction * 24 * 60 * 60 * 1000;
+          // Find the two points that bracket the mouse timestamp
+          const i = bisectTime(transformedData, mouseTimestamp);
+          const left = transformedData[i - 1];
+          const right = transformedData[i];
+          let interpolatedHeight = null;
+          if (left && right) {
+            const t =
+              (mouseTimestamp - left.timestamp) /
+              (right.timestamp - left.timestamp);
+            interpolatedHeight = left.height + t * (right.height - left.height);
+          }
+          // Use the Y from the curve for the dot, but keep the interpolated height for the tooltip
+          const debugDate = new Date(mouseTimestamp);
+          const interpolatedPoint: TransformedTidePoint = {
+            height: interpolatedHeight ?? 0,
+            timestamp: mouseTimestamp,
+            localDateTimeISO: tooltipDateFormat(debugDate),
+            utcDateTimeISO: debugDate.toISOString(),
+          };
+          hoverDot.attr("cx", best.x).attr("cy", best.y).attr("opacity", 1);
+          setTooltipState({
+            visible: true,
+            x: best.x + margin.left + 8,
+            y: best.y + margin.top - 8,
+            data: interpolatedPoint,
+          });
         }
       })
       .on("mouseout", () => {
         hoverDot.attr("opacity", 0);
-        if (tooltipRef.current)
-          d3.select(tooltipRef.current).style("display", "none");
+        setTooltipState((prev) => ({ ...prev, visible: false }));
       });
 
     // Update the container width style to match the SVG width
@@ -549,6 +586,45 @@ export const DthreeChart = ({
     };
   }, []);
 
+  // Tooltip boundary detection and adjustment (relative to container)
+  useLayoutEffect(() => {
+    if (
+      !tooltipState.visible ||
+      !tooltipDivRef.current ||
+      !containerRef.current
+    )
+      return;
+
+    const tooltipRect = tooltipDivRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    let left = tooltipState.x;
+    let top = tooltipState.y;
+    const margin = 8; // margin from edge
+
+    // Clamp right
+    if (left + tooltipRect.width > containerRect.width) {
+      left = containerRect.width - tooltipRect.width - margin;
+    }
+    // Clamp left
+    if (left < 0) {
+      left = margin;
+    }
+    // Clamp bottom
+    if (top + tooltipRect.height > containerRect.height) {
+      top = containerRect.height - tooltipRect.height - margin;
+    }
+    // Clamp top
+    if (top < 0) {
+      top = margin;
+    }
+
+    // Only update if changed
+    if (left !== tooltipState.x || top !== tooltipState.y) {
+      setTooltipState((prev) => ({ ...prev, x: left, y: top }));
+    }
+  }, [tooltipState, svgDimensions]);
+
   /**
    * Fifth, Render
    * @description It takes the container and renders the chart.
@@ -562,20 +638,6 @@ export const DthreeChart = ({
         className="tw:h-36 tw:min-h-36"
       >
         <div>Loading tide data or no data available...</div>
-        <div
-          ref={tooltipRef}
-          style={{
-            position: "absolute",
-            display: "none",
-            backgroundColor: "rgba(0,0,0,0.7)",
-            color: "white",
-            padding: "4px 8px",
-            fontSize: "10px",
-            borderRadius: "3px",
-            pointerEvents: "none",
-            whiteSpace: "nowrap",
-          }}
-        ></div>
       </div>
     );
   }
@@ -599,20 +661,29 @@ export const DthreeChart = ({
           {/* D3 renders here */}
         </svg>
 
-        <div
-          ref={tooltipRef}
-          style={{
-            position: "absolute",
-            display: "none",
-            backgroundColor: "rgba(0,0,0,0.7)",
-            color: "white",
-            padding: "4px 8px",
-            fontSize: "10px",
-            borderRadius: "3px",
-            pointerEvents: "none",
-            whiteSpace: "nowrap",
-          }}
-        ></div>
+        {/* React TideTooltip for hover */}
+        {tooltipState.visible && tooltipState.data && (
+          <div
+            ref={tooltipDivRef}
+            style={{
+              position: "absolute",
+              left: tooltipState.x,
+              top: tooltipState.y,
+              zIndex: 10,
+              pointerEvents: "none",
+            }}
+          >
+            <TideTooltip
+              active={true}
+              payload={[
+                {
+                  value: tooltipState.data.height,
+                  payload: tooltipState.data,
+                },
+              ]}
+            />
+          </div>
+        )}
       </div>
       {/* Y-axis container */}
       <div className="tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:bottom-0 tw:z-10 tw:pointer-events-none">

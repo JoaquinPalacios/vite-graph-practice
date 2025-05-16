@@ -26,6 +26,9 @@
 .margin-none {
   margin: 0;
 }
+.margin-bottom-none {
+  margin-bottom: 0;
+}
 
 .recharts-cartesian-axis-tick-line {
   opacity: 0.5;
