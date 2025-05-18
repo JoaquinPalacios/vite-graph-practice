@@ -96,6 +96,8 @@ function initGraph() {
       },
       maxSurfHeight: maxSurfHeight,
       chartWidth: chartWidth,
+      currentWeatherData: rawApiData.weather.current,
+      sunriseSunsetData: rawApiData.weather.daily,
       weatherData: rawApiData.weather.hourly
         ? (() => {
             return rawApiData.weather.hourly.time.map(

@@ -4,6 +4,8 @@ import {
   DrupalApiData,
   WeatherData,
   TideDataFromDrupal,
+  CurrentWeatherData,
+  SunriseSunsetData,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
@@ -23,7 +25,10 @@ interface AppProps {
   bulletinDateTimeUtc: string;
   chartWidth: number;
   weatherData: WeatherData[];
+  currentWeatherData: CurrentWeatherData;
   tideData: TideDataFromDrupal[];
+  sunriseSunsetData: SunriseSunsetData;
+  timezone: string;
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -37,7 +42,10 @@ function App({
   bulletinDateTimeUtc,
   chartWidth,
   weatherData,
+  currentWeatherData,
   tideData,
+  sunriseSunsetData,
+  timezone,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
 
@@ -52,7 +60,11 @@ function App({
       <SurfReport
         localDateTimeISO={localDateTimeISO}
         chartData={chartData[0]}
+        weatherData={weatherData[0]}
         defaultPreferences={defaultPreferences}
+        currentWeatherData={currentWeatherData}
+        sunriseSunsetData={sunriseSunsetData}
+        timezone={timezone}
       />
       <h2 className="tw:text-2xl tw:font-semibold tw:mb-4 tw:max-md:px-5">
         {locationName} Surf Forecast

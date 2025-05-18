@@ -1,14 +1,28 @@
-import { ChartDataItem, UnitPreferences } from "@/types";
+import {
+  ChartDataItem,
+  CurrentWeatherData,
+  SunriseSunsetData,
+  UnitPreferences,
+  WeatherData,
+} from "@/types";
 import { SurfReportPanel } from "./ReportTabs";
 
 export const SurfReport = ({
   localDateTimeISO,
   chartData,
+  weatherData,
   defaultPreferences,
+  currentWeatherData,
+  sunriseSunsetData,
+  timezone,
 }: {
   localDateTimeISO: string;
   chartData: ChartDataItem;
+  weatherData: WeatherData;
   defaultPreferences: UnitPreferences;
+  currentWeatherData: CurrentWeatherData;
+  sunriseSunsetData: SunriseSunsetData;
+  timezone: string;
 }) => {
   return (
     <section className="tw:mb-4 tw:max-w-[1340px] tw:h-auto tw:mx-auto tw:w-full tw:max-md:px-5">
@@ -19,6 +33,10 @@ export const SurfReport = ({
               localDateTimeISO={localDateTimeISO}
               chartData={chartData}
               defaultPreferences={defaultPreferences}
+              weatherData={weatherData}
+              currentWeatherData={currentWeatherData}
+              sunriseSunsetData={sunriseSunsetData}
+              timezone={timezone}
             />
           </div>
           <div className="tw:bg-slate-100 tw:rounded-lg tw:p-4 tw:h-min">

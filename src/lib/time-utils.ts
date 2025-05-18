@@ -1,4 +1,5 @@
 import { timeFormat } from "d3-time-format";
+import { formatInTimeZone } from "date-fns-tz";
 import {
   timeDay,
   timeHour,
@@ -136,4 +137,68 @@ export const formatBulletinDateTime = (dateTimeUtc: string): string => {
   const hour = String(date.getUTCHours()).padStart(2, "0");
 
   return `${year}-${month}-${day} ${hour}Z`;
+};
+
+export const formatTime = (dateTimeStr: string, timezone: string): string => {
+  try {
+    return formatInTimeZone(new Date(dateTimeStr), timezone, "h:mm a");
+  } catch (error) {
+    console.warn("Error formatting time:", error);
+    return "N/A";
+  }
+};
+
+export const findCurrentDaySunriseSunset = (
+  sunriseData: string[],
+  sunsetData: string[],
+  currentDate: string,
+  timezone: string
+): { sunrise: string; sunset: string } => {
+  try {
+    // Convert current date to the target timezone
+    const currentDateInTz = formatInTimeZone(
+      new Date(currentDate),
+      timezone,
+      "yyyy-MM-dd"
+    );
+
+    // Find the sunrise and sunset times for the current day
+    const sunriseIndex = sunriseData.findIndex((time) =>
+      time.startsWith(currentDateInTz)
+    );
+    const sunsetIndex = sunsetData.findIndex((time) =>
+      time.startsWith(currentDateInTz)
+    );
+
+    // Convert the times from UTC to the target timezone
+    const formatTimeInTz = (timeStr: string) => {
+      // Create a UTC date object from the input time string
+      const [datePart, timePart] = timeStr.split("T");
+      const [hours, minutes] = timePart.split(":");
+      const utcDate = new Date(
+        Date.UTC(
+          parseInt(datePart.split("-")[0], 10), // year
+          parseInt(datePart.split("-")[1], 10) - 1, // month (0-based)
+          parseInt(datePart.split("-")[2], 10), // day
+          parseInt(hours, 10),
+          parseInt(minutes, 10),
+          0,
+          0
+        )
+      );
+
+      // Format the UTC date in the target timezone
+      return formatInTimeZone(utcDate, timezone, "h:mm a");
+    };
+
+    return {
+      sunrise:
+        sunriseIndex !== -1 ? formatTimeInTz(sunriseData[sunriseIndex]) : "N/A",
+      sunset:
+        sunsetIndex !== -1 ? formatTimeInTz(sunsetData[sunsetIndex]) : "N/A",
+    };
+  } catch (error) {
+    console.warn("Error finding sunrise/sunset times:", error);
+    return { sunrise: "N/A", sunset: "N/A" };
+  }
 };

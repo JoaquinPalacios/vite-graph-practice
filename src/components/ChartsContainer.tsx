@@ -12,8 +12,6 @@ import { Suspense, useState } from "react";
 import AdvancedSwellChart from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
-// import TideChart from "./TideChart";
-// import TideChartYAxis from "./TideChart/TideChartYAxis";
 import { DthreeChart } from "./TideChart/DthreeChart";
 import GraphSkeleton from "./GraphSkeleton";
 

@@ -64,6 +64,8 @@ export interface DrupalApiData {
   };
   error: string | null;
   weather: {
+    current: CurrentWeatherData;
+    daily: SunriseSunsetData;
     hourly: {
       temperature_2m: number[];
       time: string[];
@@ -112,6 +114,21 @@ export interface WeatherData {
   localDateTimeISO: string;
   currentTemp: number;
   weatherId: number;
+}
+
+export interface CurrentWeatherData {
+  is_day: number;
+  temperature_2m: number;
+  time: string;
+  weather_code: number;
+  wind_direction_10m: number;
+  wind_speed_10m: number;
+}
+
+export interface SunriseSunsetData {
+  sunrise: string[];
+  sunset: string[];
+  time: string[];
 }
 
 declare global {
