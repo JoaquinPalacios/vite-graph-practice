@@ -9,6 +9,7 @@ import {
   timeWeek,
   timeYear,
 } from "d3-time";
+import { TideDataFromDrupal } from "@/types";
 
 interface TimeDataItem {
   localDateTimeISO: string;
@@ -200,5 +201,120 @@ export const findCurrentDaySunriseSunset = (
   } catch (error) {
     console.warn("Error finding sunrise/sunset times:", error);
     return { sunrise: "N/A", sunset: "N/A" };
+  }
+};
+
+export const findCurrentDayTides = (
+  tideData: TideDataFromDrupal[],
+  currentDate: string,
+  timezone: string
+): {
+  current: { type: string; time: string; height: string };
+  next: { type: string; time: string; height: string };
+} => {
+  try {
+    // Convert current date to the target timezone
+    const currentDateInTz = formatInTimeZone(
+      new Date(currentDate),
+      timezone,
+      "yyyy-MM-dd"
+    );
+
+    // Find all tides for the current day
+    const currentDayTides = tideData.filter((tide) =>
+      tide._source.time_local.startsWith(currentDateInTz)
+    );
+
+    if (currentDayTides.length === 0) {
+      return {
+        current: { type: "N/A", time: "N/A", height: "N/A" },
+        next: { type: "N/A", time: "N/A", height: "N/A" },
+      };
+    }
+
+    // Get current time in the target timezone
+    const now = new Date(currentDate);
+    const currentTime = now.getTime();
+
+    // Find the current and next tide
+    let currentTide = null;
+    let nextTide = null;
+
+    for (let i = 0; i < currentDayTides.length; i++) {
+      const tideTime = new Date(
+        currentDayTides[i]._source.time_local
+      ).getTime();
+      if (tideTime > currentTime) {
+        if (i > 0) {
+          currentTide = currentDayTides[i - 1];
+        }
+        nextTide = currentDayTides[i];
+        break;
+      }
+    }
+
+    // If we haven't found a next tide, look for the first tide of the next day
+    if (!nextTide) {
+      const nextDayTides = tideData.filter((tide) => {
+        const nextDay = new Date(currentDateInTz);
+        nextDay.setDate(nextDay.getDate() + 1);
+        return tide._source.time_local.startsWith(
+          formatInTimeZone(nextDay, timezone, "yyyy-MM-dd")
+        );
+      });
+      if (nextDayTides.length > 0) {
+        nextTide = nextDayTides[0];
+      }
+    }
+
+    // If we haven't found a current tide, use the last tide of the previous day
+    if (!currentTide) {
+      const prevDayTides = tideData.filter((tide) => {
+        const prevDay = new Date(currentDateInTz);
+        prevDay.setDate(prevDay.getDate() - 1);
+        return tide._source.time_local.startsWith(
+          formatInTimeZone(prevDay, timezone, "yyyy-MM-dd")
+        );
+      });
+      if (prevDayTides.length > 0) {
+        currentTide = prevDayTides[prevDayTides.length - 1];
+      }
+    }
+
+    // Format the times and heights
+    const formatTideInfo = (tide: TideDataFromDrupal | null) => {
+      if (!tide) return { type: "N/A", time: "N/A", height: "N/A" };
+
+      const [datePart, timePart] = tide._source.time_local.split("T");
+      const [hours, minutes] = timePart.split(":");
+      const utcDate = new Date(
+        Date.UTC(
+          parseInt(datePart.split("-")[0], 10),
+          parseInt(datePart.split("-")[1], 10) - 1,
+          parseInt(datePart.split("-")[2], 10),
+          parseInt(hours, 10),
+          parseInt(minutes, 10),
+          0,
+          0
+        )
+      );
+
+      return {
+        type: tide._source.instance === "high" ? "High" : "Low",
+        time: formatInTimeZone(utcDate, timezone, "h:mm a").toLowerCase(),
+        height: `${parseFloat(tide._source.value).toFixed(1)}m`,
+      };
+    };
+
+    return {
+      current: formatTideInfo(currentTide),
+      next: formatTideInfo(nextTide),
+    };
+  } catch (error) {
+    console.warn("Error finding tide times:", error);
+    return {
+      current: { type: "N/A", time: "N/A", height: "N/A" },
+      next: { type: "N/A", time: "N/A", height: "N/A" },
+    };
   }
 };

@@ -64,6 +64,7 @@ function App({
         defaultPreferences={defaultPreferences}
         currentWeatherData={currentWeatherData}
         sunriseSunsetData={sunriseSunsetData}
+        tideData={tideData}
         timezone={timezone}
       />
       <h2 className="tw:text-2xl tw:font-semibold tw:mb-4 tw:max-md:px-5">

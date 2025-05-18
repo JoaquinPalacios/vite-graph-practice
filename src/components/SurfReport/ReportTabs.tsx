@@ -9,11 +9,15 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   WeatherData,
+  TideDataFromDrupal,
 } from "@/types";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { cn } from "@/utils/utils";
 import { WeatherIcon, getWeatherLabel } from "@/components/WeatherIcon";
-import { findCurrentDaySunriseSunset } from "@/lib/time-utils";
+import {
+  findCurrentDaySunriseSunset,
+  findCurrentDayTides,
+} from "@/lib/time-utils";
 import { formatInTimeZone } from "date-fns-tz";
 
 export const SurfReportPanel = ({
@@ -22,6 +26,7 @@ export const SurfReportPanel = ({
   defaultPreferences,
   currentWeatherData,
   sunriseSunsetData,
+  tideData,
   timezone,
 }: {
   localDateTimeISO: string;
@@ -30,6 +35,7 @@ export const SurfReportPanel = ({
   weatherData: WeatherData;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
+  tideData: TideDataFromDrupal[];
   timezone: string;
 }) => {
   // This would come from your API in a real implementation
@@ -40,11 +46,7 @@ export const SurfReportPanel = ({
       waveHeight: "3-4ft",
       waveQuality: "Good",
       waterTemp: 29,
-      wind: {
-        speed: 5,
-        direction: "ENE",
-        description: "Light offshore",
-      },
+
       weather: {
         forecast:
           "Sunny intervals throughout the day with a slight chance of afternoon clouds",
@@ -66,6 +68,12 @@ export const SurfReportPanel = ({
   const { sunrise, sunset } = findCurrentDaySunriseSunset(
     sunriseSunsetData.sunrise,
     sunriseSunsetData.sunset,
+    localDateTimeISO,
+    timezone
+  );
+
+  const { current: currentTide, next: nextTide } = findCurrentDayTides(
+    tideData,
     localDateTimeISO,
     timezone
   );
@@ -216,9 +224,6 @@ export const SurfReportPanel = ({
                 </h5>
 
                 <div className="tw:flex tw:flex-col tw:justify-center tw:items-start">
-                  <p className="margin-none tw:text-sm">
-                    {surfData.conditions.wind.description}
-                  </p>
                   <div className="tw:flex tw:items-center tw:gap-2 tw:mb-2">
                     <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
                     <p className="margin-none tw:text-xl tw:font-semibold tw:mb-0">
@@ -232,13 +237,13 @@ export const SurfReportPanel = ({
                   </div>
 
                   <div className="">
-                    <p className="tw:text-sm tw:text-muted-foreground tw:mb-1">
-                      Current Tide: {surfData.conditions.tide.current}
+                    <p className="margin-none tw:text-sm tw:text-muted-foreground">
+                      Current Tide: {currentTide.type} at {currentTide.time} (
+                      {currentTide.height})
                     </p>
-                    <p className="tw:text-sm">
-                      Next: {surfData.conditions.tide.next.type} at{" "}
-                      {surfData.conditions.tide.next.time} (
-                      {surfData.conditions.tide.next.height})
+                    <p className="margin-none tw:text-sm">
+                      Next: {nextTide.type} at {nextTide.time} (
+                      {nextTide.height})
                     </p>
                   </div>
                 </div>

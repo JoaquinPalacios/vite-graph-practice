@@ -4,6 +4,7 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   WeatherData,
+  TideDataFromDrupal,
 } from "@/types";
 import { SurfReportPanel } from "./ReportTabs";
 
@@ -14,6 +15,7 @@ export const SurfReport = ({
   defaultPreferences,
   currentWeatherData,
   sunriseSunsetData,
+  tideData,
   timezone,
 }: {
   localDateTimeISO: string;
@@ -22,6 +24,7 @@ export const SurfReport = ({
   defaultPreferences: UnitPreferences;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
+  tideData: TideDataFromDrupal[];
   timezone: string;
 }) => {
   return (
@@ -36,6 +39,7 @@ export const SurfReport = ({
               weatherData={weatherData}
               currentWeatherData={currentWeatherData}
               sunriseSunsetData={sunriseSunsetData}
+              tideData={tideData}
               timezone={timezone}
             />
           </div>
