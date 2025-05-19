@@ -19,6 +19,7 @@ import {
 import { formatInTimeZone } from "date-fns-tz";
 import { PreviousReportItem } from "./PreviousReport";
 import { getSurfHeightLabel } from "@/lib/surf-height-utils";
+import { useMemo } from "react";
 
 const formatTime = (dateStr: string) => {
   return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
@@ -47,13 +48,10 @@ export const SurfReportPanel = ({
   timezone: string;
   surfReport?: SurfReportItem[];
 }) => {
-  // This would come from your API in a real implementation
-  const surfData = {
+  // TODO: Remove this once we have the real data
+  const dummySurfData = {
     conditions: {
-      // waveHeight: "3-4ft",
-      // waveQuality: "Good",
-      waterTemp: 29,
-
+      waterTemp: 22,
       weather: {
         forecast:
           "Sunny intervals throughout the day with a slight chance of afternoon clouds",
@@ -61,23 +59,32 @@ export const SurfReportPanel = ({
     },
   };
 
-  const { sunrise, sunset } = findCurrentDaySunriseSunset(
-    sunriseSunsetData.sunrise,
-    sunriseSunsetData.sunset,
-    localDateTimeISO,
-    timezone
+  // Memoize expensive computations
+  const { sunrise, sunset } = useMemo(
+    () =>
+      findCurrentDaySunriseSunset(
+        sunriseSunsetData.sunrise,
+        sunriseSunsetData.sunset,
+        localDateTimeISO,
+        timezone
+      ),
+    [
+      sunriseSunsetData.sunrise,
+      sunriseSunsetData.sunset,
+      localDateTimeISO,
+      timezone,
+    ]
   );
 
-  const { current: currentTide, next: nextTide } = findCurrentDayTides(
-    tideData,
-    localDateTimeISO,
-    timezone
+  const { current: currentTide, next: nextTide } = useMemo(
+    () => findCurrentDayTides(tideData, localDateTimeISO, timezone),
+    [tideData, localDateTimeISO, timezone]
   );
 
-  const formattedDate = formatInTimeZone(
-    new Date(localDateTimeISO),
-    timezone,
-    "MMMM d, yyyy"
+  const formattedDate = useMemo(
+    () =>
+      formatInTimeZone(new Date(localDateTimeISO), timezone, "MMMM d, yyyy"),
+    [localDateTimeISO, timezone]
   );
 
   return (
@@ -170,7 +177,7 @@ export const SurfReportPanel = ({
                         </p>
                         <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
                           <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
-                          {surfData.conditions.waterTemp}°C
+                          {dummySurfData.conditions.waterTemp}°C
                         </p>
                       </div>
                       <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
@@ -254,7 +261,7 @@ export const SurfReportPanel = ({
                     Today's Forecast
                   </h5>
                   <p className="margin-none tw:text-sm">
-                    {surfData.conditions.weather.forecast}
+                    {dummySurfData.conditions.weather.forecast}
                   </p>
                 </div>
               </div>
