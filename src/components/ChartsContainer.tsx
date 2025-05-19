@@ -12,7 +12,7 @@ import { Suspense, useState } from "react";
 import AdvancedSwellChart from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
-import { DthreeChart } from "./TideChart/DthreeChart";
+import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";
 
 const ChartsContainer = ({
@@ -104,7 +104,7 @@ const ChartsContainer = ({
               </div>
             </Suspense>
             <Suspense fallback={<GraphSkeleton showTide />}>
-              <DthreeChart tideData={tideData} swellData={processedData} />
+              <TideChart tideData={tideData} swellData={processedData} />
             </Suspense>
           </ChartsWrapper>
         </Suspense>
