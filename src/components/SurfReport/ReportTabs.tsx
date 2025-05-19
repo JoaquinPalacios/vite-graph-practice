@@ -1,7 +1,7 @@
 "use client";
 
-// import { useState } from "react";
-import { Droplets, Sunrise, Sunset, Thermometer, Wind } from "lucide-react";
+import { useState } from "react";
+import { Waves, Sunrise, Sunset, Thermometer, Wind } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChartDataItem,
@@ -10,6 +10,7 @@ import {
   UnitPreferences,
   WeatherData,
   TideDataFromDrupal,
+  SurfReportItem,
 } from "@/types";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { cn } from "@/utils/utils";
@@ -20,6 +21,52 @@ import {
 } from "@/lib/time-utils";
 import { formatInTimeZone } from "date-fns-tz";
 
+const formatTime = (dateStr: string) => {
+  return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
+    const hour = parseInt(h);
+    return `${hour % 12 || 12}:${m} ${hour >= 12 ? "PM" : "AM"}`;
+  });
+};
+
+const ReportItem = ({
+  report,
+  units,
+}: {
+  report: SurfReportItem;
+  units: UnitPreferences["units"];
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="tw:mt-5">
+      <p className="tw:text-sm">Updated at: {formatTime(report.date)}</p>
+      <p className="tw:text-sm">Surf Condition: {report.surfQuality}</p>
+      <p className="tw:text-sm">Rating: {report.surfRating}/10</p>
+      <p className="tw:text-sm">Wind: {report.wind}</p>
+      <p className="tw:text-sm">
+        Wave Height: {report.surfHeight}
+        {units.surfHeight === "ft" ? "ft" : "m"}
+      </p>
+      <div>
+        <p
+          className={cn(
+            "margin-none tw:text-sm tw:text-pretty",
+            !isExpanded ? "tw:line-clamp-2" : ""
+          )}
+        >
+          {report.report}
+        </p>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="tw:text-sm tw:text-[#008993] tw:font-medium hover:tw:text-[#00b4c6]"
+        >
+          {isExpanded ? "Read less" : "Read more"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export const SurfReportPanel = ({
   localDateTimeISO,
   chartData,
@@ -28,6 +75,7 @@ export const SurfReportPanel = ({
   sunriseSunsetData,
   tideData,
   timezone,
+  surfReport,
 }: {
   localDateTimeISO: string;
   chartData: ChartDataItem;
@@ -37,33 +85,21 @@ export const SurfReportPanel = ({
   sunriseSunsetData: SunriseSunsetData;
   tideData: TideDataFromDrupal[];
   timezone: string;
+  surfReport: SurfReportItem[];
 }) => {
   // This would come from your API in a real implementation
   const surfData = {
-    report:
-      "The surf is looking clean this morning with light offshore winds creating glassy conditions. Wave heights are holding in the 3-4ft range with occasional larger sets at south-facing breaks. The swell direction is primarily from the southwest (215°) creating some nice peaky sections at Trestles. The morning high tide is causing some sections to be a bit mushy, but conditions should improve as the tide drops through mid-day. Overall, it's a solid day to get in the water with the best waves expected between 10am-2pm.",
     conditions: {
-      waveHeight: "3-4ft",
-      waveQuality: "Good",
+      // waveHeight: "3-4ft",
+      // waveQuality: "Good",
       waterTemp: 29,
 
       weather: {
         forecast:
           "Sunny intervals throughout the day with a slight chance of afternoon clouds",
       },
-      tide: {
-        current: "High",
-        next: {
-          type: "Low",
-          time: "12:45 PM",
-          height: "0.8ft",
-        },
-      },
     },
   };
-
-  // Calculate surf quality score (1-10)
-  const surfQualityScore = 7.5;
 
   const { sunrise, sunset } = findCurrentDaySunriseSunset(
     sunriseSunsetData.sunrise,
@@ -89,10 +125,10 @@ export const SurfReportPanel = ({
       <div className="tw:flex tw:flex-col tw:gap-4">
         <div className="tw:flex tw:items-center tw:justify-between">
           <div>
-            <p className="tw:mb-0">{formattedDate}</p>
+            <p className="margin-none">{formattedDate}</p>
           </div>
           <span className="tw:px-3 tw:py-1 tw:text-lg tw:rounded tw:bg-emerald-600 tw:text-white tw:font-semibold">
-            {surfData.conditions.waveQuality}
+            Good
           </span>
         </div>
 
@@ -120,7 +156,7 @@ export const SurfReportPanel = ({
                   Today's Surf Report
                 </div>
                 <div className="tw:text-sm tw:text-muted-foreground">
-                  Updated at 7:30 AM
+                  Updated at {formatTime(surfReport[0].date)}
                 </div>
               </div>
               <div className="tw:p-6 tw:pt-0">
@@ -130,47 +166,76 @@ export const SurfReportPanel = ({
                       Surf Quality
                     </span>
                     <span className="tw:text-sm tw:font-medium">
-                      {surfQualityScore}/10
+                      {surfReport[0].surfRating}/10
                     </span>
                   </div>
                   <div className="tw:w-full tw:bg-gray-200 tw:rounded-full tw:h-1 tw:shadow-inner tw:overflow-hidden">
                     <div
                       className="tw:h-1 tw:rounded-full tw:bg-gradient-to-r tw:from-emerald-400 tw:to-emerald-600 tw:shadow-md tw:transition-all tw:duration-700"
-                      style={{ width: `${surfQualityScore * 10}%` }}
+                      style={{
+                        width: `${Number(surfReport[0].surfRating) * 10}%`,
+                      }}
                     ></div>
                   </div>
                 </div>
 
-                <p className="tw:text-base tw:leading-relaxed">
-                  {surfData.report}
+                <div className="tw:flex tw:items-center tw:gap-2">
+                  <p className="tw:text-base tw:leading-relaxed">
+                    Surf condition: {surfReport[0].surfQuality}
+                  </p>
+                </div>
+
+                <p className="tw:text-base tw:leading-relaxed tw:text-pretty">
+                  {surfReport[0].report}
                 </p>
 
-                <div className="tw:grid tw:grid-cols-2 tw:gap-4 tw:mt-6">
-                  <div className="tw:flex tw:items-center tw:gap-2">
-                    <div>
-                      <p className="margin-bottom-2 tw:text-sm tw:font-medium">
-                        Wave Height
-                      </p>
-                      <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 tw:mb-0 tw:items-center">
-                        <Droplets className="tw:h-4 tw:w-4 tw:text-blue-500" />
-                        {defaultPreferences.units.surfHeight === "ft"
-                          ? chartData.primary.fullSurfHeightFeetLabelBin
-                          : chartData.primary.fullSurfHeightMetresLabelBin}
-                      </p>
-                    </div>
+                <div className="tw:grid tw:grid-cols-3 tw:gap-4">
+                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                      Wave Height
+                    </p>
+                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center ">
+                      <Waves className="tw:h-4 tw:w-4 tw:text-blue-500" />
+                      {surfReport[0].surfHeight}
+                      {defaultPreferences.units.surfHeight === "ft"
+                        ? "ft"
+                        : "m"}
+                    </p>
                   </div>
-                  <div className="tw:flex tw:items-center tw:gap-2">
-                    <div>
-                      <p className="margin-bottom-2 tw:text-sm tw:font-medium">
-                        Water Temp
-                      </p>
-                      <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 tw:mb-0 tw:items-center">
-                        <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
-                        {surfData.conditions.waterTemp}°C
-                      </p>
-                    </div>
+                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                      Water Temp
+                    </p>
+                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
+                      <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
+                      {surfData.conditions.waterTemp}°C
+                    </p>
+                  </div>
+                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                      Wind Direction
+                    </p>
+                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
+                      <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
+                      {surfReport[0].wind}
+                    </p>
                   </div>
                 </div>
+
+                {surfReport.length > 1 && (
+                  <div className="tw:mt-5">
+                    <h5 className="tw:text-base tw:font-semibold">
+                      Previous reports
+                    </h5>
+                    {surfReport.slice(1).map((report) => (
+                      <ReportItem
+                        key={report.date}
+                        report={report}
+                        units={defaultPreferences.units}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </TabsContent>
@@ -226,10 +291,10 @@ export const SurfReportPanel = ({
                 <div className="tw:flex tw:flex-col tw:justify-center tw:items-start">
                   <div className="tw:flex tw:items-center tw:gap-2 tw:mb-2">
                     <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
-                    <p className="margin-none tw:text-xl tw:font-semibold tw:mb-0">
+                    <p className="margin-none tw:text-xl tw:font-semibold">
                       {currentWeatherData.wind_speed_10m} km/h
                     </p>
-                    <p className="margin-none tw:text-sm tw:mb-0">
+                    <p className="margin-none tw:text-sm">
                       {degreesToCompassDirection(
                         currentWeatherData.wind_direction_10m
                       )}
@@ -272,7 +337,7 @@ export const SurfReportPanel = ({
                           !chartData.secondary && "tw:lg:grid-cols-4"
                         )}
                       >
-                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                           <p className="margin-none tw:text-xs">Height</p>
                           <p className="margin-none tw:font-semibold">
                             {defaultPreferences.units.surfHeight === "ft"
@@ -287,7 +352,7 @@ export const SurfReportPanel = ({
                               : "m"}
                           </p>
                         </div>
-                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                           <p className="margin-none tw:text-xs">Period</p>
                           <p className="margin-none tw:font-semibold">
                             {chartData.trainData?.map((train) =>
@@ -296,7 +361,7 @@ export const SurfReportPanel = ({
                           </p>
                         </div>
                         {chartData.primary.direction && (
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Direction</p>
                             <p className="margin-none tw:font-semibold">
                               {degreesToCompassDirection(
@@ -308,7 +373,7 @@ export const SurfReportPanel = ({
                           </div>
                         )}
                         {chartData.primary.direction && (
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Angle</p>
                             <p className="margin-none tw:font-semibold">
                               {chartData.primary.direction > 180
@@ -326,7 +391,7 @@ export const SurfReportPanel = ({
                           Secondary Swell
                         </p>
                         <div className="tw:grid tw:grid-cols-2 tw:gap-2">
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Height</p>
                             <p className="margin-none tw:font-semibold">
                               {defaultPreferences.units.surfHeight === "ft"
@@ -334,7 +399,7 @@ export const SurfReportPanel = ({
                                 : chartData.secondary.fullSurfHeightMetres}
                             </p>
                           </div>
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Period</p>
                             <p className="margin-none tw:font-semibold">
                               {chartData.trainData?.map(
@@ -343,7 +408,7 @@ export const SurfReportPanel = ({
                             </p>
                           </div>
                           {chartData.secondary.direction && (
-                            <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                            <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                               <p className="margin-none tw:text-xs">
                                 Direction
                               </p>
@@ -356,7 +421,7 @@ export const SurfReportPanel = ({
                               </p>
                             </div>
                           )}
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-md tw:h-fit">
+                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Angle</p>
                             <p className="margin-none tw:font-semibold">
                               {chartData.secondary.direction}°

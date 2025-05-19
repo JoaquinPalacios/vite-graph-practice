@@ -111,6 +111,7 @@ function initGraph() {
           })()
         : [],
       tideData: rawApiData.tide,
+      surfReport: rawApiData.surf_report ? rawApiData.surf_report : [],
     };
 
     // Render the React component

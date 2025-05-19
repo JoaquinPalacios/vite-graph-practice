@@ -39,6 +39,19 @@ export interface TideData {
   };
 }
 
+export interface SurfReportItem {
+  locationId: string;
+  name: string;
+  date: string;
+  surfHeight: string;
+  surfQuality: string;
+  surfRating: string;
+  swellDir: string;
+  weather: string;
+  wind: string;
+  report: string;
+}
+
 export interface DrupalApiData {
   location: {
     name: string;
@@ -73,6 +86,7 @@ export interface DrupalApiData {
     };
   };
   tide: TideDataFromDrupal[];
+  surf_report: SurfReportItem[];
 }
 
 export interface ChartDataItem {

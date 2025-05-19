@@ -6,6 +6,7 @@ import {
   TideDataFromDrupal,
   CurrentWeatherData,
   SunriseSunsetData,
+  SurfReportItem,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
@@ -29,6 +30,7 @@ interface AppProps {
   tideData: TideDataFromDrupal[];
   sunriseSunsetData: SunriseSunsetData;
   timezone: string;
+  surfReport: SurfReportItem[];
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -46,6 +48,7 @@ function App({
   tideData,
   sunriseSunsetData,
   timezone,
+  surfReport,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
 
@@ -66,6 +69,7 @@ function App({
         sunriseSunsetData={sunriseSunsetData}
         tideData={tideData}
         timezone={timezone}
+        surfReport={surfReport}
       />
       <h2 className="tw:text-2xl tw:font-semibold tw:mb-4 tw:max-md:px-5">
         {locationName} Surf Forecast
