@@ -8,11 +8,12 @@ import { timeFormat } from "d3-time-format";
 
 interface TransformedTidePoint {
   height: number;
-  timestamp: number; // UTC epoch milliseconds
-  localDateTimeISO: string; // Local ISO string, e.g., "YYYY-MM-DDTHH:MM:SS+HH:MM"
-  utcDateTimeISO: string; // Corresponding UTC ISO string
-  isBoundary?: boolean; // Flag for interpolated/boundary points
-  isInterpolated?: boolean; // Flag for interpolated points
+  timestamp: number;
+  localDateTimeISO: string;
+  utcDateTimeISO: string;
+  isBoundary?: boolean;
+  isInterpolated?: boolean;
+  instance: "high" | "low";
 }
 
 // --- Helper: Function to parse ISO string robustly ---
@@ -82,6 +83,7 @@ export const DthreeChart = ({
           timestamp: pointDate.getTime(),
           localDateTimeISO: point._source.time_local,
           utcDateTimeISO: pointDate.toISOString(),
+          instance: point._source.instance as "high" | "low",
         },
       ];
     }
@@ -137,15 +139,15 @@ export const DthreeChart = ({
       localDateTimeISO: midnightISO,
       utcDateTimeISO: midnightDate.toISOString(),
       isBoundary: true,
+      instance: prevTide._source.instance as "high" | "low",
     };
 
     // Now filter the rest of the data points based on the swell time range
     const rest = tideData
-      .slice(1) // Start from index 1 since we've already processed the first point
+      .slice(1)
       .map((point) => {
         const pointDate = parseDateTime(point._source.time_local);
         const pointTime = pointDate?.getTime() ?? 0;
-        // Only include points within the swell time range
         if (
           pointTime >= (swellTimeRange?.min ?? -Infinity) &&
           pointTime <= (swellTimeRange?.max ?? Infinity)
@@ -155,13 +157,12 @@ export const DthreeChart = ({
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
             utcDateTimeISO: pointDate?.toISOString() ?? "",
-          };
+            instance: point._source.instance as "high" | "low",
+          } as TransformedTidePoint;
         }
         return null;
       })
-      .filter(
-        (p): p is TransformedTidePoint => p !== null && p.timestamp !== 0
-      );
+      .filter((p): p is TransformedTidePoint => p !== null);
 
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
   }, [tideData, swellData, length]);
@@ -256,7 +257,7 @@ export const DthreeChart = ({
     svg.selectAll("*").remove();
     yAxisSvg.selectAll("*").remove();
 
-    const margin = { top: 20, right: 0, bottom: 5, left: 76 };
+    const margin = { top: 32, right: 0, bottom: 5, left: 76 };
 
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
@@ -272,7 +273,7 @@ export const DthreeChart = ({
 
     // The height available for drawing
     const chartDrawingHeight =
-      svgDimensions.height - margin.top - margin.bottom - 20;
+      svgDimensions.height - margin.top - margin.bottom - 32;
 
     // Create the chart area with proper translation
     const chartArea = svg
@@ -311,7 +312,7 @@ export const DthreeChart = ({
       .attr("class", "y-axis")
       .attr(
         "transform",
-        `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 20)`
+        `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 32)`
       )
       .call(yAxis);
 
@@ -340,9 +341,9 @@ export const DthreeChart = ({
       .enter()
       .append("rect")
       .attr("x", (_, i) => i * PIXELS_PER_DAY)
-      .attr("y", -20)
+      .attr("y", -32)
       .attr("width", PIXELS_PER_DAY)
-      .attr("height", chartDrawingHeight + 20)
+      .attr("height", chartDrawingHeight + 32)
       .attr(
         "fill",
         (_, i) =>
@@ -444,14 +445,12 @@ export const DthreeChart = ({
         text
           .append("tspan")
           .attr("x", 0)
-          .attr("dy", 0)
+          .attr("dy", (d) => (d.instance === "low" ? "-2" : "2"))
           .text((d) => {
             const date = parseDateTime(d.localDateTimeISO);
             return date
               ? date
                   .toLocaleTimeString("en-AU", {
-                    // day: "2-digit",
-                    // month: "2-digit",
                     hour: "numeric",
                     minute: "2-digit",
                     hour12: true,
@@ -547,6 +546,7 @@ export const DthreeChart = ({
             timestamp: mouseTimestamp,
             localDateTimeISO: tooltipDateFormat(debugDate),
             utcDateTimeISO: debugDate.toISOString(),
+            instance: left?.instance ?? "high",
           };
           hoverDot.attr("cx", best.x).attr("cy", best.y).attr("opacity", 1);
           setTooltipState({
