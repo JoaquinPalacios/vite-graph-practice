@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import { Waves, Sunrise, Sunset, Thermometer, Wind } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,51 +17,14 @@ import {
   findCurrentDayTides,
 } from "@/lib/time-utils";
 import { formatInTimeZone } from "date-fns-tz";
+import { PreviousReportItem } from "./PreviousReport";
+import { getSurfHeightLabel } from "@/lib/surf-height-utils";
 
 const formatTime = (dateStr: string) => {
   return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
     const hour = parseInt(h);
     return `${hour % 12 || 12}:${m} ${hour >= 12 ? "PM" : "AM"}`;
   });
-};
-
-const ReportItem = ({
-  report,
-  units,
-}: {
-  report: SurfReportItem;
-  units: UnitPreferences["units"];
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div className="tw:mt-5">
-      <p className="tw:text-sm">Updated at: {formatTime(report.date)}</p>
-      <p className="tw:text-sm">Surf Condition: {report.surfQuality}</p>
-      <p className="tw:text-sm">Rating: {report.surfRating}/10</p>
-      <p className="tw:text-sm">Wind: {report.wind}</p>
-      <p className="tw:text-sm">
-        Wave Height: {report.surfHeight}
-        {units.surfHeight === "ft" ? "ft" : "m"}
-      </p>
-      <div>
-        <p
-          className={cn(
-            "margin-none tw:text-sm tw:text-pretty",
-            !isExpanded ? "tw:line-clamp-2" : ""
-          )}
-        >
-          {report.report}
-        </p>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="tw:text-sm tw:text-[#008993] tw:font-medium hover:tw:text-[#00b4c6]"
-        >
-          {isExpanded ? "Read less" : "Read more"}
-        </button>
-      </div>
-    </div>
-  );
 };
 
 export const SurfReportPanel = ({
@@ -75,7 +35,7 @@ export const SurfReportPanel = ({
   sunriseSunsetData,
   tideData,
   timezone,
-  surfReport,
+  surfReport = [],
 }: {
   localDateTimeISO: string;
   chartData: ChartDataItem;
@@ -85,7 +45,7 @@ export const SurfReportPanel = ({
   sunriseSunsetData: SunriseSunsetData;
   tideData: TideDataFromDrupal[];
   timezone: string;
-  surfReport: SurfReportItem[];
+  surfReport?: SurfReportItem[];
 }) => {
   // This would come from your API in a real implementation
   const surfData = {
@@ -150,93 +110,109 @@ export const SurfReportPanel = ({
 
           <TabsContent value="report" className="tw:mt-4 tw:bg-white">
             <div className="tw:rounded-lg tw:border tw:bg-card tw:text-card-foreground tw:shadow-sm">
-              <div className="tw:p-6 tw:pb-2">
-                <div className="tw:flex tw:items-center tw:gap-2 tw:text-lg tw:font-semibold">
-                  <div className="tw:h-3 tw:w-3 tw:rounded-full tw:bg-emerald-500"></div>
-                  Today's Surf Report
-                </div>
-                <div className="tw:text-sm tw:text-muted-foreground">
-                  Updated at {formatTime(surfReport[0].date)}
-                </div>
-              </div>
-              <div className="tw:p-6 tw:pt-0">
-                <div className="tw:mb-4">
-                  <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
-                    <span className="tw:text-sm tw:font-medium">
-                      Surf Quality
-                    </span>
-                    <span className="tw:text-sm tw:font-medium">
-                      {surfReport[0].surfRating}/10
-                    </span>
+              {surfReport && surfReport.length > 0 ? (
+                <>
+                  <div className="tw:p-6 tw:pb-2">
+                    <div className="tw:flex tw:items-center tw:gap-2 tw:text-lg tw:font-semibold">
+                      <div className="tw:h-3 tw:w-3 tw:rounded-full tw:bg-emerald-500"></div>
+                      Today's Surf Report
+                    </div>
+                    <div className="tw:text-sm tw:text-muted-foreground">
+                      Updated at {formatTime(surfReport[0].date)}
+                    </div>
                   </div>
-                  <div className="tw:w-full tw:bg-gray-200 tw:rounded-full tw:h-1 tw:shadow-inner tw:overflow-hidden">
-                    <div
-                      className="tw:h-1 tw:rounded-full tw:bg-gradient-to-r tw:from-emerald-400 tw:to-emerald-600 tw:shadow-md tw:transition-all tw:duration-700"
-                      style={{
-                        width: `${Number(surfReport[0].surfRating) * 10}%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                  <div className="tw:p-6 tw:pt-0">
+                    <div className="tw:mb-4">
+                      <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
+                        <span className="tw:text-sm tw:font-medium">
+                          Surf Quality
+                        </span>
+                        <span className="tw:text-sm tw:font-medium">
+                          {surfReport[0].surfRating}/10
+                        </span>
+                      </div>
+                      <div className="tw:w-full tw:bg-gray-200 tw:rounded-full tw:h-1 tw:shadow-inner tw:overflow-hidden">
+                        <div
+                          className="tw:h-1 tw:rounded-full tw:bg-gradient-to-r tw:from-emerald-400 tw:to-emerald-600 tw:shadow-md tw:transition-all tw:duration-700"
+                          style={{
+                            width: `${Number(surfReport[0].surfRating) * 10}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
 
-                <div className="tw:flex tw:items-center tw:gap-2">
-                  <p className="tw:text-base tw:leading-relaxed">
-                    Surf condition: {surfReport[0].surfQuality}
+                    <div className="tw:flex tw:items-center tw:gap-2">
+                      <p className="tw:text-base tw:leading-relaxed">
+                        Surf condition: {surfReport[0].surfQuality}
+                      </p>
+                    </div>
+
+                    <p className="tw:text-base tw:leading-relaxed tw:text-pretty">
+                      {surfReport[0].report}
+                    </p>
+
+                    <div className="tw:grid tw:grid-cols-3 tw:gap-4">
+                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                          Wave Height
+                        </p>
+                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center ">
+                          <Waves className="tw:h-4 tw:w-4 tw:text-blue-500" />
+                          {getSurfHeightLabel(surfReport[0].surfHeight)}
+                          {defaultPreferences.units.surfHeight === "ft"
+                            ? ""
+                            : "m"}
+                        </p>
+                      </div>
+                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                          Water Temp
+                        </p>
+                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
+                          <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
+                          {surfData.conditions.waterTemp}°C
+                        </p>
+                      </div>
+                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
+                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
+                          Wind Direction
+                        </p>
+                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
+                          <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
+                          {surfReport[0].wind}
+                        </p>
+                      </div>
+                    </div>
+
+                    {surfReport && surfReport.length > 1 && (
+                      <div className="tw:mt-5">
+                        <h5 className="tw:text-base tw:font-semibold">
+                          Previous reports
+                        </h5>
+                        {surfReport.slice(1).map((report) => (
+                          <PreviousReportItem
+                            key={report.date}
+                            report={report}
+                            units={defaultPreferences.units}
+                            timezone={timezone}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="tw:p-6">
+                  <div className="tw:flex tw:items-center tw:gap-2 tw:text-lg tw:font-semibold">
+                    <div className="tw:h-3 tw:w-3 tw:rounded-full tw:bg-gray-400"></div>
+                    No Surf Report Available
+                  </div>
+                  <p className="tw:text-sm tw:text-muted-foreground tw:mt-2">
+                    There are currently no surf reports available for this
+                    location.
                   </p>
                 </div>
-
-                <p className="tw:text-base tw:leading-relaxed tw:text-pretty">
-                  {surfReport[0].report}
-                </p>
-
-                <div className="tw:grid tw:grid-cols-3 tw:gap-4">
-                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                      Wave Height
-                    </p>
-                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center ">
-                      <Waves className="tw:h-4 tw:w-4 tw:text-blue-500" />
-                      {surfReport[0].surfHeight}
-                      {defaultPreferences.units.surfHeight === "ft"
-                        ? "ft"
-                        : "m"}
-                    </p>
-                  </div>
-                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                      Water Temp
-                    </p>
-                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
-                      <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
-                      {surfData.conditions.waterTemp}°C
-                    </p>
-                  </div>
-                  <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                    <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                      Wind Direction
-                    </p>
-                    <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
-                      <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
-                      {surfReport[0].wind}
-                    </p>
-                  </div>
-                </div>
-
-                {surfReport.length > 1 && (
-                  <div className="tw:mt-5">
-                    <h5 className="tw:text-base tw:font-semibold">
-                      Previous reports
-                    </h5>
-                    {surfReport.slice(1).map((report) => (
-                      <ReportItem
-                        key={report.date}
-                        report={report}
-                        units={defaultPreferences.units}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </TabsContent>
 
