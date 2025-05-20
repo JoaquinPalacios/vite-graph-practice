@@ -62,6 +62,51 @@ export const TideChart = ({
   // Formatter for tooltip date
   const tooltipDateFormat = useMemo(() => timeFormat("%a %d %b, %I:%M %p"), []);
 
+  // Add this helper function at the top level of the component
+  const calculateTooltipPosition = (
+    x: number,
+    y: number,
+    tooltipWidth: number,
+    tooltipHeight: number,
+    chartWidth: number,
+    chartHeight: number,
+    margin: { left: number; right: number; top: number; bottom: number }
+  ) => {
+    // Default offset from the point
+    const offsetX = 8;
+    const offsetY = -8;
+
+    // Calculate available space in each direction
+    const spaceRight = chartWidth - (x + margin.left);
+    const spaceTop = y + margin.top;
+
+    // Determine horizontal position
+    let tooltipX = x + margin.left + offsetX;
+    if (spaceRight < tooltipWidth + offsetX) {
+      // If not enough space on right, position on left
+      tooltipX = x + margin.left - tooltipWidth - offsetX;
+    }
+
+    // Determine vertical position
+    let tooltipY = y + margin.top + offsetY;
+    if (spaceTop < tooltipHeight + Math.abs(offsetY)) {
+      // If not enough space on top, position below
+      tooltipY = y + margin.top + Math.abs(offsetY);
+    }
+
+    // Ensure tooltip stays within chart bounds
+    tooltipX = Math.max(
+      margin.left,
+      Math.min(chartWidth - tooltipWidth - margin.right, tooltipX)
+    );
+    tooltipY = Math.max(
+      margin.top,
+      Math.min(chartHeight - tooltipHeight - margin.bottom, tooltipY)
+    );
+
+    return { x: tooltipX, y: tooltipY };
+  };
+
   /**
    * First, transform the tide data into a format that can be used by D3
    * @description It takes the tide data and returns an array of objects with the following properties:
@@ -343,7 +388,7 @@ export const TideChart = ({
       .attr("x", (_, i) => i * PIXELS_PER_DAY)
       .attr("y", -32)
       .attr("width", PIXELS_PER_DAY)
-      .attr("height", chartDrawingHeight + 32)
+      .attr("height", chartDrawingHeight + 32 + 8) // Add 8px to account for the hover line and gives bottom padding
       .attr(
         "fill",
         (_, i) =>
@@ -468,14 +513,38 @@ export const TideChart = ({
           .text((d) => `${d.height.toFixed(2)}m`)
       );
 
-    // --- Interactive Layer for Hover Effects ---
-    const hoverDot = chartArea
+    // --- Tide Dots (Always-visible for real tide points) ---
+    chartArea
+      .append("g")
+      .attr("class", "tide-dots")
+      .selectAll("circle")
+      .data(labelData)
+      .enter()
       .append("circle")
-      .attr("class", "tide-hover-dot")
-      .attr("r", 3)
+      .attr("cx", (d) => {
+        const dayIndex = Math.floor(
+          (d.timestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+        );
+        const dayProgress =
+          (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+        const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+        return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+      })
+      .attr("cy", (d) => yScale(d.height))
+      .attr("r", 2.5)
       .attr("fill", "#008a93")
       .attr("stroke", "white")
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 0.5);
+
+    // --- Interactive Layer for Hover Effects ---
+    // Remove hoverDot, add hoverLine
+    const hoverLine = chartArea
+      .append("rect")
+      .attr("class", "tide-hover-line")
+      .attr("width", 1)
+      .attr("height", chartDrawingHeight)
+      .attr("y", 0)
+      .attr("fill", "oklch(12.9% 0.042 264.695)") // Tailwind Slate 950
       .attr("opacity", 0)
       .attr("pointer-events", "none");
 
@@ -488,77 +557,111 @@ export const TideChart = ({
       .attr("pointer-events", "all")
       .on("mousemove", (event) => {
         const [pointerX, pointerY] = d3.pointer(event);
+
+        // Early exit if outside chart bounds
         if (
           pointerX < 0 ||
           pointerX > chartDrawingWidth ||
           pointerY < 0 ||
           pointerY > chartDrawingHeight
         ) {
-          hoverDot.attr("opacity", 0);
+          hoverLine.attr("opacity", 0);
           setTooltipState((prev) => ({ ...prev, visible: false }));
           return;
         }
 
-        // --- New: Find the closest point on the area curve to the mouse X ---
+        // --- Find the closest point on the area curve to the mouse X ---
+        let x = pointerX;
+        let interpolatedPoint: TransformedTidePoint | null = null;
         if (areaPathNode) {
-          const totalLength = areaPathNode.getTotalLength();
-          // Binary search for the length where x is closest to pointerX
-          let start = 0;
-          let end = totalLength;
-          let best = { x: 0, y: 0, len: 0, dist: Infinity };
-          for (let iter = 0; iter < 10; iter++) {
-            const mid = (start + end) / 2;
-            const pt = areaPathNode.getPointAtLength(mid);
-            const dist = Math.abs(pt.x - pointerX);
-            if (dist < best.dist) {
-              best = { x: pt.x, y: pt.y, len: mid, dist };
-            }
-            if (pt.x < pointerX) {
-              start = mid;
-            } else {
-              end = mid;
-            }
-          }
-          // Find the closest data point for tooltip info
-          // Convert best.x back to timestamp
-          const dayIndex = Math.floor(best.x / PIXELS_PER_DAY);
-          const dayProgress = best.x % PIXELS_PER_DAY;
+          // Convert mouse X to timestamp
+          const dayIndex = Math.floor(pointerX / PIXELS_PER_DAY);
+          const dayProgress = pointerX % PIXELS_PER_DAY;
           const dayFraction = dayProgress / PIXELS_PER_DAY;
           const mouseTimestamp =
             timeDomain[0].getTime() +
             dayIndex * 24 * 60 * 60 * 1000 +
             dayFraction * 24 * 60 * 60 * 1000;
+
           // Find the two points that bracket the mouse timestamp
           const i = bisectTime(transformedData, mouseTimestamp);
           const left = transformedData[i - 1];
           const right = transformedData[i];
-          let interpolatedHeight = null;
-          if (left && right) {
+
+          // Handle edge cases
+          if (!left || !right) {
+            const point = left || right;
+            if (point) {
+              const px = (() => {
+                const dayIndex = Math.floor(
+                  (point.timestamp - timeDomain[0].getTime()) /
+                    (24 * 60 * 60 * 1000)
+                );
+                const dayProgress =
+                  (point.timestamp - timeDomain[0].getTime()) %
+                  (24 * 60 * 60 * 1000);
+                const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+                return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+              })();
+              x = px;
+              interpolatedPoint = {
+                ...point,
+                isInterpolated: false,
+              };
+            }
+          } else {
+            // Calculate interpolated position and height
             const t =
               (mouseTimestamp - left.timestamp) /
               (right.timestamp - left.timestamp);
-            interpolatedHeight = left.height + t * (right.height - left.height);
+            const clampedT = Math.max(0, Math.min(1, t));
+            const interpolatedHeight =
+              left.height + clampedT * (right.height - left.height);
+            interpolatedPoint = {
+              height: interpolatedHeight,
+              timestamp: mouseTimestamp,
+              localDateTimeISO: tooltipDateFormat(new Date(mouseTimestamp)),
+              utcDateTimeISO: new Date(mouseTimestamp).toISOString(),
+              instance: clampedT < 0.5 ? left.instance : right.instance,
+              isInterpolated: true,
+            };
           }
-          // Use the Y from the curve for the dot, but keep the interpolated height for the tooltip
-          const debugDate = new Date(mouseTimestamp);
-          const interpolatedPoint: TransformedTidePoint = {
-            height: interpolatedHeight ?? 0,
-            timestamp: mouseTimestamp,
-            localDateTimeISO: tooltipDateFormat(debugDate),
-            utcDateTimeISO: debugDate.toISOString(),
-            instance: left?.instance ?? "high",
-          };
-          hoverDot.attr("cx", best.x).attr("cy", best.y).attr("opacity", 1);
+        }
+
+        // The vertical line always spans the full chart height
+        hoverLine
+          .attr("x", x - 0.5)
+          .attr("y", 0)
+          .attr("height", chartDrawingHeight)
+          .attr("opacity", 0.2);
+
+        // Tooltip logic (unchanged)
+        if (interpolatedPoint) {
+          // For tooltip Y, use the interpolated Y value on the curve
+          const y = yScale(interpolatedPoint.height);
+          const tooltipDiv = tooltipDivRef.current;
+          const tooltipRect = tooltipDiv?.getBoundingClientRect();
+          const tooltipWidth = tooltipRect?.width ?? 0;
+          const tooltipHeight = tooltipRect?.height ?? 0;
+          const tooltipPosition = calculateTooltipPosition(
+            x,
+            y,
+            tooltipWidth,
+            tooltipHeight,
+            chartDrawingWidth,
+            chartDrawingHeight,
+            margin
+          );
           setTooltipState({
             visible: true,
-            x: best.x + margin.left + 8,
-            y: best.y + margin.top - 8,
+            x: tooltipPosition.x,
+            y: tooltipPosition.y,
             data: interpolatedPoint,
           });
         }
       })
       .on("mouseout", () => {
-        hoverDot.attr("opacity", 0);
+        hoverLine.attr("opacity", 0);
         setTooltipState((prev) => ({ ...prev, visible: false }));
       });
 
@@ -671,6 +774,7 @@ export const TideChart = ({
               top: tooltipState.y,
               zIndex: 10,
               pointerEvents: "none",
+              transform: "translate(0, 0)", // Remove any transform that might affect positioning
             }}
           >
             <TideTooltip

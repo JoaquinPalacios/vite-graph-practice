@@ -19,8 +19,8 @@ export interface TideDataFromDrupal {
     aac: string; // ""NSW_TP029""
     area: string; // "Kingscliff"
     id: number; // 1234657
-    instance: "low" | "high"; // "low"
-    sequence: number; // 1
+    instance: "low" | "high";
+    sequence: number;
     time_local: string; // "2025-05-09T00:00:00.000Z"
     value: string; // "1.0" in meters
   };
