@@ -87,6 +87,10 @@ export const SurfReportPanel = ({
     [localDateTimeISO, timezone]
   );
 
+  const defaultTab = useMemo(() => {
+    return surfReport && surfReport.length > 0 ? "report" : "conditions";
+  }, [surfReport]);
+
   return (
     <div className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 tw:rounded-lg">
       <div className="tw:flex tw:flex-col tw:gap-4">
@@ -99,17 +103,17 @@ export const SurfReportPanel = ({
           </span>
         </div>
 
-        <Tabs defaultValue="report" className="tw:w-full">
+        <Tabs defaultValue={defaultTab} className="tw:w-full">
           <TabsList className="tw:grid tw:w-full tw:grid-cols-2 tw:bg-gray-100 tw:rounded-lg tw:p-1 tw:mb-2">
             <TabsTrigger
               value="report"
-              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-emerald-400 tw:focus-visible:ring-offset-2 tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
+              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
             >
               Surf Report
             </TabsTrigger>
             <TabsTrigger
               value="conditions"
-              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-emerald-400 tw:focus-visible:ring-offset-2 tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
+              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
             >
               Current Conditions
             </TabsTrigger>

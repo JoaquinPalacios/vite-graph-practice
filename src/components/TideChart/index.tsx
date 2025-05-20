@@ -327,18 +327,32 @@ export const TideChart = ({
 
     // --- Scales ---
     const maxTide = d3.max(transformedData, (d) => d.height) ?? 1;
+
+    // Create a linear scale for the Y-axis with modified domain
     const yScale = d3
       .scaleLinear()
       .domain([0, Math.ceil(maxTide)])
       .range([chartDrawingHeight, 0])
       .nice();
 
+    // Custom tick format function with correct type definition
+    const customTickFormat = (d: d3.NumberValue) => {
+      const value = Number(d);
+      if (value === 0) return ""; // Keep hiding 0
+      if (maxTide > 2.5) {
+        // For max tide > 2.5, only show whole numbers
+        return Number.isInteger(value) ? `${value}m` : "";
+      }
+      // For max tide <= 2.5, show all ticks with one decimal
+      return `${value}m`;
+    };
+
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
-      .ticks(5)
+      .ticks(maxTide > 2.5 ? Math.ceil(maxTide) : 5) // Adjust number of ticks based on max tide
       .tickPadding(8)
-      .tickFormat((d) => (d === 0 ? "" : d + "m"))
+      .tickFormat(customTickFormat)
       .tickSize(6);
 
     // Create a group for the Y-axis in its own SVG
@@ -407,13 +421,19 @@ export const TideChart = ({
       .call(
         d3
           .axisLeft(yScale)
-          .ticks(5)
+          .ticks(maxTide > 2.5 ? Math.ceil(maxTide) : 5) // Match Y-axis ticks
           .tickSize(-chartDrawingWidth)
           .tickFormat(() => "") // Only lines, no labels
       );
-    // Remove grid lines for 0 and the top tick
+
+    // Remove grid lines for 0 and non-integer values when maxTide > 2.5
     yGridG.selectAll(".tick").each(function (d) {
-      if (d === 0 || d === maxTickValue) {
+      const value = Number(d);
+      if (
+        value === 0 ||
+        (maxTide > 2.5 && !Number.isInteger(value)) ||
+        value === maxTickValue
+      ) {
         d3.select(this).select("line").remove();
       }
     });
