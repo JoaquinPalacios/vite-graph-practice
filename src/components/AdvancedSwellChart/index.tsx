@@ -19,7 +19,9 @@ import SwellArrowDot from "./SwellArrowDot";
 import { useMemo } from "react";
 import processSwellData from "./ProcessDataSwell";
 import {
-  formatDateTick,
+  activeColorPalette,
+  colorPalette,
+  // formatDateTick,
   generateTicks,
   getChartWidth,
 } from "@/utils/chart-utils";
@@ -38,7 +40,7 @@ import { Payload } from "recharts/types/component/DefaultTooltipContent";
  * @returns The Advanced Swell Chart component
  */
 
-const AdvancedSwellChart = ({
+export const AdvancedSwellChart = ({
   unitPreferences,
   chartData,
   maxSurfHeight,
@@ -51,7 +53,6 @@ const AdvancedSwellChart = ({
   const [tooltipHoveredIndex, setTooltipHoveredIndex] = useState<number | null>(
     null
   );
-
   const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
 
   /**
@@ -65,35 +66,37 @@ const AdvancedSwellChart = ({
 
   const eventIds = Object.keys(processedSwellData);
 
-  /**
-   * Define the color palette of each event
-   */
-  const colorPalette = [
-    "oklch(50.5% 0.213 27.518)", // Tailwind red-700
-    "oklch(55.5% 0.163 48.998)", // Tailwind amber-700
-    "oklch(48.8% 0.243 264.376)", // Tailwind blue-700
-    "oklch(52.7% 0.154 150.069)", // Tailwind green-700
-    "oklch(49.6% 0.265 301.924)", // Tailwind purple-700
-    "oklch(52.5% 0.223 3.958)", // Tailwind pink-700
-    "oklch(27.9% 0.041 260.031)", // Tailwind slate-800
-    "oklch(52% 0.105 223.128)", // Tailwind cyan-700
-    "oklch(53.2% 0.157 131.589)", // Tailwind lime-700
-  ];
+  // Map localDateTimeISO to dateTime for robust tick formatting
+  const isoToLocalMap = useMemo(() => {
+    const map = new Map<string, string>();
 
-  /**
-   * Define the active color palette of the hovered event
-   */
-  const activeColorPalette = [
-    "oklch(57.7% 0.245 27.325)", // Tailwind red-600
-    "oklch(66.6% 0.179 58.318)", // Tailwind amber-600
-    "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
-    "oklch(62.7% 0.194 149.214)", // Tailwind green-600
-    "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
-    "oklch(59.2% 0.249 0.584)", // Tailwind pink-600
-    "oklch(55.4% 0.046 257.417)", // Tailwind slate-500
-    "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
-    "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
-  ];
+    // Get the timezone offset from the first data point
+    const firstPoint = chartData[0];
+    if (!firstPoint?.dateTime) return map;
+
+    // Extract timezone offset from the first point's dateTime (e.g., "+09:30" from "2024-03-21T23:30:00+09:30")
+    const timezoneOffset = firstPoint.dateTime.match(/[+-]\d{2}:\d{2}/)?.[0];
+    if (!timezoneOffset) return map;
+
+    chartData.forEach((d) => {
+      if (d.localDateTimeISO && d.dateTime) {
+        // Parse the local date from dateTime
+        const localDate = new Date(d.dateTime);
+
+        // Create a new date at 12am in the location's timezone
+        const dateAtMidnight = new Date(localDate);
+        dateAtMidnight.setHours(0, 0, 0, 0);
+
+        // Format it with the location's timezone offset
+        const midnightLocalTime = dateAtMidnight
+          .toISOString()
+          .replace("Z", timezoneOffset);
+
+        map.set(d.localDateTimeISO, midnightLocalTime);
+      }
+    });
+    return map;
+  }, [chartData]);
 
   /**
    * Handles the tooltip content generation
@@ -187,10 +190,20 @@ const AdvancedSwellChart = ({
           xAxisId={0}
           allowDuplicatedCategory={false}
           allowDataOverflow
-          hide
-          tickFormatter={formatDateTick}
           padding={{ left: 11, right: 11 }}
           interval={7}
+          tickFormatter={(value: string) => {
+            // Get the local time string with offset for this UTC ISO value
+            const localTimeWithOffset = isoToLocalMap.get(value) || value;
+            const date = new Date(localTimeWithOffset);
+
+            // Now this will always be the local hour for the surf spot
+            const hours = date.getHours();
+            const period = hours >= 12 ? "pm" : "am";
+            const hour = hours % 12 || 12;
+            return `${hour}${period}`;
+          }}
+          hide
         />
 
         <YAxis
@@ -278,5 +291,3 @@ const AdvancedSwellChart = ({
     </ResponsiveContainer>
   );
 };
-
-export default AdvancedSwellChart;

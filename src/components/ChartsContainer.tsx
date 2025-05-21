@@ -9,7 +9,7 @@ import { ChartDataItem } from "@/types/index.ts";
 import { processTimeData } from "@/lib/time-utils";
 import { UnitSelector } from "./UnitSelector";
 import { Suspense, useState } from "react";
-import AdvancedSwellChart from "./AdvancedSwellChart";
+import { AdvancedSwellChart } from "./AdvancedSwellChart";
 import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
@@ -22,6 +22,7 @@ const ChartsContainer = ({
   chartWidth,
   weatherData,
   tideData,
+  timezone,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -32,6 +33,7 @@ const ChartsContainer = ({
   chartWidth: number;
   weatherData: WeatherData[];
   tideData: TideDataFromDrupal[];
+  timezone: string;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -39,11 +41,16 @@ const ChartsContainer = ({
       ...item,
       dateTime: item.localDateTimeISO,
       timestamp: new Date(item.localDateTimeISO).getTime(),
-    }))
+    })),
+    timezone
   );
 
   const [unitPreferences, setUnitPreferences] =
     useState<UnitPreferences>(defaultPreferences);
+
+  // Validate tide data before passing to TideChart
+  const isValidTideData =
+    tideData && Array.isArray(tideData) && tideData.length > 0;
 
   return (
     <section className="display-flex tw:flex-col tw:gap-4 tw:w-full">
@@ -104,7 +111,13 @@ const ChartsContainer = ({
               </div>
             </Suspense>
             <Suspense fallback={<GraphSkeleton showTide />}>
-              <TideChart tideData={tideData} swellData={processedData} />
+              {isValidTideData ? (
+                <TideChart tideData={tideData} swellData={processedData} />
+              ) : (
+                <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-slate-500">
+                  No tide data available
+                </div>
+              )}
             </Suspense>
           </ChartsWrapper>
         </Suspense>

@@ -429,3 +429,33 @@ export const generateTideTicks = (maxHeight: number): number[] => {
 
   return ticks;
 };
+
+/**
+ * Define the color palette of each Advanced Swell event
+ */
+export const colorPalette = [
+  "oklch(50.5% 0.213 27.518)", // Tailwind red-700
+  "oklch(55.5% 0.163 48.998)", // Tailwind amber-700
+  "oklch(48.8% 0.243 264.376)", // Tailwind blue-700
+  "oklch(52.7% 0.154 150.069)", // Tailwind green-700
+  "oklch(49.6% 0.265 301.924)", // Tailwind purple-700
+  "oklch(52.5% 0.223 3.958)", // Tailwind pink-700
+  "oklch(27.9% 0.041 260.031)", // Tailwind slate-800
+  "oklch(52% 0.105 223.128)", // Tailwind cyan-700
+  "oklch(53.2% 0.157 131.589)", // Tailwind lime-700
+];
+
+/**
+ * Define the active color palette of the hovered Advanced Swell event
+ */
+export const activeColorPalette = [
+  "oklch(57.7% 0.245 27.325)", // Tailwind red-600
+  "oklch(66.6% 0.179 58.318)", // Tailwind amber-600
+  "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
+  "oklch(62.7% 0.194 149.214)", // Tailwind green-600
+  "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
+  "oklch(59.2% 0.249 0.584)", // Tailwind pink-600
+  "oklch(55.4% 0.046 257.417)", // Tailwind slate-500
+  "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
+  "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
+];

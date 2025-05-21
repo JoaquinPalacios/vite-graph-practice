@@ -10,6 +10,7 @@ import {
   timeYear,
 } from "d3-time";
 import { TideDataFromDrupal } from "@/types";
+import { toZonedTime } from "date-fns-tz";
 
 interface TimeDataItem {
   localDateTimeISO: string;
@@ -53,29 +54,44 @@ export function multiFormat(date: Date): string {
   return formatYear(date);
 }
 
-export function processTimeData<T extends TimeDataItem>(data: T[]) {
+export function processTimeData<T extends TimeDataItem>(
+  data: T[],
+  timezone: string
+) {
   // Process the data to include CORRECT timestamps from localDateTimeISO
   const processedData = data
     .map((item) => {
-      const timestampMs = new Date(item.localDateTimeISO).getTime();
+      // Parse the ISO string with timezone offset
+      const date = new Date(item.localDateTimeISO);
+      const timestampMs = date.getTime();
+
       if (isNaN(timestampMs)) {
         console.warn(
           "Failed to parse localDateTimeISO:",
           item.localDateTimeISO
         );
-        // Return item with null/invalid timestamp or handle error appropriately
         return { ...item, timestamp: NaN };
       }
+
+      // Convert the timestamp to the target timezone
+      const zonedDate = toZonedTime(date, timezone);
+
+      const localDateTimeISO = zonedDate.toISOString().replace("Z", "+00:00");
+
       return {
         ...item,
-        timestamp: timestampMs, // Use timestamp derived from localDateTimeISO
+        timestamp: timestampMs,
+        localDateTimeISO,
+        // Add a date field for easier day boundary detection
+        date: zonedDate.toISOString().split("T")[0],
       };
     })
-    .filter((item) => !isNaN(item.timestamp)); // Filter out items where parsing failed
+    .filter((item) => !isNaN(item.timestamp))
+    // Sort by timestamp to ensure correct order
+    .sort((a, b) => a.timestamp - b.timestamp);
 
   // Ensure there's valid data to process
   if (processedData.length === 0) {
-    // Return default/empty values or throw error
     const now = new Date();
     const todayMidnight = new Date(
       now.getFullYear(),
@@ -85,7 +101,7 @@ export function processTimeData<T extends TimeDataItem>(data: T[]) {
     return {
       processedData: [],
       startDate: new Date(todayMidnight),
-      endDate: new Date(todayMidnight + 86400000), // Add one day
+      endDate: new Date(todayMidnight + 86400000),
       dayTicks: [todayMidnight, todayMidnight + 86400000],
     };
   }
@@ -95,38 +111,34 @@ export function processTimeData<T extends TimeDataItem>(data: T[]) {
   const startTimestamp = Math.min(...timeValues);
   const endTimestamp = Math.max(...timeValues);
 
-  // Create Date objects for the start and end of the day range
-  // These Date objects will represent time based on the LOCAL timezone of the environment
-  // where the code is running, but derived from the correct absolute timestamps.
-  const startDate = new Date(startTimestamp);
-  const endDate = new Date(endTimestamp);
+  // Create Date objects for the start and end of the day range in the target timezone
+  const startDate = toZonedTime(new Date(startTimestamp), timezone);
+  const endDate = toZonedTime(new Date(endTimestamp), timezone);
 
-  // Set start date to beginning of ITS local day (00:00:00)
-  // No need to change date, just time
+  // Set start date to beginning of day in the target timezone
   startDate.setHours(0, 0, 0, 0);
 
-  // Set end date to beginning of the day AFTER the last data point's day
-  // No need to change date, just time
+  // Set end date to beginning of the next day in the target timezone
   endDate.setHours(0, 0, 0, 0);
-  endDate.setDate(endDate.getDate() + 1); // Move to midnight starting the next day
+  endDate.setDate(endDate.getDate() + 1);
 
-  // Generate ticks for each LOCAL day's start within the range
+  // Generate ticks for each day in the target timezone
   const dayTicks: number[] = [];
-  // Start loop from the calculated start date (local midnight)
   const currentDate = new Date(startDate);
-  // Loop until the currentDate exceeds the calculated end date (midnight after last data)
+
+  // Generate ticks for each day boundary
   while (currentDate.getTime() < endDate.getTime()) {
-    // Use < to avoid including the end date itself if not needed
-    dayTicks.push(currentDate.getTime());
-    // Advance currentDate by exactly one day (handles DST correctly)
+    // Convert to target timezone to ensure correct day boundaries
+    const zonedDate = toZonedTime(currentDate, timezone);
+    dayTicks.push(zonedDate.getTime());
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return {
-    processedData, // Includes the correct ms timestamp
-    startDate, // Date object for local midnight start
-    endDate, // Date object for local midnight end (day after last data)
-    dayTicks, // Array of ms timestamps for local midnights
+    processedData,
+    startDate,
+    endDate,
+    dayTicks,
   };
 }
 

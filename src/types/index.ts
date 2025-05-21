@@ -92,6 +92,9 @@ export interface DrupalApiData {
 export interface ChartDataItem {
   localDateTimeISO: string;
   utcDateTimeISO: string; // Needs to be derived or present in API data
+  dateTime?: string; // Local time with timezone
+  bulletinDateTimeUtc?: string; // UTC bulletin time
+  location?: string; // Location name
   wind: {
     direction: number | null;
     speedKmh: number | null;

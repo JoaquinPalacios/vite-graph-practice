@@ -111,6 +111,7 @@ function App({
           chartWidth={chartWidth}
           weatherData={weatherData.slice(0, chartDataLength)}
           tideData={tideData}
+          timezone={timezone}
         />
       </Suspense>
     </div>

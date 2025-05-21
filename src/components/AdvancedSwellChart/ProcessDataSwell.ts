@@ -58,7 +58,7 @@ export default function processSwellData(
   options = {
     dirThreshold: 30,
     periodThreshold: 3.0,
-    minHeight: 0.15,
+    minHeight: 0.05,
     maxGap: 2,
     maxTimeGap: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
   }
@@ -69,12 +69,12 @@ export default function processSwellData(
 
   data.forEach((timeStep, t) => {
     const localDateTimeISO = timeStep.localDateTimeISO;
-    const currentTimestamp = new Date(localDateTimeISO).getTime();
-
     if (!localDateTimeISO) {
       console.warn("Missing localDateTimeISO:", timeStep);
       return;
     }
+
+    const currentTimestamp = new Date(localDateTimeISO).getTime();
 
     const currentSwells: CurrentSwell[] = [];
 

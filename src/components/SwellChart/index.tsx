@@ -111,6 +111,7 @@ export const SwellChart = ({
           axisLine={false}
           tickFormatter={(value: string) => {
             const date = new Date(value);
+            // Use the timezone-aware date for formatting
             const hours = date.getHours();
             const period = hours >= 12 ? "pm" : "am";
             const hour = hours % 12 || 12;
@@ -122,7 +123,7 @@ export const SwellChart = ({
           allowDuplicatedCategory={false}
           allowDataOverflow
           minTickGap={16}
-          tickCount={2}
+          tickCount={4} // Increased from 2 to show more time points
         />
 
         {/* XAxis for the wind direction */}

@@ -117,9 +117,18 @@ export const TideChart = ({
    * - isBoundary: boolean - Whether the tide is a boundary tide
    */
   const transformedData = useMemo((): TransformedTidePoint[] => {
-    if (!tideData?.length) return [];
+    // Early return if no tide data
+    if (!tideData || !Array.isArray(tideData) || tideData.length === 0) {
+      console.warn("D3 TideChart: No tide data available");
+      return [];
+    }
+
     if (tideData.length < 2 && tideData.length > 0) {
       const point = tideData[0];
+      if (!point?._source?.time_local) {
+        console.warn("D3 TideChart: Invalid tide data point");
+        return [];
+      }
       const pointDate = parseDateTime(point._source.time_local);
       if (!pointDate) return [];
       return [
@@ -137,8 +146,9 @@ export const TideChart = ({
     // Get the time range from swell data to ensure we only show tide data within that range
     const swellTimeRange = swellData?.slice(0, length).reduce(
       (acc, curr) => {
+        if (!curr?.localDateTimeISO) return acc;
         const time = new Date(curr.localDateTimeISO).getTime();
-        const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000; // 2h 59m in milliseconds - so now the limit instead of being 9pm it is 11:59pm to catch the last tide of the day
+        const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
         return {
           min: Math.min(acc.min, time),
           max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
@@ -150,6 +160,11 @@ export const TideChart = ({
     // First, process the initial points for interpolation
     const prevTide = tideData[0];
     const nextTide = tideData[1];
+    if (!prevTide?._source?.time_local || !nextTide?._source?.time_local) {
+      console.warn("D3 TideChart: Invalid tide data points for interpolation");
+      return [];
+    }
+
     const prevDate = parseDateTime(prevTide._source.time_local);
     const nextDate = parseDateTime(nextTide._source.time_local);
     if (!prevDate || !nextDate) return [];
