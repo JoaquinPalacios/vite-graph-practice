@@ -23,7 +23,6 @@ interface AppProps {
   };
   locationName: string;
   localDateTimeISO: string;
-  bulletinDateTimeUtc: string;
   chartWidth: number;
   weatherData: WeatherData[];
   currentWeatherData: CurrentWeatherData;
@@ -41,7 +40,6 @@ function App({
   maxSurfHeight,
   locationName,
   localDateTimeISO,
-  bulletinDateTimeUtc,
   chartWidth,
   weatherData,
   currentWeatherData,
@@ -76,8 +74,13 @@ function App({
       </h2>
       <div className="tw:flex tw:items-center tw:gap-2 tw:justify-between tw:max-md:px-5">
         <p className="tw:text-sm tw:mb-4">
-          Model run time {formatBulletinDateTime(bulletinDateTimeUtc)}, next
-          model run at..
+          Model run time{" "}
+          {formatBulletinDateTime(
+            modelType === "gfs"
+              ? rawApiData.forecasts.gfs.bulletinDateTimeUtc
+              : rawApiData.forecasts.ecmwf.bulletinDateTimeUtc
+          )}
+          , next model run at..
         </p>
         <div className="tw:flex tw:items-center">
           <h5 className="tw:text-sm">Choose model type</h5>

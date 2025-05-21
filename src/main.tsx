@@ -81,9 +81,6 @@ function initGraph() {
       timezone: rawApiData.location.timezone,
       localDateTimeISO:
         rawApiData.forecasts.gfs.forecastSteps[0].localDateTimeISO,
-      bulletinDateTimeUtc: rawApiData.forecasts.gfs.bulletinDateTimeUtc
-        ? rawApiData.forecasts.gfs.bulletinDateTimeUtc
-        : "unknown",
       defaultPreferences: {
         units: {
           surfHeight: (rawApiData.preferences.units.surfHeight === "ft"
