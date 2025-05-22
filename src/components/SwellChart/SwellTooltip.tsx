@@ -67,7 +67,7 @@ export const SwellTooltip = memo(
                     )}
                 </p>
               </div>
-              <p className="margin-bottom-2 tooltip-paragraph">
+              <p className="margin-bottom-2 tooltip-paragraph-small">
                 ({payload[0].payload.primary.fullSurfHeightFeetLabelDescriptive}
                 )
               </p>
@@ -93,7 +93,7 @@ export const SwellTooltip = memo(
                 <p className="margin-none semibold tooltip-paragraph tw:leading-[1.2]">
                   South Facing
                 </p>
-                <p className="margin-bottom-2 tooltip-paragraph">
+                <p className="margin-bottom-2 tooltip-paragraph-small">
                   (
                   {
                     payload[0].payload.secondary
@@ -108,10 +108,8 @@ export const SwellTooltip = memo(
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
-                  // y={y ?? 0}
-                  // x={(x ?? 0) - 10}
-                  height={16}
-                  width={16}
+                  height={18}
+                  width={18}
                   fill={color || "currentColor"}
                   className="tw:transition-colors tw:duration-200 tw:ease"
                 >
@@ -157,26 +155,27 @@ export const SwellTooltip = memo(
             <div className="tw:flex tw:flex-col tw:p-2">
               {payload[0] && (
                 <div className="tw:flex tw:items-center tw:gap-1">
-                  <p className="margin-none semibold tooltip-paragraph">
+                  <p className="margin-none semibold tooltip-paragraph-small">
                     <SwellLabel
                       value={payload[0].payload.trainData[0].direction}
+                      fill={"#3a3a3a"}
                     />
                   </p>
-                  <p className="margin-none semibold tooltip-paragraph">
+                  <p className="margin-none semibold tooltip-paragraph-small">
                     {Number(payload[0].payload.trainData[0].sigHeight).toFixed(
                       1
                     )}
                     m @
                   </p>
-                  <p className="margin-none semibold tooltip-paragraph">
+                  <p className="margin-none semibold tooltip-paragraph-small">
                     {payload[0].payload.trainData[0].peakPeriod}s
                   </p>
-                  <p className="margin-none semibold tooltip-paragraph">
+                  <p className="margin-none semibold tooltip-paragraph-small">
                     {degreesToCompassDirection(
                       payload[0].payload.trainData[0].direction
                     )}
                   </p>
-                  <p className="margin-none semibold tooltip-paragraph">
+                  <p className="margin-none semibold tooltip-paragraph-small">
                     ({payload[0].payload.trainData[0].direction}°)
                   </p>
                 </div>
@@ -184,26 +183,27 @@ export const SwellTooltip = memo(
               {!unitPreferences.showAdvancedChart &&
                 payload[0].payload.trainData[1] && (
                   <div className="tw:flex tw:items-center tw:gap-1">
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       <SwellLabel
                         value={payload[0].payload.trainData[1].direction}
+                        fill={"#3a3a3a"}
                       />
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {Number(
                         payload[0].payload.trainData[1].sigHeight
                       ).toFixed(1)}
                       m @
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {payload[0].payload.trainData[1].peakPeriod}s
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {degreesToCompassDirection(
                         payload[0].payload.trainData[1].direction
                       )}
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       ({payload[0].payload.trainData[1].direction}°)
                     </p>
                   </div>
@@ -211,26 +211,27 @@ export const SwellTooltip = memo(
               {!unitPreferences.showAdvancedChart &&
                 payload[0].payload.trainData[2] && (
                   <div className="tw:flex tw:items-center tw:gap-1">
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       <SwellLabel
                         value={payload[0].payload.trainData[2].direction}
+                        fill={"#3a3a3a"}
                       />
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {Number(
                         payload[0].payload.trainData[2].sigHeight
                       ).toFixed(1)}
                       m @
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {payload[0].payload.trainData[2].peakPeriod}s
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       {degreesToCompassDirection(
                         payload[0].payload.trainData[2].direction
                       )}
                     </p>
-                    <p className="margin-none semibold tooltip-paragraph">
+                    <p className="margin-none semibold tooltip-paragraph-small">
                       ({payload[0].payload.trainData[2].direction}°)
                     </p>
                   </div>
