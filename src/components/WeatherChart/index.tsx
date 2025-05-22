@@ -1,6 +1,6 @@
 import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
 import { ResponsiveContainer } from "recharts";
-import WeatherBubble from "./WeatherBubble";
+import { WeatherBubble } from "./WeatherBubble";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { WeatherData } from "@/types";

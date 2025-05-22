@@ -15,6 +15,17 @@ import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";
 
+/**
+ * ChartsContainer component
+ * @description This component is used to display the charts in the graph.
+ * It is used to display the charts in the graph.
+ * @param defaultPreferences - The default preferences of the unit
+ * @param chartData - The chart data
+ * @param maxSurfHeight - The max surf height
+ * @param chartWidth - The width of the chart
+ * @param weatherData - The weather data
+ * @param tideData - The tide data
+ */
 const ChartsContainer = ({
   defaultPreferences,
   chartData,

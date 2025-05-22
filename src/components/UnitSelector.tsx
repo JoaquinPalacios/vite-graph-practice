@@ -5,6 +5,13 @@ export interface UnitSelectorProps {
   defaultValues: UnitPreferences;
 }
 
+/**
+ * UnitSelector component
+ * @description This component is used to select the unit of the tide data.
+ * It is used to display the unit of the tide data in the graph.
+ * @param param0 - The props of the component
+ * @returns The UnitSelector component
+ */
 export const UnitSelector = ({
   onChange,
   defaultValues,

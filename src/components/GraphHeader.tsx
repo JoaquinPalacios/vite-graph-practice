@@ -2,6 +2,14 @@ import { formatBulletinDateTime } from "@/lib/time-utils";
 import { DrupalApiData } from "@/types";
 import { cn } from "@/utils/utils";
 
+/**
+ * GraphHeader component
+ * @description This component is used to display the header of the graph.
+ * It is used to display the header of the graph in the graph.
+ * @param locationName - The name of the location
+ * @param modelType - The type of model
+ * @param setModelType - The function to set the model type
+ */
 export const GraphHeader = ({
   locationName,
   modelType,

@@ -1,4 +1,9 @@
-// Function to convert degrees to cardinal/ordinal direction
+/**
+ * Convert degrees to cardinal/ordinal direction.
+ * @description This function converts degrees to cardinal/ordinal direction.
+ * @param degrees - The degrees to convert
+ * @returns The cardinal/ordinal direction
+ */
 export const degreesToCompassDirection = (degrees: number): string => {
   // Normalize degrees to be within 0-360
   const normalized = ((degrees % 360) + 360) % 360;

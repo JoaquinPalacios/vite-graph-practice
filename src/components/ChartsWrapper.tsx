@@ -15,6 +15,14 @@ interface ContainerDimensions {
   clientWidth: number;
 }
 
+/**
+ * ChartsWrapper component
+ * @description This component is used to wrap the charts in the graph.
+ * This component is used to handle the scroll events and the scroll limits.
+ * Also, the buttons for scrolling the graph are displayed here.
+ * @param children - The children of the component
+ * @returns The ChartsWrapper component
+ */
 const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);

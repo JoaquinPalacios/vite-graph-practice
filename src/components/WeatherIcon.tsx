@@ -51,6 +51,15 @@ type WeatherIconProps = {
   showLabel?: boolean;
 };
 
+/**
+ * WeatherIcon component
+ * @description This component is used to display the weather icon for a given weather id.
+ * @param weatherId - The weather id
+ * @param size - The size of the icon
+ * @param className - The class name of the icon
+ * @param showLabel - Whether to show the label
+ * @returns The WeatherIcon component
+ */
 export const WeatherIcon = ({
   weatherId,
   size = 24,

@@ -6,6 +6,14 @@ interface GraphSkeletonProps {
   showTide?: boolean;
 }
 
+/**
+ * GraphSkeleton component
+ * @description This component is used to display the skeleton of the graph.
+ * It is used to display the skeleton of the graph in the graph.
+ * @param showMain - Whether to show the main chart
+ * @param showWeather - Whether to show the weather chart
+ * @param showTide - Whether to show the tide chart
+ */
 const GraphSkeleton = ({
   showMain,
   showWeather,
