@@ -14,6 +14,12 @@ type WeatherBubbleProps = {
   payload?: WeatherData;
 };
 
+/**
+ * WeatherBubble component
+ * @description This component is used to display the weather bubble in the graph.
+ * @param props - The props of the component
+ * @returns The WeatherBubble component
+ */
 export const WeatherBubble = (props: WeatherBubbleProps) => {
   if (!props.payload) return null;
 

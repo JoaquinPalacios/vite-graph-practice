@@ -2,7 +2,7 @@ import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
 import * as d3 from "d3";
 import { ChartDataItem, TideDataFromDrupal } from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import TideTooltip from "./TideTooltip";
+import { TideTooltip } from "./TideTooltip";
 import { bisector } from "d3-array";
 import { timeFormat } from "d3-time-format";
 

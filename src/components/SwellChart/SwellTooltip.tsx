@@ -34,8 +34,15 @@ export const SwellTooltip = memo(
       const color = getWindColor(payload[0].payload.wind.speedKnots);
 
       return (
-        <div className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md">
-          <div className="tw:absolute tw:top-[0.4375rem] tw:-left-3 tw:z-0 tw:w-6 tw:h-5 tw:rotate-45 tw:bg-white/96" />
+        <div
+          className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md"
+          role="tooltip"
+          aria-label="Swell and wind information"
+        >
+          <div
+            className="tw:absolute tw:top-[0.4375rem] tw:-left-3 tw:z-0 tw:w-6 tw:h-5 tw:rotate-45 tw:bg-white/96"
+            aria-hidden
+          />
           <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20 tw:relative z-10">
             {formatTooltipDate(label)}
           </h5>
