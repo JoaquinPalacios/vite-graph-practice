@@ -1,4 +1,3 @@
-// Define types for our unit options
 export type UnitPreferences = {
   units: {
     surfHeight: "ft" | "m";
@@ -23,19 +22,6 @@ export interface TideDataFromDrupal {
     sequence: number;
     time_local: string; // "2025-05-09T00:00:00.000Z"
     value: string; // "1.0" in meters
-  };
-}
-
-export interface TideData {
-  id: string; // Using _id as the main identifier since it's a string and more unique
-  index: string; // Renamed from _index for consistency
-  source: {
-    timestamp: string; // Renamed from @timestamp for cleaner access
-    aac: string; // Area code
-    area: string; // Location name
-    instance: "low" | "high";
-    localTimeISO: string; // Renamed from time_local for consistency
-    value: string; // Tide height in meters
   };
 }
 
