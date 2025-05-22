@@ -41,6 +41,13 @@ const heightMap: Record<string, string> = {
 // Cache for memoization
 const labelCache = new Map<string, string>();
 
+/**
+ * Get the surf height label.
+ * @description This function gets the surf height label for a given value.
+ * It uses memoization to cache the result.
+ * @param value - The surf height value
+ * @returns The surf height label
+ */
 export const getSurfHeightLabel = (value: string | number): string => {
   const key = value.toString();
 
