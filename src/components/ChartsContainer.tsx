@@ -10,7 +10,7 @@ import { processTimeData } from "@/lib/time-utils";
 import { UnitSelector } from "./UnitSelector";
 import { Suspense, useState } from "react";
 import { AdvancedSwellChart } from "./AdvancedSwellChart";
-import AdvancedSwellChartYAxis from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
+import { AdvancedSwellChartYAxis } from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";

@@ -29,6 +29,12 @@ export interface SwellArrowDotProps {
   isHover?: boolean;
 }
 
+/**
+ * SwellArrowDot component
+ * @description This component is used to display the swell arrow dot in the graph.
+ * @param props - The props of the component
+ * @returns The SwellArrowDot component
+ */
 const SwellArrowDot = (props: SwellArrowDotProps) => {
   const { cx, cy, payload, stroke, isHover } = props;
 

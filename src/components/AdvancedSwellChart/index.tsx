@@ -21,7 +21,6 @@ import processSwellData from "./ProcessDataSwell";
 import {
   activeColorPalette,
   colorPalette,
-  // formatDateTick,
   generateTicks,
   getChartWidth,
 } from "@/utils/chart-utils";
@@ -39,7 +38,6 @@ import { Payload } from "recharts/types/component/DefaultTooltipContent";
  * @param unitPreferences - The unit preferences for the chart
  * @returns The Advanced Swell Chart component
  */
-
 export const AdvancedSwellChart = ({
   unitPreferences,
   chartData,

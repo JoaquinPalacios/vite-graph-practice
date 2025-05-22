@@ -8,6 +8,12 @@ interface CustomCursorProps {
   setTooltipHoveredIndex: (index: number | null) => void;
 }
 
+/**
+ * CustomCursor component
+ * @description This component is used to display the custom cursor for the AdvancedSwellChart component.
+ * @param props - The props of the component
+ * @returns The CustomCursor component
+ */
 const CustomCursor = (props: CustomCursorProps) => {
   const { points, setTooltipHoveredIndex, payloadIndex } = props;
   const [width, setWidth] = useState(32);

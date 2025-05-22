@@ -13,7 +13,13 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { ChartDataItem, UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
 
-const AdvancedSwellChartYAxis = ({
+/**
+ * AdvancedSwellChartYAxis component
+ * @description This component is used to display the y-axis for the AdvancedSwellChart component.
+ * @param props - The props of the component
+ * @returns The AdvancedSwellChartYAxis component
+ */
+export const AdvancedSwellChartYAxis = ({
   chartData,
   maxSurfHeight,
   unitPreferences,
@@ -153,5 +159,3 @@ const AdvancedSwellChartYAxis = ({
     </ResponsiveContainer>
   );
 };
-
-export default AdvancedSwellChartYAxis;
