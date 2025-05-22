@@ -40,7 +40,7 @@
 .y-grid path.domain,
 .y-grid .tick line,
 .y-axis .tick line {
-  stroke: oklch(86.9% 0.022 252.894);
+  stroke: oklch(86.9% 0.022 252.894); /* Tailwind Slate 400 */
   stroke-opacity: 0.5;
 }
 
@@ -64,4 +64,28 @@
 
 .advance-y-axis.tick-visible .recharts-cartesian-axis-tick-line {
   opacity: 1;
+}
+
+.tooltip-container {
+  color: #3a3a3a;
+}
+.tooltip-container h5 {
+  color: #3a3a3a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: fit-content;
+  line-height: 1.5;
+}
+
+.surf-height-label p {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.semibold {
+  font-weight: 600;
+}
+
+.tooltip-paragraph {
+  font-size: 0.875rem;
 }

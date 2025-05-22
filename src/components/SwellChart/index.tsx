@@ -191,6 +191,7 @@ export const SwellChart = ({
           }}
           trigger="hover"
           isAnimationActive={false}
+          offset={24}
         />
 
         <Bar
