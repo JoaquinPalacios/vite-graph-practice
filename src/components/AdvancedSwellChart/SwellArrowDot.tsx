@@ -38,11 +38,14 @@ const SwellArrowDot = (props: SwellArrowDotProps) => {
 
   const { direction, period, height } = payload;
 
-  if (!direction || !period || !height || height < 0.1) {
+  if (!direction || !period || !height || height < 0.05) {
     return <g />;
   }
 
-  // --- Calculate arrow properties ---
+  /**
+   * Calculate the size of the arrow dot based on the period
+   * The size is clamped between 5 and 18
+   */
   const baseSize = 8;
   const size = baseSize + period * 1; // Scale size based on period
   const clampedSize = Math.max(5, Math.min(18, size));

@@ -1,15 +1,13 @@
-// import { processTimeData } from "@/lib/time-utils";
 import { scaleTime } from "d3-scale";
-import { TideDataFromDrupal } from "@/types";
-// import { XAxisProps } from "recharts";
 
-export interface TideDataPoint {
-  height: number;
-  timestamp: number;
-  localDateTimeISO: string;
-  utcDateTimeISO: string;
-}
-
+/**
+ * Generate ticks for the charts.
+ * @description This function generates ticks for the charts based on the maximum height and unit.
+ * It maps the ticks to the nearest increment and returns an array of ticks.
+ * @param maxHeight - The maximum height of the tide
+ * @param unit - The unit of the tide (ft or m)
+ * @returns - An array of ticks
+ */
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
     // Base ticks for feet with increasing intervals
@@ -59,6 +57,14 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   }
 };
 
+/**
+ * Format the date tick for the charts.
+ * @description This function formats the date tick for the charts based on the ISO datetime string.
+ * It parses the ISO datetime string which includes timezone offset, formats the date using local time methods,
+ * and returns the formatted date.
+ * @param value - The ISO datetime string
+ * @returns - The formatted date
+ */
 export const formatDateTick = (value: string) => {
   // Parse the ISO datetime string which includes timezone offset
   const date = new Date(value);
@@ -123,107 +129,6 @@ export const getWindColor = (windSpeed: number): string => {
 };
 
 /**
- * Generic time processing utility that can be used for any time-series data
- */
-export const processTimeScaleData = (timestamps: number[]) => {
-  const startTimestamp = Math.min(...timestamps);
-  const endTimestamp = Math.max(...timestamps);
-
-  // Create Date objects for the start and end of the day
-  const startDateObj = new Date(startTimestamp);
-  const endDateObj = new Date(endTimestamp);
-
-  // Set start date to beginning of day (00:00:00)
-  startDateObj.setDate(startDateObj.getDate());
-  startDateObj.setHours(0, 0, 0, 0);
-
-  // Set end date to beginning of next day (00:00:00)
-  endDateObj.setDate(endDateObj.getDate() + 1);
-  endDateObj.setHours(0, 0, 0, 0);
-
-  // Create time scale with numeric timestamps
-  const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
-
-  // Generate ticks for each day
-  const dayTicks: number[] = [];
-  let currentDate = new Date(startDateObj);
-  while (currentDate <= endDateObj) {
-    dayTicks.push(currentDate.getTime());
-    currentDate = new Date(currentDate);
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return {
-    startDateObj,
-    endDateObj,
-    timeScale,
-    dayTicks,
-  };
-};
-
-// TODO - Remove this once we have the new utility working
-// export const { processedData, dayTicks } = processTimeData(
-//   chartData.map((item) => ({
-//     ...item,
-//     dateTime: item.localDateTimeISO,
-//     timestamp: new Date(item.localDateTimeISO).getTime(),
-//   }))
-// );
-
-// const timeValues = processedData.map((row) => row.timestamp);
-// const { startDateObj, endDateObj, timeScale } =
-//   processTimeScaleData(timeValues);
-
-// export { startDateObj, endDateObj, timeScale };
-
-/**
- * Calculates the coefficients for cubic spline interpolation
- * @param x Array of x values (timestamps)
- * @param y Array of y values (heights)
- * @returns Array of coefficients for cubic spline interpolation
- */
-const calculateSplineCoefficients = (x: number[], y: number[]) => {
-  const n = x.length;
-  const h: number[] = [];
-  const alpha: number[] = [];
-  const l: number[] = new Array(n).fill(0);
-  const mu: number[] = new Array(n).fill(0);
-  const z: number[] = new Array(n).fill(0);
-  const c: number[] = new Array(n).fill(0);
-  const b: number[] = new Array(n - 1).fill(0);
-  const d: number[] = new Array(n - 1).fill(0);
-
-  // Calculate h values
-  for (let i = 0; i < n - 1; i++) {
-    h[i] = x[i + 1] - x[i];
-  }
-
-  // Calculate alpha values
-  for (let i = 1; i < n - 1; i++) {
-    alpha[i] =
-      (3 / h[i]) * (y[i + 1] - y[i]) - (3 / h[i - 1]) * (y[i] - y[i - 1]);
-  }
-
-  // Calculate l, mu, and z values
-  l[0] = 1;
-  for (let i = 1; i < n - 1; i++) {
-    l[i] = 2 * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
-    mu[i] = h[i] / l[i];
-    z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
-  }
-
-  // Calculate c, b, and d values
-  l[n - 1] = 1;
-  for (let j = n - 2; j >= 0; j--) {
-    c[j] = z[j] - mu[j] * c[j + 1];
-    b[j] = (y[j + 1] - y[j]) / h[j] - (h[j] * (c[j + 1] + 2 * c[j])) / 3;
-    d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
-  }
-
-  return { b, c, d };
-};
-
-/**
  * Creates a continuous time scale for tide data, starting at midnight of the first day
  */
 export const createTideTimeScale = (timestamps: number[]) => {
@@ -267,118 +172,6 @@ export const createTideTimeScale = (timestamps: number[]) => {
 };
 
 /**
- * Interpolate tide data with natural curves, ensuring data points at midnight
- */
-export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
-  if (data.length < 2) return data;
-
-  const result: TideDataPoint[] = [];
-  const POINTS_BETWEEN = 20; // Number of points to add between each actual data point
-
-  // Get the time scale for the data
-  const timestamps = data.map((point) =>
-    new Date(point.utcDateTimeISO).getTime()
-  );
-  const { startDate, endDate } = createTideTimeScale(timestamps) || {
-    startDate: new Date(Math.min(...timestamps)),
-    endDate: new Date(Math.max(...timestamps)),
-  };
-
-  // Calculate spline coefficients using UTC timestamps for consistent intervals
-  const heights = data.map((point) => point.height);
-  const { b, c, d } = calculateSplineCoefficients(timestamps, heights);
-
-  // Add points at midnight for each day
-  const currentDate = new Date(startDate);
-  while (currentDate <= endDate) {
-    const midnightTimestamp = currentDate.getTime();
-
-    // Find the two closest data points
-    const beforePoint = data.reduce((prev, curr) => {
-      const currTime = new Date(curr.utcDateTimeISO).getTime();
-      const prevTime = new Date(prev.utcDateTimeISO).getTime();
-      return Math.abs(currTime - midnightTimestamp) <
-        Math.abs(prevTime - midnightTimestamp)
-        ? curr
-        : prev;
-    });
-
-    const afterPoint = data.find((point) => {
-      const pointTime = new Date(point.utcDateTimeISO).getTime();
-      return pointTime > midnightTimestamp;
-    });
-
-    if (beforePoint && afterPoint) {
-      // Calculate interpolated height at midnight
-      const beforeTime = new Date(beforePoint.utcDateTimeISO).getTime();
-      const afterTime = new Date(afterPoint.utcDateTimeISO).getTime();
-      const t = (midnightTimestamp - beforeTime) / (afterTime - beforeTime);
-
-      // Use cubic spline interpolation
-      const i = timestamps.indexOf(beforeTime);
-      // const h = afterTime - beforeTime;
-      const height =
-        beforePoint.height +
-        b[i] * t +
-        c[i] * Math.pow(t, 2) +
-        d[i] * Math.pow(t, 3);
-
-      result.push({
-        height,
-        timestamp: midnightTimestamp,
-        localDateTimeISO: currentDate.toISOString().replace("Z", "+11:00"),
-        utcDateTimeISO: currentDate.toISOString(),
-      });
-    }
-
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  // Interpolate between each pair of points
-  for (let i = 0; i < data.length - 1; i++) {
-    const startPoint = data[i];
-    const endPoint = data[i + 1];
-
-    // Add the start point
-    result.push(startPoint);
-
-    // Calculate time step in milliseconds between the two points
-    const startTime = new Date(startPoint.utcDateTimeISO).getTime();
-    const endTime = new Date(endPoint.utcDateTimeISO).getTime();
-    const timeStep = (endTime - startTime) / (POINTS_BETWEEN + 1);
-
-    // Add interpolated points
-    for (let j = 1; j <= POINTS_BETWEEN; j++) {
-      const t = j / (POINTS_BETWEEN + 1);
-      const timestamp = startTime + timeStep * j;
-      const localDate = new Date(timestamp);
-      const utcDate = new Date(timestamp);
-
-      // Use cubic spline interpolation
-      // const h = endTime - startTime;
-      const height =
-        startPoint.height +
-        b[i] * t +
-        c[i] * Math.pow(t, 2) +
-        d[i] * Math.pow(t, 3);
-
-      result.push({
-        height,
-        timestamp,
-        localDateTimeISO: localDate.toISOString().replace("Z", "+11:00"),
-        utcDateTimeISO: utcDate.toISOString(),
-      });
-    }
-  }
-
-  // Add the last point
-  result.push(data[data.length - 1]);
-
-  // Sort by timestamp to ensure proper order
-  return result.sort((a, b) => a.timestamp - b.timestamp);
-};
-
-/**
  * Calculates the chart width based on number of days in the data.
  * @param dataLength Number of 3-hour data points
  * @param widthPerDay Width in px for each day (default 294)
@@ -392,42 +185,6 @@ export const getChartWidth = (
 ): number => {
   const days = Math.ceil(dataLength / 8);
   return days * widthPerDay + extraSpace;
-};
-
-export const transformTideData = (rawTideData: TideDataFromDrupal[]) => {
-  if (!Array.isArray(rawTideData)) {
-    console.warn("transformTideData: rawTideData is not an array");
-    return [];
-  }
-
-  return rawTideData
-    .filter((tide): tide is TideDataFromDrupal => {
-      if (!tide?._source?.time_local) {
-        console.warn("transformTideData: Invalid tide data point:", tide);
-        return false;
-      }
-      return true;
-    })
-    .map((tide) => ({
-      localDateTimeISO: tide._source.time_local,
-      utcDateTimeISO: new Date(tide._source.time_local).toISOString(),
-      height: parseFloat(tide._source.value) || 0,
-      timestamp: new Date(tide._source.time_local).getTime(),
-    }));
-};
-
-export const generateTideTicks = (maxHeight: number): number[] => {
-  // Round up to the next 0.5 increment
-  const roundedMax = Math.ceil(maxHeight * 2) / 2;
-
-  // Generate ticks from 0 to roundedMax in 0.5 increments
-  const ticks: number[] = [];
-  for (let i = 0; i <= roundedMax * 2; i++) {
-    const tick = i * 0.5;
-    ticks.push(tick);
-  }
-
-  return ticks;
 };
 
 /**

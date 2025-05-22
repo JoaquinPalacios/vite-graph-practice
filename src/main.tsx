@@ -20,8 +20,6 @@ function initGraph() {
     }
   ).Drupal?.settings?.swellnetGraph;
 
-  console.log("Vite: Drupal settings:", drupalSettings);
-
   if (
     container &&
     drupalSettings &&
