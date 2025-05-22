@@ -1,11 +1,19 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { formatTooltipDate } from "@/lib/format-tooltip-date";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { UnitPreferences } from "@/types";
 import { memo } from "react";
-import { SwellLabel } from "./SwellLabel";
+import { SwellTrainRow } from "./SwellTrainRow";
 import { getWindColor } from "@/utils/chart-utils";
+import { getAdjustedDirection } from "@/lib/format-direction";
+
+interface TrainData {
+  direction: number;
+  sigHeight: number;
+  peakPeriod: number;
+}
 
 /**
  * SwellTooltip component
@@ -29,24 +37,7 @@ export const SwellTooltip = memo(
         <div className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md">
           <div className="tw:absolute tw:top-[0.4375rem] tw:-left-3 tw:z-0 tw:w-6 tw:h-5 tw:rotate-45 tw:bg-white/96" />
           <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20 tw:relative z-10">
-            {(() => {
-              const date = new Date(label);
-              const time = date
-                .toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  hour12: true,
-                })
-                .toLowerCase()
-                .replace(" ", "");
-              const weekday = date.toLocaleDateString("en-US", {
-                weekday: "short",
-              });
-              const day = date.getDate();
-              const month = date.toLocaleDateString("en-US", {
-                month: "short",
-              });
-              return `${time} ${weekday} ${day} ${month}`;
-            })()}
+            {formatTooltipDate(label)}
           </h5>
 
           {/* Surf Height and Wind */}
@@ -61,9 +52,7 @@ export const SwellTooltip = memo(
                 <p className="margin-none tw:leading-[1.2]">
                   {payload[0] &&
                     degreesToCompassDirection(
-                      payload[0].payload.primary.direction > 180
-                        ? payload[0].payload.primary.direction - 180
-                        : payload[0].payload.primary.direction + 180
+                      getAdjustedDirection(payload[0].payload.primary.direction)
                     )}
                 </p>
               </div>
@@ -84,9 +73,9 @@ export const SwellTooltip = memo(
                   <p className="margin-none tw:leading-[1.2]">
                     {payload[0] &&
                       degreesToCompassDirection(
-                        payload[0].payload.secondary.direction > 180
-                          ? payload[0].payload.secondary.direction - 180
-                          : payload[0].payload.secondary.direction + 180
+                        getAdjustedDirection(
+                          payload[0].payload.secondary.direction
+                        )
                       )}
                   </p>
                 </div>
@@ -115,11 +104,9 @@ export const SwellTooltip = memo(
                 >
                   <path
                     d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
-                    transform={`rotate(${
-                      payload[0].payload.wind.direction > 180
-                        ? payload[0].payload.wind.direction - 180
-                        : payload[0].payload.wind.direction + 180
-                    }, 0, 0)`}
+                    transform={`rotate(${getAdjustedDirection(
+                      payload[0].payload.wind.direction
+                    )}, 0, 0)`}
                     style={{
                       transformOrigin: "center",
                     }}
@@ -127,11 +114,9 @@ export const SwellTooltip = memo(
                   />
                   <path
                     d="M7.65 10h5v7.5h-5z"
-                    transform={`rotate(${
-                      payload[0].payload.wind.direction > 180
-                        ? payload[0].payload.wind.direction - 180
-                        : payload[0].payload.wind.direction + 180
-                    }, 0, 0)`}
+                    transform={`rotate(${getAdjustedDirection(
+                      payload[0].payload.wind.direction
+                    )}, 0, 0)`}
                     style={{
                       transformOrigin: "center",
                     }}
@@ -153,89 +138,16 @@ export const SwellTooltip = memo(
           {/* Swell Trains */}
           {!unitPreferences.showAdvancedChart && (
             <div className="tw:flex tw:flex-col tw:p-2">
-              {payload[0] && (
-                <div className="tw:flex tw:items-center tw:gap-1">
-                  <p className="margin-none semibold tooltip-paragraph-small">
-                    <SwellLabel
-                      value={payload[0].payload.trainData[0].direction}
-                      fill={"#3a3a3a"}
-                    />
-                  </p>
-                  <p className="margin-none semibold tooltip-paragraph-small">
-                    {Number(payload[0].payload.trainData[0].sigHeight).toFixed(
-                      1
-                    )}
-                    m @
-                  </p>
-                  <p className="margin-none semibold tooltip-paragraph-small">
-                    {payload[0].payload.trainData[0].peakPeriod}s
-                  </p>
-                  <p className="margin-none semibold tooltip-paragraph-small">
-                    {degreesToCompassDirection(
-                      payload[0].payload.trainData[0].direction
-                    )}
-                  </p>
-                  <p className="margin-none semibold tooltip-paragraph-small">
-                    ({payload[0].payload.trainData[0].direction}°)
-                  </p>
-                </div>
+              {payload[0]?.payload.trainData.map(
+                (train: TrainData, index: number) => (
+                  <SwellTrainRow
+                    key={`train-${index}`}
+                    direction={train.direction}
+                    sigHeight={train.sigHeight}
+                    peakPeriod={train.peakPeriod}
+                  />
+                )
               )}
-              {!unitPreferences.showAdvancedChart &&
-                payload[0].payload.trainData[1] && (
-                  <div className="tw:flex tw:items-center tw:gap-1">
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      <SwellLabel
-                        value={payload[0].payload.trainData[1].direction}
-                        fill={"#3a3a3a"}
-                      />
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {Number(
-                        payload[0].payload.trainData[1].sigHeight
-                      ).toFixed(1)}
-                      m @
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {payload[0].payload.trainData[1].peakPeriod}s
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {degreesToCompassDirection(
-                        payload[0].payload.trainData[1].direction
-                      )}
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      ({payload[0].payload.trainData[1].direction}°)
-                    </p>
-                  </div>
-                )}
-              {!unitPreferences.showAdvancedChart &&
-                payload[0].payload.trainData[2] && (
-                  <div className="tw:flex tw:items-center tw:gap-1">
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      <SwellLabel
-                        value={payload[0].payload.trainData[2].direction}
-                        fill={"#3a3a3a"}
-                      />
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {Number(
-                        payload[0].payload.trainData[2].sigHeight
-                      ).toFixed(1)}
-                      m @
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {payload[0].payload.trainData[2].peakPeriod}s
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      {degreesToCompassDirection(
-                        payload[0].payload.trainData[2].direction
-                      )}
-                    </p>
-                    <p className="margin-none semibold tooltip-paragraph-small">
-                      ({payload[0].payload.trainData[2].direction}°)
-                    </p>
-                  </div>
-                )}
             </div>
           )}
         </div>

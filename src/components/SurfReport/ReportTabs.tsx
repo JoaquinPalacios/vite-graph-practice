@@ -20,6 +20,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import { PreviousReportItem } from "./PreviousReport";
 import { getSurfHeightLabel } from "@/lib/surf-height-utils";
 import { useMemo } from "react";
+import { getAdjustedDirection } from "@/lib/format-direction";
 
 const formatTime = (dateStr: string) => {
   return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
@@ -352,9 +353,9 @@ export const SurfReportPanel = ({
                             <p className="margin-none tw:text-xs">Direction</p>
                             <p className="margin-none tw:font-semibold">
                               {degreesToCompassDirection(
-                                chartData.primary.direction > 180
-                                  ? chartData.primary.direction - 180
-                                  : chartData.primary.direction + 180
+                                getAdjustedDirection(
+                                  chartData.primary.direction
+                                )
                               )}
                             </p>
                           </div>
@@ -363,9 +364,9 @@ export const SurfReportPanel = ({
                           <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
                             <p className="margin-none tw:text-xs">Angle</p>
                             <p className="margin-none tw:font-semibold">
-                              {chartData.primary.direction > 180
-                                ? chartData.primary.direction - 180
-                                : chartData.primary.direction + 180}
+                              {getAdjustedDirection(
+                                chartData.primary.direction
+                              )}
                               °
                             </p>
                           </div>
@@ -401,9 +402,9 @@ export const SurfReportPanel = ({
                               </p>
                               <p className="margin-none tw:font-semibold">
                                 {degreesToCompassDirection(
-                                  chartData.secondary.direction > 180
-                                    ? chartData.secondary.direction - 180
-                                    : chartData.secondary.direction + 180
+                                  getAdjustedDirection(
+                                    chartData.secondary.direction
+                                  )
                                 )}
                               </p>
                             </div>

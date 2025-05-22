@@ -1,37 +1,29 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { formatTooltipDate } from "@/lib/format-tooltip-date";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { SwellLabel } from "../SwellChart/SwellLabel";
 import { memo } from "react";
+import { getAdjustedDirection } from "@/lib/format-direction";
+
 /**
  * SwellTooltip component
  * This component is used to display the tooltip of the SwellChart.
- * @param {TooltipProps<ValueType, NameType> } props - The props for the SwellTooltip component
+ * @param {TooltipProps<ValueType, NameType>} props - The props for the SwellTooltip component
  * @returns {React.ReactElement} The SwellTooltip component
  */
 export const AdvanceCustomTooltip = memo(
-  (props: TooltipProps<ValueType, NameType>) => {
-    const { active, payload, label } = props;
+  ({ active, payload }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="tw:bg-slate-400 tw:rounded-md tw:overflow-hidden"
+          className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md"
           style={{ visibility: "visible" }}
         >
-          <h5 className="text-color-white margin-none tw:p-2 tw:text-center tw:font-medium tw:text-xs">
-            {new Date(payload[0].payload.localDateTimeISO)
-              .toLocaleTimeString("en-US", {
-                hour: "numeric",
-                hour12: true,
-              })
-              .toLowerCase()
-              .replace(" ", "")}
-            &nbsp;-&nbsp;
-            {new Date(label).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
+          <div className="tw:absolute tw:top-[0.4375rem] tw:-left-3 tw:z-0 tw:w-6 tw:h-5 tw:rotate-45 tw:bg-white/96" />
+          <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20 tw:relative z-10">
+            {formatTooltipDate(payload[0].payload.localDateTimeISO)}
           </h5>
           <div className="tw:flex tw:flex-col tw:bg-white tw:p-2">
             {payload
@@ -46,27 +38,19 @@ export const AdvanceCustomTooltip = memo(
                     value={item.payload.direction}
                     fill={item.color}
                   />
-                  <p className="tw:ml-px tw:text-xs margin-none">
-                    {item.value}m
-                  </p>
-                  <p className="tw:ml-px tw:text-xs margin-none">@</p>
-                  <p className="tw:ml-px tw:text-xs margin-none">
+                  <p className="margin-none tooltip-paragraph">{item.value}m</p>
+                  <p className="margin-none tooltip-paragraph">@</p>
+                  <p className="margin-none tooltip-paragraph">
                     {item.payload.period}s
                   </p>
-                  <p className="tw:text-xs margin-none">
+                  <p className="margin-none tooltip-paragraph">
                     {item.payload &&
                       degreesToCompassDirection(
-                        item.payload.direction > 180
-                          ? item.payload.direction - 180
-                          : item.payload.direction + 180
+                        getAdjustedDirection(item.payload.direction)
                       )}
                   </p>
-                  <p className="tw:ml-px tw:text-xs margin-none">
-                    (
-                    {item.payload.direction > 180
-                      ? item.payload.direction - 180
-                      : item.payload.direction + 180}
-                    °)
+                  <p className="margin-none tooltip-paragraph">
+                    ({getAdjustedDirection(item.payload.direction)}°)
                   </p>
                 </div>
               ))}

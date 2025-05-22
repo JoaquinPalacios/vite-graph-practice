@@ -1,4 +1,5 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { getAdjustedDirection } from "@/lib/format-direction";
 import { getWindColor } from "@/utils/chart-utils";
 
 type SwellAxisTickProps = {
@@ -43,11 +44,7 @@ export const SwellAxisTick = ({
         <path
           d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
           transform={`rotate(${
-            payload?.value
-              ? Number(payload.value) > 180
-                ? Number(payload.value) - 180
-                : Number(payload.value) + 180
-              : 0
+            payload?.value ? getAdjustedDirection(Number(payload.value)) : 0
           }, 0, 0)`}
           style={{
             transformOrigin: "center",
@@ -57,11 +54,7 @@ export const SwellAxisTick = ({
         <path
           d="M7.65 10h5v7.5h-5z"
           transform={`rotate(${
-            payload?.value
-              ? Number(payload.value) > 180
-                ? Number(payload.value) - 180
-                : Number(payload.value) + 180
-              : 0
+            payload?.value ? getAdjustedDirection(Number(payload.value)) : 0
           }, 0, 0)`}
           style={{
             transformOrigin: "center",
