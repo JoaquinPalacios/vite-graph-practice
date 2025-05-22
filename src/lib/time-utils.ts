@@ -1,14 +1,5 @@
-import { timeFormat } from "d3-time-format";
 import { formatInTimeZone } from "date-fns-tz";
-import {
-  timeDay,
-  timeHour,
-  timeMinute,
-  timeMonth,
-  timeSecond,
-  timeWeek,
-  timeYear,
-} from "d3-time";
+
 import { TideDataFromDrupal } from "@/types";
 import { toZonedTime } from "date-fns-tz";
 
@@ -17,41 +8,6 @@ interface TimeDataItem {
   dateTime?: string; // Optional if it still exists
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Allow other properties
-}
-
-// Time formatting utilities
-export const formatMillisecond = timeFormat(".%L"),
-  formatSecond = timeFormat(":%S"),
-  formatMinute = timeFormat("%I:%M"),
-  formatHour = timeFormat("%I %p"),
-  formatDay = timeFormat("%a %d"),
-  formatWeek = timeFormat("%b %d"),
-  formatMonth = timeFormat("%B"),
-  formatYear = timeFormat("%Y");
-
-export function multiFormat(date: Date): string {
-  if (timeSecond(date) < date) {
-    return formatMillisecond(date);
-  }
-  if (timeMinute(date) < date) {
-    return formatSecond(date);
-  }
-  if (timeHour(date) < date) {
-    return formatMinute(date);
-  }
-  if (timeDay(date) < date) {
-    return formatHour(date);
-  }
-  if (timeMonth(date) < date) {
-    if (timeWeek(date) < date) {
-      return formatDay(date);
-    }
-    return formatWeek(date);
-  }
-  if (timeYear(date) < date) {
-    return formatMonth(date);
-  }
-  return formatYear(date);
 }
 
 export function processTimeData<T extends TimeDataItem>(
