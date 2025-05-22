@@ -20,25 +20,11 @@ import { formatInTimeZone } from "date-fns-tz";
 import { PreviousReportItem } from "./PreviousReport";
 import { getSurfHeightLabel } from "@/lib/surf-height-utils";
 import { useMemo } from "react";
-import { getAdjustedDirection } from "@/lib/format-direction";
+import { MetricCard } from "./components/MetricCard";
+import { MetricDisplay } from "./components/MetricDisplay";
+import { SwellMetrics } from "./components/SwellMetrics";
 
-const formatTime = (dateStr: string) => {
-  return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
-    const hour = parseInt(h);
-    return `${hour % 12 || 12}:${m} ${hour >= 12 ? "PM" : "AM"}`;
-  });
-};
-
-export const SurfReportPanel = ({
-  localDateTimeISO,
-  chartData,
-  defaultPreferences,
-  currentWeatherData,
-  sunriseSunsetData,
-  tideData,
-  timezone,
-  surfReport = [],
-}: {
+type SurfReportPanelProps = {
   localDateTimeISO: string;
   chartData: ChartDataItem;
   defaultPreferences: UnitPreferences;
@@ -48,7 +34,38 @@ export const SurfReportPanel = ({
   tideData: TideDataFromDrupal[];
   timezone: string;
   surfReport?: SurfReportItem[];
-}) => {
+};
+
+const formatTime = (dateStr: string) => {
+  return dateStr.split(" ")[1].replace(/(\d{2}):(\d{2})/, (_, h, m) => {
+    const hour = parseInt(h);
+    return `${hour % 12 || 12}:${m} ${hour >= 12 ? "PM" : "AM"}`;
+  });
+};
+
+/**
+ * SurfReportPanel component
+ * @description This component is used to display the surf report panel in the graph.
+ * @param localDateTimeISO - The local date time ISO
+ * @param chartData - The chart data
+ * @param defaultPreferences - The default preferences
+ * @param currentWeatherData - The current weather data
+ * @param sunriseSunsetData - The sunrise and sunset data
+ * @param tideData - The tide data
+ * @param timezone - The timezone
+ * @param surfReport - The surf report
+ * @returns The SurfReportPanel component
+ */
+export const SurfReportPanel = ({
+  localDateTimeISO,
+  chartData,
+  defaultPreferences,
+  currentWeatherData,
+  sunriseSunsetData,
+  tideData,
+  timezone,
+  surfReport = [],
+}: SurfReportPanelProps) => {
   // TODO: Remove this once we have the real data
   const dummySurfData = {
     conditions: {
@@ -93,7 +110,7 @@ export const SurfReportPanel = ({
   }, [surfReport]);
 
   return (
-    <div className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 tw:rounded-lg">
+    <article className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 tw:rounded-lg">
       <div className="tw:flex tw:flex-col tw:gap-4">
         <div className="tw:flex tw:items-center tw:justify-between">
           <div>
@@ -164,36 +181,39 @@ export const SurfReportPanel = ({
                     </p>
 
                     <div className="tw:grid tw:grid-cols-3 tw:gap-4">
-                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                          Wave Height
-                        </p>
-                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center ">
-                          <Waves className="tw:h-4 tw:w-4 tw:text-blue-500" />
-                          {getSurfHeightLabel(surfReport[0].surfHeight)}
-                          {defaultPreferences.units.surfHeight === "ft"
-                            ? ""
-                            : "m"}
-                        </p>
-                      </div>
-                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                          Water Temp
-                        </p>
-                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
-                          <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
-                          {dummySurfData.conditions.waterTemp}°C
-                        </p>
-                      </div>
-                      <div className="tw:flex tw:items-start tw:flex-col tw tw:gap-2 tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                        <p className="margin-bottom-none tw:text-sm tw:font-medium">
-                          Wind Direction
-                        </p>
-                        <p className="tw:text-lg tw:font-semibold tw:flex tw:gap-2 margin-none tw:items-center">
-                          <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
-                          {surfReport[0].wind}
-                        </p>
-                      </div>
+                      <MetricCard>
+                        <MetricDisplay
+                          label="Wave Height"
+                          value={`${getSurfHeightLabel(
+                            surfReport[0].surfHeight
+                          )}${
+                            defaultPreferences.units.surfHeight === "ft"
+                              ? ""
+                              : "m"
+                          }`}
+                          icon={
+                            <Waves className="tw:h-4 tw:w-4 tw:text-blue-500" />
+                          }
+                        />
+                      </MetricCard>
+                      <MetricCard>
+                        <MetricDisplay
+                          label="Water Temp"
+                          value={`${dummySurfData.conditions.waterTemp}°C`}
+                          icon={
+                            <Thermometer className="tw:h-4 tw:w-4 tw:text-red-500" />
+                          }
+                        />
+                      </MetricCard>
+                      <MetricCard>
+                        <MetricDisplay
+                          label="Wind Direction"
+                          value={surfReport[0].wind}
+                          icon={
+                            <Wind className="tw:h-4 tw:w-4 tw:text-cyan-500" />
+                          }
+                        />
+                      </MetricCard>
                     </div>
 
                     {surfReport && surfReport.length > 1 && (
@@ -306,125 +326,32 @@ export const SurfReportPanel = ({
                 <h5 className="margin-bottom-2 tw:text-base tw:font-semibold">
                   Swell Information
                 </h5>
-                <div className="">
-                  <div
-                    className={cn(
-                      "tw:grid tw:grid-cols-1 tw:gap-4",
-                      chartData.secondary
-                        ? "tw:md:grid-cols-2"
-                        : "tw:md:grid-cols-1"
-                    )}
-                  >
-                    <div className="tw:space-y-2">
-                      <p className="margin-bottom-2 tw:text-sm tw:font-medium">
-                        Primary Swell
-                      </p>
-                      <div
-                        className={cn(
-                          "tw:grid tw:grid-cols-2 tw:gap-2",
-                          !chartData.secondary && "tw:lg:grid-cols-4"
-                        )}
-                      >
-                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                          <p className="margin-none tw:text-xs">Height</p>
-                          <p className="margin-none tw:font-semibold">
-                            {defaultPreferences.units.surfHeight === "ft"
-                              ? Math.round(
-                                  chartData.primary.fullSurfHeightFeet ?? 0
-                                )
-                              : Math.round(
-                                  chartData.primary.fullSurfHeightMetres ?? 0
-                                )}
-                            {defaultPreferences.units.surfHeight === "ft"
-                              ? "ft"
-                              : "m"}
-                          </p>
-                        </div>
-                        <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                          <p className="margin-none tw:text-xs">Period</p>
-                          <p className="margin-none tw:font-semibold">
-                            {chartData.trainData?.map((train) =>
-                              Math.round(train.peakPeriod ?? 0)
-                            )}
-                          </p>
-                        </div>
-                        {chartData.primary.direction && (
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                            <p className="margin-none tw:text-xs">Direction</p>
-                            <p className="margin-none tw:font-semibold">
-                              {degreesToCompassDirection(
-                                getAdjustedDirection(
-                                  chartData.primary.direction
-                                )
-                              )}
-                            </p>
-                          </div>
-                        )}
-                        {chartData.primary.direction && (
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                            <p className="margin-none tw:text-xs">Angle</p>
-                            <p className="margin-none tw:font-semibold">
-                              {getAdjustedDirection(
-                                chartData.primary.direction
-                              )}
-                              °
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {chartData.secondary && (
-                      <div className="tw:space-y-2">
-                        <p className="margin-bottom-2 tw:text-sm tw:font-medium">
-                          Secondary Swell
-                        </p>
-                        <div className="tw:grid tw:grid-cols-2 tw:gap-2">
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                            <p className="margin-none tw:text-xs">Height</p>
-                            <p className="margin-none tw:font-semibold">
-                              {defaultPreferences.units.surfHeight === "ft"
-                                ? chartData.secondary.fullSurfHeightFeet
-                                : chartData.secondary.fullSurfHeightMetres}
-                            </p>
-                          </div>
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                            <p className="margin-none tw:text-xs">Period</p>
-                            <p className="margin-none tw:font-semibold">
-                              {chartData.trainData?.map(
-                                (train) => train.peakPeriod
-                              )}
-                            </p>
-                          </div>
-                          {chartData.secondary.direction && (
-                            <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                              <p className="margin-none tw:text-xs">
-                                Direction
-                              </p>
-                              <p className="margin-none tw:font-semibold">
-                                {degreesToCompassDirection(
-                                  getAdjustedDirection(
-                                    chartData.secondary.direction
-                                  )
-                                )}
-                              </p>
-                            </div>
-                          )}
-                          <div className="tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit">
-                            <p className="margin-none tw:text-xs">Angle</p>
-                            <p className="margin-none tw:font-semibold">
-                              {chartData.secondary.direction}°
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                <div
+                  className={cn(
+                    "tw:grid tw:grid-cols-1 tw:gap-4",
+                    chartData.secondary
+                      ? "tw:md:grid-cols-2"
+                      : "tw:md:grid-cols-1"
+                  )}
+                >
+                  <SwellMetrics
+                    chartData={chartData}
+                    defaultPreferences={defaultPreferences}
+                    type="primary"
+                  />
+                  {chartData.secondary && (
+                    <SwellMetrics
+                      chartData={chartData}
+                      defaultPreferences={defaultPreferences}
+                      type="secondary"
+                    />
+                  )}
                 </div>
               </div>
             </div>
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </article>
   );
 };

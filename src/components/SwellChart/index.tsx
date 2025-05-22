@@ -22,6 +22,14 @@ import { WindSpeedTick } from "./WindSpeedTick";
 import { cn } from "@/utils/utils";
 import { ChartDataItem } from "@/types/index.ts";
 
+/**
+ * SwellChart component
+ * @description This component is used to display the swell chart in the graph.
+ * @param unitPreferences - The unit preferences
+ * @param chartData - The chart data
+ * @param maxSurfHeight - The max surf height
+ * @returns The SwellChart component
+ */
 export const SwellChart = ({
   unitPreferences,
   chartData,
@@ -99,7 +107,7 @@ export const SwellChart = ({
                 }
                 return acc;
               }, [])
-              .slice(1) // TODO - We remove the first tick due to being duplicated. We have to revise if this happens due to the time difference between the local time and UTC time.
+              .slice(1) // We remove the first tick due to being duplicated.
           }
         />
 
