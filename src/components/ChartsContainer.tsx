@@ -138,6 +138,7 @@ const ChartsContainer = ({
                   }
                   swellData={processedData}
                   isAustralia={isAustralia}
+                  timezone={timezone}
                 />
               ) : (
                 <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-slate-500">

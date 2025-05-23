@@ -277,3 +277,17 @@ export const findCurrentDayTides = (
     };
   }
 };
+
+/**
+ * Returns a Date object representing midnight in the location's timezone, as a UTC timestamp.
+ * @param date - The reference date (any time on the day)
+ * @param timezone - The IANA timezone string
+ */
+export function getLocationMidnightUTC(date: Date, timezone: string): Date {
+  // Format the date as YYYY-MM-DD in the location's timezone
+  const localDay = formatInTimeZone(date, timezone, "yyyy-MM-dd");
+  // Get the offset for that day in the location's timezone
+  const offset = formatInTimeZone(date, timezone, "xxx");
+  // Create a new Date at midnight in the location's timezone, interpreted as UTC
+  return new Date(`${localDay}T00:00:00${offset}`);
+}

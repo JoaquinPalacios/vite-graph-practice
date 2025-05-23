@@ -9,6 +9,8 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { TideTooltip } from "./TideTooltip";
 import { bisector } from "d3-array";
 import { timeFormat } from "d3-time-format";
+import { formatInTimeZone } from "date-fns-tz";
+import { getLocationMidnightUTC } from "@/lib/time-utils";
 
 interface TransformedTidePoint {
   height: number;
@@ -80,10 +82,12 @@ export const TideChart = ({
   tideData,
   swellData,
   isAustralia,
+  timezone,
 }: {
   tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   swellData: ChartDataItem[];
   isAustralia: boolean;
+  timezone: string;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -253,7 +257,7 @@ export const TideChart = ({
 
     // Now filter the rest of the data points based on the swell time range
     const rest = tideData
-      .slice(1)
+      .slice(1) // Skip the first point as it's from the previous day.
       .map((point) => {
         const pointDate = parseDateTime(point._source.time_local);
         const pointTime = pointDate?.getTime() ?? 0;
@@ -299,51 +303,36 @@ export const TideChart = ({
   const timeDomain = useMemo((): [Date, Date] => {
     let earliestDataTimestamp = Infinity;
     let latestDataTimestamp = -Infinity;
-    let detectedOffset: string | null = null;
 
-    const updateTimestampsAndOffset = (isoString: string) => {
-      const date = parseDateTime(isoString);
+    transformedData.forEach((item) => {
+      const date = parseDateTime(item.localDateTimeISO);
       if (date) {
         const timestamp = date.getTime();
         earliestDataTimestamp = Math.min(earliestDataTimestamp, timestamp);
         latestDataTimestamp = Math.max(latestDataTimestamp, timestamp);
-        if (!detectedOffset) {
-          const match = isoString.match(/[+-]\d{2}:\d{2}|Z$/);
-          if (match) detectedOffset = match[0];
-        }
       }
-    };
-
-    // Only process the first 'length' items from swellData
-    swellData
-      ?.slice(0, length)
-      .forEach((item) => updateTimestampsAndOffset(item.localDateTimeISO));
-    transformedData
-      ?.slice(0, length)
-      .forEach((item) => updateTimestampsAndOffset(item.localDateTimeISO));
+    });
 
     if (
       earliestDataTimestamp === Infinity ||
       latestDataTimestamp === -Infinity
     ) {
       const now = new Date();
-      const futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Default to 1 day if no data
-      console.warn(
-        "D3 TideChart: No data to determine time domain, using default."
-      );
-      return [now, futureDate];
+      return [now, new Date(now.getTime() + 24 * 60 * 60 * 1000)];
     }
 
-    if (!detectedOffset) {
-      console.warn(
-        "D3 TideChart: Could not determine offset, defaulting to UTC for domain calculation."
-      );
-      detectedOffset = "+00:00";
-    }
+    // Use robust helper to get local midnight in the location's timezone (as UTC)
+    const domainStart = getLocationMidnightUTC(
+      new Date(earliestDataTimestamp),
+      timezone
+    );
+    // For domain end, use latestDataTimestamp + 1 day
+    const latestDate = new Date(latestDataTimestamp);
+    latestDate.setDate(latestDate.getDate() + 1);
+    const domainEnd = getLocationMidnightUTC(latestDate, timezone);
 
-    // Use the actual timestamps from the data
-    return [new Date(earliestDataTimestamp), new Date(latestDataTimestamp)];
-  }, [swellData, transformedData, length]);
+    return [domainStart, domainEnd];
+  }, [transformedData, timezone]);
 
   /**
    * Third, D3 Rendering Effect
@@ -525,7 +514,8 @@ export const TideChart = ({
         const dayProgress =
           (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
         const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
-        return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        return x;
       })
       .y0(chartDrawingHeight)
       .y1((d) => yScale(d.height))
@@ -578,12 +568,7 @@ export const TideChart = ({
           .text((d) => {
             const date = parseDateTime(d.localDateTimeISO);
             return date
-              ? date
-                  .toLocaleTimeString("en-AU", {
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  })
+              ? formatInTimeZone(date, timezone, "h:mm a")
                   .replace(" ", "")
                   .toLowerCase()
               : "";
@@ -612,7 +597,8 @@ export const TideChart = ({
         const dayProgress =
           (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
         const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
-        return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        return x;
       })
       .attr("cy", (d) => yScale(d.height))
       .attr("r", 2.5)
@@ -869,6 +855,7 @@ export const TideChart = ({
                   payload: tooltipState.data,
                 },
               ]}
+              timezone={timezone}
             />
           </div>
         )}

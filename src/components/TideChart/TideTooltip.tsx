@@ -2,7 +2,7 @@ import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { memo } from "react";
-import { formatTooltipDate } from "@/lib/format-tooltip-date";
+import { formatInTimeZone } from "date-fns-tz";
 
 /**
  * TideTooltip component
@@ -12,7 +12,12 @@ import { formatTooltipDate } from "@/lib/format-tooltip-date";
  * @returns The TideTooltip component
  */
 export const TideTooltip = memo(
-  ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+  ({
+    active,
+    payload,
+    timezone,
+  }: TooltipProps<ValueType, NameType> & { timezone: string }) => {
+    console.log("timezone", timezone);
     if (active && payload && payload.length) {
       return (
         <div
@@ -21,7 +26,13 @@ export const TideTooltip = memo(
           aria-label="Tide information"
         >
           <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20">
-            {formatTooltipDate(payload[0].payload.localDateTimeISO)}
+            {formatInTimeZone(
+              new Date(payload[0].payload.localDateTimeISO),
+              timezone,
+              "h:mm a EEE d MMM"
+            )
+              .replace("AM", "am")
+              .replace("PM", "pm")}
           </h5>
           <div className="tw:flex tw:flex-col tw:bg-white tw:p-2">
             <div className="tw:flex tw:gap-1 tw:items-center">
