@@ -38,20 +38,18 @@ export const SwellMetrics = ({
         <MetricCard>
           <MetricDisplay
             label="Height"
-            value={`${
+            value={
               defaultPreferences.units.surfHeight === "ft"
-                ? Math.round(swellData.fullSurfHeightFeet ?? 0)
-                : Math.round(swellData.fullSurfHeightMetres ?? 0)
-            }${defaultPreferences.units.surfHeight === "ft" ? "ft" : "m"}`}
+                ? swellData.fullSurfHeightFeetLabelBin
+                : swellData.fullSurfHeightMetresLabelBin
+            }
           />
         </MetricCard>
 
         <MetricCard>
           <MetricDisplay
             label="Period"
-            value={chartData.trainData?.map((train) =>
-              Math.round(train.peakPeriod ?? 0)
-            )}
+            value={`${chartData.trainData?.[0]?.peakPeriod ?? "N/A"}s`}
           />
         </MetricCard>
 
@@ -61,14 +59,16 @@ export const SwellMetrics = ({
               <MetricDisplay
                 label="Direction"
                 value={degreesToCompassDirection(
-                  getAdjustedDirection(swellData.direction)
+                  getAdjustedDirection(chartData.trainData?.[0]?.direction ?? 0)
                 )}
               />
             </MetricCard>
             <MetricCard>
               <MetricDisplay
                 label="Angle"
-                value={`${getAdjustedDirection(swellData.direction)}°`}
+                value={`${getAdjustedDirection(
+                  chartData.trainData?.[0]?.direction ?? 0
+                )}°`}
               />
             </MetricCard>
           </>

@@ -17,7 +17,6 @@ export const TideTooltip = memo(
     payload,
     timezone,
   }: TooltipProps<ValueType, NameType> & { timezone: string }) => {
-    console.log("timezone", timezone);
     if (active && payload && payload.length) {
       return (
         <div

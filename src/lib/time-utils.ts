@@ -135,12 +135,22 @@ export const findCurrentDaySunriseSunset = (
     );
 
     // Find the sunrise and sunset times for the current day
-    const sunriseIndex = sunriseData.findIndex((time) =>
-      time.startsWith(currentDateInTz)
-    );
-    const sunsetIndex = sunsetData.findIndex((time) =>
-      time.startsWith(currentDateInTz)
-    );
+    const sunriseEntry = sunriseData.find((time) => {
+      const dateInTz = formatInTimeZone(
+        new Date(time + "Z"),
+        timezone,
+        "yyyy-MM-dd"
+      );
+      return dateInTz >= currentDateInTz;
+    });
+    const sunsetEntry = sunsetData.find((time) => {
+      const dateInTz = formatInTimeZone(
+        new Date(time + "Z"),
+        timezone,
+        "yyyy-MM-dd"
+      );
+      return dateInTz >= currentDateInTz;
+    });
 
     // Convert the times from UTC to the target timezone
     const formatTimeInTz = (timeStr: string) => {
@@ -164,10 +174,8 @@ export const findCurrentDaySunriseSunset = (
     };
 
     return {
-      sunrise:
-        sunriseIndex !== -1 ? formatTimeInTz(sunriseData[sunriseIndex]) : "N/A",
-      sunset:
-        sunsetIndex !== -1 ? formatTimeInTz(sunsetData[sunsetIndex]) : "N/A",
+      sunrise: sunriseEntry ? formatTimeInTz(sunriseEntry) : "N/A",
+      sunset: sunsetEntry ? formatTimeInTz(sunsetEntry) : "N/A",
     };
   } catch (error) {
     console.warn("Error finding sunrise/sunset times:", error);
