@@ -7,7 +7,7 @@ export type UnitPreferences = {
   showAdvancedChart: boolean;
 };
 
-export interface TideDataFromDrupal {
+export interface TideDataAustraliaFromDrupal {
   sort: number[];
   _id: string; // "5646465"
   _index: string; // "tide-data-2025-05-09"
@@ -22,6 +22,14 @@ export interface TideDataFromDrupal {
     sequence: number;
     time_local: string; // "2025-05-09T00:00:00.000Z"
     value: string; // "1.0" in meters
+  };
+}
+
+export interface TideDataWorldWideFromDrupal {
+  _source: {
+    height: number; // 5646465
+    time_local: string; // "2025-05-09T00:00:00.000Z"
+    type: "low" | "high";
   };
 }
 
@@ -43,6 +51,7 @@ export interface DrupalApiData {
     name: string;
     timezone: string;
     localDateTime: string;
+    isAustralia: boolean;
   };
   forecasts: {
     ecmwf: {
@@ -71,7 +80,7 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
-  tide: TideDataFromDrupal[];
+  tide: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   surf_report: SurfReportItem[];
 }
 

@@ -3,10 +3,11 @@ import {
   UnitPreferences,
   DrupalApiData,
   WeatherData,
-  TideDataFromDrupal,
+  TideDataAustraliaFromDrupal,
   CurrentWeatherData,
   SunriseSunsetData,
   SurfReportItem,
+  TideDataWorldWideFromDrupal,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
@@ -25,10 +26,11 @@ interface AppProps {
   chartWidth: number;
   weatherData: WeatherData[];
   currentWeatherData: CurrentWeatherData;
-  tideData: TideDataFromDrupal[];
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   sunriseSunsetData: SunriseSunsetData;
   timezone: string;
   surfReport: SurfReportItem[];
+  isAustralia: boolean;
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -46,6 +48,7 @@ function App({
   sunriseSunsetData,
   timezone,
   surfReport,
+  isAustralia,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
 
@@ -64,9 +67,14 @@ function App({
         defaultPreferences={defaultPreferences}
         currentWeatherData={currentWeatherData}
         sunriseSunsetData={sunriseSunsetData}
-        tideData={tideData}
+        tideData={
+          isAustralia
+            ? (tideData as TideDataAustraliaFromDrupal[])
+            : (tideData as TideDataWorldWideFromDrupal[])
+        }
         timezone={timezone}
         surfReport={surfReport}
+        isAustralia={isAustralia}
       />
       <GraphHeader
         locationName={locationName}
@@ -82,8 +90,13 @@ function App({
           maxSurfHeight={maxSurfHeight}
           chartWidth={chartWidth}
           weatherData={weatherData.slice(0, chartDataLength)}
-          tideData={tideData}
+          tideData={
+            isAustralia
+              ? (tideData as TideDataAustraliaFromDrupal[])
+              : (tideData as TideDataWorldWideFromDrupal[])
+          }
           timezone={timezone}
+          isAustralia={isAustralia}
         />
       </Suspense>
     </div>

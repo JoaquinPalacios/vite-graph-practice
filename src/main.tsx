@@ -2,7 +2,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { DrupalApiData } from "./types/index.ts";
+import {
+  DrupalApiData,
+  TideDataAustraliaFromDrupal,
+  TideDataWorldWideFromDrupal,
+} from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
 import { trimToCompleteDays } from "./lib/data-processing.ts";
 
@@ -79,6 +83,7 @@ function initGraph() {
       timezone: rawApiData.location.timezone,
       localDateTimeISO:
         rawApiData.forecasts.gfs.forecastSteps[0].localDateTimeISO,
+      isAustralia: rawApiData.location.isAustralia,
       defaultPreferences: {
         units: {
           surfHeight: (rawApiData.preferences.units.surfHeight === "ft"
@@ -105,7 +110,9 @@ function initGraph() {
             );
           })()
         : [],
-      tideData: rawApiData.tide,
+      tideData: rawApiData.location.isAustralia
+        ? (rawApiData.tide as TideDataAustraliaFromDrupal[])
+        : (rawApiData.tide as TideDataWorldWideFromDrupal[]),
       surfReport: rawApiData.surf_report ? rawApiData.surf_report : [],
     };
 

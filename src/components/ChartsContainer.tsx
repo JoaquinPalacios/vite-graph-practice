@@ -1,6 +1,11 @@
 "use client";
 
-import { TideDataFromDrupal, UnitPreferences, WeatherData } from "@/types";
+import {
+  TideDataAustraliaFromDrupal,
+  TideDataWorldWideFromDrupal,
+  UnitPreferences,
+  WeatherData,
+} from "@/types";
 import ChartsWrapper from "./ChartsWrapper";
 import { SwellChart } from "./SwellChart";
 import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
@@ -34,6 +39,7 @@ const ChartsContainer = ({
   weatherData,
   tideData,
   timezone,
+  isAustralia,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -43,8 +49,9 @@ const ChartsContainer = ({
   };
   chartWidth: number;
   weatherData: WeatherData[];
-  tideData: TideDataFromDrupal[];
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   timezone: string;
+  isAustralia: boolean;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -123,7 +130,15 @@ const ChartsContainer = ({
             </Suspense>
             <Suspense fallback={<GraphSkeleton showTide />}>
               {isValidTideData ? (
-                <TideChart tideData={tideData} swellData={processedData} />
+                <TideChart
+                  tideData={
+                    isAustralia
+                      ? (tideData as TideDataAustraliaFromDrupal[])
+                      : (tideData as TideDataWorldWideFromDrupal[])
+                  }
+                  swellData={processedData}
+                  isAustralia={isAustralia}
+                />
               ) : (
                 <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-slate-500">
                   No tide data available

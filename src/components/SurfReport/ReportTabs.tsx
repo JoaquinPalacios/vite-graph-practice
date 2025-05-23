@@ -6,8 +6,9 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   WeatherData,
-  TideDataFromDrupal,
+  TideDataAustraliaFromDrupal,
   SurfReportItem,
+  TideDataWorldWideFromDrupal,
 } from "@/types";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { cn } from "@/utils/utils";
@@ -31,9 +32,10 @@ type SurfReportPanelProps = {
   weatherData: WeatherData;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
-  tideData: TideDataFromDrupal[];
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   timezone: string;
   surfReport?: SurfReportItem[];
+  isAustralia: boolean;
 };
 
 const formatTime = (dateStr: string) => {
@@ -65,6 +67,7 @@ export const SurfReportPanel = ({
   tideData,
   timezone,
   surfReport = [],
+  isAustralia,
 }: SurfReportPanelProps) => {
   // TODO: Remove this once we have the real data
   const dummySurfData = {
@@ -95,8 +98,9 @@ export const SurfReportPanel = ({
   );
 
   const { current: currentTide, next: nextTide } = useMemo(
-    () => findCurrentDayTides(tideData, localDateTimeISO, timezone),
-    [tideData, localDateTimeISO, timezone]
+    () =>
+      findCurrentDayTides(tideData, localDateTimeISO, timezone, isAustralia),
+    [tideData, localDateTimeISO, timezone, isAustralia]
   );
 
   const formattedDate = useMemo(

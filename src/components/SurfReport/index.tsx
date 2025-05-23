@@ -4,8 +4,9 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   WeatherData,
-  TideDataFromDrupal,
+  TideDataAustraliaFromDrupal,
   SurfReportItem,
+  TideDataWorldWideFromDrupal,
 } from "@/types";
 import { SurfReportPanel } from "./ReportTabs";
 
@@ -19,6 +20,7 @@ export const SurfReport = ({
   tideData,
   timezone,
   surfReport,
+  isAustralia,
 }: {
   localDateTimeISO: string;
   chartData: ChartDataItem;
@@ -26,9 +28,10 @@ export const SurfReport = ({
   defaultPreferences: UnitPreferences;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
-  tideData: TideDataFromDrupal[];
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   timezone: string;
   surfReport: SurfReportItem[];
+  isAustralia: boolean;
 }) => {
   return (
     <section className="tw:mb-4 tw:max-w-[1340px] tw:h-auto tw:mx-auto tw:w-full tw:max-md:px-5">
@@ -45,6 +48,7 @@ export const SurfReport = ({
               tideData={tideData}
               timezone={timezone}
               surfReport={surfReport}
+              isAustralia={isAustralia}
             />
           </div>
           <div className="tw:bg-slate-100 tw:rounded-lg tw:p-4 tw:h-min">

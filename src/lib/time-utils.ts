@@ -1,6 +1,9 @@
 import { formatInTimeZone } from "date-fns-tz";
 
-import { TideDataFromDrupal } from "@/types";
+import {
+  TideDataAustraliaFromDrupal,
+  TideDataWorldWideFromDrupal,
+} from "@/types";
 import { toZonedTime } from "date-fns-tz";
 
 interface TimeDataItem {
@@ -173,111 +176,139 @@ export const findCurrentDaySunriseSunset = (
 };
 
 export const findCurrentDayTides = (
-  tideData: TideDataFromDrupal[],
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[],
   currentDate: string,
-  timezone: string
+  timezone: string,
+  isAustralia: boolean
 ): {
   current: { type: string; time: string; height: string };
   next: { type: string; time: string; height: string };
 } => {
   try {
-    // Convert current date to the target timezone
-    const currentDateInTz = formatInTimeZone(
-      new Date(currentDate),
-      timezone,
-      "yyyy-MM-dd"
-    );
-
-    // Find all tides for the current day
-    const currentDayTides = tideData.filter((tide) =>
-      tide._source.time_local.startsWith(currentDateInTz)
-    );
-
-    if (currentDayTides.length === 0) {
-      return {
-        current: { type: "N/A", time: "N/A", height: "N/A" },
-        next: { type: "N/A", time: "N/A", height: "N/A" },
-      };
-    }
-
     // Get current time in the target timezone
-    const now = new Date(currentDate);
-    const currentTime = now.getTime();
+    const now = new Date();
+    const currentTimeInTz = toZonedTime(now, timezone);
 
-    // Find the current and next tide
+    // Get the timezone offset in minutes for the target timezone
+    const targetTzOffset = currentTimeInTz.getTimezoneOffset();
+
+    console.debug("Current time details:", {
+      now: now.toISOString(),
+      currentTimeInTz: currentTimeInTz.toISOString(),
+      timezone,
+      localTime: currentTimeInTz.toLocaleTimeString(),
+      targetTzOffset,
+      currentDate,
+    });
+
+    // Sort tides by their local time
+    const sortedTides = [...tideData].sort((a, b) => {
+      const timeA = isAustralia
+        ? (a as TideDataAustraliaFromDrupal)._source.time_local
+        : (a as TideDataWorldWideFromDrupal)._source.time_local;
+      const timeB = isAustralia
+        ? (b as TideDataAustraliaFromDrupal)._source.time_local
+        : (b as TideDataWorldWideFromDrupal)._source.time_local;
+
+      return timeA.localeCompare(timeB);
+    });
+
+    // Debug first few sorted tides
+    console.debug(
+      "First few sorted tides:",
+      sortedTides.slice(0, 3).map((tide) => ({
+        time_local: isAustralia
+          ? (tide as TideDataAustraliaFromDrupal)._source.time_local
+          : (tide as TideDataWorldWideFromDrupal)._source.time_local,
+        instance: isAustralia
+          ? (tide as TideDataAustraliaFromDrupal)._source.instance
+          : (tide as TideDataWorldWideFromDrupal)._source.type,
+      }))
+    );
+
     let currentTide = null;
     let nextTide = null;
 
-    for (let i = 0; i < currentDayTides.length; i++) {
-      const tideTime = new Date(
-        currentDayTides[i]._source.time_local
-      ).getTime();
-      if (tideTime > currentTime) {
+    // Find the last tide before current time and the next tide
+    for (let i = 0; i < sortedTides.length; i++) {
+      const timeLocal = isAustralia
+        ? (sortedTides[i] as TideDataAustraliaFromDrupal)._source.time_local
+        : (sortedTides[i] as TideDataWorldWideFromDrupal)._source.time_local;
+
+      // Create a date object from the tide time and adjust it to the target timezone
+      const tideDate = new Date(timeLocal);
+      const tideDateInTz = toZonedTime(tideDate, timezone);
+
+      console.debug("Comparing tide with current time:", {
+        tideTime: timeLocal,
+        tideDateInTz: tideDateInTz.toISOString(),
+        currentTimeInTz: currentTimeInTz.toISOString(),
+        isAfterCurrent: tideDateInTz > currentTimeInTz,
+        timezone,
+        targetTzOffset,
+      });
+
+      if (tideDateInTz > currentTimeInTz) {
+        // Found the next tide
+        nextTide = sortedTides[i];
+        // The current tide is the previous one
         if (i > 0) {
-          currentTide = currentDayTides[i - 1];
+          currentTide = sortedTides[i - 1];
         }
-        nextTide = currentDayTides[i];
         break;
       }
     }
 
-    // If we haven't found a next tide, look for the first tide of the next day
-    if (!nextTide) {
-      const nextDayTides = tideData.filter((tide) => {
-        const nextDay = new Date(currentDateInTz);
-        nextDay.setDate(nextDay.getDate() + 1);
-        return tide._source.time_local.startsWith(
-          formatInTimeZone(nextDay, timezone, "yyyy-MM-dd")
-        );
-      });
-      if (nextDayTides.length > 0) {
-        nextTide = nextDayTides[0];
-      }
-    }
-
-    // If we haven't found a current tide, use the last tide of the previous day
-    if (!currentTide) {
-      const prevDayTides = tideData.filter((tide) => {
-        const prevDay = new Date(currentDateInTz);
-        prevDay.setDate(prevDay.getDate() - 1);
-        return tide._source.time_local.startsWith(
-          formatInTimeZone(prevDay, timezone, "yyyy-MM-dd")
-        );
-      });
-      if (prevDayTides.length > 0) {
-        currentTide = prevDayTides[prevDayTides.length - 1];
-      }
+    // If we haven't found a next tide, use the last tide as current
+    if (!nextTide && sortedTides.length > 0) {
+      currentTide = sortedTides[sortedTides.length - 1];
     }
 
     // Format the times and heights
-    const formatTideInfo = (tide: TideDataFromDrupal | null) => {
+    const formatTideInfo = (
+      tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal | null
+    ) => {
       if (!tide) return { type: "N/A", time: "N/A", height: "N/A" };
 
-      const [datePart, timePart] = tide._source.time_local.split("T");
+      const timeLocal = isAustralia
+        ? (tide as TideDataAustraliaFromDrupal)._source.time_local
+        : (tide as TideDataWorldWideFromDrupal)._source.time_local;
+      const value = isAustralia
+        ? (tide as TideDataAustraliaFromDrupal)._source.value
+        : (tide as TideDataWorldWideFromDrupal)._source.height.toString();
+      const instance = isAustralia
+        ? (tide as TideDataAustraliaFromDrupal)._source.instance
+        : (tide as TideDataWorldWideFromDrupal)._source.type;
+
+      // Extract the time part from the ISO string and format it
+      const [, timePart] = timeLocal.split("T");
       const [hours, minutes] = timePart.split(":");
-      const utcDate = new Date(
-        Date.UTC(
-          parseInt(datePart.split("-")[0], 10),
-          parseInt(datePart.split("-")[1], 10) - 1,
-          parseInt(datePart.split("-")[2], 10),
-          parseInt(hours, 10),
-          parseInt(minutes, 10),
-          0,
-          0
-        )
-      );
+      const hour = parseInt(hours, 10);
+      const ampm = hour >= 12 ? "pm" : "am";
+      const hour12 = hour % 12 || 12;
+      const formattedTime = `${hour12}:${minutes} ${ampm}`;
+
+      console.debug("Formatting tide:", {
+        originalTime: timeLocal,
+        formattedTime,
+        timezone,
+        targetTzOffset,
+      });
 
       return {
-        type: tide._source.instance === "high" ? "High" : "Low",
-        time: formatInTimeZone(utcDate, timezone, "h:mm a").toLowerCase(),
-        height: `${parseFloat(tide._source.value).toFixed(1)}m`,
+        type: instance === "high" ? "High" : "Low",
+        time: formattedTime,
+        height: `${parseFloat(value).toFixed(1)}m`,
       };
     };
 
-    return {
+    const result = {
       current: formatTideInfo(currentTide),
       next: formatTideInfo(nextTide),
     };
+
+    console.debug("Final result:", result);
+    return result;
   } catch (error) {
     console.warn("Error finding tide times:", error);
     return {

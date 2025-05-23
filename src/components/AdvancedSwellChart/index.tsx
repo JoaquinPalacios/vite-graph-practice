@@ -231,7 +231,7 @@ export const AdvancedSwellChart = ({
           trigger="hover"
           shared
           isAnimationActive={false}
-          offset={28}
+          offset={24}
         />
 
         {eventIds.map((eventId, index) => {

@@ -1,6 +1,10 @@
 import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
 import * as d3 from "d3";
-import { ChartDataItem, TideDataFromDrupal } from "@/types";
+import {
+  ChartDataItem,
+  TideDataAustraliaFromDrupal,
+  TideDataWorldWideFromDrupal,
+} from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { TideTooltip } from "./TideTooltip";
 import { bisector } from "d3-array";
@@ -22,6 +26,49 @@ const parseDateTime = (isoString: string): Date | null => {
   return isNaN(date.getTime()) ? null : date;
 };
 
+// Add type guards at the top of the file after imports
+const isAustraliaTideData = (
+  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal
+): tide is TideDataAustraliaFromDrupal => {
+  return (
+    "_source" in tide && "value" in tide._source && "instance" in tide._source
+  );
+};
+
+const isWorldWideTideData = (
+  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal
+): tide is TideDataWorldWideFromDrupal => {
+  return (
+    "_source" in tide && "height" in tide._source && "type" in tide._source
+  );
+};
+
+// Helper function to get tide height
+const getTideHeight = (
+  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal,
+  isAustralia: boolean
+): number => {
+  if (isAustralia && isAustraliaTideData(tide)) {
+    return parseFloat(tide._source.value);
+  } else if (!isAustralia && isWorldWideTideData(tide)) {
+    return tide._source.height;
+  }
+  return 0;
+};
+
+// Helper function to get tide instance/type
+const getTideInstance = (
+  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal,
+  isAustralia: boolean
+): "high" | "low" => {
+  if (isAustralia && isAustraliaTideData(tide)) {
+    return tide._source.instance;
+  } else if (!isAustralia && isWorldWideTideData(tide)) {
+    return tide._source.type;
+  }
+  return "low"; // fallback
+};
+
 /**
  * D3 Chart Tide Component
  * @description It takes the tide data and swell data and renders the chart.
@@ -32,9 +79,11 @@ const parseDateTime = (isoString: string): Date | null => {
 export const TideChart = ({
   tideData,
   swellData,
+  isAustralia,
 }: {
-  tideData: TideDataFromDrupal[];
+  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   swellData: ChartDataItem[];
+  isAustralia: boolean;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -133,11 +182,11 @@ export const TideChart = ({
       if (!pointDate) return [];
       return [
         {
-          height: Math.max(0, parseFloat(point._source.value)),
+          height: Math.max(0, getTideHeight(point, isAustralia)),
           timestamp: pointDate.getTime(),
           localDateTimeISO: point._source.time_local,
           utcDateTimeISO: pointDate.toISOString(),
-          instance: point._source.instance as "high" | "low",
+          instance: getTideInstance(point, isAustralia),
         },
       ];
     }
@@ -171,8 +220,8 @@ export const TideChart = ({
 
     const prevTime = prevDate.getTime();
     const nextTime = nextDate.getTime();
-    const prevHeight = parseFloat(prevTide._source.value);
-    const nextHeight = parseFloat(nextTide._source.value);
+    const prevHeight = getTideHeight(prevTide, isAustralia);
+    const nextHeight = getTideHeight(nextTide, isAustralia);
 
     const nextTideLocal = nextTide._source.time_local;
     const localDatePart = nextTideLocal.split("T")[0];
@@ -199,7 +248,7 @@ export const TideChart = ({
       localDateTimeISO: midnightISO,
       utcDateTimeISO: midnightDate.toISOString(),
       isBoundary: true,
-      instance: prevTide._source.instance as "high" | "low",
+      instance: getTideInstance(prevTide, isAustralia),
     };
 
     // Now filter the rest of the data points based on the swell time range
@@ -213,11 +262,11 @@ export const TideChart = ({
           pointTime <= (swellTimeRange?.max ?? Infinity)
         ) {
           return {
-            height: Math.max(0, parseFloat(point._source.value)),
+            height: Math.max(0, getTideHeight(point, isAustralia)),
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
             utcDateTimeISO: pointDate?.toISOString() ?? "",
-            instance: point._source.instance as "high" | "low",
+            instance: getTideInstance(point, isAustralia),
           } as TransformedTidePoint;
         }
         return null;
@@ -225,7 +274,7 @@ export const TideChart = ({
       .filter((p): p is TransformedTidePoint => p !== null);
 
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
-  }, [tideData, swellData, length]);
+  }, [tideData, swellData, length, isAustralia]);
 
   // Only show a dot if it's at least 15 minutes from the previous one (for real points)
   const labelData = useMemo(() => {
