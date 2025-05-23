@@ -98,9 +98,8 @@ export const SurfReportPanel = ({
   );
 
   const { current: currentTide, next: nextTide } = useMemo(
-    () =>
-      findCurrentDayTides(tideData, localDateTimeISO, timezone, isAustralia),
-    [tideData, localDateTimeISO, timezone, isAustralia]
+    () => findCurrentDayTides(tideData, timezone, isAustralia),
+    [tideData, timezone, isAustralia]
   );
 
   const formattedDate = useMemo(

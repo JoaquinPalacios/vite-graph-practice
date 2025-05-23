@@ -177,7 +177,6 @@ export const findCurrentDaySunriseSunset = (
 
 export const findCurrentDayTides = (
   tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[],
-  currentDate: string,
   timezone: string,
   isAustralia: boolean
 ): {
@@ -188,18 +187,6 @@ export const findCurrentDayTides = (
     // Get current time in the target timezone
     const now = new Date();
     const currentTimeInTz = toZonedTime(now, timezone);
-
-    // Get the timezone offset in minutes for the target timezone
-    const targetTzOffset = currentTimeInTz.getTimezoneOffset();
-
-    console.debug("Current time details:", {
-      now: now.toISOString(),
-      currentTimeInTz: currentTimeInTz.toISOString(),
-      timezone,
-      localTime: currentTimeInTz.toLocaleTimeString(),
-      targetTzOffset,
-      currentDate,
-    });
 
     // Sort tides by their local time
     const sortedTides = [...tideData].sort((a, b) => {
@@ -213,19 +200,6 @@ export const findCurrentDayTides = (
       return timeA.localeCompare(timeB);
     });
 
-    // Debug first few sorted tides
-    console.debug(
-      "First few sorted tides:",
-      sortedTides.slice(0, 3).map((tide) => ({
-        time_local: isAustralia
-          ? (tide as TideDataAustraliaFromDrupal)._source.time_local
-          : (tide as TideDataWorldWideFromDrupal)._source.time_local,
-        instance: isAustralia
-          ? (tide as TideDataAustraliaFromDrupal)._source.instance
-          : (tide as TideDataWorldWideFromDrupal)._source.type,
-      }))
-    );
-
     let currentTide = null;
     let nextTide = null;
 
@@ -238,15 +212,6 @@ export const findCurrentDayTides = (
       // Create a date object from the tide time and adjust it to the target timezone
       const tideDate = new Date(timeLocal);
       const tideDateInTz = toZonedTime(tideDate, timezone);
-
-      console.debug("Comparing tide with current time:", {
-        tideTime: timeLocal,
-        tideDateInTz: tideDateInTz.toISOString(),
-        currentTimeInTz: currentTimeInTz.toISOString(),
-        isAfterCurrent: tideDateInTz > currentTimeInTz,
-        timezone,
-        targetTzOffset,
-      });
 
       if (tideDateInTz > currentTimeInTz) {
         // Found the next tide
@@ -288,27 +253,22 @@ export const findCurrentDayTides = (
       const hour12 = hour % 12 || 12;
       const formattedTime = `${hour12}:${minutes} ${ampm}`;
 
-      console.debug("Formatting tide:", {
-        originalTime: timeLocal,
-        formattedTime,
-        timezone,
-        targetTzOffset,
-      });
+      // Format height with conditional decimal places
+      const heightValue = parseFloat(value);
+      const formattedHeight =
+        heightValue % 1 === 0 ? heightValue.toFixed(1) : heightValue.toFixed(2);
 
       return {
         type: instance === "high" ? "High" : "Low",
         time: formattedTime,
-        height: `${parseFloat(value).toFixed(1)}m`,
+        height: `${formattedHeight}m`,
       };
     };
 
-    const result = {
+    return {
       current: formatTideInfo(currentTide),
       next: formatTideInfo(nextTide),
     };
-
-    console.debug("Final result:", result);
-    return result;
   } catch (error) {
     console.warn("Error finding tide times:", error);
     return {
