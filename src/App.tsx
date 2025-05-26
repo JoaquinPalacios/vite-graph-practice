@@ -52,9 +52,9 @@ function App({
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">(() => {
     // Set initial model type based on available data
-    if (rawApiData.forecasts?.gfs) return "gfs";
-    if (rawApiData.forecasts?.ecmwf) return "ecmwf";
-    return "gfs"; // Default to GFS even if no data
+    if (rawApiData.forecasts?.gfs?.forecastSteps?.length) return "gfs";
+    if (rawApiData.forecasts?.ecmwf?.forecastSteps?.length) return "ecmwf";
+    return "gfs"; // fallback if both are empty
   });
 
   // Process the data based on the selected model type

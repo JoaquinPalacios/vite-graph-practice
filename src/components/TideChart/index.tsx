@@ -297,7 +297,7 @@ export const TideChart = ({
       .filter((p): p is TransformedTidePoint => p !== null);
 
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
-  }, [tideData, swellData, length, isAustralia]);
+  }, [tideData, isAustralia, swellData, timezone, length]);
 
   // Only show a dot if it's at least 15 minutes from the previous one (for real points)
   const labelData = useMemo(() => {
@@ -374,7 +374,7 @@ export const TideChart = ({
     svg.selectAll("*").remove();
     yAxisSvg.selectAll("*").remove();
 
-    const margin = { top: 32, right: 0, bottom: 5, left: 76 };
+    const margin = { top: 32, right: 0, bottom: 0, left: 76 };
 
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
@@ -390,7 +390,7 @@ export const TideChart = ({
 
     // The height available for drawing
     const chartDrawingHeight =
-      svgDimensions.height - margin.top - margin.bottom - 32;
+      svgDimensions.height - margin.top - margin.bottom;
 
     // Create the chart area with proper translation
     const chartArea = svg
@@ -834,7 +834,7 @@ export const TideChart = ({
       <div
         ref={containerRef}
         style={{ width: "100%", height: "100%", position: "relative" }}
-        className="tw:h-36 tw:min-h-36"
+        className="tw:h-28 tw:min-h-28"
       >
         <div>Loading tide data or no data available...</div>
       </div>
@@ -850,7 +850,7 @@ export const TideChart = ({
           height: "100%",
           overflow: "hidden",
         }}
-        className="tw:h-36 tw:min-h-36"
+        className="tw:h-28 tw:min-h-28"
       >
         <svg
           ref={svgRef}
