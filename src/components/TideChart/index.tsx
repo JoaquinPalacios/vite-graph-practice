@@ -102,7 +102,7 @@ export const TideChart = ({
   }>({ visible: false, x: 0, y: 0, data: null });
   const tooltipDivRef = useRef<HTMLDivElement>(null);
 
-  const length = swellData.length;
+  const length = swellData.length === 0 ? 128 : swellData.length;
 
   const PIXELS_PER_DAY = 256; // Exact width per day in pixels
 
@@ -197,18 +197,37 @@ export const TideChart = ({
     if (tideData.length < 2) return [];
 
     // Get the time range from swell data to ensure we only show tide data within that range
-    const swellTimeRange = swellData?.slice(0, length).reduce(
-      (acc, curr) => {
-        if (!curr?.localDateTimeISO) return acc;
-        const time = new Date(curr.localDateTimeISO).getTime();
-        const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
-        return {
-          min: Math.min(acc.min, time),
-          max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
-        };
-      },
-      { min: Infinity, max: -Infinity }
-    );
+    const swellTimeRange = (() => {
+      // If we have swell data, use it to determine the range
+      if (swellData && swellData.length > 0) {
+        return swellData.slice(0, length).reduce(
+          (acc, curr) => {
+            if (!curr?.localDateTimeISO) return acc;
+            const time = new Date(curr.localDateTimeISO).getTime();
+            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
+            return {
+              min: Math.min(acc.min, time),
+              max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
+            };
+          },
+          { min: Infinity, max: -Infinity }
+        );
+      }
+
+      // If no swell data, use a 16-day range from now in the location's timezone
+      const SIXTEEN_DAYS_MS = 16 * 24 * 60 * 60 * 1000;
+      // Create a date string in the location's timezone
+      const nowInLocationTz = formatInTimeZone(
+        new Date(),
+        timezone,
+        "yyyy-MM-dd'T'HH:mm:ssXXX"
+      );
+      const startTime = new Date(nowInLocationTz).getTime();
+      return {
+        min: startTime,
+        max: startTime + SIXTEEN_DAYS_MS,
+      };
+    })();
 
     // First, process the initial points for interpolation
     const prevTide = tideData[0];
@@ -392,18 +411,25 @@ export const TideChart = ({
     const customTickFormat = (d: d3.NumberValue) => {
       const value = Number(d);
       if (value === 0) return ""; // Keep hiding 0
-      if (maxTide > 2.5) {
-        // For max tide > 2.5, only show whole numbers
-        return Number.isInteger(value) ? `${value}m` : "";
+      // Only show the max value and middle point
+      const maxValue = Math.ceil(maxTide);
+      const middleValue = maxValue / 2;
+      if (value !== maxValue && value !== middleValue) return "";
+
+      // Format with decimals only when needed
+      if (maxTide <= 2.5) {
+        // For values <= 2.5, show decimal only if it's not .0
+        return value % 1 === 0 ? `${value}m` : `${value.toFixed(1)}m`;
       }
-      // For max tide <= 2.5, show all ticks with one decimal
-      return `${value}m`;
+      // For values > 2.5, always round to whole numbers
+      return `${Math.round(value)}m`;
     };
 
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
-      .ticks(maxTide > 2.5 ? Math.ceil(maxTide) : 5) // Adjust number of ticks based on max tide
+      .ticks(2) // Force exactly 2 ticks
+      .tickValues([Math.ceil(maxTide) / 2, Math.ceil(maxTide)]) // Explicitly set tick values to max and middle
       .tickPadding(8)
       .tickFormat(customTickFormat)
       .tickSize(6);
@@ -474,7 +500,7 @@ export const TideChart = ({
       .call(
         d3
           .axisLeft(yScale)
-          .ticks(maxTide > 2.5 ? Math.ceil(maxTide) : 5) // Match Y-axis ticks
+          .ticks(2) // Match Y-axis ticks
           .tickSize(-chartDrawingWidth)
           .tickFormat(() => "") // Only lines, no labels
       );

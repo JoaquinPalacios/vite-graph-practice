@@ -83,15 +83,17 @@ export const SurfReportPanel = ({
   // Memoize expensive computations
   const { sunrise, sunset } = useMemo(
     () =>
-      findCurrentDaySunriseSunset(
-        sunriseSunsetData.sunrise,
-        sunriseSunsetData.sunset,
-        localDateTimeISO,
-        timezone
-      ),
+      sunriseSunsetData?.sunrise && sunriseSunsetData?.sunset
+        ? findCurrentDaySunriseSunset(
+            sunriseSunsetData.sunrise,
+            sunriseSunsetData.sunset,
+            localDateTimeISO,
+            timezone
+          )
+        : { sunrise: "N/A", sunset: "N/A" },
     [
-      sunriseSunsetData.sunrise,
-      sunriseSunsetData.sunset,
+      sunriseSunsetData?.sunrise,
+      sunriseSunsetData?.sunset,
       localDateTimeISO,
       timezone,
     ]
@@ -261,15 +263,24 @@ export const SurfReportPanel = ({
                 <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
                   <div className="tw:flex tw:items-start tw:flex-col">
                     <p className="margin-none tw:text-sm">
-                      {getWeatherLabel(currentWeatherData.weather_code)}
+                      {currentWeatherData?.weather_code !== null &&
+                      currentWeatherData?.weather_code !== undefined
+                        ? getWeatherLabel(currentWeatherData.weather_code)
+                        : "Weather data unavailable"}
                     </p>
                     <p className="margin-none tw:text-xl tw:font-semibold tw:flex tw:gap-2 tw:items-center">
-                      <WeatherIcon
-                        weatherId={currentWeatherData.weather_code}
-                        size={24}
-                        className="tw:text-blue-400"
-                      />
-                      {currentWeatherData.temperature_2m}°C
+                      {currentWeatherData?.weather_code !== null &&
+                        currentWeatherData?.weather_code !== undefined && (
+                          <WeatherIcon
+                            weatherId={currentWeatherData.weather_code}
+                            size={24}
+                            className="tw:text-blue-400"
+                          />
+                        )}
+                      {currentWeatherData?.temperature_2m !== null &&
+                      currentWeatherData?.temperature_2m !== undefined
+                        ? `${currentWeatherData.temperature_2m}°C`
+                        : "N/A"}
                     </p>
                   </div>
                   <div>

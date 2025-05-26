@@ -50,7 +50,12 @@ function App({
   surfReport,
   isAustralia,
 }: AppProps) {
-  const [modelType, setModelType] = useState<"gfs" | "ecmwf">("gfs");
+  const [modelType, setModelType] = useState<"gfs" | "ecmwf">(() => {
+    // Set initial model type based on available data
+    if (rawApiData.forecasts?.gfs) return "gfs";
+    if (rawApiData.forecasts?.ecmwf) return "ecmwf";
+    return "gfs"; // Default to GFS even if no data
+  });
 
   // Process the data based on the selected model type
   const chartData = processApiDataToChartData(rawApiData, modelType);
@@ -58,22 +63,60 @@ function App({
   // Get the length of the chart data in order to limit the weather data to the same length
   const chartDataLength = chartData.length;
 
+  // Create a default chart data item if none exists
+  const defaultChartData = {
+    localDateTimeISO: localDateTimeISO,
+    utcDateTimeISO: new Date(localDateTimeISO).toISOString(),
+    wind: { direction: null, speedKmh: null, speedKnots: null },
+    primary: {
+      fullSurfHeightFeet: null,
+      direction: null,
+      fullSurfHeightMetres: null,
+      totalSigHeight: null,
+    },
+    secondary: undefined,
+    trainData: [],
+  };
+
+  // Create a default weather data item if none exists
+  const defaultWeatherData = {
+    index: 1,
+    localDateTimeISO: localDateTimeISO,
+    currentTemp: null,
+    weatherId: null,
+  };
+
+  // Create default weather data if none exists
+  const defaultCurrentWeatherData = {
+    temperature_2m: null,
+    weather_code: null,
+    wind_speed_10m: null,
+    wind_direction_10m: null,
+  };
+
+  // Create default sunrise/sunset data if none exists
+  const defaultSunriseSunsetData = {
+    sunrise: [],
+    sunset: [],
+    time: [],
+  };
+
   return (
     <div className="tw:max-w-[86.75rem] tw:mx-auto">
       <SurfReport
         localDateTimeISO={localDateTimeISO}
-        chartData={chartData[0]}
-        weatherData={weatherData[0]}
+        chartData={chartData[0] || defaultChartData}
+        weatherData={weatherData[0] || defaultWeatherData}
         defaultPreferences={defaultPreferences}
-        currentWeatherData={currentWeatherData}
-        sunriseSunsetData={sunriseSunsetData}
+        currentWeatherData={currentWeatherData || defaultCurrentWeatherData}
+        sunriseSunsetData={sunriseSunsetData || defaultSunriseSunsetData}
         tideData={
           isAustralia
             ? (tideData as TideDataAustraliaFromDrupal[])
             : (tideData as TideDataWorldWideFromDrupal[])
         }
         timezone={timezone}
-        surfReport={surfReport}
+        surfReport={surfReport || []}
         isAustralia={isAustralia}
       />
       <GraphHeader

@@ -27,7 +27,7 @@ import {
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { useState } from "react";
 import { cn } from "@/utils/utils";
-import CustomCursor from "./CustomCursor";
+import { CustomCursor } from "./CustomCursor";
 import { AdvanceCustomTooltip } from "./AdvanceCustomTooltip";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 

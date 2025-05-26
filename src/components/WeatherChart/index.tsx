@@ -1,11 +1,32 @@
-import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
+import {
+  CartesianGrid,
+  YAxis,
+  XAxis,
+  ScatterChart,
+  Scatter,
+  Tooltip,
+} from "recharts";
 import { ResponsiveContainer } from "recharts";
 import { WeatherBubble } from "./WeatherBubble";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { WeatherData } from "@/types";
+import { useState } from "react";
+import { WeatherChartCursor } from "./WeatherChartCursor";
+
+type ScatterShapeProps = {
+  cx?: number;
+  cy?: number;
+  payload?: WeatherData;
+  index?: number;
+};
 
 const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
+  // Add index property to each data point
+  const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [isDirectHover, setIsDirectHover] = useState(false);
+
   return (
     <ResponsiveContainer
       width={getChartWidth(weatherData.length, 256, 60)}
@@ -16,7 +37,7 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
       )}
     >
       <ScatterChart
-        data={weatherData}
+        data={weatherDataWithIndex}
         accessibilityLayer
         margin={{
           left: 0,
@@ -25,6 +46,7 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
           top: 0,
         }}
         className="tw:[&>svg]:focus:outline-none"
+        syncId="swellnet"
       >
         <CartesianGrid
           vertical={true}
@@ -51,12 +73,30 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
 
         <Scatter
           dataKey="weatherId"
-          shape={<WeatherBubble />}
+          shape={(props: ScatterShapeProps) => (
+            <WeatherBubble {...props} isHover={hoverIndex === props.index} />
+          )}
           overflow="visible"
+          onMouseEnter={(_, index) => {
+            setHoverIndex(index);
+            setIsDirectHover(true);
+          }}
+          onMouseLeave={() => {
+            setHoverIndex(null);
+            setIsDirectHover(false);
+          }}
+          className="tw:transition-all tw:duration-300"
+        />
+
+        <Tooltip
+          cursor={isDirectHover ? false : <WeatherChartCursor />}
+          content={() => <span className="tw:sr-only">.</span>}
+          trigger="hover"
+          isAnimationActive={false}
         />
 
         <YAxis
-          dataKey="index"
+          dataKey={() => 1}
           height={0}
           domain={[1]}
           padding={{ bottom: 16 }}

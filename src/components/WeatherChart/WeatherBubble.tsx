@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
+import { cn } from "@/utils/utils";
 
 type WeatherData = {
   weatherId: number;
@@ -12,6 +14,8 @@ type WeatherBubbleProps = {
   cx?: number;
   cy?: number;
   payload?: WeatherData;
+  index?: number;
+  isHover?: boolean;
 };
 
 /**
@@ -20,14 +24,19 @@ type WeatherBubbleProps = {
  * @param props - The props of the component
  * @returns The WeatherBubble component
  */
-export const WeatherBubble = (props: WeatherBubbleProps) => {
+export const WeatherBubble = memo((props: WeatherBubbleProps) => {
   if (!props.payload) return null;
 
   // Common wrapper for all icons to provide a larger hit area
   const IconWrapper = ({ children }: { children: React.ReactNode }) => (
     <g
       transform={`translate(${(props.x || 0) - 7}, ${props.y || 0})`}
-      className="tw:hover:[&>svg]:fill-gray-800 tw:hover:[&>text]:fill-gray-800 tw:[&>svg]:transition-colors"
+      className={cn(
+        "tw:[&>svg]:transition-colors tw:[&>text]:transition-colors",
+        props.isHover
+          ? "tw:[&>svg]:fill-gray-800 tw:[&>text]:fill-gray-800"
+          : "tw:[&>svg]:fill-[#666] tw:[&>text]:fill-[#666]"
+      )}
     >
       {/* Invisible hit area */}
       <rect width="24" height="40" fill="transparent" />
@@ -39,7 +48,7 @@ export const WeatherBubble = (props: WeatherBubbleProps) => {
     return (
       <text
         className="tw:transition-colors"
-        fill="#666"
+        fill={props.isHover ? "#000" : "#666"}
         dy={36}
         dx={4}
         fontSize={10}
@@ -54,9 +63,12 @@ export const WeatherBubble = (props: WeatherBubbleProps) => {
       <WeatherIcon
         weatherId={props.payload.weatherId}
         size={24}
-        className="tw:fill-[#666]"
+        className={cn(
+          "tw:transition-colors",
+          props.isHover ? "tw:fill-gray-900" : "tw:fill-[#666]"
+        )}
       />
       <CurrentTemp payload={props.payload} />
     </IconWrapper>
   );
-};
+});

@@ -14,7 +14,7 @@ interface CustomCursorProps {
  * @param props - The props of the component
  * @returns The CustomCursor component
  */
-const CustomCursor = (props: CustomCursorProps) => {
+export const CustomCursor = (props: CustomCursorProps) => {
   const { points, setTooltipHoveredIndex, payloadIndex } = props;
   const [width, setWidth] = useState(32);
   const halfWidth = width / 2;
@@ -45,5 +45,3 @@ const CustomCursor = (props: CustomCursorProps) => {
     />
   );
 };
-
-export default CustomCursor;
