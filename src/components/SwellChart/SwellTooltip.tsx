@@ -59,7 +59,9 @@ export const SwellTooltip = memo(
                 <p className="margin-none tw:leading-[1.2]">
                   {payload[0] &&
                     degreesToCompassDirection(
-                      getAdjustedDirection(payload[0].payload.primary.direction)
+                      getAdjustedDirection(
+                        Number(payload[0].payload.primary.direction)
+                      )
                     )}
                 </p>
               </div>
@@ -81,7 +83,7 @@ export const SwellTooltip = memo(
                     {payload[0] &&
                       degreesToCompassDirection(
                         getAdjustedDirection(
-                          payload[0].payload.secondary.direction
+                          Number(payload[0].payload.secondary.direction)
                         )
                       )}
                   </p>
@@ -112,7 +114,7 @@ export const SwellTooltip = memo(
                   <path
                     d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
                     transform={`rotate(${getAdjustedDirection(
-                      payload[0].payload.wind.direction
+                      Number(payload[0].payload.wind.direction)
                     )}, 0, 0)`}
                     style={{
                       transformOrigin: "center",
@@ -122,7 +124,7 @@ export const SwellTooltip = memo(
                   <path
                     d="M7.65 10h5v7.5h-5z"
                     transform={`rotate(${getAdjustedDirection(
-                      payload[0].payload.wind.direction
+                      Number(payload[0].payload.wind.direction)
                     )}, 0, 0)`}
                     style={{
                       transformOrigin: "center",
