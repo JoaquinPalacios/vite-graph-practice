@@ -56,8 +56,8 @@ interface EventMap {
 export default function processSwellData(
   data: ChartDataItem[],
   options = {
-    dirThreshold: 30,
-    periodThreshold: 3.0,
+    dirThreshold: 15,
+    periodThreshold: 1.5,
     minHeight: 0.05,
     maxGap: 2,
     maxTimeGap: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
@@ -121,30 +121,22 @@ export default function processSwellData(
 
       for (const currentSwell of currentSwells) {
         if (!currentSwell.matched) {
-          const dirDiff = Math.abs(
-            currentSwell.direction - activeEvent.lastDir
-          );
           const perDiff = Math.abs(currentSwell.period - activeEvent.lastPer);
 
-          // Adjust thresholds based on time gap
-          const adjustedDirThreshold =
-            timeGap <= 3 * 60 * 60 * 1000 // Within 3 hours
-              ? options.dirThreshold * 2.2 // Slightly more lenient for close points
-              : options.dirThreshold;
+          // First check period - this is our primary matching criterion
+          if (perDiff <= options.periodThreshold) {
+            const dirDiff = Math.abs(
+              currentSwell.direction - activeEvent.lastDir
+            );
 
-          const adjustedPerThreshold =
-            timeGap <= 3 * 60 * 60 * 1000
-              ? options.periodThreshold * 2.2
-              : options.periodThreshold;
-
-          if (
-            dirDiff <= adjustedDirThreshold &&
-            perDiff <= adjustedPerThreshold
-          ) {
-            const diffScore = dirDiff + perDiff * 3.5;
-            if (diffScore < smallestDiff) {
-              smallestDiff = diffScore;
-              bestMatch = currentSwell;
+            // Only then check direction if period matches
+            if (dirDiff <= options.dirThreshold) {
+              // Use period difference as the primary score, with direction as a secondary factor
+              const diffScore = perDiff * 10 + dirDiff; // Period weighted 10x more than direction
+              if (diffScore < smallestDiff) {
+                smallestDiff = diffScore;
+                bestMatch = currentSwell;
+              }
             }
           }
         }
