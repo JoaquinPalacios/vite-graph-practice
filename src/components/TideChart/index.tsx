@@ -374,7 +374,7 @@ export const TideChart = ({
     svg.selectAll("*").remove();
     yAxisSvg.selectAll("*").remove();
 
-    const margin = { top: 32, right: 0, bottom: 0, left: 76 };
+    const margin = { top: 32, right: 0, bottom: 8, left: 76 };
 
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
@@ -481,7 +481,7 @@ export const TideChart = ({
       .attr("x", (_, i) => i * PIXELS_PER_DAY)
       .attr("y", -32)
       .attr("width", PIXELS_PER_DAY)
-      .attr("height", chartDrawingHeight + 32 + 8) // Add 8px to account for the hover line and gives bottom padding
+      .attr("height", chartDrawingHeight + 32) // Add 8px to account for the hover line and gives bottom padding
       .attr(
         "fill",
         (_, i) =>

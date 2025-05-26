@@ -123,8 +123,8 @@ export const GraphHeader = ({
                       !rawApiData.forecasts?.ecmwf
                         ? "Both models are unavailable"
                         : !rawApiData.forecasts?.gfs
-                        ? "GFS model is unavailable"
-                        : "ECMWF model is unavailable"}
+                        ? "GFS currently unavailable"
+                        : "ECMWF currently unavailable"}
                     </span>
                   )}
                 </label>
