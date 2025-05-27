@@ -5,6 +5,7 @@ import {
   TideDataWorldWideFromDrupal,
   UnitPreferences,
   WeatherData,
+  DrupalApiData,
 } from "@/types";
 import ChartsWrapper from "./ChartsWrapper";
 import { SwellChart } from "./SwellChart";
@@ -19,6 +20,7 @@ import { AdvancedSwellChartYAxis } from "./AdvancedSwellChart/AdvancedSwellChart
 import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";
+import { SubscriptionOverlay } from "./SubscriptionOverlay";
 
 /**
  * ChartsContainer component
@@ -40,6 +42,7 @@ const ChartsContainer = ({
   tideData,
   timezone,
   isAustralia,
+  rawApiData,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -52,6 +55,7 @@ const ChartsContainer = ({
   tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
   timezone: string;
   isAustralia: boolean;
+  rawApiData: DrupalApiData;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -70,6 +74,8 @@ const ChartsContainer = ({
   const isValidTideData =
     tideData && Array.isArray(tideData) && tideData.length > 0;
 
+  const showSubscriptionOverlay = !rawApiData.hasSubscription;
+
   return (
     <section className="display-flex tw:flex-col tw:gap-4 tw:w-full">
       {processedData.length > 0 && (
@@ -80,12 +86,15 @@ const ChartsContainer = ({
       )}
       <div
         className={cn(
-          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mx-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden"
+          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden",
+          showSubscriptionOverlay && "tw:max-md:pt-72"
         )}
-        style={{ width: chartWidth }}
+        {...(!showSubscriptionOverlay && {
+          style: { width: chartWidth },
+        })}
       >
         <Suspense fallback={<GraphSkeleton />}>
-          <ChartsWrapper>
+          <ChartsWrapper hasSubscription={rawApiData.hasSubscription}>
             <Suspense fallback={<GraphSkeleton showMain />}>
               {processedData.length > 0 ? (
                 <>
@@ -106,6 +115,7 @@ const ChartsContainer = ({
                         ? maxSurfHeight.feet
                         : maxSurfHeight.meters
                     }
+                    hasSubscription={rawApiData.hasSubscription}
                   />
 
                   <AdvancedSwellChart
@@ -117,6 +127,7 @@ const ChartsContainer = ({
                     chartData={processedData}
                     maxSurfHeight={maxSurfHeight.meters}
                     unitPreferences={unitPreferences}
+                    hasSubscription={rawApiData.hasSubscription}
                   />
                 </>
               ) : (
@@ -131,7 +142,7 @@ const ChartsContainer = ({
                   <div
                     className={cn(
                       "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
-                      "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-[8.75rem] tw:z-10"
+                      "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-24 tw:z-10"
                     )}
                   >
                     <svg
@@ -164,6 +175,7 @@ const ChartsContainer = ({
               )}
             </Suspense>
           </ChartsWrapper>
+          {showSubscriptionOverlay && <SubscriptionOverlay />}
         </Suspense>
       </div>
     </section>

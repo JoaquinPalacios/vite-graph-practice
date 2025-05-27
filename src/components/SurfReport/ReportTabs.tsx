@@ -115,40 +115,40 @@ export const SurfReportPanel = ({
   }, [surfReport]);
 
   return (
-    <article className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 tw:rounded-lg">
+    <article className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 ">
       <div className="tw:flex tw:flex-col tw:gap-4">
         <div className="tw:flex tw:items-center tw:justify-between">
           <div>
             <p className="margin-none">{formattedDate}</p>
           </div>
-          <span className="tw:px-3 tw:py-1 tw:text-lg tw:rounded tw:bg-emerald-600 tw:text-white tw:font-semibold">
+          <span className="tw:px-3 tw:py-1 tw:text-lg  tw:bg-emerald-600 tw:text-white tw:font-semibold">
             Good
           </span>
         </div>
 
         <Tabs defaultValue={defaultTab} className="tw:w-full">
-          <TabsList className="tw:grid tw:w-full tw:grid-cols-2 tw:bg-gray-100 tw:rounded-lg tw:p-1 tw:mb-2">
+          <TabsList className="tw:grid tw:w-full tw:grid-cols-2 tw:bg-gray-100  tw:p-1 tw:mb-2">
             <TabsTrigger
               value="report"
-              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
+              className="tw:relative -full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
             >
               Surf Report
             </TabsTrigger>
             <TabsTrigger
               value="conditions"
-              className="tw:relative tw:rounded-full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
+              className="tw:relative -full tw:py-2 tw:px-4 tw:font-semibold tw:transition-all tw:duration-300 tw:focus-visible:outline-none tw:data-[state=active]:bg-white tw:data-[state=active]:shadow tw:data-[state=active]:z-10 tw:text-gray-600"
             >
               Current Conditions
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="report" className="tw:mt-4 tw:bg-white">
-            <div className="tw:rounded-lg tw:border tw:bg-card tw:text-card-foreground tw:shadow-sm">
+            <div className=" tw:border tw:bg-card tw:text-card-foreground tw:shadow-sm">
               {surfReport && surfReport.length > 0 ? (
                 <>
                   <div className="tw:p-6 tw:pb-2">
                     <div className="tw:flex tw:items-center tw:gap-2 tw:text-lg tw:font-semibold">
-                      <div className="tw:h-3 tw:w-3 tw:rounded-full tw:bg-emerald-500"></div>
+                      <div className="tw:h-3 tw:w-3 -full tw:bg-emerald-500"></div>
                       Today's Surf Report
                     </div>
                     <div className="tw:text-sm tw:text-muted-foreground">
@@ -165,9 +165,9 @@ export const SurfReportPanel = ({
                           {surfReport[0].surfRating}/10
                         </span>
                       </div>
-                      <div className="tw:w-full tw:bg-gray-200 tw:rounded-full tw:h-1 tw:shadow-inner tw:overflow-hidden">
+                      <div className="tw:w-full tw:bg-gray-200 -full tw:h-1 tw:shadow-inner tw:overflow-hidden">
                         <div
-                          className="tw:h-1 tw:rounded-full tw:bg-gradient-to-r tw:from-emerald-400 tw:to-emerald-600 tw:shadow-md tw:transition-all tw:duration-700"
+                          className="tw:h-1 -full tw:bg-gradient-to-r tw:from-emerald-400 tw:to-emerald-600 tw:shadow-md tw:transition-all tw:duration-700"
                           style={{
                             width: `${Number(surfReport[0].surfRating) * 10}%`,
                           }}
@@ -241,7 +241,7 @@ export const SurfReportPanel = ({
               ) : (
                 <div className="tw:p-6">
                   <div className="tw:flex tw:items-center tw:gap-2 tw:text-lg tw:font-semibold">
-                    <div className="tw:h-3 tw:w-3 tw:rounded-full tw:bg-gray-400"></div>
+                    <div className="tw:h-3 tw:w-3 -full tw:bg-gray-400"></div>
                     No Surf Report Available
                   </div>
                   <p className="tw:text-sm tw:text-muted-foreground tw:mt-2">
@@ -255,7 +255,7 @@ export const SurfReportPanel = ({
 
           <TabsContent value="conditions" className="tw:mt-4">
             <div className="tw:grid tw:gap-4 tw:md:tw:grid-cols-2">
-              <div className="tw:rounded-lg tw:border tw:bg-white tw:shadow-sm tw:p-4">
+              <div className=" tw:border tw:bg-white tw:shadow-sm tw:p-4">
                 <h5 className="margin-bottom-2 tw:text-base tw:font-semibold">
                   Weather & Temperature
                 </h5>
@@ -305,7 +305,7 @@ export const SurfReportPanel = ({
                 </div>
               </div>
 
-              <div className="tw:rounded-lg tw:border tw:bg-white tw:shadow-sm tw:p-4">
+              <div className=" tw:border tw:bg-white tw:shadow-sm tw:p-4">
                 <h5 className="margin-bottom-2 tw:text-base tw:font-semibold">
                   Wind & Tide
                 </h5>
@@ -336,7 +336,7 @@ export const SurfReportPanel = ({
                 </div>
               </div>
 
-              <div className="tw:rounded-lg tw:border tw:bg-white tw:shadow-sm tw:md:col-span-2 tw:p-4">
+              <div className=" tw:border tw:bg-white tw:shadow-sm tw:md:col-span-2 tw:p-4">
                 <h5 className="margin-bottom-2 tw:text-base tw:font-semibold">
                   Swell Information
                 </h5>

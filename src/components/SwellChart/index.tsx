@@ -48,7 +48,7 @@ export const SwellChart = ({
       className={cn(
         "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
         unitPreferences.showAdvancedChart &&
-          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-5.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
+          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
       minHeight={320}
     >

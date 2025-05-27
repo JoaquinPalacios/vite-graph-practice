@@ -6,9 +6,9 @@ import {
   DrupalApiData,
   TideDataAustraliaFromDrupal,
   TideDataWorldWideFromDrupal,
+  ChartDataItem,
 } from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
-import { trimToCompleteDays } from "./lib/data-processing.ts";
 
 /**
  * This function initializes the graph by getting the container and
@@ -36,68 +36,112 @@ function initGraph() {
 
   const rawApiData: DrupalApiData = drupalSettings.apiData;
 
-  // Log missing forecast data
-  if (
-    !rawApiData.forecasts?.gfs?.forecastSteps?.length &&
-    !rawApiData.forecasts?.ecmwf?.forecastSteps?.length
-  ) {
-    console.warn(
-      "Swellnet Graph: No forecast data available from either GFS or ECMWF models"
-    );
-  } else if (!rawApiData.forecasts?.gfs?.forecastSteps?.length) {
-    console.warn("Swellnet Graph: No GFS forecast data available");
-  } else if (!rawApiData.forecasts?.ecmwf?.forecastSteps?.length) {
-    console.warn("Swellnet Graph: No ECMWF forecast data available");
-  }
+  // TEMPORARY: Override subscription status for testing
+  rawApiData.hasSubscription = true;
 
-  // Calculate max surf height from available models
+  // Slice the data for non-subscribers before any calculations
+  const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
+    if (!data) return [];
+    if (!rawApiData.hasSubscription) {
+      return data.slice(0, 25); // 3 days * 8 data points per day
+    }
+    return data;
+  };
+
+  // Get sliced data for both models
+  const gfsData = sliceDataForSubscription(
+    rawApiData.forecasts?.gfs?.forecastSteps
+  );
+  const ecmwfData = sliceDataForSubscription(
+    rawApiData.forecasts?.ecmwf?.forecastSteps
+  );
+
+  // Slice weather data for non-subscribers
+  const weatherData = rawApiData.weather?.hourly
+    ? (() => {
+        const timeData = rawApiData.weather.hourly.time;
+        const slicedTimeData = !rawApiData.hasSubscription
+          ? timeData.slice(0, 25) // 3 days * 8 data points per day
+          : timeData;
+
+        return slicedTimeData.map((time: string, index: number) => ({
+          index: 1,
+          localDateTimeISO: time,
+          currentTemp: rawApiData.weather.hourly.temperature_2m[index],
+          weatherId: rawApiData.weather.hourly.weather_code[index],
+        }));
+      })()
+    : [];
+
+  // Calculate max surf height from available models using sliced data
   const maxSurfHeight = {
     feet: Math.max(
-      ...(rawApiData.forecasts?.gfs?.forecastSteps?.map(
+      ...gfsData.map(
         (d) =>
           d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
-      ) ?? [0]),
-      ...(rawApiData.forecasts?.ecmwf?.forecastSteps?.map(
+      ),
+      ...ecmwfData.map(
         (d) =>
           d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
-      ) ?? [0])
+      )
     ),
     meters: Math.max(
-      ...(rawApiData.forecasts?.gfs?.forecastSteps?.map(
+      ...gfsData.map(
         (d) =>
           d.secondary?.fullSurfHeightMetres ??
           d.primary.fullSurfHeightMetres ??
           0
-      ) ?? [0]),
-      ...(rawApiData.forecasts?.ecmwf?.forecastSteps?.map(
+      ),
+      ...ecmwfData.map(
         (d) =>
           d.secondary?.fullSurfHeightMetres ??
           d.primary.fullSurfHeightMetres ??
           0
-      ) ?? [0])
+      )
     ),
   };
 
   // Calculate chart width based on available data
-  const gfsDataLength = rawApiData.forecasts?.gfs?.forecastSteps
-    ? trimToCompleteDays(rawApiData.forecasts.gfs.forecastSteps).length
-    : 0;
-  const ecmwfDataLength = rawApiData.forecasts?.ecmwf?.forecastSteps
-    ? trimToCompleteDays(rawApiData.forecasts.ecmwf.forecastSteps).length
-    : 0;
-  const maxDataLength = Math.max(gfsDataLength, ecmwfDataLength);
+  const gfsDataLength = gfsData.length;
+  const ecmwfDataLength = ecmwfData.length;
+
+  // For non-subscribers, limit to 25 data points (3 days + midnight)
+  const maxDataLength = !rawApiData.hasSubscription
+    ? 25 // 3 days * 8 data points per day
+    : Math.max(gfsDataLength, ecmwfDataLength);
+
   const chartWidth = getChartWidth(maxDataLength || 128);
 
   // Store the raw API data globally for forecast type switching
-  (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData =
-    rawApiData;
+  (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData = {
+    ...rawApiData,
+    forecasts: {
+      gfs: {
+        ...rawApiData.forecasts?.gfs,
+        forecastSteps: gfsData,
+      },
+      ecmwf: {
+        ...rawApiData.forecasts?.ecmwf,
+        forecastSteps: ecmwfData,
+      },
+    },
+  };
 
-  console.log("Vite: Raw API data before init:", rawApiData);
+  // Log missing forecast data
+  if (!gfsData.length && !ecmwfData.length) {
+    console.warn(
+      "Swellnet Graph: No forecast data available from either GFS or ECMWF models"
+    );
+  } else if (!gfsData.length) {
+    console.warn("Swellnet Graph: No GFS forecast data available");
+  } else if (!ecmwfData.length) {
+    console.warn("Swellnet Graph: No ECMWF forecast data available");
+  }
 
   // Get the first available timestamp from any data source
   const firstTimestamp =
-    rawApiData.forecasts?.gfs?.forecastSteps?.[0]?.localDateTimeISO ||
-    rawApiData.forecasts?.ecmwf?.forecastSteps?.[0]?.localDateTimeISO ||
+    gfsData[0]?.localDateTimeISO ||
+    ecmwfData[0]?.localDateTimeISO ||
     rawApiData.weather?.hourly?.time?.[0] ||
     new Date().toISOString();
 
@@ -122,14 +166,7 @@ function initGraph() {
     chartWidth: chartWidth,
     currentWeatherData: rawApiData.weather?.current || null,
     sunriseSunsetData: rawApiData.weather?.daily || [],
-    weatherData: rawApiData.weather?.hourly
-      ? rawApiData.weather.hourly.time.map((time: string, index: number) => ({
-          index: 1,
-          localDateTimeISO: time,
-          currentTemp: rawApiData.weather.hourly.temperature_2m[index],
-          weatherId: rawApiData.weather.hourly.weather_code[index],
-        }))
-      : [],
+    weatherData,
     tideData: rawApiData.location?.isAustralia
       ? (rawApiData.tide as TideDataAustraliaFromDrupal[]) || []
       : (rawApiData.tide as TideDataWorldWideFromDrupal[]) || [],

@@ -53,7 +53,19 @@ export function processApiDataToChartData(
   }
 
   // Trim the data to complete days
-  const completeData = trimToCompleteDays(forecastData.forecastSteps);
+  let completeData = trimToCompleteDays(forecastData.forecastSteps);
+
+  // Limit data for non-subscribers
+  if (!apiData.hasSubscription) {
+    const daysAllowed = 3;
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() + daysAllowed);
+
+    completeData = completeData.filter((step) => {
+      const stepDate = new Date(step.localDateTimeISO);
+      return stepDate <= cutoffDate;
+    });
+  }
 
   const chartData: ChartDataItem[] = completeData.map(
     (apiStep: ApiStep, index) => {

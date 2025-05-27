@@ -115,7 +115,7 @@ export const GraphHeader = ({
                       id="toggle-tooltip"
                       role="tooltip"
                       className={cn(
-                        "tw:absolute tw:top-9 tw:left-1/2 tw:-translate-x-1/2 tw:bg-black tw:text-white tw:text-xs tw:px-2 tw:py-1 tw:whitespace-nowrap tw:z-10 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:duration-250 tw:pointer-events-none",
+                        "tw:absolute tw:top-9 tw:left-1/2 tw:-translate-x-1/2 tw:bg-black tw:text-white tw:text-xs tw:px-2 tw:pb-1 tw:pt-1.5 tw:whitespace-nowrap tw:z-10 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:duration-250 tw:pointer-events-none",
                         "tw:before:absolute tw:before:-z-10 tw:before:-top-px tw:before:left-1/2 tw:before:-translate-x-1/2 tw:before:w-3 tw:before:h-3 tw:before:bg-black tw:before:rotate-45"
                       )}
                     >

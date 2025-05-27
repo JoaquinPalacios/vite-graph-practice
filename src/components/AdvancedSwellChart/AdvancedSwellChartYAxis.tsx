@@ -23,10 +23,12 @@ export const AdvancedSwellChartYAxis = ({
   chartData,
   maxSurfHeight,
   unitPreferences,
+  hasSubscription,
 }: {
   chartData: ChartDataItem[];
   maxSurfHeight: number;
   unitPreferences: UnitPreferences;
+  hasSubscription: boolean;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -68,9 +70,10 @@ export const AdvancedSwellChartYAxis = ({
       width={72}
       height={unitPreferences.showAdvancedChart ? "100%" : 0}
       className={cn(
-        "tw:mb-0 tw:h-48 tw:min-h-48 tw:max-h-48 tw:transition-[height,min-height] tw:duration-250 tw:ease-out",
+        "advanced-y-axis tw:mb-0 tw:h-48 tw:min-h-48 tw:max-h-48 tw:transition-[height,min-height] tw:duration-250 tw:ease-out",
         "tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10",
-        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:min-h-0"
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:min-h-0",
+        !hasSubscription && "tw:max-md:top-[38rem]"
       )}
     >
       <LineChart

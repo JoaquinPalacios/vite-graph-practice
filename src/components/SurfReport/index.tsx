@@ -51,12 +51,12 @@ export const SurfReport = ({
               isAustralia={isAustralia}
             />
           </div>
-          <div className="tw:bg-slate-100 tw:rounded-lg tw:p-4 tw:h-min">
+          <div className="tw:bg-slate-100 tw:p-4 tw:h-min">
             <h2 className="tw:text-lg tw:font-semibold tw:mb-3">
               Nearest Surfcams
             </h2>
             <div className="tw:space-y-3">
-              <div className="tw:aspect-video tw:bg-slate-200 tw:rounded-md tw:overflow-hidden">
+              <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden">
                 <img
                   src="https://placehold.co/180x320"
                   alt="T Street Cam"
@@ -64,7 +64,7 @@ export const SurfReport = ({
                 />
                 <p className="tw:text-xs tw:font-medium tw:p-1">T Street</p>
               </div>
-              <div className="tw:aspect-video tw:bg-slate-200 tw:rounded-md tw:overflow-hidden">
+              <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden">
                 <img
                   src="https://placehold.co/180x320"
                   alt="Trestles Cam"
@@ -72,7 +72,7 @@ export const SurfReport = ({
                 />
                 <p className="tw:text-xs tw:font-medium tw:p-1">Trestles</p>
               </div>
-              <div className="tw:aspect-video tw:bg-slate-200 tw:rounded-md tw:overflow-hidden">
+              <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden">
                 <img
                   src="https://placehold.co/180x320"
                   alt="San Onofre Cam"

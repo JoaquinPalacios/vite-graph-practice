@@ -58,7 +58,11 @@ function App({
   });
 
   // Process the data based on the selected model type
-  const chartData = processApiDataToChartData(rawApiData, modelType);
+  let chartData = processApiDataToChartData(rawApiData, modelType);
+
+  if (!rawApiData.hasSubscription) {
+    chartData = chartData.slice(0, 24);
+  }
 
   // Get the length of the chart data in order to limit the weather data to the same length
   const chartDataLength = chartData.length;
@@ -140,6 +144,7 @@ function App({
           }
           timezone={timezone}
           isAustralia={isAustralia}
+          rawApiData={rawApiData}
         />
       </Suspense>
     </div>

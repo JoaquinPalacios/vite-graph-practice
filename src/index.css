@@ -7,7 +7,7 @@
 }
 
 @theme {
-  --tw-color-swell: #008a93;
+  --color-swell: #008a93;
 }
 
 .no-scrollbar {
@@ -21,6 +21,10 @@
 
 .text-color-white {
   color: white;
+}
+
+.swell-bg {
+  background-color: #008a93;
 }
 
 .margin-none {
@@ -69,6 +73,7 @@
 .tooltip-container {
   color: #3a3a3a;
 }
+
 .tooltip-container h5 {
   color: #3a3a3a;
   font-size: 0.75rem;
@@ -115,4 +120,25 @@
 .underline-anim:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+.swellnet-bar-chart > .recharts-tooltip-wrapper-left .pseudo-arrow,
+.swellnet-line-chart > .recharts-tooltip-wrapper-left .pseudo-arrow {
+  right: -0.75rem;
+  transform: rotate(135deg);
+}
+
+.swellnet-bar-chart > .recharts-tooltip-wrapper-right .pseudo-arrow,
+.swellnet-line-chart > .recharts-tooltip-wrapper-right .pseudo-arrow {
+  left: -0.75rem;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 768px) {
+  .advanced-y-axis .recharts-cartesian-axis-tick-line {
+    transform: translateX(-1rem);
+  }
+  .swell-y-axis .recharts-cartesian-axis-tick-line {
+    transform: translateX(-0.75rem);
+  }
 }

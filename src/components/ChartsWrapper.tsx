@@ -4,9 +4,11 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
 import GraphButtons from "./GraphButtons";
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { ReactElement } from "react";
+import { cn } from "@/utils/utils";
 
 interface ChartsWrapperProps {
   children: React.ReactNode;
+  hasSubscription: boolean;
 }
 
 interface ContainerDimensions {
@@ -23,7 +25,10 @@ interface ContainerDimensions {
  * @param children - The children of the component
  * @returns The ChartsWrapper component
  */
-const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
+const ChartsWrapper = ({
+  children,
+  hasSubscription,
+}: ChartsWrapperProps): ReactElement => {
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -55,7 +60,7 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
   const getAxisWidth = useCallback(
     (isAdvanced: boolean): string => {
       if (isLandscapeMobile || isMobile) {
-        return isAdvanced ? "60" : "48";
+        return "48";
       }
       return isAdvanced ? "60" : "64";
     },
@@ -80,6 +85,37 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
     },
     [getAxisWidth]
   );
+
+  // Memoize the update rect widths function to avoid recreating it on every render
+  const updateRectWidths = useCallback(() => {
+    const axes = document.querySelectorAll(
+      ".recharts-yAxis"
+    ) as NodeListOf<HTMLElement>;
+    axes.forEach((axis) => {
+      if (!axis) return;
+      const isAdvanced = axis.classList.contains("advance-y-axis");
+      const rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
+      if (rect) {
+        rect.setAttribute("width", getAxisWidth(isAdvanced));
+      }
+    });
+
+    // Update weather rect width
+    const weatherRect = document.querySelector(".weather-rect") as HTMLElement;
+    if (weatherRect) {
+      const rect = weatherRect.querySelector(
+        ".y-axis-rect-left"
+      ) as SVGRectElement;
+      if (rect) {
+        rect.setAttribute("width", getAxisWidth(false));
+      }
+    }
+  }, [getAxisWidth]);
+
+  // Effect to update rect widths when screen size changes
+  useEffect(() => {
+    updateRectWidths();
+  }, [isMobile, isLandscapeMobile, updateRectWidths]);
 
   // Memoize the update Y-axis position function
   const updateYAxisPosition = useCallback(
@@ -111,6 +147,8 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
         }
 
         rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
+        // Update width when updating position
+        rect.setAttribute("width", getAxisWidth(isAdvanced));
       });
 
       // Handle weather-rect
@@ -126,9 +164,11 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
           rect.setAttribute("height", "80");
         }
         rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
+        // Update width when updating position
+        rect.setAttribute("width", getAxisWidth(false));
       }
     },
-    [createRect]
+    [createRect, getAxisWidth]
   );
 
   // Memoize the handle scroll function
@@ -196,7 +236,11 @@ const ChartsWrapper = ({ children }: ChartsWrapperProps): ReactElement => {
     <>
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
       <div
-        className="chart-scroll-container tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent"
+        className={cn(
+          "chart-scroll-container tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent",
+          !hasSubscription &&
+            "tw:md:w-[calc(100%-18rem)] tw:lg:w-[calc(100%-24rem)] tw:xl:w-[calc(100%-28rem)]"
+        )}
         onScroll={handleScroll}
       >
         {children}

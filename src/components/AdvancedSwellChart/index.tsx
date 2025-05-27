@@ -164,7 +164,7 @@ export const AdvancedSwellChart = ({
       <LineChart
         accessibilityLayer
         data={chartData}
-        className="tw:[&>svg]:focus:outline-none"
+        className="swellnet-line-chart tw:[&>svg]:focus:outline-none"
         onMouseLeave={() => {
           setHoverIndex(null);
         }}

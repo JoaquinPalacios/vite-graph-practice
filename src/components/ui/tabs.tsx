@@ -23,7 +23,7 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "tw:bg-muted tw:text-muted-foreground tw:inline-flex tw:h-9 tw:w-fit tw:items-center tw:justify-center tw:rounded-lg tw:p-[3px]",
+        "tw:bg-muted tw:text-muted-foreground tw:inline-flex tw:h-9 tw:w-fit tw:items-center tw:justify-center tw:p-[3px]",
         className
       )}
       {...props}
@@ -39,7 +39,7 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "tw:data-[state=active]:bg-background tw:text-foreground tw:inline-flex tw:h-[calc(100%-1px)] tw:flex-1 tw:items-center tw:justify-center tw:gap-1.5 tw:rounded-md tw:px-2 tw:py-1 tw:text-sm tw:font-medium tw:whitespace-nowrap tw:transition-[color,box-shadow] tw:disabled:pointer-events-none tw:disabled:opacity-50 tw:data-[state=active]:shadow-sm tw:[&_svg]:pointer-events-none tw:[&_svg]:shrink-0 tw:[&_svg:not([class*='size-'])]:size-4",
+        "tw:data-[state=active]:bg-background tw:text-foreground tw:inline-flex tw:h-[calc(100%-1px)] tw:flex-1 tw:items-center tw:justify-center tw:gap-1.5 -md tw:px-2 tw:py-1 tw:text-sm tw:font-medium tw:whitespace-nowrap tw:transition-[color,box-shadow] tw:disabled:pointer-events-none tw:disabled:opacity-50 tw:data-[state=active]:shadow-sm tw:[&_svg]:pointer-events-none tw:[&_svg]:shrink-0 tw:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}

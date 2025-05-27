@@ -11,6 +11,7 @@ import { generateTicks } from "@/utils/chart-utils";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { ChartDataItem } from "@/types/index.ts";
+import { cn } from "@/utils/utils";
 
 /**
  * SwellChartYAxis component
@@ -24,10 +25,12 @@ export const SwellChartYAxis = ({
   unitPreferences,
   chartData,
   maxSurfHeight,
+  hasSubscription,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
   maxSurfHeight: number;
+  hasSubscription: boolean;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -36,7 +39,10 @@ export const SwellChartYAxis = ({
       width={60}
       height={320}
       minHeight={320}
-      className="tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80"
+      className={cn(
+        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
+        !hasSubscription && "tw:max-md:top-72"
+      )}
     >
       <BarChart
         data={chartData}

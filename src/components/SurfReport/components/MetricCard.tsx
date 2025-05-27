@@ -8,12 +8,7 @@ interface MetricCardProps {
 
 export const MetricCard = ({ children, className }: MetricCardProps) => {
   return (
-    <div
-      className={cn(
-        "tw:bg-slate-100 tw:p-1.5 tw:rounded-sm tw:h-fit",
-        className
-      )}
-    >
+    <div className={cn("tw:bg-slate-100 tw:p-1.5 tw:h-fit", className)}>
       {children}
     </div>
   );
