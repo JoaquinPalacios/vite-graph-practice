@@ -84,7 +84,7 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
-  tide: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
+  tide: TideDataWorldWideFromDrupal[];
   surf_report: SurfReportItem[];
 }
 
@@ -145,6 +145,19 @@ export interface SunriseSunsetData {
   sunrise: string[];
   sunset: string[];
   time: string[];
+}
+
+export interface Surfcam {
+  id: string;
+  name: string;
+  thumbnailUrl: string;
+  streamUrl: string;
+  status: "active" | "inactive" | "maintenance";
+  lastUpdated: string;
+  location?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 declare global {

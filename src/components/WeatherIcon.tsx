@@ -16,32 +16,32 @@ import {
 import { AiOutlineStop } from "react-icons/ai";
 
 const weatherConfig = {
-  0: { icon: WiDaySunny, label: "Clear" },
-  1: { icon: WiDaySunnyOvercast, label: "Mostly Clear" },
-  2: { icon: WiDayCloudy, label: "Partly Cloudy" },
-  3: { icon: WiCloudy, label: "Overcast" },
-  45: { icon: WiDayFog, label: "Fog" },
-  48: { icon: WiCloudyWindy, label: "Icy Fog" },
-  51: { icon: WiDaySprinkle, label: "Light Drizzle" },
-  53: { icon: WiDaySprinkle, label: "Drizzle" },
-  55: { icon: WiDayShowers, label: "Heavy Drizzle" },
-  56: { icon: WiSnow, label: "Light Icy Drizzle" },
-  57: { icon: WiSnow, label: "Icy Drizzle" },
-  61: { icon: WiDayShowers, label: "Light Rain" },
-  63: { icon: WiRain, label: "Rain" },
-  65: { icon: WiRainWind, label: "Heavy Rain" },
-  66: { icon: WiSnow, label: "Light Icy Rain" },
-  67: { icon: WiSnow, label: "Icy Rain" },
-  71: { icon: WiSnow, label: "Light Snow" },
-  73: { icon: WiSnow, label: "Snow" },
-  75: { icon: WiSnow, label: "Heavy Snow" },
-  77: { icon: WiSnow, label: "Snow grains" },
-  80: { icon: WiRain, label: "Light Showers" },
-  81: { icon: WiDayShowers, label: "Showers" },
-  82: { icon: WiRainWind, label: "Heavy Showers" },
-  95: { icon: WiThunderstorm, label: "Thunderstorm" },
-  96: { icon: WiStormShowers, label: "Thunderstorm + Light Hail" },
-  99: { icon: WiStormShowers, label: "Thunderstorm + Hail" },
+  0: { icon: WiDaySunny, label: "Clear" }, // WiNightClear
+  1: { icon: WiDaySunnyOvercast, label: "Mostly Clear" }, // WiNightAltPartlyCloudy
+  2: { icon: WiDayCloudy, label: "Partly Cloudy" }, // WiNightAltCloudy
+  3: { icon: WiCloudy, label: "Overcast" }, // same WiCloudy
+  45: { icon: WiDayFog, label: "Fog" }, // WiNightFog
+  48: { icon: WiCloudyWindy, label: "Icy Fog" }, // same WiCloudyWindy
+  51: { icon: WiDaySprinkle, label: "Light Drizzle" }, // WiNightAltSprinkle
+  53: { icon: WiDaySprinkle, label: "Drizzle" }, // WiNightAltSprinkle
+  55: { icon: WiDayShowers, label: "Heavy Drizzle" }, // WiNightShowers
+  56: { icon: WiSnow, label: "Light Icy Drizzle" }, // WiSnow
+  57: { icon: WiSnow, label: "Icy Drizzle" }, // WiSnow
+  61: { icon: WiDayShowers, label: "Light Rain" }, // WiNightShowers
+  63: { icon: WiRain, label: "Rain" }, // WiRain
+  65: { icon: WiRainWind, label: "Heavy Rain" }, // WiRainWind
+  66: { icon: WiSnow, label: "Light Icy Rain" }, // WiSnow
+  67: { icon: WiSnow, label: "Icy Rain" }, // WiSnow
+  71: { icon: WiSnow, label: "Light Snow" }, // WiSnow
+  73: { icon: WiSnow, label: "Snow" }, // WiSnow
+  75: { icon: WiSnow, label: "Heavy Snow" }, // WiSnow
+  77: { icon: WiSnow, label: "Snow grains" }, // WiSnow
+  80: { icon: WiRain, label: "Light Showers" }, // WiNightShowers
+  81: { icon: WiDayShowers, label: "Showers" }, // WiNightShowers
+  82: { icon: WiRainWind, label: "Heavy Showers" }, // WiRainWind
+  95: { icon: WiThunderstorm, label: "Thunderstorm" }, // WiThunderstorm
+  96: { icon: WiStormShowers, label: "Thunderstorm + Light Hail" }, // WiStormShowers
+  99: { icon: WiStormShowers, label: "Thunderstorm + Hail" }, // WiStormShowers
 } as const;
 
 type WeatherIconProps = {

@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App.tsx";
 import {
   DrupalApiData,
-  TideDataAustraliaFromDrupal,
   TideDataWorldWideFromDrupal,
   ChartDataItem,
 } from "./types/index.ts";
@@ -167,8 +166,8 @@ function initGraph() {
     sunriseSunsetData: rawApiData.weather?.daily || [],
     weatherData,
     tideData: rawApiData.location?.isAustralia
-      ? (rawApiData.tide as TideDataAustraliaFromDrupal[]) || []
-      : (rawApiData.tide as TideDataWorldWideFromDrupal[]) || [],
+      ? (rawApiData.tide as TideDataWorldWideFromDrupal[])
+      : [],
     surfReport: rawApiData.surf_report || [],
   };
 

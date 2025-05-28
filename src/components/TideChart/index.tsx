@@ -1,10 +1,6 @@
 import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
 import * as d3 from "d3";
-import {
-  ChartDataItem,
-  TideDataAustraliaFromDrupal,
-  TideDataWorldWideFromDrupal,
-} from "@/types";
+import { ChartDataItem, TideDataWorldWideFromDrupal } from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { TideTooltip } from "./TideTooltip";
 import { bisector } from "d3-array";
@@ -28,47 +24,14 @@ const parseDateTime = (isoString: string): Date | null => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-// Add type guards at the top of the file after imports
-const isAustraliaTideData = (
-  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal
-): tide is TideDataAustraliaFromDrupal => {
-  return (
-    "_source" in tide && "value" in tide._source && "instance" in tide._source
-  );
-};
-
-const isWorldWideTideData = (
-  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal
-): tide is TideDataWorldWideFromDrupal => {
-  return (
-    "_source" in tide && "height" in tide._source && "type" in tide._source
-  );
-};
-
 // Helper function to get tide height
-const getTideHeight = (
-  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal,
-  isAustralia: boolean
-): number => {
-  if (isAustralia && isAustraliaTideData(tide)) {
-    return parseFloat(tide._source.value);
-  } else if (!isAustralia && isWorldWideTideData(tide)) {
-    return tide._source.height;
-  }
-  return 0;
+const getTideHeight = (tide: TideDataWorldWideFromDrupal): number => {
+  return tide._source.height;
 };
 
 // Helper function to get tide instance/type
-const getTideInstance = (
-  tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal,
-  isAustralia: boolean
-): "high" | "low" => {
-  if (isAustralia && isAustraliaTideData(tide)) {
-    return tide._source.instance;
-  } else if (!isAustralia && isWorldWideTideData(tide)) {
-    return tide._source.type;
-  }
-  return "low"; // fallback
+const getTideInstance = (tide: TideDataWorldWideFromDrupal): "high" | "low" => {
+  return tide._source.type;
 };
 
 /**
@@ -76,19 +39,16 @@ const getTideInstance = (
  * @description It takes the tide data and swell data and renders the chart.
  * @param tideData - Tide data from Drupal
  * @param swellData - Swells data from Drupal
- * @param isAustralia - Whether the location is in Australia
  * @param timezone - The timezone
  * @returns Tide chart component
  */
 export const TideChart = ({
   tideData,
   swellData,
-  isAustralia,
   timezone,
 }: {
-  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
+  tideData: TideDataWorldWideFromDrupal[];
   swellData: ChartDataItem[];
-  isAustralia: boolean;
   timezone: string;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -188,11 +148,11 @@ export const TideChart = ({
       if (!pointDate) return [];
       return [
         {
-          height: Math.max(0, getTideHeight(point, isAustralia)),
+          height: Math.max(0, getTideHeight(point)),
           timestamp: pointDate.getTime(),
           localDateTimeISO: point._source.time_local,
           utcDateTimeISO: pointDate.toISOString(),
-          instance: getTideInstance(point, isAustralia),
+          instance: getTideInstance(point),
         },
       ];
     }
@@ -206,7 +166,7 @@ export const TideChart = ({
           (acc, curr) => {
             if (!curr?.dateTime) return acc;
             const time = new Date(curr.dateTime).getTime();
-            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000; // The purpose of adding 2 hours and 59 minutes to the max time is to extend the chart's time range slightly beyond the last swell data point to reach midnight.
+            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
             return {
               min: Math.min(acc.min, time),
               max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
@@ -218,7 +178,6 @@ export const TideChart = ({
 
       // If no swell data, use a 16-day range from now in the location's timezone
       const SIXTEEN_DAYS_MS = 16 * 24 * 60 * 60 * 1000;
-      // Create a date string in the location's timezone
       const nowInLocationTz = formatInTimeZone(
         new Date(),
         timezone,
@@ -245,8 +204,8 @@ export const TideChart = ({
 
     const prevTime = prevDate.getTime();
     const nextTime = nextDate.getTime();
-    const prevHeight = getTideHeight(prevTide, isAustralia);
-    const nextHeight = getTideHeight(nextTide, isAustralia);
+    const prevHeight = getTideHeight(prevTide);
+    const nextHeight = getTideHeight(nextTide);
 
     const nextTideLocal = nextTide._source.time_local;
     const localDatePart = nextTideLocal.split("T")[0];
@@ -273,12 +232,12 @@ export const TideChart = ({
       localDateTimeISO: midnightISO,
       utcDateTimeISO: midnightDate.toISOString(),
       isBoundary: true,
-      instance: getTideInstance(prevTide, isAustralia),
+      instance: getTideInstance(prevTide),
     };
 
     // Now filter the rest of the data points based on the swell time range
     const rest = tideData
-      .slice(1) // Skip the first point as it's from the previous day.
+      .slice(1)
       .map((point) => {
         const pointDate = parseDateTime(point._source.time_local);
         const pointTime = pointDate?.getTime() ?? 0;
@@ -287,11 +246,11 @@ export const TideChart = ({
           pointTime <= (swellTimeRange?.max ?? Infinity)
         ) {
           return {
-            height: Math.max(0, getTideHeight(point, isAustralia)),
+            height: Math.max(0, getTideHeight(point)),
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
             utcDateTimeISO: pointDate?.toISOString() ?? "",
-            instance: getTideInstance(point, isAustralia),
+            instance: getTideInstance(point),
           } as TransformedTidePoint;
         }
         return null;
@@ -299,7 +258,7 @@ export const TideChart = ({
       .filter((p): p is TransformedTidePoint => p !== null);
 
     return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
-  }, [tideData, isAustralia, swellData, timezone, length]);
+  }, [tideData, swellData, timezone, length]);
 
   // Only show a dot if it's at least 15 minutes from the previous one (for real points)
   const labelData = useMemo(() => {
@@ -413,28 +372,31 @@ export const TideChart = ({
     const customTickFormat = (d: d3.NumberValue) => {
       const value = Number(d);
       if (value === 0) return ""; // Keep hiding 0
-      // Only show the max value and middle point
-      const maxValue = Math.ceil(maxTide);
-      const middleValue = maxValue / 2;
-      if (value !== maxValue && value !== middleValue) return "";
 
-      // Format with decimals only when needed
-      if (maxTide <= 2.5) {
-        // For values <= 2.5, show decimal only if it's not .0
-        return value % 1 === 0 ? `${value}m` : `${value.toFixed(1)}m`;
+      // For max tide ≤ 1m, show 0.5m and 1m
+      if (maxTide <= 1) {
+        if (value === 0.5 || value === 1) {
+          return `${value}m`;
+        }
+        return "";
       }
-      // For values > 2.5, always round to whole numbers
+
+      // For max tide > 1m, show whole numbers up to rounded up max tide
       return `${Math.round(value)}m`;
     };
 
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
-      .ticks(2) // Force exactly 2 ticks
-      .tickValues([Math.ceil(maxTide) / 2, Math.ceil(maxTide)]) // Explicitly set tick values to max and middle
+      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // For max tide ≤ 1m, show 2 ticks (0.5 and 1), otherwise show whole numbers
       .tickPadding(8)
       .tickFormat(customTickFormat)
       .tickSize(6);
+
+    // Set specific tick values for max tide ≤ 1m
+    if (maxTide <= 1) {
+      yAxis.tickValues([0.5, 1]);
+    }
 
     // Create a group for the Y-axis in its own SVG
     const yAxisG = yAxisSvg
@@ -495,26 +457,23 @@ export const TideChart = ({
 
     // --- Y Grid Lines (rendered after stripes, before data) ---
     // Draw horizontal grid lines for each Y tick, for visual clarity
-    const maxTickValue = Math.ceil(maxTide);
-    const yGridG = chartArea
-      .append("g")
-      .attr("class", "y-grid")
-      .call(
-        d3
-          .axisLeft(yScale)
-          .ticks(2) // Match Y-axis ticks
-          .tickSize(-chartDrawingWidth)
-          .tickFormat(() => "") // Only lines, no labels
-      );
+    const gridAxis = d3
+      .axisLeft(yScale)
+      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // Match Y-axis ticks
+      .tickSize(-chartDrawingWidth)
+      .tickFormat(() => ""); // Only lines, no labels
 
-    // Remove grid lines for 0 and non-integer values when maxTide > 2.5
+    // Set specific tick values for max tide ≤ 1m
+    if (maxTide <= 1) {
+      gridAxis.tickValues([0.5, 1]);
+    }
+
+    const yGridG = chartArea.append("g").attr("class", "y-grid").call(gridAxis);
+
+    // Remove grid lines for 0 and non-integer values when max tide > 1m
     yGridG.selectAll(".tick").each(function (d) {
       const value = Number(d);
-      if (
-        value === 0 ||
-        (maxTide > 2.5 && !Number.isInteger(value)) ||
-        value === maxTickValue
-      ) {
+      if (value === 0 || (maxTide > 1 && !Number.isInteger(value))) {
         d3.select(this).select("line").remove();
       }
     });

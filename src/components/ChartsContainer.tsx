@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  TideDataAustraliaFromDrupal,
   TideDataWorldWideFromDrupal,
   UnitPreferences,
   WeatherData,
   DrupalApiData,
+  SunriseSunsetData,
 } from "@/types";
 import ChartsWrapper from "./ChartsWrapper";
 import { SwellChart } from "./SwellChart";
@@ -44,8 +44,8 @@ const ChartsContainer = ({
   weatherData,
   tideData,
   timezone,
-  isAustralia,
   rawApiData,
+  sunriseSunsetData,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -55,10 +55,10 @@ const ChartsContainer = ({
   };
   chartWidth: number;
   weatherData: WeatherData[];
-  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
+  tideData: TideDataWorldWideFromDrupal[];
   timezone: string;
-  isAustralia: boolean;
   rawApiData: DrupalApiData;
+  sunriseSunsetData: SunriseSunsetData;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -141,7 +141,10 @@ const ChartsContainer = ({
             <Suspense fallback={<GraphSkeleton showWeather />}>
               {weatherData && weatherData.length > 0 ? (
                 <>
-                  <WeatherChart weatherData={weatherData} />
+                  <WeatherChart
+                    weatherData={weatherData}
+                    sunriseSunsetData={sunriseSunsetData}
+                  />
                   <div
                     className={cn(
                       "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
@@ -162,13 +165,8 @@ const ChartsContainer = ({
             <Suspense fallback={<GraphSkeleton showTide />}>
               {isValidTideData ? (
                 <TideChart
-                  tideData={
-                    isAustralia
-                      ? (tideData as TideDataAustraliaFromDrupal[])
-                      : (tideData as TideDataWorldWideFromDrupal[])
-                  }
+                  tideData={tideData}
                   swellData={processedData}
-                  isAustralia={isAustralia}
                   timezone={timezone}
                 />
               ) : (

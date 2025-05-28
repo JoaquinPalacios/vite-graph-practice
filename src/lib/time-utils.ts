@@ -1,9 +1,5 @@
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
-
-import {
-  TideDataAustraliaFromDrupal,
-  TideDataWorldWideFromDrupal,
-} from "@/types";
+import { TideDataWorldWideFromDrupal } from "@/types";
 
 interface TimeDataItem {
   localDateTimeISO: string;
@@ -183,9 +179,8 @@ export const findCurrentDaySunriseSunset = (
 };
 
 export const findCurrentDayTides = (
-  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[],
-  timezone: string,
-  isAustralia: boolean
+  tideData: TideDataWorldWideFromDrupal[],
+  timezone: string
 ): {
   current: { type: string; time: string; height: string };
   next: { type: string; time: string; height: string };
@@ -197,14 +192,7 @@ export const findCurrentDayTides = (
 
     // Sort tides by their local time
     const sortedTides = [...tideData].sort((a, b) => {
-      const timeA = isAustralia
-        ? (a as TideDataAustraliaFromDrupal)._source.time_local
-        : (a as TideDataWorldWideFromDrupal)._source.time_local;
-      const timeB = isAustralia
-        ? (b as TideDataAustraliaFromDrupal)._source.time_local
-        : (b as TideDataWorldWideFromDrupal)._source.time_local;
-
-      return timeA.localeCompare(timeB);
+      return a._source.time_local.localeCompare(b._source.time_local);
     });
 
     let currentTide = null;
@@ -212,9 +200,7 @@ export const findCurrentDayTides = (
 
     // Find the last tide before current time and the next tide
     for (let i = 0; i < sortedTides.length; i++) {
-      const timeLocal = isAustralia
-        ? (sortedTides[i] as TideDataAustraliaFromDrupal)._source.time_local
-        : (sortedTides[i] as TideDataWorldWideFromDrupal)._source.time_local;
+      const timeLocal = sortedTides[i]._source.time_local;
 
       // Create a date object from the tide time and adjust it to the target timezone
       const tideDate = new Date(timeLocal);
@@ -237,20 +223,12 @@ export const findCurrentDayTides = (
     }
 
     // Format the times and heights
-    const formatTideInfo = (
-      tide: TideDataAustraliaFromDrupal | TideDataWorldWideFromDrupal | null
-    ) => {
+    const formatTideInfo = (tide: TideDataWorldWideFromDrupal | null) => {
       if (!tide) return { type: "N/A", time: "N/A", height: "N/A" };
 
-      const timeLocal = isAustralia
-        ? (tide as TideDataAustraliaFromDrupal)._source.time_local
-        : (tide as TideDataWorldWideFromDrupal)._source.time_local;
-      const value = isAustralia
-        ? (tide as TideDataAustraliaFromDrupal)._source.value
-        : (tide as TideDataWorldWideFromDrupal)._source.height.toString();
-      const instance = isAustralia
-        ? (tide as TideDataAustraliaFromDrupal)._source.instance
-        : (tide as TideDataWorldWideFromDrupal)._source.type;
+      const timeLocal = tide._source.time_local;
+      const value = tide._source.height.toString();
+      const instance = tide._source.type;
 
       // Extract the time part from the ISO string and format it
       const [, timePart] = timeLocal.split("T");

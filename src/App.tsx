@@ -3,7 +3,7 @@ import {
   UnitPreferences,
   DrupalApiData,
   WeatherData,
-  TideDataAustraliaFromDrupal,
+  // TideDataAustraliaFromDrupal,
   CurrentWeatherData,
   SunriseSunsetData,
   SurfReportItem,
@@ -26,11 +26,10 @@ interface AppProps {
   chartWidth: number;
   weatherData: WeatherData[];
   currentWeatherData: CurrentWeatherData;
-  tideData: TideDataAustraliaFromDrupal[] | TideDataWorldWideFromDrupal[];
+  tideData: TideDataWorldWideFromDrupal[];
   sunriseSunsetData: SunriseSunsetData;
   timezone: string;
   surfReport: SurfReportItem[];
-  isAustralia: boolean;
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -48,7 +47,6 @@ function App({
   sunriseSunsetData,
   timezone,
   surfReport,
-  isAustralia,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">(() => {
     // Set initial model type based on available data
@@ -82,14 +80,6 @@ function App({
     trainData: [],
   };
 
-  // Create a default weather data item if none exists
-  const defaultWeatherData = {
-    index: 1,
-    localDateTimeISO: localDateTimeISO,
-    currentTemp: null,
-    weatherId: null,
-  };
-
   // Create default weather data if none exists
   const defaultCurrentWeatherData = {
     temperature_2m: null,
@@ -110,18 +100,12 @@ function App({
       <SurfReport
         localDateTimeISO={localDateTimeISO}
         chartData={chartData[0] || defaultChartData}
-        weatherData={weatherData[0] || defaultWeatherData}
         defaultPreferences={defaultPreferences}
         currentWeatherData={currentWeatherData || defaultCurrentWeatherData}
         sunriseSunsetData={sunriseSunsetData || defaultSunriseSunsetData}
-        tideData={
-          isAustralia
-            ? (tideData as TideDataAustraliaFromDrupal[])
-            : (tideData as TideDataWorldWideFromDrupal[])
-        }
+        tideData={tideData}
         timezone={timezone}
         surfReport={surfReport || []}
-        isAustralia={isAustralia}
       />
       <GraphHeader
         locationName={locationName}
@@ -137,13 +121,9 @@ function App({
           maxSurfHeight={maxSurfHeight}
           chartWidth={chartWidth}
           weatherData={weatherData.slice(0, chartDataLength)}
-          tideData={
-            isAustralia
-              ? (tideData as TideDataAustraliaFromDrupal[])
-              : (tideData as TideDataWorldWideFromDrupal[])
-          }
+          sunriseSunsetData={sunriseSunsetData}
+          tideData={tideData}
           timezone={timezone}
-          isAustralia={isAustralia}
           rawApiData={rawApiData}
         />
       </Suspense>

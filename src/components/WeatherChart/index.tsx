@@ -10,7 +10,7 @@ import { ResponsiveContainer } from "recharts";
 import { WeatherBubble } from "./WeatherBubble";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
-import { WeatherData } from "@/types";
+import { SunriseSunsetData, WeatherData } from "@/types";
 import { useState } from "react";
 import { WeatherChartCursor } from "./WeatherChartCursor";
 
@@ -21,7 +21,14 @@ type ScatterShapeProps = {
   index?: number;
 };
 
-const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
+const WeatherChart = ({
+  weatherData,
+  sunriseSunsetData,
+}: {
+  weatherData: WeatherData[];
+  sunriseSunsetData: SunriseSunsetData;
+}) => {
+  console.log({ weatherData, sunriseSunsetData });
   // Add index property to each data point
   const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);

@@ -1,9 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-# AI Model Identification
-type: Always
-
-Always identify which AI model is currently being used in the conversation. This helps track which model is responding to questions and provides transparency about which capabilities are available.
