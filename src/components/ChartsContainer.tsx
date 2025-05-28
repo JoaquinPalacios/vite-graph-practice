@@ -32,6 +32,9 @@ import { SubscriptionOverlay } from "./SubscriptionOverlay";
  * @param chartWidth - The width of the chart
  * @param weatherData - The weather data
  * @param tideData - The tide data
+ * @param timezone - The timezone
+ * @param isAustralia - Whether the location is in Australia
+ * @param rawApiData - The raw API data
  */
 const ChartsContainer = ({
   defaultPreferences,
@@ -74,7 +77,7 @@ const ChartsContainer = ({
   const isValidTideData =
     tideData && Array.isArray(tideData) && tideData.length > 0;
 
-  const showSubscriptionOverlay = !rawApiData.hasSubscription;
+  const showSubscriptionOverlay = !rawApiData.user.hasFullAccess;
 
   return (
     <section className="display-flex tw:flex-col tw:gap-4 tw:w-full">
@@ -94,7 +97,7 @@ const ChartsContainer = ({
         })}
       >
         <Suspense fallback={<GraphSkeleton />}>
-          <ChartsWrapper hasSubscription={rawApiData.hasSubscription}>
+          <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
             <Suspense fallback={<GraphSkeleton showMain />}>
               {processedData.length > 0 ? (
                 <>
@@ -115,7 +118,7 @@ const ChartsContainer = ({
                         ? maxSurfHeight.feet
                         : maxSurfHeight.meters
                     }
-                    hasSubscription={rawApiData.hasSubscription}
+                    hasSubscription={rawApiData.user.hasFullAccess}
                   />
 
                   <AdvancedSwellChart
@@ -127,7 +130,7 @@ const ChartsContainer = ({
                     chartData={processedData}
                     maxSurfHeight={maxSurfHeight.meters}
                     unitPreferences={unitPreferences}
-                    hasSubscription={rawApiData.hasSubscription}
+                    hasSubscription={rawApiData.user.hasFullAccess}
                   />
                 </>
               ) : (
@@ -175,7 +178,11 @@ const ChartsContainer = ({
               )}
             </Suspense>
           </ChartsWrapper>
-          {showSubscriptionOverlay && <SubscriptionOverlay />}
+          {showSubscriptionOverlay && (
+            <SubscriptionOverlay
+              subscriptionStatus={rawApiData.user.subscriptionStatus}
+            />
+          )}
         </Suspense>
       </div>
     </section>

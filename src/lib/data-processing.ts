@@ -56,7 +56,7 @@ export function processApiDataToChartData(
   let completeData = trimToCompleteDays(forecastData.forecastSteps);
 
   // Limit data for non-subscribers
-  if (!apiData.hasSubscription) {
+  if (!apiData.user.hasFullAccess) {
     const daysAllowed = 3;
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() + daysAllowed);

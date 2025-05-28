@@ -53,7 +53,10 @@ export interface DrupalApiData {
     localDateTime: string;
     isAustralia: boolean;
   };
-  hasSubscription: boolean;
+  user: {
+    hasFullAccess: boolean;
+    subscriptionStatus: string;
+  };
   forecasts: {
     ecmwf: {
       bulletinDateTimeUtc: string;

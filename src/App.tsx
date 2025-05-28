@@ -60,7 +60,7 @@ function App({
   // Process the data based on the selected model type
   let chartData = processApiDataToChartData(rawApiData, modelType);
 
-  if (!rawApiData.hasSubscription) {
+  if (!rawApiData.user.hasFullAccess) {
     chartData = chartData.slice(0, 24);
   }
 

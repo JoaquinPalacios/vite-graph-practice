@@ -1,10 +1,9 @@
-import { formatInTimeZone } from "date-fns-tz";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 import {
   TideDataAustraliaFromDrupal,
   TideDataWorldWideFromDrupal,
 } from "@/types";
-import { toZonedTime } from "date-fns-tz";
 
 interface TimeDataItem {
   localDateTimeISO: string;

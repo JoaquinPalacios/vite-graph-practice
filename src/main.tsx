@@ -36,14 +36,13 @@ function initGraph() {
 
   const rawApiData: DrupalApiData = drupalSettings.apiData;
 
-  // TEMPORARY: Override subscription status for testing
-  rawApiData.hasSubscription = true;
+  console.log({ rawApiData });
 
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
     if (!data) return [];
-    if (!rawApiData.hasSubscription) {
-      return data.slice(0, 25); // 3 days * 8 data points per day
+    if (!rawApiData.user.hasFullAccess) {
+      return data.slice(0, 25); // 3 days * 8 data points per day + midnight
     }
     return data;
   };
@@ -60,8 +59,8 @@ function initGraph() {
   const weatherData = rawApiData.weather?.hourly
     ? (() => {
         const timeData = rawApiData.weather.hourly.time;
-        const slicedTimeData = !rawApiData.hasSubscription
-          ? timeData.slice(0, 25) // 3 days * 8 data points per day
+        const slicedTimeData = !rawApiData.user.hasFullAccess
+          ? timeData.slice(0, 25) // 3 days * 8 data points per day + midnight
           : timeData;
 
         return slicedTimeData.map((time: string, index: number) => ({
@@ -106,7 +105,7 @@ function initGraph() {
   const ecmwfDataLength = ecmwfData.length;
 
   // For non-subscribers, limit to 25 data points (3 days + midnight)
-  const maxDataLength = !rawApiData.hasSubscription
+  const maxDataLength = !rawApiData.user.hasFullAccess
     ? 25 // 3 days * 8 data points per day
     : Math.max(gfsDataLength, ecmwfDataLength);
 

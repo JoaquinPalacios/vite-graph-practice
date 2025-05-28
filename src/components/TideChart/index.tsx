@@ -76,6 +76,8 @@ const getTideInstance = (
  * @description It takes the tide data and swell data and renders the chart.
  * @param tideData - Tide data from Drupal
  * @param swellData - Swells data from Drupal
+ * @param isAustralia - Whether the location is in Australia
+ * @param timezone - The timezone
  * @returns Tide chart component
  */
 export const TideChart = ({
@@ -202,9 +204,9 @@ export const TideChart = ({
       if (swellData && swellData.length > 0) {
         return swellData.slice(0, length).reduce(
           (acc, curr) => {
-            if (!curr?.localDateTimeISO) return acc;
-            const time = new Date(curr.localDateTimeISO).getTime();
-            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
+            if (!curr?.dateTime) return acc;
+            const time = new Date(curr.dateTime).getTime();
+            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000; // The purpose of adding 2 hours and 59 minutes to the max time is to extend the chart's time range slightly beyond the last swell data point to reach midnight.
             return {
               min: Math.min(acc.min, time),
               max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
