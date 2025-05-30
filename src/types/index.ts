@@ -25,11 +25,12 @@ export interface TideDataAustraliaFromDrupal {
   };
 }
 
-export interface TideDataWorldWideFromDrupal {
+export interface TideDataFromDrupal {
   _source: {
     height: number; // 5646465
     time_local: string; // "2025-05-09T00:00:00.000Z"
     type: "low" | "high";
+    is_boundary?: boolean; // Optional boolean flag for boundary points
   };
 }
 
@@ -84,8 +85,9 @@ export interface DrupalApiData {
       weather_code: number[];
     };
   };
-  tide: TideDataWorldWideFromDrupal[];
+  tide: TideDataFromDrupal[] | [];
   surf_report: SurfReportItem[];
+  surfcams: SurfcamProps[];
 }
 
 export interface ChartDataItem {
@@ -147,17 +149,10 @@ export interface SunriseSunsetData {
   time: string[];
 }
 
-export interface Surfcam {
-  id: string;
+export interface SurfcamProps {
   name: string;
-  thumbnailUrl: string;
-  streamUrl: string;
-  status: "active" | "inactive" | "maintenance";
-  lastUpdated: string;
-  location?: {
-    lat: number;
-    lng: number;
-  };
+  streamName: string;
+  updatedAt: string;
 }
 
 declare global {

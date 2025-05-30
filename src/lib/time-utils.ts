@@ -1,5 +1,5 @@
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
-import { TideDataWorldWideFromDrupal } from "@/types";
+import { TideDataFromDrupal } from "@/types";
 
 interface TimeDataItem {
   localDateTimeISO: string;
@@ -179,7 +179,7 @@ export const findCurrentDaySunriseSunset = (
 };
 
 export const findCurrentDayTides = (
-  tideData: TideDataWorldWideFromDrupal[],
+  tideData: TideDataFromDrupal[],
   timezone: string
 ): {
   current: { type: string; time: string; height: string };
@@ -223,7 +223,7 @@ export const findCurrentDayTides = (
     }
 
     // Format the times and heights
-    const formatTideInfo = (tide: TideDataWorldWideFromDrupal | null) => {
+    const formatTideInfo = (tide: TideDataFromDrupal | null) => {
       if (!tide) return { type: "N/A", time: "N/A", height: "N/A" };
 
       const timeLocal = tide._source.time_local;

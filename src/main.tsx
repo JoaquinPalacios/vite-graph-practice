@@ -2,11 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import {
-  DrupalApiData,
-  TideDataWorldWideFromDrupal,
-  ChartDataItem,
-} from "./types/index.ts";
+import { DrupalApiData, ChartDataItem } from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
 
 /**
@@ -165,10 +161,9 @@ function initGraph() {
     currentWeatherData: rawApiData.weather?.current || null,
     sunriseSunsetData: rawApiData.weather?.daily || [],
     weatherData,
-    tideData: rawApiData.location?.isAustralia
-      ? (rawApiData.tide as TideDataWorldWideFromDrupal[])
-      : [],
+    tideData: rawApiData.tide ? rawApiData.tide : [],
     surfReport: rawApiData.surf_report || [],
+    surfcams: rawApiData.surfcams ? rawApiData.surfcams : [],
   };
 
   // Render the React component

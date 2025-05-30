@@ -3,11 +3,11 @@ import {
   UnitPreferences,
   DrupalApiData,
   WeatherData,
-  // TideDataAustraliaFromDrupal,
   CurrentWeatherData,
   SunriseSunsetData,
   SurfReportItem,
-  TideDataWorldWideFromDrupal,
+  TideDataFromDrupal,
+  SurfcamProps,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { SurfReport } from "./components/SurfReport/index.tsx";
@@ -26,10 +26,11 @@ interface AppProps {
   chartWidth: number;
   weatherData: WeatherData[];
   currentWeatherData: CurrentWeatherData;
-  tideData: TideDataWorldWideFromDrupal[];
+  tideData: TideDataFromDrupal[];
   sunriseSunsetData: SunriseSunsetData;
   timezone: string;
   surfReport: SurfReportItem[];
+  surfcams: SurfcamProps[];
 }
 
 const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
@@ -47,6 +48,7 @@ function App({
   sunriseSunsetData,
   timezone,
   surfReport,
+  surfcams,
 }: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">(() => {
     // Set initial model type based on available data
@@ -106,6 +108,7 @@ function App({
         tideData={tideData}
         timezone={timezone}
         surfReport={surfReport || []}
+        surfcams={surfcams}
       />
       <GraphHeader
         locationName={locationName}

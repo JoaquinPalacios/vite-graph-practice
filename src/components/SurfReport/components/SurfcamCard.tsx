@@ -1,44 +1,36 @@
-import { Surfcam } from "@/types";
+import { SurfcamProps } from "@/types";
 import { cn } from "@/utils/utils";
-import { ExternalLink } from "lucide-react";
 
-interface SurfcamCardProps {
-  surfcam: Surfcam;
+export const SurfcamCard = ({
+  surfcam,
+  className,
+}: {
+  surfcam: SurfcamProps;
   className?: string;
-}
+}) => {
+  const name = surfcam.streamName.replace(".stream", "");
 
-export const SurfcamCard = ({ surfcam, className }: SurfcamCardProps) => {
+  const camUrl = `/surfcams/${name}`;
+  const thumbnailUrl = `https://static.swellnet.com/images/surfcams/${name}.jpg`;
+
   return (
     <a
-      href={surfcam.streamUrl}
-      target="_blank"
+      href={camUrl}
+      target="_self"
       rel="noopener noreferrer"
-      className={cn("tw:block tw:relative tw:group", className)}
+      className={cn("tw:block tw:relative", className)}
     >
       {/* Thumbnail container */}
-      <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden tw:relative">
+      <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden tw:relative tw:w-full">
         <img
-          src={surfcam.thumbnailUrl}
+          src={thumbnailUrl}
           alt={`${surfcam.name} Cam`}
-          className="tw:w-full tw:h-full tw:object-cover"
-        />
-        {/* External Link Overlay */}
-        <div className="tw:absolute tw:inset-0 tw:bg-black/30 tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity tw:flex tw:items-center tw:justify-center">
-          <ExternalLink className="tw:w-6 tw:h-6 tw:text-white" />
-        </div>
-        {/* Status Indicator */}
-        <div
-          className={cn(
-            "tw:absolute tw:top-2 tw:right-2 tw:w-2 tw:h-2",
-            surfcam.status === "active" && "tw:bg-green-500",
-            surfcam.status === "inactive" && "tw:bg-red-500",
-            surfcam.status === "maintenance" && "tw:bg-yellow-500"
-          )}
+          className="tw:w-full tw:h-full tw:object-cover tw:absolute tw:top-0 tw:left-0"
         />
       </div>
 
       {/* Cam location name */}
-      <p className="tw:text-xs tw:font-medium tw:p-1">{surfcam.name}</p>
+      <p className="margin-none">{surfcam.name}</p>
     </a>
   );
 };

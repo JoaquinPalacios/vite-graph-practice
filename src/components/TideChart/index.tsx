@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
 import * as d3 from "d3";
-import { ChartDataItem, TideDataWorldWideFromDrupal } from "@/types";
+import { ChartDataItem, TideDataFromDrupal } from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { TideTooltip } from "./TideTooltip";
 import { bisector } from "d3-array";
@@ -25,12 +25,12 @@ const parseDateTime = (isoString: string): Date | null => {
 };
 
 // Helper function to get tide height
-const getTideHeight = (tide: TideDataWorldWideFromDrupal): number => {
+const getTideHeight = (tide: TideDataFromDrupal): number => {
   return tide._source.height;
 };
 
 // Helper function to get tide instance/type
-const getTideInstance = (tide: TideDataWorldWideFromDrupal): "high" | "low" => {
+const getTideInstance = (tide: TideDataFromDrupal): "high" | "low" => {
   return tide._source.type;
 };
 
@@ -47,7 +47,7 @@ export const TideChart = ({
   swellData,
   timezone,
 }: {
-  tideData: TideDataWorldWideFromDrupal[];
+  tideData: TideDataFromDrupal[];
   swellData: ChartDataItem[];
   timezone: string;
 }) => {
@@ -132,132 +132,90 @@ export const TideChart = ({
    * - isBoundary: boolean - Whether the tide is a boundary tide
    */
   const transformedData = useMemo((): TransformedTidePoint[] => {
-    // Early return if no tide data
     if (!tideData || !Array.isArray(tideData) || tideData.length === 0) {
-      console.warn("D3 TideChart: No tide data available");
+      console.warn("D3 TideChart: No tide data available or invalid format.");
       return [];
     }
 
-    if (tideData.length < 2 && tideData.length > 0) {
-      const point = tideData[0];
-      if (!point?._source?.time_local) {
-        console.warn("D3 TideChart: Invalid tide data point");
-        return [];
-      }
-      const pointDate = parseDateTime(point._source.time_local);
-      if (!pointDate) return [];
-      return [
-        {
-          height: Math.max(0, getTideHeight(point)),
-          timestamp: pointDate.getTime(),
-          localDateTimeISO: point._source.time_local,
-          utcDateTimeISO: pointDate.toISOString(),
-          instance: getTideInstance(point),
-        },
-      ];
-    }
-    if (tideData.length < 2) return [];
-
-    // Get the time range from swell data to ensure we only show tide data within that range
+    // 2. Determine the time range for filtering (using swell data or a default)
     const swellTimeRange = (() => {
-      // If we have swell data, use it to determine the range
       if (swellData && swellData.length > 0) {
         return swellData.slice(0, length).reduce(
           (acc, curr) => {
             if (!curr?.dateTime) return acc;
             const time = new Date(curr.dateTime).getTime();
-            const TWO_HOURS_59_MINUTES_MS = (2 * 60 + 59) * 60 * 1000;
+            // Adding a buffer (e.g., ~3 hours) to ensure the last tide point is included if it's slightly after the last swell point.
+            const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
             return {
               min: Math.min(acc.min, time),
-              max: Math.max(acc.max, time) + TWO_HOURS_59_MINUTES_MS,
+              max: Math.max(acc.max, time) + THREE_HOURS_MS, // Adjusted buffer
             };
           },
           { min: Infinity, max: -Infinity }
         );
       }
 
-      // If no swell data, use a 16-day range from now in the location's timezone
       const SIXTEEN_DAYS_MS = 16 * 24 * 60 * 60 * 1000;
-      const nowInLocationTz = formatInTimeZone(
-        new Date(),
-        timezone,
-        "yyyy-MM-dd'T'HH:mm:ssXXX"
-      );
-      const startTime = new Date(nowInLocationTz).getTime();
+      // Attempt to get a start time from the first tide point, otherwise default.
+      const firstTideTime = parseDateTime(
+        tideData[0]?._source?.time_local
+      )?.getTime();
+      const startTime =
+        firstTideTime ??
+        new Date(
+          formatInTimeZone(new Date(), timezone, "yyyy-MM-dd'T'HH:mm:ssXXX")
+        ).getTime();
+
       return {
         min: startTime,
         max: startTime + SIXTEEN_DAYS_MS,
       };
     })();
 
-    // First, process the initial points for interpolation
-    const prevTide = tideData[0];
-    const nextTide = tideData[1];
-    if (!prevTide?._source?.time_local || !nextTide?._source?.time_local) {
-      console.warn("D3 TideChart: Invalid tide data points for interpolation");
-      return [];
-    }
+    // Map, Filter, and Sort the data
+    return tideData
+      .map((point, idx) => {
+        // Ensure the point and its _source exist and have time_local
+        if (!point?._source?.time_local) {
+          console.warn(
+            "D3 TideChart: Skipping invalid tide data point:",
+            point
+          );
+          return null;
+        }
 
-    const prevDate = parseDateTime(prevTide._source.time_local);
-    const nextDate = parseDateTime(nextTide._source.time_local);
-    if (!prevDate || !nextDate) return [];
-
-    const prevTime = prevDate.getTime();
-    const nextTime = nextDate.getTime();
-    const prevHeight = getTideHeight(prevTide);
-    const nextHeight = getTideHeight(nextTide);
-
-    const nextTideLocal = nextTide._source.time_local;
-    const localDatePart = nextTideLocal.split("T")[0];
-    const offsetMatch = nextTideLocal.match(/[+-]\d{2}:\d{2}|Z$/);
-    const localOffset = offsetMatch ? offsetMatch[0] : "";
-
-    const midnightISO = `${localDatePart}T00:00:00${localOffset}`;
-    const midnightDate = parseDateTime(midnightISO);
-    if (!midnightDate) return [];
-    const midnightTime = midnightDate.getTime();
-
-    const totalMinutes = (nextTime - prevTime) / (1000 * 60);
-    let midnightHeight = prevHeight;
-    if (totalMinutes !== 0) {
-      const minutesToMidnight = (midnightTime - prevTime) / (1000 * 60);
-      const ratio = minutesToMidnight / totalMinutes;
-      midnightHeight = prevHeight + (nextHeight - prevHeight) * ratio;
-    }
-    midnightHeight = Math.max(0, midnightHeight);
-
-    const newFirst: TransformedTidePoint = {
-      height: midnightHeight,
-      timestamp: midnightTime,
-      localDateTimeISO: midnightISO,
-      utcDateTimeISO: midnightDate.toISOString(),
-      isBoundary: true,
-      instance: getTideInstance(prevTide),
-    };
-
-    // Now filter the rest of the data points based on the swell time range
-    const rest = tideData
-      .slice(1)
-      .map((point) => {
         const pointDate = parseDateTime(point._source.time_local);
-        const pointTime = pointDate?.getTime() ?? 0;
+        // Ensure date parsing was successful
+        if (!pointDate) {
+          console.warn(
+            "D3 TideChart: Failed to parse date:",
+            point._source.time_local
+          );
+          return null;
+        }
+
+        const pointTime = pointDate.getTime();
+
+        // Always include the first point, or those within the desired time range
         if (
-          pointTime >= (swellTimeRange?.min ?? -Infinity) &&
-          pointTime <= (swellTimeRange?.max ?? Infinity)
+          idx === 0 ||
+          (pointTime >= (swellTimeRange?.min ?? -Infinity) &&
+            pointTime <= (swellTimeRange?.max ?? Infinity))
         ) {
+          // Transform into the required format.
           return {
             height: Math.max(0, getTideHeight(point)),
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
-            utcDateTimeISO: pointDate?.toISOString() ?? "",
+            utcDateTimeISO: pointDate.toISOString(),
             instance: getTideInstance(point),
+            isBoundary: !!point._source.is_boundary,
           } as TransformedTidePoint;
         }
         return null;
       })
-      .filter((p): p is TransformedTidePoint => p !== null);
-
-    return [newFirst, ...rest].sort((a, b) => a.timestamp - b.timestamp);
+      .filter((p): p is TransformedTidePoint => p !== null) // Remove any nulls (invalid or out-of-range points)
+      .sort((a, b) => a.timestamp - b.timestamp); // Sort just in case PHP didn't or mapping changed order.
   }, [tideData, swellData, timezone, length]);
 
   // Only show a dot if it's at least 15 minutes from the previous one (for real points)

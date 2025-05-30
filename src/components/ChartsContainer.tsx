@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  TideDataWorldWideFromDrupal,
+  TideDataFromDrupal,
   UnitPreferences,
   WeatherData,
   DrupalApiData,
@@ -55,7 +55,7 @@ const ChartsContainer = ({
   };
   chartWidth: number;
   weatherData: WeatherData[];
-  tideData: TideDataWorldWideFromDrupal[];
+  tideData: TideDataFromDrupal[];
   timezone: string;
   rawApiData: DrupalApiData;
   sunriseSunsetData: SunriseSunsetData;

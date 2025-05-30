@@ -4,8 +4,8 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   SurfReportItem,
-  TideDataWorldWideFromDrupal,
-  Surfcam,
+  TideDataFromDrupal,
+  SurfcamProps,
 } from "@/types";
 import { SurfReportPanel } from "./ReportTabs";
 import { NearCams } from "./NearCams";
@@ -19,22 +19,22 @@ export const SurfReport = ({
   tideData,
   timezone,
   surfReport,
-  surfcams = [],
+  surfcams,
 }: {
   localDateTimeISO: string;
   chartData: ChartDataItem;
   defaultPreferences: UnitPreferences;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
-  tideData: TideDataWorldWideFromDrupal[];
+  tideData: TideDataFromDrupal[];
   timezone: string;
   surfReport: SurfReportItem[];
-  surfcams?: Surfcam[];
+  surfcams: SurfcamProps[];
 }) => {
   return (
     <section className="tw:mb-4 tw:max-w-[1340px] tw:h-auto tw:mx-auto tw:w-full tw:max-md:px-5">
       <div className="">
-        <div className="tw:grid tw:md:grid-cols-3 tw:gap-6">
+        <div className="tw:grid tw:grid-cols-1 tw:lg:grid-cols-3 tw:gap-y-4 tw:lg:gap-6">
           <div className="tw:col-span-2">
             <SurfReportPanel
               localDateTimeISO={localDateTimeISO}

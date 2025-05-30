@@ -6,7 +6,7 @@ import {
   SunriseSunsetData,
   UnitPreferences,
   SurfReportItem,
-  TideDataWorldWideFromDrupal,
+  TideDataFromDrupal,
 } from "@/types";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { cn } from "@/utils/utils";
@@ -29,7 +29,7 @@ type SurfReportPanelProps = {
   defaultPreferences: UnitPreferences;
   currentWeatherData: CurrentWeatherData;
   sunriseSunsetData: SunriseSunsetData;
-  tideData: TideDataWorldWideFromDrupal[];
+  tideData: TideDataFromDrupal[];
   timezone: string;
   surfReport?: SurfReportItem[];
 };
