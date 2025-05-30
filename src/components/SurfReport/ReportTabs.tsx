@@ -110,7 +110,7 @@ export const SurfReportPanel = ({
   }, [surfReport]);
 
   return (
-    <article className="tw:w-full tw:max-w-4xl tw:bg-slate-100 tw:p-4 ">
+    <article className="tw:w-full tw:bg-slate-100 tw:p-4 ">
       <div className="tw:flex tw:flex-col tw:gap-4">
         <div className="tw:flex tw:items-center tw:justify-between">
           <div>

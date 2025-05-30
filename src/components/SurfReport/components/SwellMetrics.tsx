@@ -32,7 +32,7 @@ export const SwellMetrics = ({
       <div
         className={cn(
           "tw:grid tw:grid-cols-2 tw:gap-2",
-          showFullWidth && "tw:lg:grid-cols-4"
+          showFullWidth && "tw:sm:grid-cols-4"
         )}
       >
         <MetricCard>
