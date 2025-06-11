@@ -50,7 +50,7 @@ export const WeatherBubble = memo((props: WeatherBubbleProps) => {
         className="tw:transition-colors"
         fill={props.isHover ? "#000" : "#666"}
         dy={36}
-        dx={4}
+        dx={Math.abs(payload.currentTemp) < 10 ? 8 : 4}
         fontSize={10}
       >
         {Math.round(payload.currentTemp)}°

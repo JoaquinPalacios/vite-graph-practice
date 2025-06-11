@@ -260,7 +260,7 @@ export default function SwellTrainAnalysis({
         "tw:bg-background tw:transition-opacity",
         showAnalysis
           ? "tw:opacity-100"
-          : "tw:opacity-0 tw:-z-10 tw:pointer-events-none tw:absolute tw:top-0 tw:left-full tw:h-0 tw:w-0"
+          : "tw:opacity-0 tw:-z-10 tw:pointer-events-none tw:sr-only"
       )}
     >
       <div className="tw:container tw:mx-auto tw:max-w-full">
