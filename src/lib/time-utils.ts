@@ -96,14 +96,34 @@ export function processTimeData<T extends TimeDataItem>(
   };
 }
 
-export const formatBulletinDateTime = (dateTimeUtc: string): string => {
+export const formatBulletinDateTime = (
+  dateTimeUtc: string,
+  timezone: string
+): string => {
   const date = new Date(dateTimeUtc);
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
+  const day = date.getUTCDate();
+  const month = date.toLocaleString("en-US", { month: "short" });
   const hour = String(date.getUTCHours()).padStart(2, "0");
 
-  return `${year}-${month}-${day} ${hour}Z`;
+  // Get the ordinal suffix for the day
+  const ordinal = (day: number) => {
+    if (day > 3 && day < 21) return "th";
+    switch (day % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  // Format the local time
+  const localTime = formatInTimeZone(date, timezone, "h:mm a").toLowerCase();
+
+  return `${day}${ordinal(day)} ${month} ${hour}Z (${localTime} local time)`;
 };
 
 export const formatTime = (dateTimeStr: string, timezone: string): string => {

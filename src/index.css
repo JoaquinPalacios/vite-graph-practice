@@ -10,6 +10,22 @@
   --color-swell: #008a93;
 }
 
+td {
+  font-size: 0.875rem;
+}
+
+.font-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -120,6 +136,15 @@
 .underline-anim:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+.button-selector span {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.button-selector:hover span {
+  opacity: 1;
 }
 
 .swellnet-bar-chart > .recharts-tooltip-wrapper-left .pseudo-arrow,

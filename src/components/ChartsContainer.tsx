@@ -21,6 +21,7 @@ import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";
 import { SubscriptionOverlay } from "./SubscriptionOverlay";
+import SwellTrainAnalysis from "./SweeltrainAnalysis";
 
 /**
  * ChartsContainer component
@@ -46,6 +47,8 @@ const ChartsContainer = ({
   timezone,
   rawApiData,
   sunriseSunsetData,
+  modelType,
+  setModelType,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -59,6 +62,8 @@ const ChartsContainer = ({
   timezone: string;
   rawApiData: DrupalApiData;
   sunriseSunsetData: SunriseSunsetData;
+  modelType: "gfs" | "ecmwf";
+  setModelType: (type: "gfs" | "ecmwf") => void;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = processTimeData(
@@ -72,6 +77,7 @@ const ChartsContainer = ({
 
   const [unitPreferences, setUnitPreferences] =
     useState<UnitPreferences>(defaultPreferences);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   // Validate tide data before passing to TideChart
   const isValidTideData =
@@ -85,16 +91,34 @@ const ChartsContainer = ({
         <UnitSelector
           onChange={setUnitPreferences}
           defaultValues={unitPreferences}
+          modelType={modelType}
+          setModelType={setModelType}
+          rawApiData={rawApiData}
+          timezone={timezone}
+          showAnalysis={showAnalysis}
+          setShowAnalysis={setShowAnalysis}
         />
       )}
+
+      <SwellTrainAnalysis
+        chartData={chartData}
+        defaultPreferences={defaultPreferences}
+        timezone={timezone}
+        showAnalysis={showAnalysis}
+      />
+
       <div
         className={cn(
-          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden",
-          showSubscriptionOverlay && "tw:max-md:pt-72"
+          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden tw:transition-opacity",
+          showSubscriptionOverlay && "tw:max-md:pt-72",
+          !showAnalysis
+            ? "tw:opacity-100"
+            : "tw:opacity-0 tw:-z-10 tw:pointer-events-none tw:w-0 tw:h-0"
         )}
-        {...(!showSubscriptionOverlay && {
-          style: { width: chartWidth },
-        })}
+        {...(!showSubscriptionOverlay &&
+          !showAnalysis && {
+            style: { width: chartWidth },
+          })}
       >
         <Suspense fallback={<GraphSkeleton />}>
           <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
@@ -120,7 +144,6 @@ const ChartsContainer = ({
                     }
                     hasSubscription={rawApiData.user.hasFullAccess}
                   />
-
                   <AdvancedSwellChart
                     unitPreferences={unitPreferences}
                     chartData={processedData}
@@ -137,7 +160,6 @@ const ChartsContainer = ({
                 <div className="tw:h-0" />
               )}
             </Suspense>
-
             <Suspense fallback={<GraphSkeleton showWeather />}>
               {weatherData && weatherData.length > 0 ? (
                 <>

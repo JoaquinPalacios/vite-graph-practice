@@ -258,7 +258,7 @@ export const SwellChart = ({
           }}
           className="tw:w-7 tw:min-w-7"
           stackId="a"
-          animationBegin={210}
+          animationBegin={50}
           animationEasing="ease-in-out"
         >
           <LabelList

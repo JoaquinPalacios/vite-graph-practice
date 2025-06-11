@@ -124,12 +124,8 @@ export const TideChart = ({
 
   /**
    * First, transform the tide data into a format that can be used by D3
-   * @description It takes the tide data and returns an array of objects with the following properties:
-   * - height: number - The height of the tide
-   * - timestamp: number - The timestamp of the tide
-   * - localDateTimeISO: string - The local date and time of the tide
-   * - utcDateTimeISO: string - The UTC date and time of the tide
-   * - isBoundary: boolean - Whether the tide is a boundary tide
+   * @description Since PHP now pre-processes the data, we only need to map all points
+   * without filtering by swellTimeRange. The visual range will be controlled by timeDomain.
    */
   const transformedData = useMemo((): TransformedTidePoint[] => {
     if (!tideData || !Array.isArray(tideData) || tideData.length === 0) {
@@ -137,72 +133,29 @@ export const TideChart = ({
       return [];
     }
 
-    // 2. Determine the time range for filtering (using swell data or a default)
-    const swellTimeRange = (() => {
-      if (swellData && swellData.length > 0) {
-        return swellData.slice(0, length).reduce(
-          (acc, curr) => {
-            if (!curr?.dateTime) return acc;
-            const time = new Date(curr.dateTime).getTime();
-            // Adding a buffer (e.g., ~3 hours) to ensure the last tide point is included if it's slightly after the last swell point.
-            const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
-            return {
-              min: Math.min(acc.min, time),
-              max: Math.max(acc.max, time) + THREE_HOURS_MS, // Adjusted buffer
-            };
-          },
-          { min: Infinity, max: -Infinity }
-        );
-      }
+    // PHP sends data for the correct 16-day range, starting with midnight.
+    // We just need to transform its structure and ensure dates are valid.
+    return (
+      tideData
+        .map((point) => {
+          if (!point?._source?.time_local) {
+            console.warn(
+              "D3 TideChart: Skipping invalid tide data point (no time_local):",
+              point
+            );
+            return null;
+          }
 
-      const SIXTEEN_DAYS_MS = 16 * 24 * 60 * 60 * 1000;
-      // Attempt to get a start time from the first tide point, otherwise default.
-      const firstTideTime = parseDateTime(
-        tideData[0]?._source?.time_local
-      )?.getTime();
-      const startTime =
-        firstTideTime ??
-        new Date(
-          formatInTimeZone(new Date(), timezone, "yyyy-MM-dd'T'HH:mm:ssXXX")
-        ).getTime();
+          const pointDate = parseDateTime(point._source.time_local);
+          if (!pointDate) {
+            console.warn(
+              "D3 TideChart: Failed to parse date:",
+              point._source.time_local
+            );
+            return null;
+          }
 
-      return {
-        min: startTime,
-        max: startTime + SIXTEEN_DAYS_MS,
-      };
-    })();
-
-    // Map, Filter, and Sort the data
-    return tideData
-      .map((point, idx) => {
-        // Ensure the point and its _source exist and have time_local
-        if (!point?._source?.time_local) {
-          console.warn(
-            "D3 TideChart: Skipping invalid tide data point:",
-            point
-          );
-          return null;
-        }
-
-        const pointDate = parseDateTime(point._source.time_local);
-        // Ensure date parsing was successful
-        if (!pointDate) {
-          console.warn(
-            "D3 TideChart: Failed to parse date:",
-            point._source.time_local
-          );
-          return null;
-        }
-
-        const pointTime = pointDate.getTime();
-
-        // Always include the first point, or those within the desired time range
-        if (
-          idx === 0 ||
-          (pointTime >= (swellTimeRange?.min ?? -Infinity) &&
-            pointTime <= (swellTimeRange?.max ?? Infinity))
-        ) {
-          // Transform into the required format.
+          const pointTime = pointDate.getTime();
           return {
             height: Math.max(0, getTideHeight(point)),
             timestamp: pointTime,
@@ -211,12 +164,12 @@ export const TideChart = ({
             instance: getTideInstance(point),
             isBoundary: !!point._source.is_boundary,
           } as TransformedTidePoint;
-        }
-        return null;
-      })
-      .filter((p): p is TransformedTidePoint => p !== null) // Remove any nulls (invalid or out-of-range points)
-      .sort((a, b) => a.timestamp - b.timestamp); // Sort just in case PHP didn't or mapping changed order.
-  }, [tideData, swellData, timezone, length]);
+        })
+        .filter((p): p is TransformedTidePoint => p !== null)
+        // Keep sort as a safety measure, though PHP should send sorted data
+        .sort((a, b) => a.timestamp - b.timestamp)
+    );
+  }, [tideData]); // Only depend on tideData
 
   // Only show a dot if it's at least 15 minutes from the previous one (for real points)
   const labelData = useMemo(() => {
@@ -234,43 +187,58 @@ export const TideChart = ({
 
   /**
    * Second, determine the master time domain based on the data points
-   * @description It takes the swell data and transformed tide data and returns an array of two dates:
-   * - the earliest and latest data points
-   * - the detected offset
+   * @description Defines the visual range of the chart's x-axis, using PHP's midnight point
+   * for domain start and either swell data or tide data for domain end
    */
   const timeDomain = useMemo((): [Date, Date] => {
-    let earliestDataTimestamp = Infinity;
-    let latestDataTimestamp = -Infinity;
-
-    transformedData.forEach((item) => {
-      const date = parseDateTime(item.localDateTimeISO);
-      if (date) {
-        const timestamp = date.getTime();
-        earliestDataTimestamp = Math.min(earliestDataTimestamp, timestamp);
-        latestDataTimestamp = Math.max(latestDataTimestamp, timestamp);
-      }
-    });
-
-    if (
-      earliestDataTimestamp === Infinity ||
-      latestDataTimestamp === -Infinity
-    ) {
+    if (!transformedData || transformedData.length === 0) {
       const now = new Date();
       return [now, new Date(now.getTime() + 24 * 60 * 60 * 1000)];
     }
 
-    // Use robust helper to get local midnight in the location's timezone (as UTC)
-    const domainStart = getLocationMidnightUTC(
-      new Date(earliestDataTimestamp),
-      timezone
-    );
-    // For domain end, use latestDataTimestamp + 1 day
-    const latestDate = new Date(latestDataTimestamp);
-    latestDate.setDate(latestDate.getDate() + 1);
-    const domainEnd = getLocationMidnightUTC(latestDate, timezone);
+    // PHP ensures first point is midnight of the first day
+    const domainStart = new Date(transformedData[0].timestamp);
+    let basisForDomainEnd: Date;
+
+    if (swellData && swellData.length > 0) {
+      // Calculate max timestamp from swell data
+      const swellMaxTimestamp = swellData
+        .slice(0, length)
+        .reduce((maxTime, curr) => {
+          if (!curr?.dateTime) return maxTime;
+          const time = new Date(curr.dateTime).getTime();
+          return Math.max(maxTime, time);
+        }, -Infinity);
+      // Add buffer to ensure last tide point is included
+      const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
+      basisForDomainEnd = new Date(swellMaxTimestamp + THREE_HOURS_MS);
+    } else {
+      // Use the last tide point if no swell data
+      basisForDomainEnd = new Date(
+        transformedData[transformedData.length - 1].timestamp
+      );
+    }
+
+    // Ensure domainEnd is at least one full day after domainStart
+    const minEndDate = new Date(
+      domainStart.getTime() + 24 * 60 * 60 * 1000 - 1
+    ); // Just before next midnight
+    if (basisForDomainEnd < minEndDate) {
+      basisForDomainEnd = minEndDate;
+    }
+
+    // Get midnight of the current day for the basisForDomainEnd
+    const domainEnd = getLocationMidnightUTC(basisForDomainEnd, timezone);
+
+    // Only add an extra day if the content actually extends into the next day
+    const contentEndHour = basisForDomainEnd.getHours();
+    if (contentEndHour >= 21) {
+      // If content extends past 9 PM, show next day
+      domainEnd.setDate(domainEnd.getDate() + 1);
+    }
 
     return [domainStart, domainEnd];
-  }, [transformedData, timezone]);
+  }, [transformedData, swellData, timezone, length]);
 
   /**
    * Third, D3 Rendering Effect
