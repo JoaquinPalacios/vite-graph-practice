@@ -1,23 +1,50 @@
-import { CartesianGrid, YAxis, XAxis, ScatterChart, Scatter } from "recharts";
-
+import {
+  CartesianGrid,
+  YAxis,
+  XAxis,
+  ScatterChart,
+  Scatter,
+  Tooltip,
+} from "recharts";
 import { ResponsiveContainer } from "recharts";
-import { weatherData } from "@/data/weatherData";
-import WeatherBubble from "./WeatherBubble";
-import { formatDateTick } from "@/utils/chart-utils";
+import { WeatherBubble } from "./WeatherBubble";
+import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
+import { SunriseSunsetData, WeatherData } from "@/types";
+import { useState } from "react";
+import { WeatherChartCursor } from "./WeatherChartCursor";
 
-const WeatherChart = () => {
+type ScatterShapeProps = {
+  cx?: number;
+  cy?: number;
+  payload?: WeatherData;
+  index?: number;
+};
+
+const WeatherChart = ({
+  weatherData,
+  sunriseSunsetData,
+}: {
+  weatherData: WeatherData[];
+  sunriseSunsetData: SunriseSunsetData;
+}) => {
+  console.log({ weatherData, sunriseSunsetData });
+  // Add index property to each data point
+  const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [isDirectHover, setIsDirectHover] = useState(false);
+
   return (
     <ResponsiveContainer
-      width={4848}
+      width={getChartWidth(weatherData.length, 256, 60)}
       height="100%"
       className={cn(
-        "h-16 min-h-16 relative",
-        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:top-0 after:left-20 after:border-y after:border-slate-300 after:pointer-events-none"
+        "tw:h-16 tw:min-h-16 tw:relative",
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
     >
       <ScatterChart
-        data={weatherData}
+        data={weatherDataWithIndex}
         accessibilityLayer
         margin={{
           left: 0,
@@ -25,7 +52,8 @@ const WeatherChart = () => {
           bottom: 16,
           top: 0,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
+        syncId="swellnet"
       >
         <CartesianGrid
           vertical={true}
@@ -52,12 +80,30 @@ const WeatherChart = () => {
 
         <Scatter
           dataKey="weatherId"
-          shape={<WeatherBubble />}
+          shape={(props: ScatterShapeProps) => (
+            <WeatherBubble {...props} isHover={hoverIndex === props.index} />
+          )}
           overflow="visible"
+          onMouseEnter={(_, index) => {
+            setHoverIndex(index);
+            setIsDirectHover(true);
+          }}
+          onMouseLeave={() => {
+            setHoverIndex(null);
+            setIsDirectHover(false);
+          }}
+          className="tw:transition-all tw:duration-300"
+        />
+
+        <Tooltip
+          cursor={isDirectHover ? false : <WeatherChartCursor />}
+          content={() => <span className="tw:sr-only">.</span>}
+          trigger="hover"
+          isAnimationActive={false}
         />
 
         <YAxis
-          dataKey="index"
+          dataKey={() => 1}
           height={0}
           domain={[1]}
           padding={{ bottom: 16 }}

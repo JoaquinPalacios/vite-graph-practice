@@ -1,7 +1,7 @@
 import { LabelProps } from "recharts";
 
 interface SwellLabelProps extends LabelProps {
-  hasFaceWaveHeight?: boolean;
+  hasSecondary?: boolean;
   primarySwellDirection?: number | null;
 }
 
@@ -11,13 +11,13 @@ interface SwellLabelProps extends LabelProps {
  * @param {SwellLabelProps} props - The props for the SwellLabel component
  * @returns {React.ReactElement} The SwellLabel component
  */
-const SwellLabel = (props: SwellLabelProps) => {
-  const { x, y, value, fill, hasFaceWaveHeight, primarySwellDirection } = props;
+export const SwellLabel = (props: SwellLabelProps) => {
+  const { x, y, value, fill, hasSecondary, primarySwellDirection } = props;
 
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
   const xPosition = typeof x === "number" && !isNaN(x) ? x : 0;
 
-  if (!hasFaceWaveHeight) {
+  if (!hasSecondary) {
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@ const SwellLabel = (props: SwellLabelProps) => {
         </g>
       </svg>
     );
-  } else if (primarySwellDirection && hasFaceWaveHeight) {
+  } else if (primarySwellDirection && hasSecondary) {
     return (
       <g>
         <svg
@@ -137,5 +137,3 @@ const SwellLabel = (props: SwellLabelProps) => {
     );
   }
 };
-
-export default SwellLabel;

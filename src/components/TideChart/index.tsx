@@ -1,200 +1,787 @@
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  YAxis,
-  XAxis,
-  Tooltip,
-} from "recharts";
-import { ResponsiveContainer } from "recharts";
-import tideData from "@/data/tide-data";
-import TideTooltip from "./TideTooltip";
-import { TideAreaDot } from "./TideAreaDot";
-// import { multiFormat } from "@/lib/time-utils";
-import {
-  dayTicks,
-  processTimeScaleData,
-  interpolateTideData,
-} from "@/utils/chart-utils";
+import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
+import * as d3 from "d3";
+import { ChartDataItem, TideDataFromDrupal } from "@/types";
+import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { TideTooltip } from "./TideTooltip";
+import { bisector } from "d3-array";
+import { timeFormat } from "d3-time-format";
+import { formatInTimeZone } from "date-fns-tz";
+import { getLocationMidnightUTC } from "@/lib/time-utils";
 
-interface TideDataItem {
-  // dateTime: string;
+interface TransformedTidePoint {
   height: number;
+  timestamp: number;
   localDateTimeISO: string;
-  utc: string;
+  utcDateTimeISO: string;
+  isBoundary?: boolean;
+  isInterpolated?: boolean;
+  instance: "high" | "low";
 }
 
-interface DotProps {
-  cx: number;
-  cy: number;
-  value: number;
-  key: string;
-  payload: {
-    height: number;
-    timestamp: number;
-    localDateTimeISO: string;
-    time?: string;
-    utc: string;
-  };
-}
+// --- Helper: Function to parse ISO string robustly ---
+const parseDateTime = (isoString: string): Date | null => {
+  const date = new Date(isoString);
+  return isNaN(date.getTime()) ? null : date;
+};
+
+// Helper function to get tide height
+const getTideHeight = (tide: TideDataFromDrupal): number => {
+  return tide._source.height;
+};
+
+// Helper function to get tide instance/type
+const getTideInstance = (tide: TideDataFromDrupal): "high" | "low" => {
+  return tide._source.type;
+};
 
 /**
- * Tide data for the previous tide
- * This needs to be fixed in the future when real data is fetched.
- * We will need to somehow store the previous tide data
- * and use that to calculate the height at midnight.
- * @todo: Fix this
+ * D3 Chart Tide Component
+ * @description It takes the tide data and swell data and renders the chart.
+ * @param tideData - Tide data from Drupal
+ * @param swellData - Swells data from Drupal
+ * @param timezone - The timezone
+ * @returns Tide chart component
  */
-const previousTide = {
-  localDateTimeISO: "2024-03-31T21:54:00+11:00",
-  height: 1.6,
-};
+export const TideChart = ({
+  tideData,
+  swellData,
+  timezone,
+}: {
+  tideData: TideDataFromDrupal[];
+  swellData: ChartDataItem[];
+  timezone: string;
+}) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const yAxisRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const [tooltipState, setTooltipState] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    data: TransformedTidePoint | null;
+  }>({ visible: false, x: 0, y: 0, data: null });
+  const tooltipDivRef = useRef<HTMLDivElement>(null);
 
-// First tide data
-const firstTide = tideData[0];
+  const length = swellData.length === 0 ? 128 : swellData.length;
 
-// Calculate time differences in hours
-const previousTideTime = new Date(previousTide.localDateTimeISO).getTime();
-const firstTideTime = new Date(firstTide.localDateTimeISO).getTime();
-const midnightTime = new Date(
-  firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00"
-).getTime();
+  const PIXELS_PER_DAY = 256; // Exact width per day in pixels
 
-// Calculate rate of change (meters per hour)
-const totalHours = (firstTideTime - previousTideTime) / (1000 * 60 * 60);
-const heightChange = firstTide.height - previousTide.height;
-const rateOfChange = heightChange / totalHours;
+  // Add bisector for efficient point lookup
+  const bisectTime = useMemo(
+    () => bisector((d: TransformedTidePoint) => d.timestamp).left,
+    []
+  );
 
-// Calculate hours from previous tide to midnight
-const hoursToMidnight = (midnightTime - previousTideTime) / (1000 * 60 * 60);
+  // Formatter for tooltip date
+  const tooltipDateFormat = useMemo(() => timeFormat("%a %d %b, %I:%M %p"), []);
 
-// Calculate height at midnight
-const heightAtMidnight = previousTide.height + rateOfChange * hoursToMidnight;
+  // Add this helper function at the top level of the component
+  const calculateTooltipPosition = (
+    x: number,
+    y: number,
+    tooltipWidth: number,
+    tooltipHeight: number,
+    chartWidth: number,
+    chartHeight: number,
+    margin: { left: number; right: number; top: number; bottom: number }
+  ) => {
+    // Default offset from the point
+    const offsetX = 8;
+    const offsetY = -8;
 
-// Process the data to include timestamps
-const baseData = [
-  {
-    height: heightAtMidnight,
-    timestamp: midnightTime,
-    localDateTimeISO:
-      firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00",
-    utc: new Date(
-      firstTide.localDateTimeISO.split("T")[0] + "T00:00:00+11:00"
-    ).toISOString(),
-  },
-  ...tideData.map((item: TideDataItem) => ({
-    ...item,
-    timestamp: new Date(item.localDateTimeISO).getTime(),
-    utc: item.utc,
-  })),
-];
+    // Calculate available space in each direction
+    const spaceRight = chartWidth - (x + margin.left);
+    const spaceTop = y + margin.top;
 
-// Interpolate data for every 3 minutes
-const processedData = interpolateTideData(baseData);
+    // Determine horizontal position
+    let tooltipX = x + margin.left + offsetX;
+    if (spaceRight < tooltipWidth + offsetX) {
+      // If not enough space on right, position on left
+      tooltipX = x + margin.left - tooltipWidth - offsetX;
+    }
 
-// Get time scale data
-const timeValues = processedData.map((row) => row.timestamp);
-const { timeScale } = processTimeScaleData(timeValues);
+    // Determine vertical position
+    let tooltipY = y + margin.top + offsetY;
+    if (spaceTop < tooltipHeight + Math.abs(offsetY)) {
+      // If not enough space on top, position below
+      tooltipY = y + margin.top + Math.abs(offsetY);
+    }
 
-const TideChart = () => {
-  return (
-    <ResponsiveContainer width={4848} height="100%" className="h-36 min-h-36">
-      <AreaChart
-        accessibilityLayer
-        data={processedData}
-        margin={{
-          bottom: 16,
-        }}
-        className="[&>svg]:focus:outline-none"
-      >
-        <CartesianGrid
-          vertical={true}
-          horizontal={true}
-          verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
-          ]}
-          y={0}
-          height={144}
-          width={300}
-          widths={300}
-          // syncWithTicks
-        />
+    // Ensure tooltip stays within chart bounds
+    tooltipX = Math.max(
+      margin.left,
+      Math.min(chartWidth - tooltipWidth - margin.right, tooltipX)
+    );
+    tooltipY = Math.max(
+      margin.top,
+      Math.min(chartHeight - tooltipHeight - margin.bottom, tooltipY)
+    );
 
-        {/* Background stripes XAxis */}
-        <XAxis
-          dataKey="timestamp"
-          xAxisId={0}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          interval={"preserveStart"}
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-          hide
-          ticks={dayTicks}
-          // tickFormatter={multiFormat}
-          padding={{ left: 19 }}
-          width={300}
-        />
+    return { x: tooltipX, y: tooltipY };
+  };
 
-        {/* Background stripes XAxis */}
-        {/* <XAxis
-          dataKey="timestamp"
-          xAxisId={1}
-          type="number"
-          scale={timeScale}
-          domain={timeScale.domain().map((date) => date.valueOf())}
-          interval="preserveStart"
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-          hide
-          ticks={dayTicks}
-          tickFormatter={multiFormat}
-          padding={{ left: 19 }}
-        /> */}
+  /**
+   * First, transform the tide data into a format that can be used by D3
+   * @description Since PHP now pre-processes the data, we only need to map all points
+   * without filtering by swellTimeRange. The visual range will be controlled by timeDomain.
+   */
+  const transformedData = useMemo((): TransformedTidePoint[] => {
+    if (!tideData || !Array.isArray(tideData) || tideData.length === 0) {
+      console.warn("D3 TideChart: No tide data available or invalid format.");
+      return [];
+    }
 
-        <Tooltip content={<TideTooltip />} isAnimationActive={false} />
-
-        <Area
-          type="monotone"
-          dataKey="height"
-          stroke="#008a93"
-          fill="#008a93"
-          connectNulls
-          dot={(props: DotProps) => {
-            // Only show dots for original data points, not interpolated ones
-            if (!props.payload.localDateTimeISO || props.key === "dot-0")
-              return <span key={props.key} />;
-            const isOriginalPoint = tideData.some(
-              (item) => item.localDateTimeISO === props.payload.localDateTimeISO
+    // PHP sends data for the correct 16-day range, starting with midnight.
+    // We just need to transform its structure and ensure dates are valid.
+    return (
+      tideData
+        .map((point) => {
+          if (!point?._source?.time_local) {
+            console.warn(
+              "D3 TideChart: Skipping invalid tide data point (no time_local):",
+              point
             );
-            if (isOriginalPoint) {
-              // Add the time property expected by TideAreaDot
-              const dotProps = {
-                ...props,
-                payload: {
-                  ...props.payload,
-                  time: props.payload.localDateTimeISO,
-                },
-              };
-              return <TideAreaDot {...dotProps} key={props.key} />;
-            }
-            return <span key={props.key} />;
-          }}
-          isAnimationActive={false}
-        />
+            return null;
+          }
 
-        <YAxis
-          dataKey="height"
-          unit="m"
-          axisLine={false}
-          domain={["dataMin - 0.2", "dataMax + 0.2"]}
-          padding={{ top: 32 }}
+          const pointDate = parseDateTime(point._source.time_local);
+          if (!pointDate) {
+            console.warn(
+              "D3 TideChart: Failed to parse date:",
+              point._source.time_local
+            );
+            return null;
+          }
+
+          const pointTime = pointDate.getTime();
+          return {
+            height: Math.max(0, getTideHeight(point)),
+            timestamp: pointTime,
+            localDateTimeISO: point._source.time_local,
+            utcDateTimeISO: pointDate.toISOString(),
+            instance: getTideInstance(point),
+            isBoundary: !!point._source.is_boundary,
+          } as TransformedTidePoint;
+        })
+        .filter((p): p is TransformedTidePoint => p !== null)
+        // Keep sort as a safety measure, though PHP should send sorted data
+        .sort((a, b) => a.timestamp - b.timestamp)
+    );
+  }, [tideData]); // Only depend on tideData
+
+  // Only show a dot if it's at least 15 minutes from the previous one (for real points)
+  const labelData = useMemo(() => {
+    const MIN_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
+    const filtered: TransformedTidePoint[] = [];
+    let lastTimestamp = -Infinity;
+    for (const d of transformedData) {
+      if (!d.isBoundary && d.timestamp - lastTimestamp >= MIN_INTERVAL_MS) {
+        filtered.push(d);
+        lastTimestamp = d.timestamp;
+      }
+    }
+    return filtered;
+  }, [transformedData]);
+
+  /**
+   * Second, determine the master time domain based on the data points
+   * @description Defines the visual range of the chart's x-axis, using PHP's midnight point
+   * for domain start and either swell data or tide data for domain end
+   */
+  const timeDomain = useMemo((): [Date, Date] => {
+    if (!transformedData || transformedData.length === 0) {
+      const now = new Date();
+      return [now, new Date(now.getTime() + 24 * 60 * 60 * 1000)];
+    }
+
+    // PHP ensures first point is midnight of the first day
+    const domainStart = new Date(transformedData[0].timestamp);
+    let basisForDomainEnd: Date;
+
+    if (swellData && swellData.length > 0) {
+      // Calculate max timestamp from swell data
+      const swellMaxTimestamp = swellData
+        .slice(0, length)
+        .reduce((maxTime, curr) => {
+          if (!curr?.dateTime) return maxTime;
+          const time = new Date(curr.dateTime).getTime();
+          return Math.max(maxTime, time);
+        }, -Infinity);
+      // Add buffer to ensure last tide point is included
+      const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
+      basisForDomainEnd = new Date(swellMaxTimestamp + THREE_HOURS_MS);
+    } else {
+      // Use the last tide point if no swell data
+      basisForDomainEnd = new Date(
+        transformedData[transformedData.length - 1].timestamp
+      );
+    }
+
+    // Ensure domainEnd is at least one full day after domainStart
+    const minEndDate = new Date(
+      domainStart.getTime() + 24 * 60 * 60 * 1000 - 1
+    ); // Just before next midnight
+    if (basisForDomainEnd < minEndDate) {
+      basisForDomainEnd = minEndDate;
+    }
+
+    // Get midnight of the current day for the basisForDomainEnd
+    const domainEnd = getLocationMidnightUTC(basisForDomainEnd, timezone);
+
+    // Only add an extra day if the content actually extends into the next day
+    const contentEndHour = basisForDomainEnd.getHours();
+    if (contentEndHour >= 21) {
+      // If content extends past 9 PM, show next day
+      domainEnd.setDate(domainEnd.getDate() + 1);
+    }
+
+    return [domainStart, domainEnd];
+  }, [transformedData, swellData, timezone, length]);
+
+  /**
+   * Third, D3 Rendering Effect
+   * @description It takes the SVG, chart area, and data and renders the chart.
+   */
+  useEffect(() => {
+    if (
+      !svgRef.current ||
+      !yAxisRef.current ||
+      svgDimensions.width === 0 ||
+      svgDimensions.height === 0 ||
+      transformedData.length === 0 ||
+      length <= 0
+    ) {
+      return;
+    }
+
+    const svg = d3.select(svgRef.current);
+    const yAxisSvg = d3.select(yAxisRef.current);
+    svg.selectAll("*").remove();
+    yAxisSvg.selectAll("*").remove();
+
+    const margin = { top: 32, right: 0, bottom: 8, left: 76 };
+
+    // Calculate the exact width needed for the chart area
+    // This ensures each day stripe is exactly 256px wide
+    const chartDrawingWidth =
+      Math.ceil(
+        (timeDomain[1].getTime() - timeDomain[0].getTime()) /
+          (24 * 60 * 60 * 1000)
+      ) * PIXELS_PER_DAY;
+
+    // Set the SVG width to accommodate the chart area plus margins
+    const totalWidth = chartDrawingWidth + margin.left + margin.right;
+    svg.attr("width", totalWidth);
+
+    // The height available for drawing
+    const chartDrawingHeight =
+      svgDimensions.height - margin.top - margin.bottom;
+
+    // Create the chart area with proper translation
+    const chartArea = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // --- Scales ---
+    const maxTide = d3.max(transformedData, (d) => d.height) ?? 1;
+
+    // Create a linear scale for the Y-axis with modified domain
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, Math.ceil(maxTide)])
+      .range([chartDrawingHeight, 0])
+      .nice();
+
+    // Custom tick format function with correct type definition
+    const customTickFormat = (d: d3.NumberValue) => {
+      const value = Number(d);
+      if (value === 0) return ""; // Keep hiding 0
+
+      // For max tide ≤ 1m, show 0.5m and 1m
+      if (maxTide <= 1) {
+        if (value === 0.5 || value === 1) {
+          return `${value}m`;
+        }
+        return "";
+      }
+
+      // For max tide > 1m, show whole numbers up to rounded up max tide
+      return `${Math.round(value)}m`;
+    };
+
+    // --- Y Axis ---
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // For max tide ≤ 1m, show 2 ticks (0.5 and 1), otherwise show whole numbers
+      .tickPadding(8)
+      .tickFormat(customTickFormat)
+      .tickSize(6);
+
+    // Set specific tick values for max tide ≤ 1m
+    if (maxTide <= 1) {
+      yAxis.tickValues([0.5, 1]);
+    }
+
+    // Create a group for the Y-axis in its own SVG
+    const yAxisG = yAxisSvg
+      .append("rect")
+      .attr("class", "y-axis-rect-left")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 64)
+      .attr("height", svgDimensions.height)
+      .attr("fill", "oklch(0.968 0.007 247.896)");
+
+    // Add background rectangle to Y-axis
+    yAxisSvg
+      .append("g")
+      .attr("class", "y-axis")
+      .attr(
+        "transform",
+        `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 32)`
+      )
+      .call(yAxis);
+
+    // Hide the 0m label but keep its tick line
+    yAxisG
+      .selectAll(".tick text")
+      .filter((d) => d === 0)
+      .text("");
+
+    // --- Background Stripes (rendered first, always at the back) ---
+    const dayStarts: Date[] = [];
+    const currentIterDay = new Date(timeDomain[0].getTime()); // Start from domainStart
+    const numDays = Math.ceil(
+      (timeDomain[1].getTime() - timeDomain[0].getTime()) /
+        (24 * 60 * 60 * 1000)
+    );
+    for (let i = 0; i < numDays; i++) {
+      dayStarts.push(new Date(currentIterDay.getTime()));
+      currentIterDay.setDate(currentIterDay.getDate() + 1);
+    }
+    chartArea
+      .append("g")
+      .attr("class", "day-stripes")
+      .selectAll("rect")
+      .data(dayStarts)
+      .enter()
+      .append("rect")
+      .attr("x", (_, i) => i * PIXELS_PER_DAY)
+      .attr("y", -32)
+      .attr("width", PIXELS_PER_DAY)
+      .attr("height", chartDrawingHeight + 32) // Add 8px to account for the hover line and gives bottom padding
+      .attr(
+        "fill",
+        (_, i) =>
+          i % 2 === 0
+            ? "oklch(0.929 0.013 255.508)" // Tailwind Slate 200
+            : "oklch(0.968 0.007 247.896)" // Tailwind Slate 300
+      )
+      .lower();
+
+    // --- Y Grid Lines (rendered after stripes, before data) ---
+    // Draw horizontal grid lines for each Y tick, for visual clarity
+    const gridAxis = d3
+      .axisLeft(yScale)
+      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // Match Y-axis ticks
+      .tickSize(-chartDrawingWidth)
+      .tickFormat(() => ""); // Only lines, no labels
+
+    // Set specific tick values for max tide ≤ 1m
+    if (maxTide <= 1) {
+      gridAxis.tickValues([0.5, 1]);
+    }
+
+    const yGridG = chartArea.append("g").attr("class", "y-grid").call(gridAxis);
+
+    // Remove grid lines for 0 and non-integer values when max tide > 1m
+    yGridG.selectAll(".tick").each(function (d) {
+      const value = Number(d);
+      if (value === 0 || (maxTide > 1 && !Number.isInteger(value))) {
+        d3.select(this).select("line").remove();
+      }
+    });
+
+    // --- Clip Path for Tide Area ---
+    const clipPathId = `tide-clip-${Math.random()
+      .toString(36)
+      .substring(2, 9)}`;
+    chartArea
+      .append("defs")
+      .append("clipPath")
+      .attr("id", clipPathId)
+      .append("rect")
+      .attr("width", chartDrawingWidth)
+      .attr("height", chartDrawingHeight);
+
+    // --- Tide Area ---
+    const areaGenerator = d3
+      .area<TransformedTidePoint>()
+      .x((d) => {
+        // Calculate exact pixel position based on the timestamp's position in the data array
+        const dayIndex = Math.floor(
+          (d.timestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+        );
+        const dayProgress =
+          (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+        const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+        const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        return x;
+      })
+      .y0(chartDrawingHeight)
+      .y1((d) => yScale(d.height))
+      .curve(d3.curveMonotoneX);
+
+    chartArea
+      .append("path")
+      .datum(transformedData)
+      .attr("class", "tide-area")
+      .attr("fill", "#008a93")
+      .attr("stroke", "#008a93")
+      .attr("stroke-width", 1)
+      .attr("fill-opacity", 0.4)
+      .attr("d", areaGenerator)
+      .attr("clip-path", `url(#${clipPathId})`);
+
+    // Get the DOM node for the area path for curve sampling
+    const areaPathNode = chartArea
+      .select(".tide-area")
+      .node() as SVGPathElement | null;
+
+    // --- Tide Labels (Time, Date, and Height) ---
+    const labelGroup = chartArea
+      .append("g")
+      .attr("class", "tide-labels")
+      .attr("font-size", 10)
+      .attr("text-anchor", "middle");
+
+    labelGroup
+      .selectAll("text.tide-label-item")
+      .data(labelData)
+      .join("text")
+      .attr("class", "tide-label-item")
+      .attr("transform", (d) => {
+        const dayIndex = Math.floor(
+          (d.timestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+        );
+        const dayProgress =
+          (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+        const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+        const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        return `translate(${x},${yScale(d.height) - 20})`;
+      })
+      .attr("dy", "-8px")
+      .call((text) =>
+        text
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", (d) => (d.instance === "low" ? "-2" : "2"))
+          .text((d) => {
+            const date = parseDateTime(d.localDateTimeISO);
+            return date
+              ? formatInTimeZone(date, timezone, "h:mm a")
+                  .replace(" ", "")
+                  .toLowerCase()
+              : "";
+          })
+      )
+      .call((text) =>
+        text
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", "1.2em")
+          .text((d) => `${d.height.toFixed(2)}m`)
+      );
+
+    // --- Tide Dots (Always-visible for real tide points) ---
+    chartArea
+      .append("g")
+      .attr("class", "tide-dots")
+      .selectAll("circle")
+      .data(labelData)
+      .enter()
+      .append("circle")
+      .attr("cx", (d) => {
+        const dayIndex = Math.floor(
+          (d.timestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+        );
+        const dayProgress =
+          (d.timestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+        const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+        const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+        return x;
+      })
+      .attr("cy", (d) => yScale(d.height))
+      .attr("r", 2.5)
+      .attr("fill", "#008a93")
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.5);
+
+    // --- Interactive Layer for Hover Effects ---
+    // Remove hoverDot, add hoverLine
+    const hoverLine = chartArea
+      .append("rect")
+      .attr("class", "tide-hover-line")
+      .attr("width", 1)
+      .attr("height", chartDrawingHeight)
+      .attr("y", 0)
+      .attr("fill", "oklch(12.9% 0.042 264.695)") // Tailwind Slate 950
+      .attr("opacity", 0)
+      .attr("pointer-events", "none");
+
+    chartArea
+      .append("rect")
+      .attr("class", "overlay")
+      .attr("width", chartDrawingWidth)
+      .attr("height", chartDrawingHeight)
+      .attr("fill", "none")
+      .attr("pointer-events", "all")
+      .on("mousemove", (event) => {
+        const [pointerX, pointerY] = d3.pointer(event);
+
+        // Early exit if outside chart bounds
+        if (
+          pointerX < 0 ||
+          pointerX > chartDrawingWidth ||
+          pointerY < 0 ||
+          pointerY > chartDrawingHeight
+        ) {
+          hoverLine.attr("opacity", 0);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+          return;
+        }
+
+        // --- Find the closest point on the area curve to the mouse X ---
+        let x = pointerX;
+        let interpolatedPoint: TransformedTidePoint | null = null;
+        if (areaPathNode) {
+          // Convert mouse X to timestamp
+          const dayIndex = Math.floor(pointerX / PIXELS_PER_DAY);
+          const dayProgress = pointerX % PIXELS_PER_DAY;
+          const dayFraction = dayProgress / PIXELS_PER_DAY;
+          const mouseTimestamp =
+            timeDomain[0].getTime() +
+            dayIndex * 24 * 60 * 60 * 1000 +
+            dayFraction * 24 * 60 * 60 * 1000;
+
+          // Find the two points that bracket the mouse timestamp
+          const i = bisectTime(transformedData, mouseTimestamp);
+          const left = transformedData[i - 1];
+          const right = transformedData[i];
+
+          // Handle edge cases
+          if (!left || !right) {
+            const point = left || right;
+            if (point) {
+              const px = (() => {
+                const dayIndex = Math.floor(
+                  (point.timestamp - timeDomain[0].getTime()) /
+                    (24 * 60 * 60 * 1000)
+                );
+                const dayProgress =
+                  (point.timestamp - timeDomain[0].getTime()) %
+                  (24 * 60 * 60 * 1000);
+                const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+                return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+              })();
+              x = px;
+              interpolatedPoint = {
+                ...point,
+                isInterpolated: false,
+              };
+            }
+          } else {
+            // Calculate interpolated position and height
+            const t =
+              (mouseTimestamp - left.timestamp) /
+              (right.timestamp - left.timestamp);
+            const clampedT = Math.max(0, Math.min(1, t));
+            const interpolatedHeight =
+              left.height + clampedT * (right.height - left.height);
+            interpolatedPoint = {
+              height: interpolatedHeight,
+              timestamp: mouseTimestamp,
+              localDateTimeISO: tooltipDateFormat(new Date(mouseTimestamp)),
+              utcDateTimeISO: new Date(mouseTimestamp).toISOString(),
+              instance: clampedT < 0.5 ? left.instance : right.instance,
+              isInterpolated: true,
+            };
+          }
+        }
+
+        // The vertical line always spans the full chart height
+        hoverLine
+          .attr("x", x - 0.5)
+          .attr("y", 0)
+          .attr("height", chartDrawingHeight)
+          .attr("opacity", 0.2);
+
+        // Tooltip logic (unchanged)
+        if (interpolatedPoint) {
+          // For tooltip Y, use the interpolated Y value on the curve
+          const y = yScale(interpolatedPoint.height);
+          const tooltipDiv = tooltipDivRef.current;
+          const tooltipRect = tooltipDiv?.getBoundingClientRect();
+          const tooltipWidth = tooltipRect?.width ?? 0;
+          const tooltipHeight = tooltipRect?.height ?? 0;
+          const tooltipPosition = calculateTooltipPosition(
+            x,
+            y,
+            tooltipWidth,
+            tooltipHeight,
+            chartDrawingWidth,
+            chartDrawingHeight,
+            margin
+          );
+          setTooltipState({
+            visible: true,
+            x: tooltipPosition.x,
+            y: tooltipPosition.y,
+            data: interpolatedPoint,
+          });
+        }
+      })
+      .on("mouseout", () => {
+        hoverLine.attr("opacity", 0);
+        setTooltipState((prev) => ({ ...prev, visible: false }));
+      });
+
+    // Update the container width style to match the SVG width
+    if (containerRef.current) {
+      containerRef.current.style.width = `${totalWidth}px`;
+    }
+  }, [svgDimensions, transformedData, labelData, timeDomain, length]);
+
+  /**
+   * Fourth, Resize Observer
+   * @description It takes the container and sets the SVG dimensions
+   */
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        const { width, height } = entries[0].contentRect;
+        setSvgDimensions({ width, height });
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => {
+      if (containerRef.current) observer.unobserve(containerRef.current);
+    };
+  }, []);
+
+  // Tooltip boundary detection and adjustment (relative to container)
+  useLayoutEffect(() => {
+    if (
+      !tooltipState.visible ||
+      !tooltipDivRef.current ||
+      !containerRef.current
+    )
+      return;
+
+    const tooltipRect = tooltipDivRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    let left = tooltipState.x;
+    let top = tooltipState.y;
+    const margin = 8; // margin from edge
+
+    // Clamp right
+    if (left + tooltipRect.width > containerRect.width) {
+      left = containerRect.width - tooltipRect.width - margin;
+    }
+    // Clamp left
+    if (left < 0) {
+      left = margin;
+    }
+    // Clamp bottom
+    if (top + tooltipRect.height > containerRect.height) {
+      top = containerRect.height - tooltipRect.height - margin;
+    }
+    // Clamp top
+    if (top < 0) {
+      top = margin;
+    }
+
+    // Only update if changed
+    if (left !== tooltipState.x || top !== tooltipState.y) {
+      setTooltipState((prev) => ({ ...prev, x: left, y: top }));
+    }
+  }, [tooltipState, svgDimensions]);
+
+  /**
+   * Fifth, Render
+   * @description It takes the container and renders the chart.
+   */
+  if (!transformedData.length && length <= 0) {
+    // Check length too
+    return (
+      <div
+        ref={containerRef}
+        style={{ width: "100%", height: "100%", position: "relative" }}
+        className="tw:h-28 tw:min-h-28"
+      >
+        <div>Loading tide data or no data available...</div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div
+        ref={containerRef}
+        style={{
+          position: "relative",
+          height: "100%",
+          overflow: "hidden",
+        }}
+        className="tw:h-28 tw:min-h-28"
+      >
+        <svg
+          ref={svgRef}
+          width={svgDimensions.width}
+          height={svgDimensions.height}
+        >
+          {/* D3 renders here */}
+        </svg>
+
+        {/* React TideTooltip for hover */}
+        {tooltipState.visible && tooltipState.data && (
+          <div
+            ref={tooltipDivRef}
+            style={{
+              position: "absolute",
+              left: tooltipState.x,
+              top: tooltipState.y,
+              zIndex: 10,
+              pointerEvents: "none",
+              transform: "translate(0, 0)", // Remove any transform that might affect positioning
+            }}
+          >
+            <TideTooltip
+              active={true}
+              payload={[
+                {
+                  value: tooltipState.data.height,
+                  payload: tooltipState.data,
+                },
+              ]}
+              timezone={timezone}
+            />
+          </div>
+        )}
+      </div>
+      {/* Y-axis container */}
+      <div className="tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+        <svg
+          ref={yAxisRef}
+          width={isMobile || isLandscapeMobile ? 48 : 64}
+          height={svgDimensions.height}
+          className="tw:w-12 tw:md:w-16"
         />
-      </AreaChart>
-    </ResponsiveContainer>
+      </div>
+    </>
   );
 };
-
-export default TideChart;

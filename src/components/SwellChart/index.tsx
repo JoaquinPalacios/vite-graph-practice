@@ -8,45 +8,58 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import chartData from "@/data";
-import RenderCustomizedLabel from "./SwellLabel";
 import { UnitPreferences } from "@/types";
 import {
   formatDateTick,
   generateTicks,
-  processedData,
+  getChartWidth,
 } from "@/utils/chart-utils";
-import SwellLabel from "./SwellLabel";
+import { SwellLabel } from "./SwellLabel";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { SwellTooltip } from "./SwellTooltip";
-import SwellAxisTick from "./SwellAxisTick";
-import WindSpeedTick from "./WindSpeedTick";
+import { SwellAxisTick } from "./SwellAxisTick";
+import { WindSpeedTick } from "./WindSpeedTick";
 import { cn } from "@/utils/utils";
+import { ChartDataItem } from "@/types/index.ts";
 
-const SwellChart = ({
+/**
+ * SwellChart component
+ * @description This component is used to display the swell chart in the graph.
+ * @param unitPreferences - The unit preferences
+ * @param chartData - The chart data
+ * @param maxSurfHeight - The max surf height
+ * @returns The SwellChart component
+ */
+export const SwellChart = ({
   unitPreferences,
+  chartData,
+  maxSurfHeight,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
+  maxSurfHeight: number;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   return (
     <ResponsiveContainer
-      width={4848}
+      width={getChartWidth(chartData.length, 256, 60)}
       height="100%"
       className={cn(
-        "mb-0 h-80 min-h-80 relative",
-        "after:absolute after:z-0 after:h-16 after:w-[calc(100%-6rem)] after:bottom-0 after:left-20 after:border-b after:border-slate-300 after:pointer-events-none"
+        "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
+        unitPreferences.showAdvancedChart &&
+          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
       )}
+      minHeight={320}
     >
       <BarChart
         accessibilityLayer
-        data={processedData}
+        data={chartData}
         barCategoryGap={1}
         margin={{
           bottom: 12,
         }}
-        className="[&>svg]:focus:outline-none"
+        className="swellnet-bar-chart tw:[&>svg]:focus:outline-none"
         syncId="swellnet"
       >
         <CartesianGrid
@@ -77,7 +90,7 @@ const SwellChart = ({
           allowDuplicatedCategory={false}
           textAnchor="middle"
           ticks={
-            processedData
+            chartData
               .reduce((acc: string[], curr) => {
                 const date = new Date(curr.localDateTimeISO)
                   .toISOString()
@@ -94,7 +107,7 @@ const SwellChart = ({
                 }
                 return acc;
               }, [])
-              .slice(1) // TODO - We remove the first tick due to being duplicated. We have to revise if this happens due to the time difference between the local time and UTC time.
+              .slice(1) // We remove the first tick due to being duplicated.
           }
         />
 
@@ -106,6 +119,7 @@ const SwellChart = ({
           axisLine={false}
           tickFormatter={(value: string) => {
             const date = new Date(value);
+            // Use the timezone-aware date for formatting
             const hours = date.getHours();
             const period = hours >= 12 ? "pm" : "am";
             const hour = hours % 12 || 12;
@@ -117,7 +131,7 @@ const SwellChart = ({
           allowDuplicatedCategory={false}
           allowDataOverflow
           minTickGap={16}
-          tickCount={2}
+          tickCount={4} // Increased from 2 to show more time points
         />
 
         {/* XAxis for the wind direction */}
@@ -129,14 +143,14 @@ const SwellChart = ({
           tickLine={false}
           axisLine={false}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = processedData[index];
+            const data = chartData[index];
             if (!data) {
               return <g />;
             }
             return (
               <SwellAxisTick
-                payload={{ value: data.windDirection }}
-                windSpeed={data.windSpeed_knots || 0}
+                payload={{ value: data.wind.direction ?? 0 }}
+                windSpeed={data.wind.speedKnots || 0}
                 x={x}
                 y={y}
               />
@@ -150,7 +164,7 @@ const SwellChart = ({
           dataKey="localDateTimeISO"
           xAxisId={4}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = processedData[index];
+            const data = chartData[index];
             if (!data) {
               return <g />;
             }
@@ -160,9 +174,9 @@ const SwellChart = ({
                 y={y}
                 payload={{
                   value:
-                    unitPreferences.windSpeed === "knots"
-                      ? data.windSpeed_knots
-                      : data.windSpeed_kmh,
+                    unitPreferences.units.wind === "knots"
+                      ? Math.round(data.wind.speedKnots ?? 0)
+                      : Math.round(data.wind.speedKmh ?? 0),
                 }}
               />
             );
@@ -185,16 +199,17 @@ const SwellChart = ({
           }}
           trigger="hover"
           isAnimationActive={false}
+          offset={24}
         />
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft"
-              ? d.waveHeight_ft
-              : d.waveHeight_m
+            unitPreferences.units.surfHeight === "ft"
+              ? d.primary.fullSurfHeightFeet
+              : d.primary.fullSurfHeightMetres
           }
           fill="#008993"
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           activeBar={{
             fill: "#00b4c6",
           }}
@@ -203,14 +218,15 @@ const SwellChart = ({
           animationDuration={220}
         >
           <LabelList
-            dataKey="swellDirection"
+            dataKey="primary.direction"
             position="top"
             fill="#008a93"
             content={({ x, y, value, fill, index }) => {
               if (typeof index === "undefined") return null;
               const data = chartData[index];
-              if (data.faceWaveHeight_ft && unitPreferences.waveHeight === "ft")
-                return null;
+
+              // We only display the label if there is no secondary swell
+              if (data.secondary) return null;
 
               return (
                 <SwellLabel
@@ -218,8 +234,8 @@ const SwellChart = ({
                   y={y}
                   value={value}
                   fill={fill}
-                  hasFaceWaveHeight={false}
-                  className="animate-in fade-in-0 duration-1000"
+                  hasSecondary={false}
+                  className="tw:animate-in tw:fade-in-0 tw:duration-1000"
                 />
               );
             }}
@@ -228,45 +244,39 @@ const SwellChart = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-              ? d.faceWaveHeight_ft - d.waveHeight_ft
+            d.secondary
+              ? unitPreferences.units.surfHeight === "ft"
+                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
+                : d.secondary.fullSurfHeightMetres -
+                  d.primary.fullSurfHeightMetres
               : null
           }
           fill="#ffa800"
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           activeBar={{
             fill: "#ffc95d",
           }}
-          className="w-7 min-w-7"
+          className="tw:w-7 tw:min-w-7"
           stackId="a"
-          animationBegin={210}
           animationEasing="ease-in-out"
         >
           <LabelList
-            dataKey="secondarySwellDirection"
+            dataKey="secondary.direction"
             position="top"
             fill="#ffa800"
             content={({ x, y, value, fill, index }) => {
               if (typeof index === "undefined") return null;
               const data = chartData[index];
 
-              if (
-                data.faceWaveHeight_ft &&
-                unitPreferences.waveHeight === "ft"
-              ) {
+              if (data.secondary) {
                 return (
-                  <RenderCustomizedLabel
+                  <SwellLabel
                     value={value}
                     x={x}
                     y={y}
                     fill={fill}
-                    hasFaceWaveHeight={
-                      unitPreferences.waveHeight === "ft" &&
-                      data?.faceWaveHeight_ft
-                        ? true
-                        : false
-                    }
-                    primarySwellDirection={data?.swellDirection}
+                    hasSecondary={data?.secondary ? true : false}
+                    primarySwellDirection={data?.primary.direction}
                   />
                 );
               }
@@ -282,27 +292,20 @@ const SwellChart = ({
           domain={[0, "dataMax"]}
           minTickGap={0}
           padding={{
-            top: unitPreferences.waveHeight === "ft" ? 32 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
           }}
-          interval="preserveStart"
+          interval="preserveEnd"
           overflow="visible"
           opacity={0}
           allowDecimals={false}
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          unit={unitPreferences.waveHeight}
+          unit={unitPreferences.units.surfHeight}
           tick={() => {
             return <text></text>;
           }}
-          ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft ?? 0))
-              : Math.max(...chartData.map((d) => d.waveHeight_m ?? 0)),
-            unitPreferences.waveHeight
-          )}
+          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
         />
       </BarChart>
     </ResponsiveContainer>
   );
 };
-
-export default SwellChart;

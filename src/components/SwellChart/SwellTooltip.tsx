@@ -1,14 +1,19 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { GiBigWave, GiHighTide, GiLowTide } from "react-icons/gi";
-import { LuWind } from "react-icons/lu";
+import { formatTooltipDate } from "@/lib/format-tooltip-date";
 import { TooltipProps } from "recharts";
 import { NameType } from "recharts/types/component/DefaultTooltipContent";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-import RenderCustomizedLabel from "./SwellLabel";
-import { PiWavesFill } from "react-icons/pi";
 import { UnitPreferences } from "@/types";
-import { formatWaveHeight } from "@/utils/chart-utils";
 import { memo } from "react";
+import { SwellTrainRow } from "./SwellTrainRow";
+import { getWindColor } from "@/utils/chart-utils";
+import { getAdjustedDirection } from "@/lib/format-direction";
+
+interface TrainData {
+  direction: number;
+  sigHeight: number;
+  peakPeriod: number;
+}
 
 /**
  * SwellTooltip component
@@ -26,170 +31,134 @@ export const SwellTooltip = memo(
     unitPreferences: UnitPreferences;
   }) => {
     if (active && payload && payload.length) {
+      const color = getWindColor(payload[0].payload.wind.speedKnots);
+
       return (
-        <div className="bg-slate-400 rounded-md overflow-hidden">
-          <h5 className="mb-2 px-2 pt-2 text-center text-white font-medium text-xs">
-            {new Date(label)
-              .toLocaleTimeString("en-US", {
-                hour: "numeric",
-                hour12: true,
-              })
-              .toLowerCase()
-              .replace(" ", "")}
-            &nbsp;-&nbsp;
-            {new Date(label).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
+        <div
+          className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md"
+          role="tooltip"
+          aria-label="Swell and wind information"
+        >
+          <div
+            className="pseudo-arrow tw:absolute tw:top-1.5 tw:z-0 tw:w-6 tw:h-5 tw:bg-white/96"
+            aria-hidden
+          />
+          <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20 tw:relative z-10">
+            {formatTooltipDate(label)}
           </h5>
-          <div className="flex flex-col bg-white p-2">
-            <div className="flex gap-1">
-              <GiBigWave className="w-3.5 h-3.5" color="#008a93" />
-              <p className="ml-px text-xs">
-                {payload &&
-                  formatWaveHeight(
-                    payload[0].value as number,
-                    String(payload[0].unit || "m")
-                  )}
-              </p>
-              <p className="text-xs">
-                {payload[0] &&
-                  degreesToCompassDirection(payload[0].payload.swellDirection)}
+
+          {/* Surf Height and Wind */}
+          <div className="tw:flex tw:flex-col tw:px-2 tw:pt-2 tw:border-b tw:border-slate-400/20">
+            <div className="tw:flex tw:flex-col">
+              <div className="tw:flex tw:gap-1 surf-height-label">
+                <p className="margin-none tw:leading-[1.2]">
+                  {unitPreferences.units.surfHeight === "ft"
+                    ? payload[0].payload.primary.fullSurfHeightFeetLabelBin
+                    : payload[0].payload.primary.fullSurfHeightMetresLabelBin}
+                </p>
+                <p className="margin-none tw:leading-[1.2]">
+                  {payload[0] &&
+                    degreesToCompassDirection(
+                      getAdjustedDirection(
+                        Number(payload[0].payload.primary.direction)
+                      )
+                    )}
+                </p>
+              </div>
+              <p className="margin-bottom-2 tooltip-paragraph-small">
+                ({payload[0].payload.primary.fullSurfHeightFeetLabelDescriptive}
+                )
               </p>
             </div>
             {payload && payload[1] && (
-              <div className="flex gap-1">
-                <GiBigWave className="w-3.5 h-3.5" color={"#ffa800"} />
-                <p className="ml-px text-xs">
-                  {formatWaveHeight(
-                    (payload[1].value as number) +
-                      (payload[0].payload.waveHeight_ft as number),
-                    String(payload[1].unit || "ft")
-                  )}
+              <div className="tw:flex tw:flex-col">
+                <div className="tw:flex tw:gap-1 surf-height-label">
+                  <p className="margin-none tw:leading-[1.2]">
+                    {unitPreferences.units.surfHeight === "ft"
+                      ? payload[0].payload.secondary.fullSurfHeightFeetLabelBin
+                      : payload[0].payload.secondary
+                          .fullSurfHeightMetresLabelBin}
+                  </p>
+                  <p className="margin-none tw:leading-[1.2]">
+                    {payload[0] &&
+                      degreesToCompassDirection(
+                        getAdjustedDirection(
+                          Number(payload[0].payload.secondary.direction)
+                        )
+                      )}
+                  </p>
+                </div>
+                <p className="margin-none semibold tooltip-paragraph tw:leading-[1.2]">
+                  South Facing
                 </p>
-                <p className="text-xs">South Facing Beaches</p>
+                <p className="margin-bottom-2 tooltip-paragraph-small">
+                  (
+                  {
+                    payload[0].payload.secondary
+                      .fullSurfHeightFeetLabelDescriptive
+                  }
+                  )
+                </p>
               </div>
             )}
             {payload[0] && (
-              <div className="flex gap-1">
-                <LuWind className="w-3.5 h-3.5" color="#008a93" />
-                <p className="ml-px text-xs">
-                  {unitPreferences.windSpeed === "knots"
-                    ? payload[0].payload.windSpeed_knots
-                    : payload[0].payload.windSpeed_kmh}
-                  {unitPreferences.windSpeed === "knots" ? "kts" : "km/h"}
-                </p>
-                <p className="text-xs">
-                  {degreesToCompassDirection(payload[0].payload.windDirection)}
-                </p>
-              </div>
-            )}
-            {payload[0] && !unitPreferences.showAdvancedChart && (
-              <div className="flex gap-1">
-                <PiWavesFill className="w-3.5 h-3.5" color="#008a93" />
-                <p className="ml-px text-xs">
-                  {payload[0].payload.primarySwellHeight}m @
-                </p>
-                <p className="text-xs">
-                  {payload[0].payload.primarySwellPeriod}s
-                </p>
-                <p className="text-xs">
-                  <RenderCustomizedLabel
-                    value={payload[0].payload.primarySwellDirection}
+              <div className="margin-bottom-2 tw:flex tw:gap-1 tw:items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  height={18}
+                  width={18}
+                  fill={color || "currentColor"}
+                  className="tw:transition-colors tw:duration-200 tw:ease"
+                >
+                  <path
+                    d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
+                    transform={`rotate(${getAdjustedDirection(
+                      Number(payload[0].payload.wind.direction)
+                    )}, 0, 0)`}
+                    style={{
+                      transformOrigin: "center",
+                    }}
+                    className="tw:transition-transform tw:duration-150 tw:ease"
                   />
+                  <path
+                    d="M7.65 10h5v7.5h-5z"
+                    transform={`rotate(${getAdjustedDirection(
+                      Number(payload[0].payload.wind.direction)
+                    )}, 0, 0)`}
+                    style={{
+                      transformOrigin: "center",
+                    }}
+                  />
+                </svg>
+                <p className="margin-none tooltip-paragraph">
+                  {unitPreferences.units.wind === "knots"
+                    ? Math.round(payload[0].payload.wind.speedKnots)
+                    : Math.round(payload[0].payload.wind.speedKmh)}
+                  {unitPreferences.units.wind === "knots" ? "kts" : "km/h"}
+                </p>
+                <p className="margin-none tooltip-paragraph">
+                  {degreesToCompassDirection(payload[0].payload.wind.direction)}
                 </p>
               </div>
-            )}
-            {!unitPreferences.showAdvancedChart &&
-              payload[0].payload.secondarySwellHeight && (
-                <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a93a6" />
-                  <p className="ml-px text-xs">
-                    {payload[0].payload.secondarySwellHeight}m @
-                  </p>
-                  <p className="text-xs">
-                    {payload[0].payload.secondarySwellPeriod}s
-                  </p>
-                  <p className="text-xs">
-                    <RenderCustomizedLabel
-                      value={payload[0].payload.secondarySwellDirection}
-                    />
-                  </p>
-                </div>
-              )}
-            {!unitPreferences.showAdvancedChart &&
-              payload[0].payload.tertiarySwellHeight && (
-                <div className="flex gap-1">
-                  <PiWavesFill className="w-3.5 h-3.5" color="#008a9366" />
-                  <p className="ml-px text-xs">
-                    {payload[0].payload.tertiarySwellHeight}m @
-                  </p>
-                  <p className="text-xs">
-                    {payload[0].payload.tertiarySwellPeriod}s
-                  </p>
-                  <p className="text-xs">
-                    <RenderCustomizedLabel
-                      value={payload[0].payload.tertiarySwellDirection}
-                    />
-                  </p>
-                </div>
-              )}
-            {payload[0] && (
-              <>
-                {payload[0].payload.isRising ? (
-                  <>
-                    {payload[0].payload.nextHighTideHeight && (
-                      <div className="flex gap-1">
-                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="ml-px text-xs">
-                          {payload[0].payload.nextHighTideHeight}m @
-                        </p>
-                        <p className="text-xs">
-                          {payload[0].payload.nextHighTide}
-                        </p>
-                      </div>
-                    )}
-                    {payload[0].payload.nextLowTideHeight && (
-                      <div className="flex gap-1">
-                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="ml-px text-xs">
-                          {payload[0].payload.nextLowTideHeight}m @
-                        </p>
-                        <p className="text-xs">
-                          {payload[0].payload.nextLowTide}
-                        </p>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {payload[0].payload.nextLowTideHeight && (
-                      <div className="flex gap-1">
-                        <GiLowTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="ml-px text-xs">
-                          {payload[0].payload.nextLowTideHeight}m @
-                        </p>
-                        <p className="text-xs">
-                          {payload[0].payload.nextLowTide}
-                        </p>
-                      </div>
-                    )}
-                    {payload[0].payload.nextHighTideHeight && (
-                      <div className="flex gap-1">
-                        <GiHighTide className="w-3.5 h-3.5" color="#008a93" />
-                        <p className="ml-px text-xs">
-                          {payload[0].payload.nextHighTideHeight}m @
-                        </p>
-                        <p className="text-xs ">
-                          {payload[0].payload.nextHighTide}
-                        </p>
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
             )}
           </div>
+
+          {/* Swell Trains */}
+          {!unitPreferences.showAdvancedChart && (
+            <div className="tw:flex tw:flex-col tw:p-2">
+              {payload[0]?.payload.trainData.map(
+                (train: TrainData, index: number) => (
+                  <SwellTrainRow
+                    key={`train-${index}`}
+                    direction={train.direction}
+                    sigHeight={train.sigHeight}
+                    peakPeriod={train.peakPeriod}
+                  />
+                )
+              )}
+            </div>
+          )}
         </div>
       );
     }

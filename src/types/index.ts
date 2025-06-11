@@ -1,47 +1,162 @@
-// Define types for our unit options
 export type UnitPreferences = {
-  waveHeight: "ft" | "m";
-  windSpeed: "knots" | "km/h";
-  temperature: "°C" | "°F";
+  units: {
+    surfHeight: "ft" | "m";
+    temperature: "celsius" | "fahrenheit";
+    wind: "knots" | "kmh";
+  };
   showAdvancedChart: boolean;
 };
 
-export interface SwellData {
-  localDateTimeISO: string;
-  swellDirection: number;
-  windDirection: number;
-  windSpeed_kmh: number;
-  windSpeed_knots: number;
-  waveHeight_m: number;
-  waveHeight_ft: number;
-  faceWaveHeight_ft?: number;
-  isRising: boolean;
-  nextHighTide?: string;
-  nextHighTideHeight?: number;
-  nextLowTide?: string;
-  nextLowTideHeight?: number;
-  nextTideTime?: string;
-  nextTideHeight?: number;
-  // Primary swell
-  primarySwellHeight?: number;
-  primarySwellDirection?: number;
-  primarySwellPeriod?: number;
-  // Secondary swell
-  secondarySwellHeight?: number;
-  secondarySwellDirection?: number;
-  secondarySwellPeriod?: number;
-  // Tertiary swell
-  tertiarySwellHeight?: number;
-  tertiarySwellDirection?: number;
-  tertiarySwellPeriod?: number;
-  // Fourth swell
-  fourthSwellHeight?: number;
-  fourthSwellDirection?: number;
-  fourthSwellPeriod?: number;
-  // Fifth swell
-  fifthSwellHeight?: number;
-  fifthSwellDirection?: number;
-  fifthSwellPeriod?: number;
+export interface TideDataAustraliaFromDrupal {
+  sort: number[];
+  _id: string; // "5646465"
+  _index: string; // "tide-data-2025-05-09"
+  _score: null; // null
+  _source: {
+    "@timestamp": string; // "2025-05-09T00:00:00.000Z"
+    "@version": string; // "1"
+    aac: string; // ""NSW_TP029""
+    area: string; // "Kingscliff"
+    id: number; // 1234657
+    instance: "low" | "high";
+    sequence: number;
+    time_local: string; // "2025-05-09T00:00:00.000Z"
+    value: string; // "1.0" in meters
+  };
 }
 
-export type ChartData = SwellData[];
+export interface TideDataFromDrupal {
+  _source: {
+    height: number; // 5646465
+    time_local: string; // "2025-05-09T00:00:00.000Z"
+    type: "low" | "high";
+    is_boundary?: boolean; // Optional boolean flag for boundary points
+  };
+}
+
+export interface SurfReportItem {
+  locationId: string;
+  name: string;
+  date: string;
+  surfHeight: string;
+  surfQuality: string;
+  surfRating: string;
+  swellDir: string;
+  weather: string;
+  wind: string;
+  report: string;
+}
+
+export interface DrupalApiData {
+  location: {
+    name: string;
+    timezone: string;
+    localDateTime: string;
+    isAustralia: boolean;
+  };
+  user: {
+    hasFullAccess: boolean;
+    subscriptionStatus: string;
+  };
+  forecasts: {
+    ecmwf: {
+      bulletinDateTimeUtc: string;
+      forecastSteps: ChartDataItem[];
+    };
+    gfs: {
+      bulletinDateTimeUtc: string;
+      forecastSteps: ChartDataItem[];
+    };
+  };
+  preferences: {
+    units: {
+      surfHeight: "ft" | "m";
+      temperature: "celsius" | "fahrenheit";
+      wind: "knots" | "kmh";
+    };
+  };
+  error: string | null;
+  weather: {
+    current: CurrentWeatherData;
+    daily: SunriseSunsetData;
+    hourly: {
+      temperature_2m: number[];
+      time: string[];
+      weather_code: number[];
+    };
+  };
+  tide: TideDataFromDrupal[] | [];
+  surf_report: SurfReportItem[];
+  surfcams: SurfcamProps[];
+}
+
+export interface ChartDataItem {
+  localDateTimeISO: string;
+  utcDateTimeISO: string; // Needs to be derived or present in API data
+  dateTime?: string; // Local time with timezone
+  bulletinDateTimeUtc?: string; // UTC bulletin time
+  location?: string; // Location name
+  wind: {
+    direction: number | null;
+    speedKmh: number | null;
+    speedKnots: number | null;
+  };
+  primary: {
+    fullSurfHeightFeet: number | null;
+    fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFeetLabelDescriptive?: string;
+    fullSurfHeightMetres?: number | null;
+    fullSurfHeightMetresLabelBin?: string;
+    totalSigHeight?: number | null;
+    direction: number | null;
+  };
+  secondary?: {
+    fullSurfHeightFeet: number | null;
+    fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFeetLabelDescriptive?: string;
+    fullSurfHeightMetres?: number | null;
+    fullSurfHeightMetresLabelBin?: string;
+    totalSigHeight?: number | null;
+    direction: number | null;
+  };
+  trainData?: {
+    trainDelta: number;
+    sigHeight: number | null;
+    peakPeriod: number | null;
+    direction: number | null;
+  }[];
+}
+
+export interface WeatherData {
+  index: number;
+  localDateTimeISO: string;
+  currentTemp: number;
+  weatherId: number;
+}
+
+export interface CurrentWeatherData {
+  is_day: number;
+  temperature_2m: number;
+  time: string;
+  weather_code: number;
+  wind_direction_10m: number;
+  wind_speed_10m: number;
+}
+
+export interface SunriseSunsetData {
+  sunrise: string[];
+  sunset: string[];
+  time: string[];
+}
+
+export interface SurfcamProps {
+  name: string;
+  streamName: string;
+  updatedAt: string;
+}
+
+declare global {
+  interface Window {
+    swellnetRawData: DrupalApiData;
+  }
+}

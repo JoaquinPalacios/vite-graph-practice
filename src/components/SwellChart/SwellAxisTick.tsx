@@ -1,4 +1,5 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { getAdjustedDirection } from "@/lib/format-direction";
 import { getWindColor } from "@/utils/chart-utils";
 
 type SwellAxisTickProps = {
@@ -17,7 +18,7 @@ type SwellAxisTickProps = {
  * @returns {React.ReactElement} The SwellAxisTick component
  * @todo: Revise the use of this component
  */
-const SwellAxisTick = ({
+export const SwellAxisTick = ({
   payload,
   x,
   y,
@@ -27,7 +28,7 @@ const SwellAxisTick = ({
 
   return (
     <g
-      className="flex flex-col-reverse items-center justify-center"
+      className="tw:flex tw:flex-col-reverse tw:items-center tw:justify-center"
       textAnchor="middle"
     >
       <svg
@@ -38,17 +39,23 @@ const SwellAxisTick = ({
         height={20}
         width={20}
         fill={color || "currentColor"}
+        className="tw:transition-colors tw:duration-200 tw:ease"
       >
         <path
           d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
-          transform={`rotate(${payload?.value}, 0, 0)`}
+          transform={`rotate(${
+            payload?.value ? getAdjustedDirection(Number(payload.value)) : 0
+          }, 0, 0)`}
           style={{
             transformOrigin: "center",
           }}
+          className="tw:transition-transform tw:duration-150 tw:ease"
         />
         <path
           d="M7.65 10h5v7.5h-5z"
-          transform={`rotate(${payload?.value}, 0, 0)`}
+          transform={`rotate(${
+            payload?.value ? getAdjustedDirection(Number(payload.value)) : 0
+          }, 0, 0)`}
           style={{
             transformOrigin: "center",
           }}
@@ -69,5 +76,3 @@ const SwellAxisTick = ({
     </g>
   );
 };
-
-export default SwellAxisTick;

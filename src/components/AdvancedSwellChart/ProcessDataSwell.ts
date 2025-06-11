@@ -1,20 +1,4 @@
-/**
- * Data Processing Function
- * Identifies and groups swell events from time series data.
- * @param {Array} data - The input chartData array.
- * @param {object} options - Thresholds for matching.
- * @param {number} options.dirThreshold - Max direction difference (degrees).
- * @param {number} options.periodThreshold - Max period difference (seconds).
- * @param {number} options.minHeight - Minimum height (meters) to track.
- * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
- * @param {string} unitPreference - The preferred unit for wave height ('m' or 'ft').
- * @returns {object} - Object where keys are event IDs and values are arrays of data points.
- */
-
-import { SwellData } from "@/types";
-import { metersToFeet } from "@/utils/chart-utils";
-
-type SwellRank = "primary" | "secondary" | "tertiary" | "fourth" | "fifth";
+import { ChartDataItem } from "@/types";
 
 interface SwellEvent {
   localDateTimeISO: string;
@@ -29,10 +13,11 @@ interface ActiveEvent {
   lastPer: number;
   lastT: number;
   gapCount: number;
+  lastTimestamp: number;
 }
 
 interface CurrentSwell {
-  rank: SwellRank;
+  trainDelta: number;
   height: number;
   direction: number;
   period: number;
@@ -45,95 +30,113 @@ interface EventMap {
 }
 
 /**
- * Process Swell Data
- * @param data - The input chartData array.
- * @param options - Thresholds for matching.
- * @param unitPreference - The preferred unit for wave height ('m' or 'ft').
- * @returns {object} - Object where keys are event IDs and values are arrays of data points.
+ * @author - Joaquin Palacios
+ * @name - Process Swell Data
+ * @description Analyzes wave data over time to identify and track distinct swell events.
+ * The function groups waves into "events" based on similar characteristics (direction, period, and height),
+ * making it easier to track how specific swell patterns evolve over time, grouping them by direction, height and period.
+ *
+ * For example, if you have a week of wave data, this function will help identify:
+ * - When a new swell arrives
+ * - How long it lasts
+ * - How its characteristics change over time
+ * - When it fades away
+ *
+ * The result is a collection of swell events, each containing a series of measurements
+ * that show how that particular swell pattern developed.
+ *
+ * @param data - Array of wave measurements over time
+ * @param options - Configuration settings for matching waves into events
+ * @param {number} options.dirThreshold - Max direction difference (degrees).
+ * @param {number} options.periodThreshold - Max period difference (seconds).
+ * @param {number} options.minHeight - Minimum height (meters) to track.
+ * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
+ * @returns {object} - Collection of swell events, where each event contains its complete history
  */
 export default function processSwellData(
-  data: SwellData[],
+  data: ChartDataItem[],
   options = {
-    dirThreshold: 20,
-    periodThreshold: 2.0,
-    minHeight: 0.15,
+    dirThreshold: 15,
+    periodThreshold: 1.5,
+    minHeight: 0.05,
     maxGap: 2,
-  },
-  unitPreference: "m" | "ft" = "m"
+    maxTimeGap: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
+  }
 ) {
   const events: EventMap = {};
   let activeEvents: ActiveEvent[] = [];
   let eventCounter = 0;
 
   data.forEach((timeStep, t) => {
-    // We'll use the ISO string directly instead of converting to timestamp
     const localDateTimeISO = timeStep.localDateTimeISO;
-
     if (!localDateTimeISO) {
       console.warn("Missing localDateTimeISO:", timeStep);
       return;
     }
 
-    const currentSwells: CurrentSwell[] = [];
-    const ranks: SwellRank[] = [
-      "primary",
-      "secondary",
-      "tertiary",
-      "fourth",
-      "fifth",
-    ];
+    const currentTimestamp = new Date(localDateTimeISO).getTime();
 
-    // Gather significant swells for this time step
-    ranks.forEach((rank) => {
-      const height = timeStep[`${rank}SwellHeight` as keyof SwellData] as
-        | number
-        | undefined;
-      const direction = timeStep[`${rank}SwellDirection` as keyof SwellData] as
-        | number
-        | undefined;
-      const period = timeStep[`${rank}SwellPeriod` as keyof SwellData] as
-        | number
-        | undefined;
-      if (
-        height !== undefined &&
-        height >= options.minHeight &&
-        direction !== undefined &&
-        period !== undefined
-      ) {
-        currentSwells.push({
-          rank: rank,
-          height: unitPreference === "ft" ? metersToFeet(height) : height,
-          direction: direction,
-          period: period,
-          timestamp: new Date(localDateTimeISO).getTime(), // Keep timestamp for internal comparisons
-          matched: false,
-        });
-      }
-    });
+    const currentSwells: CurrentSwell[] = [];
+
+    // Gather significant swells for this time step from trainData
+    if (timeStep.trainData && timeStep.trainData.length > 0) {
+      timeStep.trainData.forEach((train) => {
+        if (
+          train.sigHeight !== null &&
+          train.sigHeight !== undefined &&
+          train.sigHeight >= options.minHeight &&
+          train.direction !== null &&
+          train.direction !== undefined &&
+          train.peakPeriod !== null &&
+          train.peakPeriod !== undefined
+        ) {
+          currentSwells.push({
+            trainDelta: train.trainDelta || 0,
+            height: train.sigHeight,
+            direction: train.direction,
+            period: train.peakPeriod,
+            timestamp: currentTimestamp,
+            matched: false,
+          });
+        }
+      });
+    }
 
     const nextActiveEvents = [];
     const matchedEventIdsThisStep = new Set();
+
+    // Sort active events by their last timestamp to prioritize matching with the most recent events
+    activeEvents.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
 
     // Match current swells to active events
     for (const activeEvent of activeEvents) {
       let bestMatch = null;
       let smallestDiff = Infinity;
 
+      // Check if the time gap is too large
+      const timeGap = currentTimestamp - activeEvent.lastTimestamp;
+      if (timeGap > options.maxTimeGap) {
+        continue; // Skip this active event as the gap is too large
+      }
+
       for (const currentSwell of currentSwells) {
         if (!currentSwell.matched) {
-          const dirDiff = Math.abs(
-            currentSwell.direction - activeEvent.lastDir
-          );
           const perDiff = Math.abs(currentSwell.period - activeEvent.lastPer);
 
-          if (
-            dirDiff <= options.dirThreshold &&
-            perDiff <= options.periodThreshold
-          ) {
-            const diffScore = dirDiff + perDiff * 5;
-            if (diffScore < smallestDiff) {
-              smallestDiff = diffScore;
-              bestMatch = currentSwell;
+          // First check period - this is our primary matching criterion
+          if (perDiff <= options.periodThreshold) {
+            const dirDiff = Math.abs(
+              currentSwell.direction - activeEvent.lastDir
+            );
+
+            // Only then check direction if period matches
+            if (dirDiff <= options.dirThreshold) {
+              // Use period difference as the primary score, with direction as a secondary factor
+              const diffScore = perDiff * 10 + dirDiff; // Period weighted 10x more than direction
+              if (diffScore < smallestDiff) {
+                smallestDiff = diffScore;
+                bestMatch = currentSwell;
+              }
             }
           }
         }
@@ -143,7 +146,7 @@ export default function processSwellData(
         // Found a match - continue the event
         bestMatch.matched = true;
         events[activeEvent.id].push({
-          localDateTimeISO: localDateTimeISO, // Use ISO string instead of timestamp
+          localDateTimeISO: localDateTimeISO,
           height: bestMatch.height,
           period: bestMatch.period,
           direction: bestMatch.direction,
@@ -152,6 +155,7 @@ export default function processSwellData(
         activeEvent.lastDir = bestMatch.direction;
         activeEvent.lastPer = bestMatch.period;
         activeEvent.lastT = t;
+        activeEvent.lastTimestamp = currentTimestamp;
         activeEvent.gapCount = 0;
         nextActiveEvents.push(activeEvent);
         matchedEventIdsThisStep.add(activeEvent.id);
@@ -173,7 +177,7 @@ export default function processSwellData(
         }_${currentSwell.period.toFixed(1)}`;
         events[newEventId] = [
           {
-            localDateTimeISO: localDateTimeISO, // Use ISO string instead of timestamp
+            localDateTimeISO: localDateTimeISO,
             height: currentSwell.height,
             period: currentSwell.period,
             direction: currentSwell.direction,
@@ -184,6 +188,7 @@ export default function processSwellData(
           lastDir: currentSwell.direction,
           lastPer: currentSwell.period,
           lastT: t,
+          lastTimestamp: currentTimestamp,
           gapCount: 0,
         };
         nextActiveEvents.push(newActiveEvent);

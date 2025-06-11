@@ -1,7 +1,6 @@
 ---
 description: A todo list for tracking tasks and questions that need to be addressed
 globs: "**/*.{js,jsx,ts,tsx,vue}"
-type: Always
 alwaysApply: true
 ---
 

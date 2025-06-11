@@ -1,100 +1,233 @@
+import { UnitPreferences, DrupalApiData } from "@/types";
 import { cn } from "@/utils/utils";
-import { UnitPreferences } from "@/types";
-import React, { useState, useEffect } from "react";
-import { FaRuler, FaWind, FaThermometer } from "react-icons/fa";
+import { MdAccessTime } from "react-icons/md";
+import { formatBulletinDateTime } from "@/lib/time-utils";
+import { MdBarChart } from "react-icons/md";
+import { ImTable2 } from "react-icons/im";
 
-type UnitSelectorProps = {
+export interface UnitSelectorProps {
   onChange: (preferences: UnitPreferences) => void;
-};
+  defaultValues: UnitPreferences;
+  modelType: "gfs" | "ecmwf";
+  setModelType: (type: "gfs" | "ecmwf") => void;
+  rawApiData: DrupalApiData;
+  timezone: string;
+  showAnalysis: boolean;
+  setShowAnalysis: (show: boolean) => void;
+}
 
-export const UnitSelector: React.FC<UnitSelectorProps> = ({ onChange }) => {
-  // Initialize with defaults or stored preferences
-  const [preferences, setPreferences] = useState<UnitPreferences>(() => {
-    const stored = localStorage.getItem("unitPreferences");
-    return stored
-      ? JSON.parse(stored)
-      : {
-          waveHeight: "ft",
-          windSpeed: "knots",
-          temperature: "°C",
-          showAdvancedChart: true,
-        };
-  });
-
-  // Save preferences to localStorage and notify parent when changed
-  useEffect(() => {
-    localStorage.setItem("unitPreferences", JSON.stringify(preferences));
-    onChange(preferences);
-  }, [preferences, onChange]);
-
-  // Toggle a single unit preference
-  const toggleUnit = (key: keyof UnitPreferences) => {
-    setPreferences((prev) => {
-      const newPrefs = { ...prev };
-
-      // Toggle between available options
-      switch (key) {
-        case "waveHeight":
-          newPrefs[key] = prev[key] === "ft" ? "m" : "ft";
-          break;
-        case "windSpeed":
-          newPrefs[key] = prev[key] === "knots" ? "km/h" : "knots";
-          break;
-        case "temperature":
-          newPrefs[key] = prev[key] === "°C" ? "°F" : "°C";
-          break;
-        case "showAdvancedChart":
-          newPrefs[key] = !prev[key];
-          break;
-      }
-
-      return newPrefs;
-    });
-  };
+/**
+ * UnitSelector component
+ * @description This component is used to select the unit preferences and model type.
+ * It displays controls for both unit preferences and model type selection.
+ */
+export const UnitSelector = ({
+  onChange,
+  defaultValues,
+  modelType,
+  setModelType,
+  rawApiData,
+  timezone,
+  showAnalysis,
+  setShowAnalysis,
+}: UnitSelectorProps) => {
+  const hasGfsData = rawApiData.forecasts?.gfs?.forecastSteps?.length > 0;
+  const hasEcmwfData = rawApiData.forecasts?.ecmwf?.forecastSteps?.length > 0;
 
   return (
-    <div className="flex flex-wrap gap-2 w-full max-w-full mx-auto">
-      <button
-        onClick={() => toggleUnit("waveHeight")}
-        className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
-          preferences.waveHeight === "m" ? "bg-teal-700" : "bg-blue-900"
+    <div className="tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-md:px-5 tw:justify-between tw:max-lg:flex-col">
+      {/* Model run time */}
+      <p className="margin-none tw:text-sm tw:mb-4 tw:flex tw:items-center tw:gap-2">
+        {hasGfsData || hasEcmwfData ? (
+          <>
+            <MdAccessTime className="tw:w-4 tw:h-4" />
+            Updated{" "}
+            {formatBulletinDateTime(
+              modelType === "gfs"
+                ? rawApiData.forecasts?.gfs?.bulletinDateTimeUtc
+                : rawApiData.forecasts?.ecmwf?.bulletinDateTimeUtc,
+              timezone
+            )}
+          </>
+        ) : (
+          "No forecast data available"
         )}
-      >
-        <FaRuler className="text-xs" />
-        Wave: {preferences.waveHeight}
-      </button>
+      </p>
 
-      <button
-        onClick={() => toggleUnit("windSpeed")}
-        className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
-          preferences.windSpeed === "km/h" ? "bg-teal-700" : "bg-blue-900"
-        )}
-      >
-        <FaWind className="text-xs" />
-        Wind: {preferences.windSpeed}
-      </button>
+      <div className="tw:flex tw:items-start tw:lg:items-center tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
+        {/* Advance chart toggle */}
+        <div
+          className={cn(
+            "tw:flex tw:items-center tw:gap-2 tw:transition-opacity tw:order-last tw:lg:order-none",
+            showAnalysis ? "tw:opacity-0" : "tw:opacity-100"
+          )}
+        >
+          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+            Graph
+          </span>
+          <div className="tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:overflow-hidden tw:gap-3 tw:px-2">
+            <div
+              className={cn(
+                "tw:absolute tw:top-1/2 tw:w-12 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                defaultValues.showAdvancedChart
+                  ? "tw:translate-x-full"
+                  : "tw:translate-x-0"
+              )}
+              style={{ willChange: "transform" }}
+            />
+            <button
+              type="button"
+              className={cn(
+                "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-200",
+                !defaultValues.showAdvancedChart
+                  ? "tw:text-gray-900"
+                  : "tw:text-gray-700"
+              )}
+              aria-pressed={!defaultValues.showAdvancedChart}
+              onClick={() =>
+                onChange({
+                  ...defaultValues,
+                  showAdvancedChart: false,
+                })
+              }
+            >
+              Basic
+            </button>
+            <button
+              type="button"
+              className={cn(
+                "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                defaultValues.showAdvancedChart
+                  ? "tw:text-gray-900"
+                  : "tw:text-gray-700"
+              )}
+              aria-pressed={defaultValues.showAdvancedChart}
+              onClick={() =>
+                onChange({
+                  ...defaultValues,
+                  showAdvancedChart: true,
+                })
+              }
+            >
+              Adv
+            </button>
+          </div>
+        </div>
 
-      <button
-        onClick={() => toggleUnit("temperature")}
-        className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-white w-fit",
-          preferences.temperature === "°F" ? "bg-teal-700" : "bg-blue-900"
-        )}
-      >
-        <FaThermometer className="text-xs" />
-        Temp: {preferences.temperature}
-      </button>
+        {/* Model type selector */}
+        {(hasGfsData || hasEcmwfData) && (
+          <div className="tw:flex tw:items-center tw:gap-2 tw:order-2 tw:lg:order-none">
+            <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+              Model
+            </span>
+            <div
+              className={cn(
+                "tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:gap-3 tw:px-2 tw:overflow-hidden",
+                !hasGfsData || !hasEcmwfData ? "" : ""
+              )}
+            >
+              <div
+                className={cn(
+                  "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                  modelType !== "gfs"
+                    ? "tw:translate-x-1/2 tw:w-20"
+                    : "tw:translate-x-0 tw:w-10",
+                  !hasGfsData && !hasEcmwfData ? "tw:hidden" : ""
+                )}
+                style={{ willChange: "transform" }}
+              />
 
-      <button
-        onClick={() => toggleUnit("showAdvancedChart")}
-        className={cn(
-          "flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium text-slate-900 border border-slate-900 w-fit"
+              <button
+                type="button"
+                className={cn(
+                  "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                  modelType === "gfs" ? "tw:text-gray-900" : "tw:text-gray-700",
+                  "tw:disabled:opacity-50",
+                  !hasGfsData ? "button-selector" : "tw:cursor-pointer"
+                )}
+                aria-pressed={modelType === "gfs"}
+                onClick={() => setModelType("gfs")}
+                disabled={!hasGfsData}
+              >
+                GFS
+                {!hasGfsData && (
+                  <span
+                    className="tw:text-xs tw:absolute tw:-top-8 tw:left-1/2 tw:-translate-x-1/2 tw:w-max tw:rounded-xs tw:bg-black tw:text-white tw:px-2 tw:py-1"
+                    aria-hidden
+                  >
+                    No GFS data available
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={cn(
+                  "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                  modelType === "ecmwf"
+                    ? "tw:text-gray-900"
+                    : "tw:text-gray-700",
+                  "tw:disabled:opacity-50",
+                  !hasEcmwfData ? "button-selector" : "tw:cursor-pointer"
+                )}
+                aria-pressed={modelType === "ecmwf"}
+                onClick={() => setModelType("ecmwf")}
+                disabled={!hasEcmwfData}
+              >
+                ECMWF
+                {!hasEcmwfData && (
+                  <span
+                    className="tw:text-xs tw:absolute tw:-top-8 tw:left-1/2 tw:-translate-x-1/2 tw:w-max tw:rounded-xs tw:bg-black tw:text-white tw:px-2 tw:py-1"
+                    aria-hidden
+                  >
+                    No ECMWF data available
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
         )}
-      >
-        {preferences.showAdvancedChart ? "Hide" : "Show"} advanced chart
-      </button>
+
+        {/* Charts/Analysis toggle with animated thumb */}
+        <div className="tw:flex tw:items-center tw:gap-2 tw:order-1 tw:lg:order-none">
+          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+            View
+          </span>
+          <div className="tw:relative tw:w-16 tw:h-8 tw:rounded tw:flex tw:items-center tw:overflow-hidden">
+            {/* Animated thumb */}
+            <div
+              className={cn(
+                "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:w-1/2 tw:bg-gray-100 tw:shadow tw:transition-transform tw:duration-300 tw:z-0",
+                showAnalysis ? "tw:translate-x-full" : "tw:translate-x-0"
+              )}
+              style={{ willChange: "transform" }}
+            />
+            {/* Buttons */}
+            <button
+              type="button"
+              className={cn(
+                "font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+              )}
+              aria-pressed={!showAnalysis}
+              onClick={() => setShowAnalysis(false)}
+            >
+              <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
+            </button>
+            <button
+              type="button"
+              className={cn(
+                "font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+              )}
+              aria-pressed={showAnalysis}
+              onClick={() => setShowAnalysis(true)}
+            >
+              <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

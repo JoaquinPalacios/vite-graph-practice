@@ -49,7 +49,7 @@ const GraphButtons = ({
     ) as HTMLElement;
     if (container) {
       // Each day has 8 data points (every 3 hours) and each bar is 298px wide.
-      const dayWidth = 1 * 298; // 298px per day
+      const dayWidth = 1 * 256; // 256px per day
       const scrollAmount = direction === "left" ? -dayWidth : dayWidth;
 
       container.scrollBy({
@@ -63,14 +63,14 @@ const GraphButtons = ({
     <>
       <div
         className={cn(
-          "hidden md:flex flex-col items-center divide-y-2 divide-slate-200"
+          "tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-slate-200"
         )}
       >
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
-            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute left-0 top-0 h-1/2 z-30 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
-            "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
+            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:left-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
           )}
           disabled={isAtStart}
           aria-label="Scroll left one day"
@@ -80,8 +80,8 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", getScrollMultiplier())}
           className={cn(
-            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute left-0 bottom-0 h-1/2 z-30 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
-            "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
+            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:left-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
           )}
           disabled={isAtStart}
           aria-label="Scroll left multiple days"
@@ -89,12 +89,12 @@ const GraphButtons = ({
           <AiOutlineDoubleLeft color="white" size={18} />
         </button>
       </div>
-      <div className="hidden md:flex flex-col items-center divide-y-2 divide-slate-200">
+      <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-slate-200">
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(
-            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute right-0 top-0 h-1/2 z-30 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
-            "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
+            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:right-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right one day"
@@ -104,8 +104,8 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", getScrollMultiplier())}
           className={cn(
-            "bg-slate-600 p-1.5 sm:p-2 cursor-pointer absolute right-0 bottom-0 h-1/2 z-30 transition-[opacity,colors,transform,shadow] duration-300 disabled:opacity-0 disabled:cursor-auto",
-            "active:bg-slate-700 focus:bg-slate-700 focus:outline-none"
+            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:right-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right multiple days"

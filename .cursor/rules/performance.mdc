@@ -1,0 +1,26 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Performance Optimization Rules
+type: Always
+
+1. **Code Optimization**
+   - Use efficient algorithms and data structures.
+   - Implement memoization where beneficial (e.g., useMemo/useCallback in React).
+   - Avoid unnecessary re-renders (e.g., React.memo, pure components).
+   - Optimize loops and iterations.
+   - Use appropriate caching strategies.
+
+2. **Resource Management**
+   - Implement lazy loading for components and assets.
+   - Optimize image and media loading (e.g., use next-gen formats, responsive images).
+   - Use code splitting to load only what’s needed.
+   - Manage state efficiently; keep it local when possible.
+   - Monitor memory usage and perform cleanups (e.g., unsubscribe in useEffect).
+
+3. **Build and Bundle**
+   - Keep bundle sizes minimal.
+   - Use tree shaking and dynamic imports.
+   - Optimize third-party dependencies; avoid large or unnecessary libraries.

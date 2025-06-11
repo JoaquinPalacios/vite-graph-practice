@@ -1,30 +1,169 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(tw);
 
 @plugin "tailwindcss-animate";
 
-@layer base {
-  :root {
-    --chart-1: 183 100% 29%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-  }
-
-  .dark {
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
+:root {
+  font-size: 16px;
 }
 
 @theme {
   --color-swell: #008a93;
 }
 
+td {
+  font-size: 0.875rem;
+}
+
+.font-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.display-flex {
+  display: flex;
+}
+
+.text-color-white {
+  color: white;
+}
+
+.swell-bg {
+  background-color: #008a93;
+}
+
+.margin-none {
+  margin: 0;
+}
+.margin-bottom-none {
+  margin-bottom: 0;
+}
+.margin-bottom-2 {
+  margin-bottom: 0.5rem;
+}
+
+.recharts-cartesian-axis-tick-line {
+  opacity: 0.5;
+}
+
+.y-grid path.domain,
+.y-grid .tick line,
+.y-axis .tick line {
+  stroke: oklch(86.9% 0.022 252.894); /* Tailwind Slate 400 */
+  stroke-opacity: 0.5;
+}
+
+.y-axis path.domain {
+  stroke: none;
+}
+
+.y-axis-tick-animation {
+  fill-opacity: 0;
+  transition: fill-opacity 0.275s ease-in;
+}
+
+.advance-y-axis.tick-visible .y-axis-tick-animation {
+  fill-opacity: 1;
+}
+
+.advance-y-axis .recharts-cartesian-axis-tick-line {
+  opacity: 0;
+  transition: opacity 0.275s ease-in;
+}
+
+.advance-y-axis.tick-visible .recharts-cartesian-axis-tick-line {
+  opacity: 1;
+}
+
+.tooltip-container {
+  color: #3a3a3a;
+}
+
+.tooltip-container h5 {
+  color: #3a3a3a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: fit-content;
+  line-height: 1.5;
+}
+
+.surf-height-label p {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.semibold {
+  font-weight: 600;
+}
+
+.tooltip-paragraph {
+  font-size: 0.875rem;
+}
+
+.tooltip-paragraph-small {
+  font-size: 0.75rem;
+}
+
+.underline-anim {
+  position: relative;
+  text-decoration: none;
+}
+
+.underline-anim::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -2px;
+  right: 0;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s var(--ease-in-out);
+}
+
+.underline-anim:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.button-selector span {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.button-selector:hover span {
+  opacity: 1;
+}
+
+.swellnet-bar-chart > .recharts-tooltip-wrapper-left .pseudo-arrow,
+.swellnet-line-chart > .recharts-tooltip-wrapper-left .pseudo-arrow {
+  right: -0.75rem;
+  transform: rotate(135deg);
+}
+
+.swellnet-bar-chart > .recharts-tooltip-wrapper-right .pseudo-arrow,
+.swellnet-line-chart > .recharts-tooltip-wrapper-right .pseudo-arrow {
+  left: -0.75rem;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 768px) {
+  .advanced-y-axis .recharts-cartesian-axis-tick-line {
+    transform: translateX(-1rem);
+  }
+  .swell-y-axis .recharts-cartesian-axis-tick-line {
+    transform: translateX(-0.75rem);
+  }
 }

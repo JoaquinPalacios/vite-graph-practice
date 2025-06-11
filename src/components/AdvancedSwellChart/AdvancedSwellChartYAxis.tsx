@@ -6,94 +6,99 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import chartData from "@/data";
-import { GiBigWave } from "react-icons/gi";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import processSwellData from "./ProcessDataSwell";
-import { generateTicks } from "@/utils/chart-utils";
+import { formatDateTick, generateTicks } from "@/utils/chart-utils";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { chartArgs } from "@/lib/chart-args";
+import { ChartDataItem, UnitPreferences } from "@/types";
+import { cn } from "@/utils/utils";
 
-const AdvancedSwellChartYAxis = () => {
+/**
+ * AdvancedSwellChartYAxis component
+ * @description This component is used to display the y-axis for the AdvancedSwellChart component.
+ * @param props - The props of the component
+ * @returns The AdvancedSwellChartYAxis component
+ */
+export const AdvancedSwellChartYAxis = ({
+  chartData,
+  maxSurfHeight,
+  unitPreferences,
+  hasSubscription,
+}: {
+  chartData: ChartDataItem[];
+  maxSurfHeight: number;
+  unitPreferences: UnitPreferences;
+  hasSubscription: boolean;
+}) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
+
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (unitPreferences.showAdvancedChart) {
+      // For showing: small delay to ensure proper mount
+      timeoutId = setTimeout(() => {
+        setIsVisible(true);
+      }, 50);
+    } else {
+      // For hiding: no delay needed
+      setIsVisible(false);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [unitPreferences.showAdvancedChart]);
 
   /**
    * Process the swell data to identify events
    * useMemo prevents reprocessing on every render unless chartData changes
    */
-  const processedSwellData = useMemo(() => processSwellData(chartData), []);
+  const processedSwellData = useMemo(
+    () => processSwellData(chartData),
+    [chartData]
+  );
 
   const eventIds = Object.keys(processedSwellData);
 
-  // Get all static args
-  const { xAxisArgsBackground, yAxisArgs } = chartArgs;
-
   return (
     <ResponsiveContainer
-      width={60}
-      height="100%"
-      className="mb-0 absolute top-80 left-0 md:left-4 z-10 h-48 min-h-48 max-h-48"
+      width={72}
+      height={unitPreferences.showAdvancedChart ? "100%" : 0}
+      className={cn(
+        "advanced-y-axis tw:mb-0 tw:h-48 tw:min-h-48 tw:max-h-48 tw:transition-[height,min-height] tw:duration-250 tw:ease-out",
+        "tw:absolute tw:top-80 tw:left-0 tw:md:left-4 tw:z-10",
+        !unitPreferences.showAdvancedChart && "tw:!h-0 tw:min-h-0",
+        !hasSubscription && "tw:max-md:top-[38rem]"
+      )}
     >
       <LineChart
         accessibilityLayer
         data={chartData}
-        margin={{
-          bottom: 12,
-          left: 11,
-        }}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
-          vertical={true}
-          horizontal={true}
+          vertical={false}
+          horizontal={false}
           y={0}
           height={192}
           syncWithTicks
         />
 
-        <XAxis {...xAxisArgsBackground} />
-
-        <YAxis
-          {...yAxisArgs}
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          minTickGap={0}
-          unit="m"
-          interval="preserveStart"
-          allowDecimals={false}
-          padding={{ bottom: 16, top: 20 }}
-          overflow="visible"
-          ticks={generateTicks(
-            Math.max(...chartData.map((d) => d.waveHeight_m)),
-            "m"
-          )}
-          tick={(value: {
-            x: number;
-            y: number;
-            index: number;
-            payload: { value: number };
-          }) => {
-            return value.index === 0 ? (
-              <GiBigWave
-                className="w-6 h-6"
-                x={value.x - 30}
-                y={value.y - 20}
-                size={20}
-                color="#666"
-              />
-            ) : (
-              <text
-                x={value.x - 11}
-                y={value.y}
-                dy={1}
-                textAnchor="end"
-                fontSize={12}
-                fill="#666"
-              >
-                {value.payload.value}m
-              </text>
-            );
-          }}
-          className="transition-opacity ease-in-out duration-200"
+        <XAxis
+          dataKey="localDateTimeISO"
+          xAxisId={0}
+          allowDuplicatedCategory={false}
+          allowDataOverflow
+          hide
+          tickFormatter={formatDateTick}
+          padding={{ left: 11, right: 11 }}
+          interval={7}
+          opacity={0}
         />
 
         {eventIds.map((eventId, index) => {
@@ -107,12 +112,53 @@ const AdvancedSwellChartYAxis = () => {
               dataKey="height"
               name={eventId}
               activeDot={false}
+              opacity={0}
             />
           );
         })}
+
+        <YAxis
+          type="number"
+          domain={[0, "dataMax"]}
+          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+          minTickGap={0}
+          interval="preserveEnd"
+          allowDecimals={false}
+          padding={{ bottom: 16, top: 20 }}
+          overflow="visible"
+          ticks={generateTicks(maxSurfHeight, "m")}
+          unit="m"
+          axisLine={false}
+          transform="translate(-5, 0)"
+          tick={(value: {
+            x: number;
+            y: number;
+            index: number;
+            payload: { value: number };
+          }) =>
+            value.index !== 0 ? (
+              <text
+                x={value.x - 2}
+                y={value.y}
+                dy={1}
+                textAnchor="end"
+                fontSize={12}
+                fill="#666"
+                fillOpacity={isVisible ? 1 : 0}
+                className="y-axis-tick-animation"
+              >
+                {value.payload.value}m
+              </text>
+            ) : (
+              <text></text>
+            )
+          }
+          className={cn(
+            "advance-y-axis tw:transition-opacity tw:ease-in tw:duration-300 tw:delay-150",
+            isVisible && "tick-visible"
+          )}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
 };
-
-export default AdvancedSwellChartYAxis;

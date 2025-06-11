@@ -6,12 +6,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import chartData from "@/data";
 import { UnitPreferences } from "@/types";
-import { generateTicks, processedData } from "@/utils/chart-utils";
-import { GiBigWave } from "react-icons/gi";
+import { generateTicks } from "@/utils/chart-utils";
 import { LuWind } from "react-icons/lu";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { ChartDataItem } from "@/types/index.ts";
+import { cn } from "@/utils/utils";
 
 /**
  * SwellChartYAxis component
@@ -21,27 +21,38 @@ import { useScreenDetector } from "@/hooks/useScreenDetector";
  * @param {UnitPreferences} unitPreferences - The unit preferences for the chart
  * @returns {React.ReactElement} The SwellChartYAxis component
  */
-const SwellChartYAxis = ({
+export const SwellChartYAxis = ({
   unitPreferences,
+  chartData,
+  maxSurfHeight,
+  hasSubscription,
 }: {
   unitPreferences: UnitPreferences;
+  chartData: ChartDataItem[];
+  maxSurfHeight: number;
+  hasSubscription: boolean;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
   return (
     <ResponsiveContainer
       width={60}
-      height="100%"
-      className="mb-0 absolute top-0 left-0 md:left-4 z-10 h-80 min-h-80 max-h-80"
+      height={320}
+      minHeight={320}
+      className={cn(
+        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
+        !hasSubscription && "tw:max-md:top-72"
+      )}
     >
       <BarChart
-        data={processedData}
+        data={chartData}
         accessibilityLayer
         margin={{
           bottom: 12,
         }}
         width={60}
-        className="[&>svg]:focus:outline-none"
+        className="tw:[&>svg]:focus:outline-none"
+        height={320}
       >
         <CartesianGrid
           vertical={true}
@@ -72,28 +83,31 @@ const SwellChartYAxis = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft"
-              ? d.waveHeight_ft
-              : d.waveHeight_m
+            unitPreferences.units.surfHeight === "ft"
+              ? d.primary.fullSurfHeightFeet
+              : d.primary.fullSurfHeightMetres
           }
           stackId="b"
           name="Y Wave Height"
           id="y-wave-height"
-          key={`y-wave-height-${unitPreferences.waveHeight}`}
+          key={`y-wave-height-${unitPreferences.units.surfHeight}`}
           hide
           aria-hidden
         />
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.waveHeight === "ft" && d.faceWaveHeight_ft
-              ? d.faceWaveHeight_ft - d.waveHeight_ft
+            d.secondary
+              ? unitPreferences.units.surfHeight === "ft"
+                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
+                : d.secondary.fullSurfHeightMetres -
+                  d.primary.fullSurfHeightMetres
               : null
           }
           stackId="b"
           name="Y Face Wave Height"
           id="y-face-wave-height"
-          key={`y-face-wave-height-${unitPreferences.waveHeight}`}
+          key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
           hide
           aria-hidden
         />
@@ -101,43 +115,31 @@ const SwellChartYAxis = ({
         <YAxis
           tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
           minTickGap={0}
-          unit={unitPreferences.waveHeight}
-          interval="preserveStart"
+          unit={unitPreferences.units.surfHeight}
+          interval="preserveEnd"
           overflow="visible"
           allowDecimals={false}
-          ticks={generateTicks(
-            unitPreferences.waveHeight === "ft"
-              ? Math.max(...chartData.map((d) => d.waveHeight_ft))
-              : Math.max(...chartData.map((d) => d.waveHeight_m)),
-            unitPreferences.waveHeight
-          )}
+          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
-            top: 20,
+            top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
           }}
-          tickLine={false}
+          height={320}
           axisLine={false}
           type="number"
           domain={[0, "dataMax"]}
           tick={(value) => {
             return value.index === 0 ? (
               <g transform="translate(-10, 0)">
-                <GiBigWave
-                  className="w-6 h-6"
-                  x={value.x - 8}
-                  y={value.y - 20}
-                  size={20}
-                  color="#666"
-                />
                 <LuWind
-                  className="w-4 h-4"
-                  x={value.x - 8}
-                  y={value.y + 12}
+                  className="tw:w-4 tw:h-4"
+                  x={value.x - 6}
+                  y={value.y + 16}
                   size={20}
                   color="#666"
                 />
-                {unitPreferences.windSpeed === "knots" ? (
+                {unitPreferences.units.wind === "knots" ? (
                   <text
-                    x={value.x + 12}
+                    x={value.x + 10}
                     y={value.y + 52}
                     dy={1}
                     textAnchor="end"
@@ -167,7 +169,7 @@ const SwellChartYAxis = ({
                 fill="#666"
               >
                 {value.payload.value}
-                {unitPreferences.waveHeight}
+                {unitPreferences.units.surfHeight}
               </text>
             );
           }}
@@ -176,5 +178,3 @@ const SwellChartYAxis = ({
     </ResponsiveContainer>
   );
 };
-
-export default SwellChartYAxis;

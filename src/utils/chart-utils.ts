@@ -1,8 +1,13 @@
-import chartData from "@/data";
-import { processTimeData } from "@/lib/time-utils";
 import { scaleTime } from "d3-scale";
-import { XAxisProps } from "recharts";
 
+/**
+ * Generate ticks for the charts.
+ * @description This function generates ticks for the charts based on the maximum height and unit.
+ * It maps the ticks to the nearest increment and returns an array of ticks.
+ * @param maxHeight - The maximum height of the tide
+ * @param unit - The unit of the tide (ft or m)
+ * @returns - An array of ticks
+ */
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
     // Base ticks for feet with increasing intervals
@@ -53,35 +58,13 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
 };
 
 /**
- * Formats the wave height for the tooltip
- * @param height - The wave height
- * @param unit - The unit of the wave height
- * @returns The formatted wave height
+ * Format the date tick for the charts.
+ * @description This function formats the date tick for the charts based on the ISO datetime string.
+ * It parses the ISO datetime string which includes timezone offset, formats the date using local time methods,
+ * and returns the formatted date.
+ * @param value - The ISO datetime string
+ * @returns - The formatted date
  */
-export const formatWaveHeight = (
-  height: number | undefined,
-  unit: string | undefined
-) => {
-  if (!height) return "0m"; // Handle undefined height
-  const actualUnit = unit || "m"; // Default to meters if unit is undefined
-
-  if (actualUnit === "ft") {
-    // For feet, show as a range (e.g., 2-3ft)
-    const lowerBound = Math.floor(height);
-    const upperBound = Math.ceil(height);
-
-    // If the height is already a whole number, just return that value
-    if (lowerBound === upperBound) {
-      return `${lowerBound}${actualUnit}`;
-    }
-
-    return `${lowerBound}-${upperBound}${actualUnit}`;
-  }
-
-  // For meters, show one decimal place
-  return `${height.toFixed(1)}${actualUnit}`;
-};
-
 export const formatDateTick = (value: string) => {
   // Parse the ISO datetime string which includes timezone offset
   const date = new Date(value);
@@ -101,13 +84,6 @@ export const formatDateTick = (value: string) => {
   const reversedDate = `${day}/${month.padStart(2, "0")}`;
 
   return `${weekday} ${reversedDate}`;
-};
-
-export const formatWeatherText = (text: string) => {
-  return text
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 };
 
 /**
@@ -153,181 +129,90 @@ export const getWindColor = (windSpeed: number): string => {
 };
 
 /**
- * Generic time processing utility that can be used for any time-series data
+ * Creates a continuous time scale for tide data, starting at midnight of the first day
  */
-export const processTimeScaleData = (timestamps: number[]) => {
-  const startTimestamp = Math.min(...timestamps);
-  const endTimestamp = Math.max(...timestamps);
+export const createTideTimeScale = (timestamps: number[]) => {
+  if (!timestamps.length) return null;
 
-  // Create Date objects for the start and end of the day
-  const startDateObj = new Date(startTimestamp);
-  const endDateObj = new Date(endTimestamp);
+  // Get the first timestamp and create a date object
+  const firstTimestamp = Math.min(...timestamps);
+  const firstDate = new Date(firstTimestamp);
 
-  // Set start date to beginning of day (00:00:00)
-  startDateObj.setDate(startDateObj.getDate());
-  startDateObj.setHours(0, 0, 0, 0);
+  // Set to midnight of the first day
+  const startDate = new Date(firstDate);
+  startDate.setHours(0, 0, 0, 0);
 
-  // Set end date to beginning of next day (00:00:00)
-  endDateObj.setDate(endDateObj.getDate() + 1);
-  endDateObj.setHours(0, 0, 0, 0);
+  // Get the last timestamp and create a date object
+  const lastTimestamp = Math.max(...timestamps);
+  const lastDate = new Date(lastTimestamp);
+
+  // Set to midnight of the day after the last data point
+  const endDate = new Date(lastDate);
+  endDate.setDate(endDate.getDate() + 1);
+  endDate.setHours(0, 0, 0, 0);
 
   // Create time scale with numeric timestamps
-  const timeScale = scaleTime().domain([startDateObj, endDateObj]).nice();
+  const timeScale = scaleTime().domain([startDate, endDate]).nice();
 
   // Generate ticks for each day
   const dayTicks: number[] = [];
-  let currentDate = new Date(startDateObj);
-  while (currentDate <= endDateObj) {
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
     dayTicks.push(currentDate.getTime());
     currentDate = new Date(currentDate);
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return {
-    startDateObj,
-    endDateObj,
+    startDate,
+    endDate,
     timeScale,
     dayTicks,
   };
 };
 
-// Update the existing swell chart data processing to use the new utility
-export const { processedData, dayTicks } = processTimeData(
-  chartData.map((item) => ({
-    ...item,
-    dateTime: item.localDateTimeISO,
-    timestamp: new Date(item.localDateTimeISO).getTime(),
-  }))
-);
-
-const timeValues = processedData.map((row) => row.timestamp);
-const { startDateObj, endDateObj, timeScale } =
-  processTimeScaleData(timeValues);
-
-export { startDateObj, endDateObj, timeScale };
-
 /**
- * Base XAxis configuration
+ * Calculates the chart width based on number of days in the data.
+ * @param dataLength Number of 3-hour data points
+ * @param widthPerDay Width in px for each day (default 294)
+ * @param extraSpace Additional px to add for chart padding/margins (default 0)
+ * @returns Total width in px for the chart
  */
-export const baseChartXAxisProps: Partial<XAxisProps> = {
-  dataKey: "timestamp",
-  // dataKey: (item) => new Date(item.dateTimeISO).getTime(),
-  type: "number" as const,
-  scale: timeScale,
-  domain: timeScale.domain().map((date) => date.valueOf()),
-  interval: "preserveStart" as const,
-  padding: { left: 12 },
-  allowDuplicatedCategory: false,
-  allowDataOverflow: true,
-};
-
-// Convert meters to feet with one decimal place precision
-export const metersToFeet = (meters: number): number => {
-  return Number((meters * 3.28084).toFixed(1));
+export const getChartWidth = (
+  dataLength: number,
+  widthPerDay = 256,
+  extraSpace = 0
+): number => {
+  const days = Math.ceil(dataLength / 8);
+  return days * widthPerDay + extraSpace;
 };
 
 /**
- * Calculates the coefficients for cubic spline interpolation
- * @param x Array of x values (timestamps)
- * @param y Array of y values (heights)
- * @returns Array of coefficients for cubic spline interpolation
+ * Define the color palette of each Advanced Swell event
  */
-const calculateSplineCoefficients = (x: number[], y: number[]) => {
-  const n = x.length;
-  const h: number[] = [];
-  const alpha: number[] = [];
-  const l: number[] = new Array(n).fill(0);
-  const mu: number[] = new Array(n).fill(0);
-  const z: number[] = new Array(n).fill(0);
-  const c: number[] = new Array(n).fill(0);
-  const b: number[] = new Array(n - 1).fill(0);
-  const d: number[] = new Array(n - 1).fill(0);
+export const colorPalette = [
+  "oklch(50.5% 0.213 27.518)", // Tailwind red-700
+  "oklch(55.5% 0.163 48.998)", // Tailwind amber-700
+  "oklch(48.8% 0.243 264.376)", // Tailwind blue-700
+  "oklch(52.7% 0.154 150.069)", // Tailwind green-700
+  "oklch(49.6% 0.265 301.924)", // Tailwind purple-700
+  "oklch(52.5% 0.223 3.958)", // Tailwind pink-700
+  "oklch(27.9% 0.041 260.031)", // Tailwind slate-800
+  "oklch(52% 0.105 223.128)", // Tailwind cyan-700
+  "oklch(53.2% 0.157 131.589)", // Tailwind lime-700
+];
 
-  // Calculate h values
-  for (let i = 0; i < n - 1; i++) {
-    h[i] = x[i + 1] - x[i];
-  }
-
-  // Calculate alpha values
-  for (let i = 1; i < n - 1; i++) {
-    alpha[i] =
-      (3 / h[i]) * (y[i + 1] - y[i]) - (3 / h[i - 1]) * (y[i] - y[i - 1]);
-  }
-
-  // Calculate l, mu, and z values
-  l[0] = 1;
-  for (let i = 1; i < n - 1; i++) {
-    l[i] = 2 * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
-    mu[i] = h[i] / l[i];
-    z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
-  }
-
-  // Calculate c, b, and d values
-  l[n - 1] = 1;
-  for (let j = n - 2; j >= 0; j--) {
-    c[j] = z[j] - mu[j] * c[j + 1];
-    b[j] = (y[j + 1] - y[j]) / h[j] - (h[j] * (c[j + 1] + 2 * c[j])) / 3;
-    d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
-  }
-
-  return { b, c, d };
-};
-
-interface TideDataPoint {
-  height: number;
-  timestamp: number;
-  localDateTimeISO: string;
-  utc: string;
-}
-
-// Interpolate tide data with natural curves
-export const interpolateTideData = (data: TideDataPoint[]): TideDataPoint[] => {
-  if (data.length < 2) return data;
-
-  const result: TideDataPoint[] = [];
-  const POINTS_BETWEEN = 20; // Number of points to add between each actual data point
-
-  // Calculate spline coefficients using UTC timestamps for consistent intervals
-  const timestamps = data.map((point) => new Date(point.utc).getTime());
-  const heights = data.map((point) => point.height);
-  const { b, c, d } = calculateSplineCoefficients(timestamps, heights);
-
-  // Interpolate between each pair of points
-  for (let i = 0; i < data.length - 1; i++) {
-    const startPoint = data[i];
-    const endPoint = data[i + 1];
-
-    // Add the start point
-    result.push(startPoint);
-
-    // Calculate time step in milliseconds between the two points
-    const startTime = new Date(startPoint.utc).getTime();
-    const endTime = new Date(endPoint.utc).getTime();
-    const timeStep = (endTime - startTime) / (POINTS_BETWEEN + 1);
-
-    // Add interpolated points using cubic spline
-    for (let j = 1; j <= POINTS_BETWEEN; j++) {
-      const timestamp = startTime + timeStep * j;
-      const x = timestamp - timestamps[i]; // Use the same time base as coefficients
-
-      // Calculate height using cubic spline formula
-      const height = heights[i] + b[i] * x + c[i] * x * x + d[i] * x * x * x;
-
-      // Create proper UTC and local time strings
-      const utcDate = new Date(timestamp);
-      const localDate = new Date(timestamp + 11 * 60 * 60 * 1000); // Add 11 hours for +11:00 timezone
-
-      result.push({
-        height,
-        timestamp,
-        localDateTimeISO: localDate.toISOString().replace("Z", "+11:00"),
-        utc: utcDate.toISOString(),
-      });
-    }
-  }
-
-  // Add the last point
-  result.push(data[data.length - 1]);
-
-  return result;
-};
+/**
+ * Define the active color palette of the hovered Advanced Swell event
+ */
+export const activeColorPalette = [
+  "oklch(57.7% 0.245 27.325)", // Tailwind red-600
+  "oklch(66.6% 0.179 58.318)", // Tailwind amber-600
+  "oklch(54.6% 0.245 262.881)", // Tailwind blue-600
+  "oklch(62.7% 0.194 149.214)", // Tailwind green-600
+  "oklch(55.8% 0.288 302.321)", // Tailwind purple-600
+  "oklch(59.2% 0.249 0.584)", // Tailwind pink-600
+  "oklch(55.4% 0.046 257.417)", // Tailwind slate-500
+  "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
+  "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
+];
