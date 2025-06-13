@@ -101,29 +101,21 @@ export const formatBulletinDateTime = (
   timezone: string
 ): string => {
   const date = new Date(dateTimeUtc);
-  const day = date.getUTCDate();
-  const month = date.toLocaleString("en-US", { month: "short" });
-  const hour = String(date.getUTCHours()).padStart(2, "0");
 
-  // Get the ordinal suffix for the day
-  const ordinal = (day: number) => {
-    if (day > 3 && day < 21) return "th";
-    switch (day % 10) {
-      case 1:
-        return "st";
-      case 2:
-        return "nd";
-      case 3:
-        return "rd";
-      default:
-        return "th";
-    }
-  };
+  // Format local time (DD/MM HH:MMam/pm)
+  const localTime = formatInTimeZone(
+    date,
+    timezone,
+    "dd/MM h:mma"
+  ).toLowerCase();
 
-  // Format the local time
-  const localTime = formatInTimeZone(date, timezone, "h:mm a").toLowerCase();
+  // Format UTC time (DD/MM HHZ)
+  const utcDay = String(date.getUTCDate()).padStart(2, "0");
+  const utcMonth = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const utcHour = String(date.getUTCHours()).padStart(2, "0");
+  const utcTime = `${utcDay}/${utcMonth} ${utcHour}Z`;
 
-  return `${day}${ordinal(day)} ${month} ${hour}Z (${localTime} local time)`;
+  return `${localTime} (${utcTime})`;
 };
 
 export const formatTime = (dateTimeStr: string, timezone: string): string => {
