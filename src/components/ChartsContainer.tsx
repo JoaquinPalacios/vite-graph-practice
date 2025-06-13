@@ -15,13 +15,12 @@ import { ChartDataItem } from "@/types/index.ts";
 import { processTimeData } from "@/lib/time-utils";
 import { UnitSelector } from "./UnitSelector";
 import { Suspense, useState } from "react";
-import { AdvancedSwellChart } from "./AdvancedSwellChart";
-import { AdvancedSwellChartYAxis } from "./AdvancedSwellChart/AdvancedSwellChartYAxis";
 import WeatherChart from "./WeatherChart";
 import { TideChart } from "./TideChart";
 import GraphSkeleton from "./GraphSkeleton";
 import { SubscriptionOverlay } from "./SubscriptionOverlay";
 import SwellTrainAnalysis from "./SweeltrainAnalysis";
+import { AdvanceD3Chart } from "./AdvanceD3Chart";
 
 /**
  * ChartsContainer component
@@ -144,16 +143,11 @@ const ChartsContainer = ({
                     }
                     hasSubscription={rawApiData.user.hasFullAccess}
                   />
-                  <AdvancedSwellChart
+
+                  <AdvanceD3Chart
                     unitPreferences={unitPreferences}
                     chartData={processedData}
                     maxSurfHeight={maxSurfHeight.meters}
-                  />
-                  <AdvancedSwellChartYAxis
-                    chartData={processedData}
-                    maxSurfHeight={maxSurfHeight.meters}
-                    unitPreferences={unitPreferences}
-                    hasSubscription={rawApiData.user.hasFullAccess}
                   />
                 </>
               ) : (

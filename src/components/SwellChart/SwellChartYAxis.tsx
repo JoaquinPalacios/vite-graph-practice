@@ -46,7 +46,6 @@ export const SwellChartYAxis = ({
     >
       <BarChart
         data={chartData}
-        accessibilityLayer
         margin={{
           bottom: 12,
         }}
@@ -91,7 +90,7 @@ export const SwellChartYAxis = ({
           name="Y Wave Height"
           id="y-wave-height"
           key={`y-wave-height-${unitPreferences.units.surfHeight}`}
-          hide
+          // hide
           aria-hidden
         />
 
@@ -108,7 +107,7 @@ export const SwellChartYAxis = ({
           name="Y Face Wave Height"
           id="y-face-wave-height"
           key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
-          hide
+          // hide
           aria-hidden
         />
 
@@ -121,7 +120,7 @@ export const SwellChartYAxis = ({
           allowDecimals={false}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 48 : 0,
           }}
           height={320}
           axisLine={false}
@@ -133,14 +132,14 @@ export const SwellChartYAxis = ({
                 <LuWind
                   className="tw:w-4 tw:h-4"
                   x={value.x - 6}
-                  y={value.y + 16}
+                  y={value.y + 8}
                   size={20}
                   color="#666"
                 />
                 {unitPreferences.units.wind === "knots" ? (
                   <text
                     x={value.x + 10}
-                    y={value.y + 52}
+                    y={value.y + 48}
                     dy={1}
                     textAnchor="end"
                     fontSize={10}
@@ -150,7 +149,7 @@ export const SwellChartYAxis = ({
                 ) : (
                   <text
                     x={value.x + 12}
-                    y={value.y + 52}
+                    y={value.y + 48}
                     dy={1}
                     textAnchor="end"
                     fontSize={10}

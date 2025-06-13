@@ -12,7 +12,6 @@ import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { SunriseSunsetData, WeatherData } from "@/types";
 import { useState } from "react";
-import { WeatherChartCursor } from "./WeatherChartCursor";
 
 type ScatterShapeProps = {
   cx?: number;
@@ -32,20 +31,18 @@ const WeatherChart = ({
   // Add index property to each data point
   const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const [isDirectHover, setIsDirectHover] = useState(false);
 
   return (
     <ResponsiveContainer
       width={getChartWidth(weatherData.length, 256, 60)}
       height="100%"
       className={cn(
-        "tw:h-16 tw:min-h-16 tw:relative",
-        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-slate-300 tw:after:pointer-events-none"
+        "weather-chart tw:h-16 tw:min-h-16 tw:relative",
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-slate-400/80 tw:after:pointer-events-none"
       )}
     >
       <ScatterChart
         data={weatherDataWithIndex}
-        accessibilityLayer
         margin={{
           left: 0,
           right: 0,
@@ -57,7 +54,7 @@ const WeatherChart = ({
       >
         <CartesianGrid
           vertical={true}
-          horizontal={true}
+          horizontal={false}
           verticalFill={[
             "oklch(0.968 0.007 247.896)", // Tailwind slate-200
             "oklch(0.929 0.013 255.508)", // Tailwind slate-300
@@ -86,17 +83,15 @@ const WeatherChart = ({
           overflow="visible"
           onMouseEnter={(_, index) => {
             setHoverIndex(index);
-            setIsDirectHover(true);
           }}
           onMouseLeave={() => {
             setHoverIndex(null);
-            setIsDirectHover(false);
           }}
           className="tw:transition-all tw:duration-300"
         />
 
         <Tooltip
-          cursor={isDirectHover ? false : <WeatherChartCursor />}
+          cursor={false}
           content={() => <span className="tw:sr-only">.</span>}
           trigger="hover"
           isAnimationActive={false}
@@ -105,7 +100,8 @@ const WeatherChart = ({
         <YAxis
           dataKey={() => 1}
           height={0}
-          domain={[1]}
+          // domain={[1]}
+          domain={[1, 1]}
           padding={{ bottom: 16 }}
           opacity={0}
           tickLine={false}

@@ -1,8 +1,17 @@
-import { TooltipProps } from "recharts";
-import { NameType } from "recharts/types/component/DefaultTooltipContent";
-import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { memo } from "react";
 import { formatInTimeZone } from "date-fns-tz";
+
+type CustomTooltipProps = {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload: {
+      localDateTimeISO: string;
+      height: number;
+    };
+  }>;
+  timezone: string;
+};
 
 /**
  * TideTooltip component
@@ -12,12 +21,8 @@ import { formatInTimeZone } from "date-fns-tz";
  * @returns The TideTooltip component
  */
 export const TideTooltip = memo(
-  ({
-    active,
-    payload,
-    timezone,
-  }: TooltipProps<ValueType, NameType> & { timezone: string }) => {
-    if (active && payload && payload.length) {
+  ({ active, payload, timezone }: CustomTooltipProps) => {
+    if (active && payload && payload.length && payload[0].payload) {
       return (
         <div
           className="tooltip-container tw:bg-white/96 tw:shadow-md"

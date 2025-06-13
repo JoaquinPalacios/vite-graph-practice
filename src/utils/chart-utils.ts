@@ -216,3 +216,48 @@ export const activeColorPalette = [
   "oklch(60.9% 0.126 221.723)", // Tailwind cyan-600
   "oklch(76.8% 0.233 130.85)", // Tailwind lime-500
 ];
+
+/**
+ * Calculates the tooltip position and side (left/right) to keep it within chart bounds.
+ * @param x - X coordinate
+ * @param y - Y coordinate
+ * @param tooltipWidth - Tooltip width
+ * @param tooltipHeight - Tooltip height
+ * @param chartWidth - Chart drawing width
+ * @param chartHeight - Chart drawing height
+ * @param margin - Chart margin object
+ * @returns Object with x, y, and side ("left" | "right")
+ */
+export const calculateTooltipPosition = (
+  x: number,
+  y: number,
+  tooltipWidth: number,
+  tooltipHeight: number,
+  chartWidth: number,
+  chartHeight: number,
+  margin: { left: number; right: number; top: number; bottom: number }
+) => {
+  const offsetX = 24;
+  const offsetY = -8;
+  const spaceRight = chartWidth - (x + margin.left);
+  const spaceTop = y + margin.top;
+  let tooltipX = x + margin.left + offsetX;
+  let side: "left" | "right" = "right";
+  if (spaceRight < tooltipWidth + offsetX) {
+    tooltipX = x + margin.left - tooltipWidth - offsetX;
+    side = "left";
+  }
+  let tooltipY = y + margin.top + offsetY;
+  if (spaceTop < tooltipHeight + Math.abs(offsetY)) {
+    tooltipY = y + margin.top + Math.abs(offsetY);
+  }
+  tooltipX = Math.max(
+    margin.left,
+    Math.min(chartWidth - tooltipWidth - margin.right, tooltipX)
+  );
+  tooltipY = Math.max(
+    margin.top,
+    Math.min(chartHeight - tooltipHeight - margin.bottom, tooltipY)
+  );
+  return { x: tooltipX, y: tooltipY, side };
+};

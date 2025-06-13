@@ -48,30 +48,29 @@ export const SwellChart = ({
       className={cn(
         "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
         unitPreferences.showAdvancedChart &&
-          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-300 tw:after:pointer-events-none"
+          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-400/80 tw:after:pointer-events-none"
       )}
       minHeight={320}
     >
       <BarChart
-        accessibilityLayer
         data={chartData}
         barCategoryGap={1}
         margin={{
           bottom: 12,
         }}
         className="swellnet-bar-chart tw:[&>svg]:focus:outline-none"
-        syncId="swellnet"
       >
         <CartesianGrid
           vertical={true}
-          horizontal={true}
           verticalFill={[
             "oklch(0.968 0.007 247.896)", // Tailwind slate-200
             "oklch(0.929 0.013 255.508)", // Tailwind slate-300
           ]}
+          horizontal={true}
           y={0}
           height={320}
           syncWithTicks
+          className=""
         />
 
         {/* Duplicate XAxis for the stripes in the background */}
@@ -132,6 +131,7 @@ export const SwellChart = ({
           allowDataOverflow
           minTickGap={16}
           tickCount={4} // Increased from 2 to show more time points
+          tickMargin={8}
         />
 
         {/* XAxis for the wind direction */}
@@ -152,7 +152,7 @@ export const SwellChart = ({
                 payload={{ value: data.wind.direction ?? 0 }}
                 windSpeed={data.wind.speedKnots || 0}
                 x={x}
-                y={y}
+                y={y - 32}
               />
             );
           }}
@@ -171,7 +171,7 @@ export const SwellChart = ({
             return (
               <WindSpeedTick
                 x={x}
-                y={y}
+                y={y - 32}
                 payload={{
                   value:
                     unitPreferences.units.wind === "knots"
@@ -190,7 +190,6 @@ export const SwellChart = ({
         />
 
         <Tooltip
-          accessibilityLayer
           content={<SwellTooltip unitPreferences={unitPreferences} />}
           cursor={{
             fill: "oklch(0.129 0.042 264.695)",
@@ -292,7 +291,7 @@ export const SwellChart = ({
           domain={[0, "dataMax"]}
           minTickGap={0}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 32 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 48 : 0,
           }}
           interval="preserveEnd"
           overflow="visible"

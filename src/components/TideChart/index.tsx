@@ -652,7 +652,18 @@ export const TideChart = ({
     if (containerRef.current) {
       containerRef.current.style.width = `${totalWidth}px`;
     }
-  }, [svgDimensions, transformedData, labelData, timeDomain, length]);
+  }, [
+    svgDimensions,
+    transformedData,
+    labelData,
+    timeDomain,
+    length,
+    isMobile,
+    isLandscapeMobile,
+    timezone,
+    bisectTime,
+    tooltipDateFormat,
+  ]);
 
   /**
    * Fourth, Resize Observer
@@ -660,15 +671,16 @@ export const TideChart = ({
    */
   useEffect(() => {
     if (!containerRef.current) return;
+    const container = containerRef.current;
     const observer = new ResizeObserver((entries) => {
       if (entries[0]) {
         const { width, height } = entries[0].contentRect;
         setSvgDimensions({ width, height });
       }
     });
-    observer.observe(containerRef.current);
+    observer.observe(container);
     return () => {
-      if (containerRef.current) observer.unobserve(containerRef.current);
+      observer.unobserve(container);
     };
   }, []);
 

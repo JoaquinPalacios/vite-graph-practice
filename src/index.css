@@ -159,6 +159,16 @@ td {
   transform: rotate(45deg);
 }
 
+.swellnet-bar-chart .recharts-cartesian-grid-vertical line,
+.weather-chart .recharts-cartesian-grid-vertical line {
+  opacity: 0;
+}
+
+.swell-y-axis .recharts-layer.recharts-cartesian-axis-tick line {
+  opacity: 1;
+  stroke: #ccc;
+}
+
 @media (max-width: 768px) {
   .advanced-y-axis .recharts-cartesian-axis-tick-line {
     transform: translateX(-1rem);

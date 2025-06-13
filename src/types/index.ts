@@ -155,6 +155,23 @@ export interface SurfcamProps {
   updatedAt: string;
 }
 
+export interface SwellPoint {
+  height: number;
+  direction: number;
+  period: number;
+  localDateTimeISO: string;
+  timestamp: number;
+  eventId: string;
+}
+
+export interface TooltipState {
+  visible: boolean;
+  x: number;
+  y: number;
+  data: SwellPoint | SwellPoint[] | null;
+  side: "left" | "right";
+}
+
 declare global {
   interface Window {
     swellnetRawData: DrupalApiData;
