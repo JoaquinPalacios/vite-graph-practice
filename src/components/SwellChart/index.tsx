@@ -291,7 +291,7 @@ export const SwellChart = ({
           padding={{
             top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
           }}
-          interval="preserveEnd"
+          interval={0}
           overflow="visible"
           opacity={0}
           allowDecimals={false}

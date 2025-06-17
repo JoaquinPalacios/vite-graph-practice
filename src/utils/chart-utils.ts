@@ -17,33 +17,22 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
     if (roundedMax <= 5) {
       // Show all ticks up to 5
       return [0, 1, 2, 3, 4, 5];
-    } else if (roundedMax <= 8) {
-      // Show 0, 1, 3, 5 and max
-      return [0, 1, 3, 5, roundedMax];
-    } else if (roundedMax <= 10) {
-      // Show 0, 3, 5, 8 and max if not 8
-      return roundedMax === 8 ? [0, 1, 3, 5, 8] : [0, 1, 3, 5, 7, roundedMax];
-    } else if (roundedMax <= 15) {
-      // Show 0, 3, 5, 8, 10 and max
-      return [0, 3, 5, 8, 10, roundedMax];
-    } else if (roundedMax <= 35) {
-      // Show ticks in increments of 5
+    } else if (roundedMax <= 14) {
+      const roundedToTwo = Math.ceil(roundedMax / 2) * 2;
       const ticks = [];
-      for (let i = 0; i <= roundedMax; i += 5) {
+      for (let i = 0; i <= roundedToTwo; i += 2) {
         ticks.push(i);
-      }
-      if (ticks[ticks.length - 1] !== roundedMax) {
-        ticks.push(roundedMax);
       }
       return ticks;
+    } else if (roundedMax <= 16) {
+      return [0, 4, 8, 12, 16];
     } else {
-      // Show ticks in increments of 10
+      // For values greater than 16, show ticks in increments of 5
+      // Round up to the nearest multiple of 5
+      const roundedToFive = Math.ceil(roundedMax / 5) * 5;
       const ticks = [];
-      for (let i = 0; i <= roundedMax; i += 10) {
+      for (let i = 0; i <= roundedToFive; i += 5) {
         ticks.push(i);
-      }
-      if (ticks[ticks.length - 1] !== roundedMax) {
-        ticks.push(roundedMax);
       }
       return ticks;
     }
