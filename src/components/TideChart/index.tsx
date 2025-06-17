@@ -157,7 +157,7 @@ export const TideChart = ({
 
           const pointTime = pointDate.getTime();
           return {
-            height: Math.max(0, getTideHeight(point)),
+            height: getTideHeight(point),
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
             utcDateTimeISO: pointDate.toISOString(),
@@ -286,42 +286,47 @@ export const TideChart = ({
 
     // --- Scales ---
     const maxTide = d3.max(transformedData, (d) => d.height) ?? 1;
+    const minTide = d3.min(transformedData, (d) => d.height) ?? 0;
 
-    // Create a linear scale for the Y-axis with modified domain
+    // Create a linear scale for the Y-axis with modified domain to include negative values
     const yScale = d3
       .scaleLinear()
-      .domain([0, Math.ceil(maxTide)])
+      .domain([Math.min(0, minTide), Math.ceil(maxTide)])
       .range([chartDrawingHeight, 0])
       .nice();
 
     // Custom tick format function with correct type definition
     const customTickFormat = (d: d3.NumberValue) => {
       const value = Number(d);
-      if (value === 0) return ""; // Keep hiding 0
+      if (value === 0) return "0m"; // Show 0m instead of hiding it
 
-      // For max tide ≤ 1m, show 0.5m and 1m
-      if (maxTide <= 1) {
-        if (value === 0.5 || value === 1) {
+      // For max tide ≤ 1m and min tide ≥ -1m, show 0.5m intervals
+      if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
+        if (Math.abs(value) === 0.5 || Math.abs(value) === 1) {
           return `${value}m`;
         }
         return "";
       }
 
-      // For max tide > 1m, show whole numbers up to rounded up max tide
+      // For larger ranges, show whole numbers
       return `${Math.round(value)}m`;
     };
 
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
-      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // For max tide ≤ 1m, show 2 ticks (0.5 and 1), otherwise show whole numbers
+      .ticks(
+        Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1
+          ? 4
+          : Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)))
+      )
       .tickPadding(8)
       .tickFormat(customTickFormat)
       .tickSize(6);
 
-    // Set specific tick values for max tide ≤ 1m
-    if (maxTide <= 1) {
-      yAxis.tickValues([0.5, 1]);
+    // Set specific tick values for small ranges
+    if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
+      yAxis.tickValues([-1, -0.5, 0, 0.5, 1]);
     }
 
     // Create a group for the Y-axis in its own SVG
@@ -385,22 +390,33 @@ export const TideChart = ({
     // Draw horizontal grid lines for each Y tick, for visual clarity
     const gridAxis = d3
       .axisLeft(yScale)
-      .ticks(maxTide <= 1 ? 2 : Math.ceil(maxTide)) // Match Y-axis ticks
+      .ticks(
+        Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1
+          ? 4
+          : Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)))
+      )
       .tickSize(-chartDrawingWidth)
       .tickFormat(() => ""); // Only lines, no labels
 
-    // Set specific tick values for max tide ≤ 1m
-    if (maxTide <= 1) {
-      gridAxis.tickValues([0.5, 1]);
+    // Set specific tick values for small ranges
+    if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
+      gridAxis.tickValues([-1, -0.5, 0, 0.5, 1]);
     }
 
     const yGridG = chartArea.append("g").attr("class", "y-grid").call(gridAxis);
 
-    // Remove grid lines for 0 and non-integer values when max tide > 1m
+    // Style the zero line differently
     yGridG.selectAll(".tick").each(function (d) {
       const value = Number(d);
-      if (value === 0 || (maxTide > 1 && !Number.isInteger(value))) {
-        d3.select(this).select("line").remove();
+      const line = d3.select(this).select("line");
+      if (value === 0) {
+        line
+          .attr("stroke", "oklch(12.9% 0.042 264.695)") // Darker color for zero line
+          .attr("stroke-width", 1.5);
+      } else {
+        line
+          .attr("stroke", "oklch(0.929 0.013 255.508)") // Lighter color for other grid lines
+          .attr("stroke-width", 1);
       }
     });
 

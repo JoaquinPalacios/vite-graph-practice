@@ -120,12 +120,11 @@ export const SwellChartYAxis = ({
           allowDecimals={false}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 48 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
           }}
           height={320}
           axisLine={false}
           type="number"
-          domain={[0, "dataMax"]}
           tick={(value) => {
             return value.index === 0 ? (
               <g transform="translate(-10, 0)">

@@ -10,27 +10,43 @@ import { scaleTime } from "d3-scale";
  */
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
-    // Base ticks for feet with increasing intervals
-    const baseTicks = [
-      0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 55,
-      60, 65, 70, 75, 80, 85, 90, 95, 100,
-    ];
+    // Round maxHeight to nearest whole number
+    const roundedMax = Math.ceil(maxHeight);
 
-    // Find the appropriate max tick (rounded up to next increment)
-    let maxTick = 0;
-    for (let i = 0; i < baseTicks.length; i++) {
-      if (baseTicks[i] >= maxHeight) {
-        maxTick = baseTicks[i];
-        break;
+    // Special cases for feet based on rounded maxHeight
+    if (roundedMax <= 5) {
+      // Show all ticks up to 5
+      return [0, 1, 2, 3, 4, 5];
+    } else if (roundedMax <= 8) {
+      // Show 0, 1, 3, 5 and max
+      return [0, 1, 3, 5, roundedMax];
+    } else if (roundedMax <= 10) {
+      // Show 0, 3, 5, 8 and max if not 8
+      return roundedMax === 8 ? [0, 1, 3, 5, 8] : [0, 1, 3, 5, 7, roundedMax];
+    } else if (roundedMax <= 15) {
+      // Show 0, 3, 5, 8, 10 and max
+      return [0, 3, 5, 8, 10, roundedMax];
+    } else if (roundedMax <= 35) {
+      // Show ticks in increments of 5
+      const ticks = [];
+      for (let i = 0; i <= roundedMax; i += 5) {
+        ticks.push(i);
       }
-      if (i === baseTicks.length - 1) {
-        // If we reach the end, calculate the next increment (adding 5)
-        const lastTick = baseTicks[baseTicks.length - 1];
-        maxTick = lastTick + 5 * Math.ceil((maxHeight - lastTick) / 5);
+      if (ticks[ticks.length - 1] !== roundedMax) {
+        ticks.push(roundedMax);
       }
+      return ticks;
+    } else {
+      // Show ticks in increments of 10
+      const ticks = [];
+      for (let i = 0; i <= roundedMax; i += 10) {
+        ticks.push(i);
+      }
+      if (ticks[ticks.length - 1] !== roundedMax) {
+        ticks.push(roundedMax);
+      }
+      return ticks;
     }
-
-    return baseTicks.filter((tick) => tick <= maxTick).concat(maxTick);
   } else {
     // For meters, use smaller increments
     const baseTicksMeters = [

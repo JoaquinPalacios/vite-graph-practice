@@ -5,7 +5,6 @@ import {
   UnitPreferences,
   WeatherData,
   DrupalApiData,
-  SunriseSunsetData,
 } from "@/types";
 import ChartsWrapper from "./ChartsWrapper";
 import { SwellChart } from "./SwellChart";
@@ -29,6 +28,7 @@ import { AdvanceD3Chart } from "./AdvanceD3Chart";
  * @param defaultPreferences - The default preferences of the unit
  * @param chartData - The chart data
  * @param maxSurfHeight - The max surf height
+ * @param maxSurfHeightAdvanced - The max surf height advanced
  * @param chartWidth - The width of the chart
  * @param weatherData - The weather data
  * @param tideData - The tide data
@@ -40,12 +40,12 @@ const ChartsContainer = ({
   defaultPreferences,
   chartData,
   maxSurfHeight,
+  maxSurfHeightAdvanced,
   chartWidth,
   weatherData,
   tideData,
   timezone,
   rawApiData,
-  sunriseSunsetData,
   modelType,
   setModelType,
 }: {
@@ -55,12 +55,12 @@ const ChartsContainer = ({
     feet: number;
     meters: number;
   };
+  maxSurfHeightAdvanced: number; // Always in meters
   chartWidth: number;
   weatherData: WeatherData[];
   tideData: TideDataFromDrupal[];
   timezone: string;
   rawApiData: DrupalApiData;
-  sunriseSunsetData: SunriseSunsetData;
   modelType: "gfs" | "ecmwf";
   setModelType: (type: "gfs" | "ecmwf") => void;
 }) => {
@@ -147,7 +147,7 @@ const ChartsContainer = ({
                   <AdvanceD3Chart
                     unitPreferences={unitPreferences}
                     chartData={processedData}
-                    maxSurfHeight={maxSurfHeight.meters}
+                    maxSurfHeight={maxSurfHeightAdvanced}
                   />
                 </>
               ) : (
@@ -157,10 +157,7 @@ const ChartsContainer = ({
             <Suspense fallback={<GraphSkeleton showWeather />}>
               {weatherData && weatherData.length > 0 ? (
                 <>
-                  <WeatherChart
-                    weatherData={weatherData}
-                    sunriseSunsetData={sunriseSunsetData}
-                  />
+                  <WeatherChart weatherData={weatherData} />
                   <div
                     className={cn(
                       "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",

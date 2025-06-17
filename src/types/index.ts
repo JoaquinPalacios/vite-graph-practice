@@ -119,6 +119,17 @@ export interface ChartDataItem {
     totalSigHeight?: number | null;
     direction: number | null;
   };
+  // bulletin?: {
+  //   numSwellTrains: number;
+  //   totalSigHeight: string;
+  //   trainData: {
+  //     trainDelta: number;
+  //     sigHeight: number | null;
+  //     peakPeriod: number | null;
+  //     direction: number | null;
+  //   }[];
+  // };
+
   trainData?: {
     trainDelta: number;
     sigHeight: number | null;

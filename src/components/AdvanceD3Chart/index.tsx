@@ -29,7 +29,7 @@ import { SwellTooltip } from "./SwellTooltip";
  * @description A line chart that shows different incoming swells and their relative heights
  * @param unitPreferences - The unit preferences for the chart
  * @param chartData - The chart data
- * @param maxSurfHeight - The maximum surf height
+ * @param maxSurfHeight - The maximum surf height in meters
  * @returns The Advanced D3 Swell Chart component
  */
 export const AdvanceD3Chart = ({
@@ -39,7 +39,7 @@ export const AdvanceD3Chart = ({
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
-  maxSurfHeight: number;
+  maxSurfHeight: number; // Always in meters
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -71,7 +71,7 @@ export const AdvanceD3Chart = ({
 
   // Memoize yTicks
   const yTicks = useMemo(() => {
-    if (maxSurfHeight < 3) {
+    if (maxSurfHeight < 2.5) {
       return [0.5, 1, 1.5, 2, 2.5];
     } else {
       return Array.from({ length: Math.ceil(maxSurfHeight) }, (_, i) => i + 1);

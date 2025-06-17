@@ -164,9 +164,17 @@ td {
   opacity: 0;
 }
 
+.swellnet-bar-chart .recharts-cartesian-grid-horizontal line {
+  stroke: #cad5e2;
+  stroke-opacity: 0.5;
+  stroke-width: 1px;
+}
+
 .swell-y-axis .recharts-layer.recharts-cartesian-axis-tick line {
   opacity: 1;
-  stroke: #ccc;
+  stroke: #cad5e2;
+  stroke-opacity: 0.5;
+  stroke-width: 1px;
 }
 
 @media (max-width: 768px) {

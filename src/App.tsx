@@ -4,13 +4,11 @@ import {
   DrupalApiData,
   WeatherData,
   CurrentWeatherData,
-  SunriseSunsetData,
   SurfReportItem,
   TideDataFromDrupal,
   SurfcamProps,
 } from "./types/index.ts";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
-// import { SurfReport } from "./components/SurfReport/index.tsx";
 import { processApiDataToChartData } from "./lib/data-processing.ts";
 import { GraphHeader } from "./components/GraphHeader.tsx";
 
@@ -27,7 +25,6 @@ interface AppProps {
   weatherData: WeatherData[];
   currentWeatherData: CurrentWeatherData;
   tideData: TideDataFromDrupal[];
-  sunriseSunsetData: SunriseSunsetData;
   timezone: string;
   surfReport: SurfReportItem[];
   surfcams: SurfcamProps[];
@@ -45,7 +42,6 @@ function App({
   weatherData,
   // currentWeatherData,
   tideData,
-  sunriseSunsetData,
   timezone,
 }: // surfReport,
 // surfcams,
@@ -66,6 +62,20 @@ AppProps) {
 
   // Get the length of the chart data in order to limit the weather data to the same length
   const chartDataLength = chartData.length;
+
+  // Calculate max significant height across both model types
+  const maxSurfHeightAdvanced = Math.ceil(
+    Math.max(
+      ...processApiDataToChartData(rawApiData, "gfs")
+        .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
+        .flat()
+        .filter((n): n is number => n !== undefined),
+      ...processApiDataToChartData(rawApiData, "ecmwf")
+        .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
+        .flat()
+        .filter((n): n is number => n !== undefined)
+    )
+  );
 
   // Create a default chart data item if none exists
   // const defaultChartData = {
@@ -117,9 +127,9 @@ AppProps) {
           chartData={chartData}
           defaultPreferences={defaultPreferences}
           maxSurfHeight={maxSurfHeight}
+          maxSurfHeightAdvanced={maxSurfHeightAdvanced}
           chartWidth={chartWidth}
           weatherData={weatherData.slice(0, chartDataLength)}
-          sunriseSunsetData={sunriseSunsetData}
           tideData={tideData}
           timezone={timezone}
           rawApiData={rawApiData}

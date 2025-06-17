@@ -131,7 +131,6 @@ export const SwellChart = ({
           allowDataOverflow
           minTickGap={16}
           tickCount={4} // Increased from 2 to show more time points
-          tickMargin={8}
         />
 
         {/* XAxis for the wind direction */}
@@ -288,10 +287,9 @@ export const SwellChart = ({
           tickLine={false}
           axisLine={false}
           type="number"
-          domain={[0, "dataMax"]}
           minTickGap={0}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 48 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
           }}
           interval="preserveEnd"
           overflow="visible"
@@ -303,6 +301,7 @@ export const SwellChart = ({
             return <text></text>;
           }}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
+          height={320}
         />
       </BarChart>
     </ResponsiveContainer>
