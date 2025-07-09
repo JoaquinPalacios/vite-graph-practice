@@ -1,10 +1,10 @@
 "use client";
 
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import GraphButtons from "./GraphButtons";
-import { useState, useRef, useEffect, useCallback } from "react";
-import type { ReactElement } from "react";
 import { cn } from "@/utils/utils";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import { useDraggable } from "react-use-draggable-scroll";
+import GraphButtons from "./GraphButtons";
 
 interface ChartsWrapperProps {
   children: React.ReactNode;
@@ -33,17 +33,26 @@ const ChartsWrapper = ({
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const prevScrollWidth = useRef<number>(0);
-  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
+  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
+  const scrollContainerRef = useRef<HTMLDivElement>(
+    null
+  ) as React.MutableRefObject<HTMLInputElement>;
+  const isDesktop = !isMobile && !isLandscapeMobile && !isTablet;
 
-  // Memoize the container selector to avoid repeated DOM queries
-  const getContainer = useCallback((): HTMLElement | null => {
-    return document.querySelector(".chart-scroll-container") as HTMLElement;
-  }, []);
+  const { events } = useDraggable(scrollContainerRef, {
+    applyRubberBandEffect: false,
+    decayRate: 0.95,
+    safeDisplacement: 11,
+    activeMouseButton: "Left",
+    isMounted: isDesktop,
+  });
 
   // Memoize the check scroll limits function
   const checkScrollLimits = useCallback(
     (e?: React.UIEvent<HTMLDivElement>): void => {
-      const container = (e?.target as HTMLElement) || getContainer();
+      const container =
+        (e?.target as HTMLElement) || scrollContainerRef.current;
       if (!container) return;
 
       const scrollLeft = container.scrollLeft;
@@ -53,8 +62,17 @@ const ChartsWrapper = ({
       setIsAtStart(scrollLeft === 0);
       setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10); // -10 for some buffer
     },
-    [getContainer]
+    []
   );
+
+  useEffect(() => {
+    // Cleanup the timeout when the component unmounts
+    return () => {
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+    };
+  }, []);
 
   // Memoize the get axis width function
   const getAxisWidth = useCallback(
@@ -78,7 +96,7 @@ const ChartsWrapper = ({
       rect.setAttribute("y", "0");
       rect.setAttribute("width", getAxisWidth(isAdvanced));
       rect.setAttribute("height", "320");
-      rect.setAttribute("fill", "oklch(0.968 0.007 247.896)");
+      rect.setAttribute("fill", "oklch(96.7% 0.003 264.542)");
       rect.setAttribute("class", "y-axis-rect-left");
       axis.insertBefore(rect, axis.firstChild);
       return rect;
@@ -177,9 +195,19 @@ const ChartsWrapper = ({
       const scrollLeft = (e.target as HTMLElement).scrollLeft;
       checkScrollLimits(e);
 
+      if (contentWrapperRef.current) {
+        contentWrapperRef.current.style.pointerEvents = "none";
+      }
+
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
       }
+
+      scrollTimeout.current = setTimeout(() => {
+        if (contentWrapperRef.current) {
+          contentWrapperRef.current.style.pointerEvents = "auto";
+        }
+      }, 75); // Re-enable pointer events after 75ms of no scrolling
 
       updateYAxisPosition(scrollLeft);
     },
@@ -188,7 +216,7 @@ const ChartsWrapper = ({
 
   // Effect to handle children changes and scroll adjustments
   useEffect(() => {
-    const container = getContainer();
+    const container = scrollContainerRef.current;
     if (!container) return;
 
     const timeoutId = setTimeout(() => {
@@ -230,20 +258,23 @@ const ChartsWrapper = ({
     }, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [children, checkScrollLimits, getContainer, updateYAxisPosition]);
+  }, [children, checkScrollLimits, updateYAxisPosition]);
 
   return (
     <>
       <GraphButtons isAtStart={isAtStart} isAtEnd={isAtEnd} />
       <div
+        ref={scrollContainerRef}
+        {...(isDesktop ? events : {})}
         className={cn(
           "chart-scroll-container tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent",
           !hasSubscription &&
-            "tw:md:w-[calc(100%-18rem)] tw:lg:w-[calc(100%-24rem)] tw:xl:w-[calc(100%-28rem)]"
+            "tw:md:w-[calc(100%-18rem)] tw:lg:w-[calc(100%-24rem)] tw:xl:w-[calc(100%-28rem)]",
+          isDesktop && "no-user-select"
         )}
         onScroll={handleScroll}
       >
-        {children}
+        <div ref={contentWrapperRef}>{children}</div>
       </div>
     </>
   );

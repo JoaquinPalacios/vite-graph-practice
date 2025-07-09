@@ -11,12 +11,16 @@ import { scaleTime } from "d3-scale";
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
   if (unit === "ft") {
     // Round maxHeight to nearest whole number
-    const roundedMax = Math.ceil(maxHeight);
+    const roundedMax = Math.ceil(maxHeight) + 1;
 
     // Special cases for feet based on rounded maxHeight
     if (roundedMax <= 5) {
-      // Show all ticks up to 5
-      return [0, 1, 2, 3, 4, 5];
+      // Show all ticks up to the actual maximum
+      const ticks = [];
+      for (let i = 0; i <= roundedMax; i++) {
+        ticks.push(i);
+      }
+      return ticks;
     } else if (roundedMax <= 14) {
       const roundedToTwo = Math.ceil(roundedMax / 2) * 2;
       const ticks = [];

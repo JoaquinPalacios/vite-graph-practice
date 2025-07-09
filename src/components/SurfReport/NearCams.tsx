@@ -1,10 +1,10 @@
 import { SurfcamProps } from "@/types";
-import { SurfcamCard } from "./components/SurfcamCard";
 import { cn } from "@/utils/utils";
+import { SurfcamCard } from "./components/SurfcamCard";
 
 export const NearCams = ({ surfcams }: { surfcams: SurfcamProps[] }) => {
   return (
-    <article className="tw:bg-slate-100 tw:p-4 tw:h-min">
+    <article className="tw:bg-gray-100 tw:p-4 tw:h-min">
       <h2 className="tw:text-lg tw:font-semibold tw:mb-3">Nearest Surfcams</h2>
       <div
         className={cn(

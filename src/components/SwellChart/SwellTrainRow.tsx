@@ -1,7 +1,7 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { getAdjustedDirection } from "@/lib/format-direction";
-import { SwellLabel } from "./SwellLabel";
 import { memo } from "react";
+import { SwellLabel } from "./SwellLabel";
 
 interface SwellTrainRowProps {
   direction: number;
@@ -32,7 +32,7 @@ export const SwellTrainRow = memo(
           {Number(sigHeight).toFixed(1)}m @
         </p>
         <p className="margin-none semibold tooltip-paragraph-small">
-          {peakPeriod}s
+          {Number(peakPeriod).toFixed(1)}s
         </p>
         <p className="margin-none semibold tooltip-paragraph-small">
           {degreesToCompassDirection(adjustedDirection)}

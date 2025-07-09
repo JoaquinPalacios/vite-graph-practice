@@ -1,19 +1,19 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { getAdjustedDirection } from "@/lib/format-direction";
 import { formatTooltipDate } from "@/lib/format-tooltip-date";
+import { UnitPreferences } from "@/types";
+import { getWindColor } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
+import { memo, MouseEvent } from "react";
+import { IoClose } from "react-icons/io5";
 import { TooltipProps } from "recharts";
-// import {
-//   // Payload,
-// } from "recharts/types/component/DefaultTooltipContent";
 import {
   NameType,
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-import { memo } from "react";
-import { UnitPreferences } from "@/types";
 import { SwellTrainRow } from "./SwellTrainRow";
-import { getWindColor } from "@/utils/chart-utils";
-import { getAdjustedDirection } from "@/lib/format-direction";
 
 interface TrainData {
   direction: number;
@@ -25,6 +25,7 @@ type SwellTooltipProps = TooltipProps<ValueType, NameType> & {
   payload?: Payload<ValueType, NameType>[];
   label?: string;
   unitPreferences: UnitPreferences;
+  onClose?: () => void;
 };
 
 /**
@@ -34,27 +35,51 @@ type SwellTooltipProps = TooltipProps<ValueType, NameType> & {
  * @returns {React.ReactElement} The SwellTooltip component
  */
 export const SwellTooltip = memo((props: SwellTooltipProps) => {
-  const { active, payload, label, unitPreferences } = props;
+  const { active, payload, label, unitPreferences, onClose } = props;
+  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
+  const isMobileDevice = isMobile || isLandscapeMobile || isTablet;
+
+  const handleClose = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClose?.();
+  };
 
   if (active && payload && payload.length) {
     const color = getWindColor(payload[0].payload.wind.speedKnots);
 
     return (
       <div
-        className="tooltip-container tw:bg-white/96 tw:relative tw:shadow-md"
+        key={label}
+        className="tooltip-container fade-in-with-delay tw:bg-white/96 tw:relative tw:shadow-md"
         role="tooltip"
         aria-label="Swell and wind information"
       >
+        {/* Close button for mobile */}
+        {isMobileDevice && (
+          <button
+            onClick={handleClose}
+            className="tw:absolute tw:top-0.5 tw:right-0.5 tw:z-20 tw:w-6 tw:h-6 tw:flex tw:items-center tw:justify-center tw:text-gray-600 tw:text-sm tw:font-bold"
+            aria-label="Close tooltip"
+          >
+            <IoClose className="tw:w-3.5 tw:h-3.5" />
+          </button>
+        )}
+
         <div
           className="pseudo-arrow tw:absolute tw:top-1.5 tw:z-0 tw:w-6 tw:h-5 tw:bg-white/96"
           aria-hidden
         />
-        <h5 className="margin-none tw:px-2.5 tw:py-1.5 tw:border-b tw:border-slate-400/20 tw:relative z-10">
+        <h5
+          className={cn(
+            "margin-none tw:pl-2.5 tw:pr-7 tw:py-1.5 tw:border-b tw:border-gray-400/20 tw:relative z-10"
+          )}
+        >
           {label && formatTooltipDate(label)}
         </h5>
 
         {/* Surf Height and Wind */}
-        <div className="tw:flex tw:flex-col tw:px-2 tw:pt-2 tw:border-b tw:border-slate-400/20">
+        <div className="tw:flex tw:flex-col tw:px-2 tw:pt-2 tw:border-b tw:border-gray-400/20">
           <div className="tw:flex tw:flex-col">
             <div className="tw:flex tw:gap-1 surf-height-label">
               <p className="margin-none tw:leading-[1.2]">
@@ -149,7 +174,7 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
         </div>
 
         {/* Swell Trains */}
-        {!unitPreferences.showAdvancedChart && (
+        {payload[0]?.payload.trainData && (
           <div className="tw:flex tw:flex-col tw:p-2">
             {payload[0]?.payload.trainData.map(
               (train: TrainData, index: number) => (

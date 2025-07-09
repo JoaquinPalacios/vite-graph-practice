@@ -5,8 +5,6 @@
  */
 export const GraphHeader = ({ locationName }: { locationName: string }) => {
   return (
-    <h2 className="tw:text-2xl tw:font-semibold tw:mb-4 tw:max-md:px-5">
-      {locationName} Surf Forecast
-    </h2>
+    <h1 className="tw:mb-4 tw:max-md:px-5">{locationName} Surf Forecast</h1>
   );
 };

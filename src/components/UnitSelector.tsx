@@ -1,9 +1,10 @@
-import { UnitPreferences, DrupalApiData } from "@/types";
-import { cn } from "@/utils/utils";
-import { MdAccessTime } from "react-icons/md";
 import { formatBulletinDateTime } from "@/lib/time-utils";
-import { MdBarChart } from "react-icons/md";
+import { DrupalApiData, UnitPreferences } from "@/types";
+import { cn } from "@/utils/utils";
+
 import { ImTable2 } from "react-icons/im";
+import { MdAccessTime, MdBarChart } from "react-icons/md";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export interface UnitSelectorProps {
   onChange: (preferences: UnitPreferences) => void;
@@ -117,9 +118,22 @@ export const UnitSelector = ({
         {/* Model type selector */}
         {(hasGfsData || hasEcmwfData) && (
           <div className="tw:flex tw:items-center tw:gap-2 tw:order-2 tw:lg:order-none">
-            <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-              Model
-            </span>
+            <Tooltip useTouch>
+              <TooltipTrigger asChild>
+                <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                  Model
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="font-xs margin-none tw:max-w-96 tw:w-fit">
+                  Select the model to display the forecast data.
+                  <br />
+                  GFS: Global Forecast System
+                  <br />
+                  ECMWF: European Centre for Medium-Range Weather Forecasts
+                </p>
+              </TooltipContent>
+            </Tooltip>
             <div
               className={cn(
                 "tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:gap-3 tw:px-2 tw:overflow-hidden",
@@ -137,53 +151,80 @@ export const UnitSelector = ({
                 style={{ willChange: "transform" }}
               />
 
-              <button
-                type="button"
-                className={cn(
-                  "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
-                  modelType === "gfs" ? "tw:text-gray-900" : "tw:text-gray-700",
-                  "tw:disabled:opacity-50",
-                  !hasGfsData ? "button-selector" : "tw:cursor-pointer"
-                )}
-                aria-pressed={modelType === "gfs"}
-                onClick={() => setModelType("gfs")}
-                disabled={!hasGfsData}
-              >
-                GFS
-                {!hasGfsData && (
-                  <span
-                    className="tw:text-xs tw:absolute tw:-top-8 tw:left-1/2 tw:-translate-x-1/2 tw:w-max tw:rounded-xs tw:bg-black tw:text-white tw:px-2 tw:py-1"
-                    aria-hidden
-                  >
-                    No GFS data available
-                  </span>
-                )}
-              </button>
+              {hasGfsData ? (
+                <button
+                  type="button"
+                  className={cn(
+                    "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                    modelType === "gfs"
+                      ? "tw:text-gray-900"
+                      : "tw:text-gray-700",
+                    "tw:cursor-pointer"
+                  )}
+                  aria-pressed={modelType === "gfs"}
+                  onClick={() => setModelType("gfs")}
+                  disabled={!hasGfsData}
+                >
+                  GFS
+                </button>
+              ) : (
+                <Tooltip useTouch>
+                  <TooltipTrigger asChild>
+                    <span className="tw:flex">
+                      <button
+                        type="button"
+                        className={cn(
+                          "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                          "tw:text-gray-700 tw:disabled:opacity-50"
+                        )}
+                        disabled
+                      >
+                        GFS
+                      </button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="margin-none font-xs">Temporarly offline</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
 
-              <button
-                type="button"
-                className={cn(
-                  "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                  modelType === "ecmwf"
-                    ? "tw:text-gray-900"
-                    : "tw:text-gray-700",
-                  "tw:disabled:opacity-50",
-                  !hasEcmwfData ? "button-selector" : "tw:cursor-pointer"
-                )}
-                aria-pressed={modelType === "ecmwf"}
-                onClick={() => setModelType("ecmwf")}
-                disabled={!hasEcmwfData}
-              >
-                ECMWF
-                {!hasEcmwfData && (
-                  <span
-                    className="tw:text-xs tw:absolute tw:-top-8 tw:left-1/2 tw:-translate-x-1/2 tw:w-max tw:rounded-xs tw:bg-black tw:text-white tw:px-2 tw:py-1"
-                    aria-hidden
-                  >
-                    No ECMWF data available
-                  </span>
-                )}
-              </button>
+              {hasEcmwfData ? (
+                <button
+                  type="button"
+                  className={cn(
+                    "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                    modelType === "ecmwf"
+                      ? "tw:text-gray-900"
+                      : "tw:text-gray-700"
+                  )}
+                  aria-pressed={modelType === "ecmwf"}
+                  onClick={() => setModelType("ecmwf")}
+                  disabled={!hasEcmwfData}
+                >
+                  ECMWF
+                </button>
+              ) : (
+                <Tooltip useTouch>
+                  <TooltipTrigger asChild>
+                    <span className="tw:flex">
+                      <button
+                        type="button"
+                        className={cn(
+                          "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                          "tw:text-gray-700 tw:disabled:opacity-50"
+                        )}
+                        disabled
+                      >
+                        ECMWF
+                      </button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="margin-none font-xs">Temporarly offline</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </div>
         )}

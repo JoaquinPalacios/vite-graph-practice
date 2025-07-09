@@ -14,8 +14,16 @@ td {
   font-size: 0.875rem;
 }
 
+.font-xs {
+  font-size: 0.75rem;
+}
+
 .font-sm {
   font-size: 0.875rem;
+}
+
+.font-normal {
+  font-weight: 400;
 }
 
 .font-medium {
@@ -90,6 +98,17 @@ td {
   color: #3a3a3a;
 }
 
+.fade-in-with-delay {
+  opacity: 0;
+  animation: fadeInWithDelay 0.1s ease-in 0.075s forwards;
+}
+
+@keyframes fadeInWithDelay {
+  to {
+    opacity: 1;
+  }
+}
+
 .tooltip-container h5 {
   color: #3a3a3a;
   font-size: 0.75rem;
@@ -159,17 +178,20 @@ td {
   transform: rotate(45deg);
 }
 
+/* Vertical grid lines */
 .swellnet-bar-chart .recharts-cartesian-grid-vertical line,
 .weather-chart .recharts-cartesian-grid-vertical line {
   opacity: 0;
 }
 
+/* Horizontal grid lines */
 .swellnet-bar-chart .recharts-cartesian-grid-horizontal line {
   stroke: #cad5e2;
   stroke-opacity: 0.5;
   stroke-width: 1px;
 }
 
+/* Y-axis tick lines */
 .swell-y-axis .recharts-layer.recharts-cartesian-axis-tick line {
   opacity: 1;
   stroke: #cad5e2;
@@ -184,4 +206,13 @@ td {
   .swell-y-axis .recharts-cartesian-axis-tick-line {
     transform: translateX(-0.75rem);
   }
+}
+
+/* Disable user selection when scrolling horizontally on desktop */
+.no-user-select {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  -webkit-tap-highlight-color: transparent;
 }

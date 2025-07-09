@@ -1,26 +1,27 @@
 "use client";
 
-import {
-  useMemo,
-  useRef,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useCallback,
-} from "react";
-import * as d3 from "d3";
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 import {
   ChartDataItem,
   SwellPoint,
   TooltipState,
   UnitPreferences,
 } from "@/types";
-import { useScreenDetector } from "@/hooks/useScreenDetector";
 import {
   activeColorPalette,
   calculateTooltipPosition,
   colorPalette,
 } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
+import * as d3 from "d3";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import processSwellData from "./ProcessDataSwell";
 import { SwellTooltip } from "./SwellTooltip";
 
@@ -30,16 +31,19 @@ import { SwellTooltip } from "./SwellTooltip";
  * @param unitPreferences - The unit preferences for the chart
  * @param chartData - The chart data
  * @param maxSurfHeight - The maximum surf height in meters
+ * @param hasSubscription - Whether the user has a subscription
  * @returns The Advanced D3 Swell Chart component
  */
 export const AdvanceD3Chart = ({
   unitPreferences,
   chartData,
   maxSurfHeight,
+  hasSubscription,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
   maxSurfHeight: number; // Always in meters
+  hasSubscription: boolean;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -55,7 +59,25 @@ export const AdvanceD3Chart = ({
   });
   const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
   const [hoveredTimestamp, setHoveredTimestamp] = useState<number | null>(null);
+  const [clickedTimestamp, setClickedTimestamp] = useState<number | null>(null);
+  const [clickedEventId, setClickedEventId] = useState<string | null>(null);
   const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
+
+  // Determine if we should use click events (small devices) or hover events (desktop)
+  const useClickEvents = isMobile || isLandscapeMobile || isTablet;
+
+  // Function to close tooltip
+  const closeTooltip = useCallback(() => {
+    setClickedTimestamp(null);
+    setClickedEventId(null);
+    setHoveredTimestamp(null);
+    setHoveredEventId(null);
+    setTooltipState((prev) => ({ ...prev, visible: false }));
+  }, []);
+
+  // Get the active timestamp and event ID based on device type
+  const activeTimestamp = useClickEvents ? clickedTimestamp : hoveredTimestamp;
+  const activeEventId = useClickEvents ? clickedEventId : hoveredEventId;
 
   // Process swell data using the existing processor
   const processedSwellData = useMemo(
@@ -214,18 +236,18 @@ export const AdvanceD3Chart = ({
         "fill",
         (_, i) =>
           i % 2 === 0
-            ? "oklch(0.929 0.013 255.508)" // Tailwind Slate 200
-            : "oklch(0.968 0.007 247.896)" // Tailwind Slate 300
+            ? "#eceef1" // Tailwind gray-150
+            : "oklch(96.7% 0.003 264.542)" // Tailwind gray-100
       )
       .lower();
 
     // --- HOVER RECT (vertical cursor) ---
     chartArea.selectAll(".hover-rect").remove();
-    if (hoveredTimestamp !== null) {
+    if (activeTimestamp !== null) {
       chartArea
         .insert("rect", ".day-stripes ~ *")
         .attr("class", "hover-rect")
-        .attr("x", getX(hoveredTimestamp) - 16)
+        .attr("x", getX(activeTimestamp) - 16)
         .attr("y", -32)
         .attr("width", 32)
         .attr("height", chartDrawingHeight)
@@ -273,7 +295,7 @@ export const AdvanceD3Chart = ({
       .attr("y", 0)
       .attr("width", 64)
       .attr("height", svgDimensions.height)
-      .attr("fill", "oklch(0.968 0.007 247.896)");
+      .attr("fill", "oklch(96.7% 0.003 264.542)"); // Tailwind gray-100
 
     // Add background rectangle to Y-axis
     yAxisSvg
@@ -300,7 +322,7 @@ export const AdvanceD3Chart = ({
         !isMobile &&
         !isTablet &&
         !isLandscapeMobile &&
-        hoveredEventId === eventId;
+        activeEventId === eventId;
 
       const line = d3
         .line<SwellPoint>()
@@ -319,8 +341,21 @@ export const AdvanceD3Chart = ({
         .attr("fill", "none")
         .attr("opacity", isHovered ? 1 : 0.25)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
-        .on("mouseenter", () => setHoveredEventId(eventId))
-        .on("mouseleave", () => setHoveredEventId(null));
+        .on("mouseenter", () => {
+          if (!useClickEvents) {
+            setHoveredEventId(eventId);
+          }
+        })
+        .on("mouseleave", () => {
+          if (!useClickEvents) {
+            setHoveredEventId(null);
+          }
+        })
+        .on("click", () => {
+          if (useClickEvents) {
+            setClickedEventId(clickedEventId === eventId ? null : eventId);
+          }
+        });
 
       // Add arrows instead of dots
       const arrowGroup = chartArea
@@ -338,40 +373,102 @@ export const AdvanceD3Chart = ({
         .attr("opacity", isHovered ? 1 : 0.4)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
         .on("mouseenter", function (_, d) {
-          setHoveredEventId(eventId);
-          // Show tooltip for this point
-          const tooltipDiv = tooltipDivRef.current;
-          const tooltipRect = tooltipDiv?.getBoundingClientRect();
-          const tooltipWidth = tooltipRect?.width ?? 0;
-          const tooltipHeight = tooltipRect?.height ?? 0;
-          const x = getX(d.timestamp);
-          const y = yScale(d.height);
-          const tooltipPos = calculateTooltipPosition(
-            x,
-            y,
-            tooltipWidth,
-            tooltipHeight,
-            chartDrawingWidth,
-            chartDrawingHeight,
-            margin
-          );
-          setTooltipState({
-            visible: true,
-            x: tooltipPos.x,
-            y: tooltipPos.y,
-            data: d,
-            side: tooltipPos.side,
-          });
+          if (!useClickEvents) {
+            setHoveredEventId(eventId);
+            // Get all events for this timestamp to show in tooltip
+            const allEventsForTimestamp = transformedData.filter(
+              (dataPoint) => dataPoint.timestamp === d.timestamp
+            );
+
+            // Show tooltip for this point
+            const tooltipDiv = tooltipDivRef.current;
+            const tooltipRect = tooltipDiv?.getBoundingClientRect();
+            const tooltipWidth = tooltipRect?.width ?? 0;
+            const tooltipHeight = tooltipRect?.height ?? 0;
+            const x = getX(d.timestamp);
+            const y = yScale(d.height);
+            const tooltipPos = calculateTooltipPosition(
+              x,
+              y,
+              tooltipWidth,
+              tooltipHeight,
+              chartDrawingWidth,
+              chartDrawingHeight,
+              margin
+            );
+            setTooltipState({
+              visible: true,
+              x: tooltipPos.x,
+              y: tooltipPos.y,
+              data: allEventsForTimestamp,
+              side: tooltipPos.side,
+            });
+          }
         })
         .on("mouseleave", function () {
-          setHoveredEventId(null);
-          setTooltipState((prev) => ({ ...prev, visible: false }));
+          if (!useClickEvents) {
+            setHoveredEventId(null);
+            setTooltipState((prev) => ({ ...prev, visible: false }));
+          }
+        })
+        .on("click", function (_, d) {
+          if (useClickEvents) {
+            const newEventId = clickedEventId === eventId ? null : eventId;
+            setClickedEventId(newEventId);
+
+            if (newEventId) {
+              // Set the timestamp so the hover rect gets positioned correctly
+              setClickedTimestamp(d.timestamp);
+
+              // Get all events for this timestamp to show in tooltip
+              const allEventsForTimestamp = transformedData.filter(
+                (dataPoint) => dataPoint.timestamp === d.timestamp
+              );
+
+              // Show tooltip for this point
+              const tooltipDiv = tooltipDivRef.current;
+              const tooltipRect = tooltipDiv?.getBoundingClientRect();
+              const tooltipWidth = tooltipRect?.width ?? 0;
+              const tooltipHeight = tooltipRect?.height ?? 0;
+              const x = getX(d.timestamp);
+              const y = yScale(d.height);
+              const tooltipPos = calculateTooltipPosition(
+                x,
+                y,
+                tooltipWidth,
+                tooltipHeight,
+                chartDrawingWidth,
+                chartDrawingHeight,
+                margin
+              );
+              setTooltipState({
+                visible: true,
+                x: tooltipPos.x,
+                y: tooltipPos.y,
+                data: allEventsForTimestamp,
+                side: tooltipPos.side,
+              });
+            } else {
+              setClickedTimestamp(null);
+              setTooltipState((prev) => ({ ...prev, visible: false }));
+            }
+          }
         });
 
       // Arrow center is at (10, 10) for both paths
       // Clamp scale between 0.6 and 0.8 for visual consistency
       const getArrowTransform = (d: SwellPoint) => {
-        const scale = Math.max(0.6, Math.min(0.8, d.period / 12));
+        let scale: number;
+        if (d.period < 8) {
+          scale = 0.6; // 60% scale for periods below 8 seconds
+        } else {
+          // Second-by-second linear interpolation from 8s onwards till 20s where it caps at 140%
+          const lerp = (start: number, end: number, t: number) =>
+            start + (end - start) * t;
+
+          const t = (d.period - 8) / 12;
+          scale = Math.min(1.4, lerp(0.6, 1.4, t));
+        }
         const rotation = d.direction;
         return `scale(${scale}) rotate(${rotation}) translate(-10,-10)`;
       };
@@ -407,6 +504,8 @@ export const AdvanceD3Chart = ({
       .attr("fill", "transparent") // DEBUG: visible overlay
       .attr("pointer-events", "all")
       .on("mousemove", (event) => {
+        if (useClickEvents) return; // Skip hover events on small devices
+
         const [pointerX] = d3.pointer(event);
         if (pointerX < 0 || pointerX > chartDrawingWidth) {
           setHoveredTimestamp(null);
@@ -448,8 +547,68 @@ export const AdvanceD3Chart = ({
         });
       })
       .on("mouseleave", () => {
-        setHoveredTimestamp(null);
-        setTooltipState((prev) => ({ ...prev, visible: false }));
+        if (!useClickEvents) {
+          setHoveredTimestamp(null);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+        }
+      })
+      .on("click", (event) => {
+        if (!useClickEvents) return; // Skip click events on desktop
+
+        const [pointerX] = d3.pointer(event);
+        if (pointerX < 0 || pointerX > chartDrawingWidth) {
+          closeTooltip();
+          return;
+        }
+        // Find the closest timestamp
+        const mouseX = pointerX;
+        const timestamp = uniqueTimestamps.reduce((prev, curr) => {
+          const prevX = getX(prev);
+          const currX = getX(curr);
+          return Math.abs(currX - mouseX) < Math.abs(prevX - mouseX)
+            ? curr
+            : prev;
+        });
+
+        const newTimestamp = clickedTimestamp === timestamp ? null : timestamp;
+        setClickedTimestamp(newTimestamp);
+
+        if (newTimestamp) {
+          // Find the event with the highest height at this timestamp to highlight
+          const events = transformedData.filter(
+            (d) => d.timestamp === newTimestamp
+          );
+          const highestEvent = events.reduce((prev, curr) =>
+            curr.height > prev.height ? curr : prev
+          );
+          setClickedEventId(highestEvent.eventId);
+
+          // Tooltip: get all events for this timestamp
+          // Calculate tooltip position
+          const tooltipDiv = tooltipDivRef.current;
+          const tooltipRect = tooltipDiv?.getBoundingClientRect();
+          const tooltipWidth = tooltipRect?.width ?? 200;
+          const tooltipHeight = tooltipRect?.height ?? 60;
+          const tooltipPos = calculateTooltipPosition(
+            getX(newTimestamp),
+            0,
+            tooltipWidth,
+            tooltipHeight,
+            chartDrawingWidth,
+            chartDrawingHeight,
+            margin
+          );
+          setTooltipState({
+            visible: true,
+            x: tooltipPos.x,
+            y: tooltipPos.y,
+            data: events,
+            side: tooltipPos.side,
+          });
+        } else {
+          setClickedEventId(null);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+        }
       });
 
     // Update container width
@@ -463,6 +622,11 @@ export const AdvanceD3Chart = ({
     transformedData,
     hoveredEventId,
     hoveredTimestamp,
+    clickedEventId,
+    clickedTimestamp,
+    activeEventId,
+    activeTimestamp,
+    useClickEvents,
     isMobile,
     isLandscapeMobile,
     isTablet,
@@ -473,7 +637,39 @@ export const AdvanceD3Chart = ({
     yScale,
     chartDrawingWidth,
     getX,
+    closeTooltip,
   ]);
+
+  // Update D3 elements when activeEventId changes (for line highlighting)
+  useEffect(() => {
+    if (!svgRef.current || transformedData.length === 0) return;
+
+    const svg = d3.select(svgRef.current);
+    const chartArea = svg.select("g");
+
+    // Update line colors and opacity
+    eventIds.forEach((eventId, index) => {
+      const color = colorPalette[index % colorPalette.length];
+      const activeColor = activeColorPalette[index % activeColorPalette.length];
+      const isHovered = activeEventId === eventId;
+
+      // Update line
+      chartArea
+        .selectAll(".swell-line")
+        .filter((_, i) => i === index)
+        .attr("stroke", isHovered ? activeColor : color)
+        .attr("opacity", isHovered ? 1 : 0.25);
+
+      // Update arrows
+      chartArea
+        .selectAll(".swell-arrows")
+        .filter((_, i) => i === index)
+        .selectAll("g")
+        .attr("opacity", isHovered ? 1 : 0.4)
+        .selectAll("path")
+        .attr("fill", isHovered ? activeColor : color);
+    });
+  }, [activeEventId, eventIds, transformedData]);
 
   // Resize observer
   useEffect(() => {
@@ -533,15 +729,14 @@ export const AdvanceD3Chart = ({
       const x = e.clientX;
       const y = e.clientY;
       if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-        setHoveredTimestamp(null);
-        setTooltipState((prev) => ({ ...prev, visible: false }));
+        closeTooltip();
       }
     };
     window.addEventListener("mousemove", handleGlobalMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleGlobalMouseMove);
     };
-  }, [containerRef]);
+  }, [containerRef, closeTooltip]);
 
   // Add a type guard for SwellPoint[]
   function isSwellPointArray(
@@ -596,17 +791,21 @@ export const AdvanceD3Chart = ({
           <SwellTooltip
             visible={tooltipState.visible}
             x={tooltipState.x}
-            y={tooltipState.y}
             data={tooltipState.data}
             side={tooltipState.side}
             eventIds={eventIds}
+            onClose={closeTooltip}
+            useClickEvents={useClickEvents}
           />
         )}
       </div>
 
       {/* Y-axis container */}
       <div
-        className="tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:top-80 tw:z-10 tw:pointer-events-none"
+        className={cn(
+          "tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:top-80 tw:z-10 tw:pointer-events-none",
+          !hasSubscription && "tw:max-md:top-[40rem]"
+        )}
         aria-hidden={!unitPreferences.showAdvancedChart}
       >
         <svg

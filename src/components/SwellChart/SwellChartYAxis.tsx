@@ -1,3 +1,9 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { UnitPreferences } from "@/types";
+import { ChartDataItem } from "@/types/index.ts";
+import { generateTicks } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
+import { LuWind } from "react-icons/lu";
 import {
   Bar,
   BarChart,
@@ -6,12 +12,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { UnitPreferences } from "@/types";
-import { generateTicks } from "@/utils/chart-utils";
-import { LuWind } from "react-icons/lu";
-import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { ChartDataItem } from "@/types/index.ts";
-import { cn } from "@/utils/utils";
 
 /**
  * SwellChartYAxis component
@@ -41,14 +41,16 @@ export const SwellChartYAxis = ({
       minHeight={320}
       className={cn(
         "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
-        !hasSubscription && "tw:max-md:top-72"
+        !hasSubscription && "tw:max-md:top-80"
       )}
     >
       <BarChart
         data={chartData}
-        margin={{
-          bottom: 12,
-        }}
+        margin={
+          {
+            // bottom: 12,
+          }
+        }
         width={60}
         className="tw:[&>svg]:focus:outline-none"
         height={320}
@@ -57,8 +59,8 @@ export const SwellChartYAxis = ({
           vertical={true}
           horizontal={true}
           verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+            "oklch(96.7% 0.003 264.542)", // Tailwind gray-100
+            "#eceef1", // Tailwind gray-150
           ]}
           y={0}
           height={320}
@@ -74,11 +76,14 @@ export const SwellChartYAxis = ({
         {/* This XAxis is the one that shows the time of the day */}
         <XAxis xAxisId={1} dataKey="localDateTimeISO" orientation="top" />
 
-        {/* This XAxis is the one that shows the wind direction */}
+        {/* This XAxis is the one that shows the swell period */}
         <XAxis xAxisId={3} dataKey="localDateTimeISO" />
 
-        {/* This XAxis is the one that shows the wind speed */}
+        {/* This XAxis is the one that shows the wind direction */}
         <XAxis xAxisId={4} dataKey="localDateTimeISO" />
+
+        {/* This XAxis is the one that shows the wind speed */}
+        <XAxis xAxisId={5} dataKey="localDateTimeISO" />
 
         <Bar
           dataKey={(d) =>
@@ -127,18 +132,27 @@ export const SwellChartYAxis = ({
           type="number"
           tick={(value) => {
             return value.index === 0 ? (
+              // Wind Direction, Speed & Period
               <g transform="translate(-10, 0)">
+                <text
+                  x={value.x + 12}
+                  y={value.y + 16}
+                  fontSize={10}
+                  textAnchor="end"
+                >
+                  Sec
+                </text>
                 <LuWind
                   className="tw:w-4 tw:h-4"
                   x={value.x - 6}
-                  y={value.y + 8}
+                  y={value.y + 32}
                   size={20}
                   color="#666"
                 />
                 {unitPreferences.units.wind === "knots" ? (
                   <text
                     x={value.x + 10}
-                    y={value.y + 48}
+                    y={value.y + 70}
                     dy={1}
                     textAnchor="end"
                     fontSize={10}
@@ -148,7 +162,7 @@ export const SwellChartYAxis = ({
                 ) : (
                   <text
                     x={value.x + 12}
-                    y={value.y + 48}
+                    y={value.y + 70}
                     dy={1}
                     textAnchor="end"
                     fontSize={10}
@@ -158,6 +172,7 @@ export const SwellChartYAxis = ({
                 )}
               </g>
             ) : (
+              // Surf Height
               <text
                 x={value.x}
                 y={value.y}

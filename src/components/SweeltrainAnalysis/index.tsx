@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -13,13 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/utils/utils";
-import { Wind, Waves } from "lucide-react";
-import { ChartDataItem, UnitPreferences } from "@/types";
-import { formatInTimeZone } from "date-fns-tz";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { getAdjustedDirection } from "@/lib/format-direction";
+import { ChartDataItem, UnitPreferences } from "@/types";
 import { getWindColor } from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
+import { formatInTimeZone } from "date-fns-tz";
+import { useState } from "react";
 
 interface SwellTrainAnalysisProps {
   chartData: ChartDataItem[];
@@ -207,7 +208,7 @@ const getSwellColor = (size: string) => {
   if (sizeNum >= 3) return "tw:bg-emerald-100 tw:text-emerald-800";
   if (sizeNum >= 2) return "tw:bg-blue-100 tw:text-blue-800";
   if (sizeNum >= 1) return "tw:bg-cyan-100 tw:text-cyan-800";
-  return "tw:bg-slate-100 tw:text-slate-800";
+  return "tw:bg-gray-100 tw:text-gray-800";
 };
 
 const getWindIcon = (direction: number, speed: number) => {
@@ -254,6 +255,9 @@ export default function SwellTrainAnalysis({
     defaultPreferences
   );
 
+  // Track which accordion items are open
+  const [openItems, setOpenItems] = useState<string[]>(["day-0"]);
+
   return (
     <div
       className={cn(
@@ -268,162 +272,249 @@ export default function SwellTrainAnalysis({
         <Accordion
           type="multiple"
           className="tw:space-y-4"
-          defaultValue={["day-0"]}
+          value={openItems}
+          onValueChange={setOpenItems}
         >
-          {surfData.map((day, index) => (
-            <AccordionItem
-              key={index}
-              value={`day-${index}`}
-              className="tw:odd:bg-slate-100 tw:even:bg-slate-200"
-            >
-              <AccordionTrigger className="tw:px-6 tw:py-4 tw:hover:no-underline tw:hover:bg-muted/50 tw:transition-colors">
-                <div className="tw:flex tw:items-center tw:justify-between tw:w-full tw:mr-4">
-                  <div className="tw:flex tw:items-center tw:gap-4">
-                    <div className="tw:text-left">
-                      <div className="tw:font-semibold tw:text-lg">
-                        {day.day}
-                      </div>
-                      <div className="tw:text-sm tw:text-muted-foreground">
-                        {day.date}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="tw:flex tw:items-center tw:gap-4">
-                    <div className="tw:flex tw:items-center tw:gap-2">
-                      <Waves className="tw:w-5 tw:h-5 tw:text-blue-500" />
-                      <span className="tw:text-sm tw:font-medium">
-                        {day.sessions[0]?.surfBin}
-                      </span>
-                    </div>
-                    <div className="tw:hidden tw:sm:flex tw:items-center tw:gap-2 tw:text-sm tw:text-muted-foreground">
-                      <Wind className="tw:w-4 tw:h-4" />
-                      <span>
-                        {day.sessions[0]?.wind.direction}{" "}
-                        {day.sessions[0]?.wind.speed}
-                        {defaultPreferences.units.wind === "knots"
-                          ? "kt"
-                          : "km/h"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </AccordionTrigger>
+          {surfData.map((day, index) => {
+            const itemId = `day-${index}`;
+            const isOpen = openItems.includes(itemId);
 
-              <AccordionContent className="tw:px-6 tw:pb-6">
-                <div className="tw:overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="tw:w-16">Time</TableHead>
-                        <TableHead className="tw:w-20">Surf</TableHead>
-                        <TableHead className="tw:w-24">Wind</TableHead>
-                        <TableHead className="tw:min-w-[200px]">
-                          Primary Swell
-                        </TableHead>
-                        <TableHead className="tw:min-w-[180px]">
-                          Secondary Swell
-                        </TableHead>
-                        <TableHead className="tw:min-w-[180px]">
-                          Tertiary Swell
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {day.sessions.map((session, sessionIndex) => (
-                        <TableRow
-                          key={sessionIndex}
-                          className="tw:hover:bg-muted/50 tw:transition-colors"
-                        >
-                          <TableCell className="tw:text-sm">
-                            {session.time}
-                          </TableCell>
+            return (
+              <AccordionItem
+                key={index}
+                value={itemId}
+                className="tw:odd:bg-gray-100 tw:even:bg-gray-200"
+              >
+                <AccordionTrigger className="tw:px-6 tw:py-4 tw:hover:no-underline tw:hover:bg-muted/50 tw:transition-colors">
+                  <div className="tw:flex tw:flex-col tw:items-start tw:justify-between tw:w-full tw:gap-4">
+                    <h3 className="margin-none">
+                      {day.day} {day.date}
+                    </h3>
+                    {!isOpen && (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="tw:w-16">Time</TableHead>
+                            <TableHead className="tw:w-20">Surf</TableHead>
+                            <TableHead className="tw:w-24">Wind</TableHead>
+                            <TableHead className="tw:min-w-[200px]">
+                              Primary Swell
+                            </TableHead>
+                            <TableHead className="tw:min-w-[180px]">
+                              Secondary Swell
+                            </TableHead>
+                            <TableHead className="tw:min-w-[180px]">
+                              Tertiary Swell
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow className="tw:hover:bg-muted/50 tw:transition-colors">
+                            <TableCell className="font-normal tw:text-sm">
+                              {day.sessions[4]?.time}
+                            </TableCell>
 
-                          <TableCell>
-                            <span
-                              className={cn(
-                                getSurfColor(session.surfAvg),
-                                "tw:text-xs tw:px-2 tw:py-1 tw:rounded-xs"
-                              )}
-                            >
-                              {session.surfBin}
-                            </span>
-                          </TableCell>
-
-                          <TableCell>
-                            <div className="tw:flex tw:items-center tw:gap-1">
-                              {getWindIcon(
-                                session.wind.angle,
-                                session.wind.speed
-                              )}
-                              <span className="tw:text-xs tw:text-muted-foreground">
-                                {session.wind.speed}
-                                {defaultPreferences.units.wind === "knots"
-                                  ? "kt"
-                                  : "km/h"}
+                            <TableCell>
+                              <span
+                                className={cn(
+                                  getSurfColor(day.sessions[4]?.surfAvg || 0),
+                                  "font-normal tw:text-xs tw:px-2 tw:py-1 tw:rounded-xs"
+                                )}
+                              >
+                                {day.sessions[4]?.surfBin}
                               </span>
-                            </div>
-                          </TableCell>
+                            </TableCell>
 
-                          <TableCell>
-                            <div
-                              className={cn(
-                                "tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs",
-                                getSwellColor(session.primary.size)
-                              )}
-                            >
-                              <span className="tw:font-semibold">
-                                {session.primary.size}
-                              </span>
-                              <span className="tw:text-xs tw:opacity-75">
-                                {session.primary.period} •{" "}
-                                {session.primary.direction}
-                              </span>
-                            </div>
-                          </TableCell>
-
-                          <TableCell>
-                            {session.secondary ? (
-                              <div className="tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-blue-50/50 tw:text-blue-900">
-                                <span className="tw:font-semibold">
-                                  {session.secondary.size}
-                                </span>
-                                <span className="tw:text-xs tw:opacity-75">
-                                  {session.secondary.period} •{" "}
-                                  {session.secondary.direction}
+                            <TableCell>
+                              <div className="font-normal tw:flex tw:items-center tw:gap-1">
+                                {getWindIcon(
+                                  day.sessions[4]?.wind.angle,
+                                  day.sessions[4]?.wind.speed
+                                )}
+                                <span className="font-normal tw:text-xs tw:text-muted-foreground">
+                                  {day.sessions[4]?.wind.speed}
+                                  {defaultPreferences.units.wind === "knots"
+                                    ? "kt"
+                                    : "km/h"}
                                 </span>
                               </div>
-                            ) : (
-                              <span className="tw:text-xs tw:text-muted-foreground">
-                                —
-                              </span>
-                            )}
-                          </TableCell>
+                            </TableCell>
 
-                          <TableCell>
-                            {session.tertiary ? (
-                              <div className="tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-purple-50 tw:text-purple-700">
-                                <span className="tw:font-semibold">
-                                  {session.tertiary.size}
+                            <TableCell>
+                              <div
+                                className={cn(
+                                  "font-normal tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs",
+                                  getSwellColor(day.sessions[4]?.primary.size)
+                                )}
+                              >
+                                <span className="font-normal tw:font-semibold">
+                                  {day.sessions[4]?.primary.size}
                                 </span>
-                                <span className="tw:text-xs tw:opacity-75">
-                                  {session.tertiary.period} •{" "}
-                                  {session.tertiary.direction}
+                                <span className="font-normal tw:text-xs tw:opacity-75">
+                                  {day.sessions[4]?.primary.period} •{" "}
+                                  {day.sessions[4]?.primary.direction}
                                 </span>
                               </div>
-                            ) : (
-                              <span className="tw:text-xs tw:text-muted-foreground">
-                                —
-                              </span>
-                            )}
-                          </TableCell>
+                            </TableCell>
+
+                            <TableCell>
+                              {day.sessions[4]?.secondary ? (
+                                <div className="font-normal tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-blue-50/50 tw:text-blue-900">
+                                  <span className="font-normal tw:font-semibold">
+                                    {day.sessions[4]?.secondary.size}
+                                  </span>
+                                  <span className="font-normal tw:text-xs tw:opacity-75">
+                                    {day.sessions[4]?.secondary.period} •{" "}
+                                    {day.sessions[4]?.secondary.direction}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="font-normal tw:text-xs tw:text-muted-foreground">
+                                  —
+                                </span>
+                              )}
+                            </TableCell>
+
+                            <TableCell>
+                              {day.sessions[4]?.tertiary ? (
+                                <div className="font-normal tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-purple-50 tw:text-purple-700">
+                                  <span className="font-normal tw:font-semibold">
+                                    {day.sessions[4]?.tertiary.size}
+                                  </span>
+                                  <span className="font-normal tw:text-xs tw:opacity-75">
+                                    {day.sessions[4]?.tertiary.period} •{" "}
+                                    {day.sessions[4]?.tertiary.direction}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="font-normal tw:text-xs tw:text-muted-foreground">
+                                  —
+                                </span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    )}
+                  </div>
+                </AccordionTrigger>
+
+                <AccordionContent className="tw:px-6 tw:pb-6">
+                  <div className="tw:overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="tw:w-16">Time</TableHead>
+                          <TableHead className="tw:w-20">Surf</TableHead>
+                          <TableHead className="tw:w-24">Wind</TableHead>
+                          <TableHead className="tw:min-w-[200px]">
+                            Primary Swell
+                          </TableHead>
+                          <TableHead className="tw:min-w-[180px]">
+                            Secondary Swell
+                          </TableHead>
+                          <TableHead className="tw:min-w-[180px]">
+                            Tertiary Swell
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                      </TableHeader>
+                      <TableBody>
+                        {day.sessions.map((session, sessionIndex) => (
+                          <TableRow
+                            key={sessionIndex}
+                            className="tw:hover:bg-muted/50 tw:transition-colors"
+                          >
+                            <TableCell className="tw:text-sm">
+                              {session.time}
+                            </TableCell>
+
+                            <TableCell>
+                              <span
+                                className={cn(
+                                  getSurfColor(session.surfAvg),
+                                  "tw:text-xs tw:px-2 tw:py-1 tw:rounded-xs"
+                                )}
+                              >
+                                {session.surfBin}
+                              </span>
+                            </TableCell>
+
+                            <TableCell>
+                              <div className="tw:flex tw:items-center tw:gap-1">
+                                {getWindIcon(
+                                  session.wind.angle,
+                                  session.wind.speed
+                                )}
+                                <span className="tw:text-xs tw:text-muted-foreground">
+                                  {session.wind.speed}
+                                  {defaultPreferences.units.wind === "knots"
+                                    ? "kt"
+                                    : "km/h"}
+                                </span>
+                              </div>
+                            </TableCell>
+
+                            <TableCell>
+                              <div
+                                className={cn(
+                                  "tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs",
+                                  getSwellColor(session.primary.size)
+                                )}
+                              >
+                                <span className="tw:font-semibold">
+                                  {session.primary.size}
+                                </span>
+                                <span className="tw:text-xs tw:opacity-75">
+                                  {session.primary.period} •{" "}
+                                  {session.primary.direction}
+                                </span>
+                              </div>
+                            </TableCell>
+
+                            <TableCell>
+                              {session.secondary ? (
+                                <div className="tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-blue-50/50 tw:text-blue-900">
+                                  <span className="tw:font-semibold">
+                                    {session.secondary.size}
+                                  </span>
+                                  <span className="tw:text-xs tw:opacity-75">
+                                    {session.secondary.period} •{" "}
+                                    {session.secondary.direction}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="tw:text-xs tw:text-muted-foreground">
+                                  —
+                                </span>
+                              )}
+                            </TableCell>
+
+                            <TableCell>
+                              {session.tertiary ? (
+                                <div className="tw:inline-flex tw:items-center tw:gap-2 tw:px-2 tw:py-1 tw:rounded-xs tw:text-xs tw:bg-purple-50 tw:text-purple-700">
+                                  <span className="tw:font-semibold">
+                                    {session.tertiary.size}
+                                  </span>
+                                  <span className="tw:text-xs tw:opacity-75">
+                                    {session.tertiary.period} •{" "}
+                                    {session.tertiary.direction}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="tw:text-xs tw:text-muted-foreground">
+                                  —
+                                </span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
         </Accordion>
       </div>
     </div>

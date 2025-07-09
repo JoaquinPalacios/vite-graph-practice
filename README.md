@@ -6,7 +6,7 @@ A high-performance React application for displaying comprehensive weather, tide,
 
 - 📊 Interactive charts for:
   - Swell data with primary and secondary swell components
-  - Advanced swell analysis with train data
+  - **Advanced D3.js swell analysis** with intelligent event tracking and arrow visualization
   - Tide data (Australia and worldwide) using D3.js for precise time-series visualization
   - Weather conditions and forecasts
 - 🎨 Smooth animations and transitions powered by D3.js and React
@@ -30,7 +30,7 @@ A high-performance React application for displaying comprehensive weather, tide,
 
 - [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
 - [React](https://react.dev/) - A JavaScript library for building user interfaces
-- [D3.js](https://d3js.org/) - Data-driven document manipulation for tide visualizations
+- [D3.js](https://d3js.org/) - Data-driven document manipulation for tide and advanced swell visualizations
 - [Recharts](https://recharts.org/) - Composable charting library built on React components
 - [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
 - [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
@@ -47,6 +47,11 @@ The project implements several performance optimizations:
 - CSS optimizations with Tailwind
 - Client-side data processing
 - Optimized chart rendering with D3.js for tide data
+- **Advanced D3.js optimizations**:
+  - Data-driven DOM manipulation
+  - Efficient event tracking algorithms
+  - Optimized arrow rendering with SVG transforms
+  - Smart tooltip positioning and boundary detection
 - Responsive image loading
 - D3.js data-driven DOM updates for efficient tide chart rendering
 
@@ -80,6 +85,10 @@ src/
 │   ├── SwellChart/              # Swell chart components
 │   │   ├── AdvancedSwellChart/   # Advanced swell analysis
 │   │   └── SwellChartYAxis/      # Y-axis components
+│   ├── AdvanceD3Chart/          # **NEW: D3.js Advanced Swell Chart**
+│   │   ├── index.tsx            # Main D3.js chart component
+│   │   ├── ProcessDataSwell.ts  # Swell event tracking algorithm
+│   │   └── SwellTooltip.tsx     # Interactive tooltips
 │   ├── TideChart/               # Tide chart components
 │   ├── WeatherChart/            # Weather chart components
 │   ├── SubscriptionOverlay/      # Subscription UI components

@@ -1,3 +1,13 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { UnitPreferences } from "@/types";
+import { ChartDataItem } from "@/types/index.ts";
+import {
+  formatDateTick,
+  generateTicks,
+  getChartWidth,
+} from "@/utils/chart-utils";
+import { cn } from "@/utils/utils";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -8,19 +18,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { UnitPreferences } from "@/types";
-import {
-  formatDateTick,
-  generateTicks,
-  getChartWidth,
-} from "@/utils/chart-utils";
-import { SwellLabel } from "./SwellLabel";
-import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { SwellTooltip } from "./SwellTooltip";
 import { SwellAxisTick } from "./SwellAxisTick";
+import { SwellLabel } from "./SwellLabel";
+import { SwellTooltip } from "./SwellTooltip";
 import { WindSpeedTick } from "./WindSpeedTick";
-import { cn } from "@/utils/utils";
-import { ChartDataItem } from "@/types/index.ts";
 
 /**
  * SwellChart component
@@ -39,7 +40,26 @@ export const SwellChart = ({
   chartData: ChartDataItem[];
   maxSurfHeight: number;
 }) => {
-  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
+
+  const isSmallScreen = isMobile || isLandscapeMobile || isTablet;
+  const [isTooltipClosed, setIsTooltipClosed] = useState(false);
+
+  const handleClose = () => {
+    // Set the flag to indicate tooltip was closed
+    setIsTooltipClosed(true);
+
+    // Simulate Escape key press to close the tooltip
+    const escapeEvent = new KeyboardEvent("keydown", {
+      key: "Escape",
+      code: "Escape",
+      keyCode: 27,
+      which: 27,
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(escapeEvent);
+  };
 
   return (
     <ResponsiveContainer
@@ -47,24 +67,34 @@ export const SwellChart = ({
       height="100%"
       className={cn(
         "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
-        unitPreferences.showAdvancedChart &&
-          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-slate-400/80 tw:after:pointer-events-none"
+        unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
+          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-gray-400/80 tw:after:pointer-events-none"
       )}
       minHeight={320}
     >
       <BarChart
         data={chartData}
         barCategoryGap={1}
-        margin={{
-          bottom: 12,
+        margin={
+          {
+            // bottom: 12,
+          }
+        }
+        className={cn(
+          "swellnet-bar-chart tw:[&>svg]:focus:outline-none",
+          isTooltipClosed
+            ? "tw:[&>svg>.recharts-rectangle.recharts-tooltip-cursor]:fill-transparent"
+            : ""
+        )}
+        onClick={() => {
+          setIsTooltipClosed(false);
         }}
-        className="swellnet-bar-chart tw:[&>svg]:focus:outline-none"
       >
         <CartesianGrid
           vertical={true}
           verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+            "oklch(96.7% 0.003 264.542)", // Tailwind gray-100
+            "#eceef1", // Tailwind gray-150
           ]}
           horizontal={true}
           y={0}
@@ -133,10 +163,54 @@ export const SwellChart = ({
           tickCount={4} // Increased from 2 to show more time points
         />
 
-        {/* XAxis for the wind direction */}
+        {/* XAxis for the swell period */}
         <XAxis
           dataKey="localDateTimeISO"
           xAxisId={3}
+          tickLine={false}
+          axisLine={false}
+          allowDataOverflow
+          allowDuplicatedCategory={false}
+          tick={({ x, y, index }: { x: number; y: number; index: number }) => {
+            const data = chartData[index];
+            if (!data) {
+              return <g />;
+            }
+            return (
+              <g
+                className="tw:text-white tw:px-1 tw:py-1"
+                transform={`translate(0, ${y - 21})`}
+              >
+                <rect
+                  x={x - 15}
+                  y={-18}
+                  width={30}
+                  height={20}
+                  fill="#1aa7b1"
+                />
+                <text
+                  x={
+                    Math.round(data.trainData?.[0]?.peakPeriod || 0).toString()
+                      .length === 2
+                      ? x - 7
+                      : x - 3
+                  }
+                  y={-2}
+                  fontSize={11}
+                  fill="white"
+                >
+                  {Math.round(data.trainData?.[0]?.peakPeriod || 0)}
+                </text>
+              </g>
+            );
+          }}
+          interval={0}
+        />
+
+        {/* XAxis for the wind direction */}
+        <XAxis
+          dataKey="localDateTimeISO"
+          xAxisId={4}
           allowDuplicatedCategory={false}
           allowDataOverflow
           tickLine={false}
@@ -151,7 +225,7 @@ export const SwellChart = ({
                 payload={{ value: data.wind.direction ?? 0 }}
                 windSpeed={data.wind.speedKnots || 0}
                 x={x}
-                y={y - 32}
+                y={y - 40}
               />
             );
           }}
@@ -161,7 +235,7 @@ export const SwellChart = ({
         {/* XAxis for the wind speed with dynamic values */}
         <XAxis
           dataKey="localDateTimeISO"
-          xAxisId={4}
+          xAxisId={5}
           tick={({ x, y, index }: { x: number; y: number; index: number }) => {
             const data = chartData[index];
             if (!data) {
@@ -170,7 +244,7 @@ export const SwellChart = ({
             return (
               <WindSpeedTick
                 x={x}
-                y={y - 32}
+                y={y - 40}
                 payload={{
                   value:
                     unitPreferences.units.wind === "knots"
@@ -189,15 +263,23 @@ export const SwellChart = ({
         />
 
         <Tooltip
-          content={<SwellTooltip unitPreferences={unitPreferences} />}
+          content={
+            <SwellTooltip
+              unitPreferences={unitPreferences}
+              onClose={handleClose}
+            />
+          }
           cursor={{
             fill: "oklch(0.129 0.042 264.695)",
             fillOpacity: 0.1,
             height: 280,
           }}
-          trigger="hover"
+          trigger={isSmallScreen ? "click" : "hover"}
           isAnimationActive={false}
           offset={24}
+          wrapperStyle={{
+            pointerEvents: "auto",
+          }}
         />
 
         <Bar
@@ -208,9 +290,7 @@ export const SwellChart = ({
           }
           fill="#008993"
           unit={unitPreferences.units.surfHeight}
-          activeBar={{
-            fill: "#00b4c6",
-          }}
+          activeBar={!isTooltipClosed ? { fill: "#00b4c6" } : undefined}
           stackId="a"
           animationEasing="linear"
           animationDuration={220}
@@ -251,9 +331,7 @@ export const SwellChart = ({
           }
           fill="#ffa800"
           unit={unitPreferences.units.surfHeight}
-          activeBar={{
-            fill: "#ffc95d",
-          }}
+          activeBar={!isTooltipClosed ? { fill: "#ffc95d" } : undefined}
           className="tw:w-7 tw:min-w-7"
           stackId="a"
           animationEasing="ease-in-out"

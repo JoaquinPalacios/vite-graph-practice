@@ -1,12 +1,19 @@
-import { useMemo, useRef, useEffect, useState, useLayoutEffect } from "react";
-import * as d3 from "d3";
-import { ChartDataItem, TideDataFromDrupal } from "@/types";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { TideTooltip } from "./TideTooltip";
+import { getLocationMidnightUTC } from "@/lib/time-utils";
+import { ChartDataItem, TideDataFromDrupal } from "@/types";
+import * as d3 from "d3";
 import { bisector } from "d3-array";
 import { timeFormat } from "d3-time-format";
 import { formatInTimeZone } from "date-fns-tz";
-import { getLocationMidnightUTC } from "@/lib/time-utils";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { TideTooltip } from "./TideTooltip";
 
 interface TransformedTidePoint {
   height: number;
@@ -55,7 +62,7 @@ export const TideChart = ({
   const yAxisRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
-  const { isMobile, isLandscapeMobile } = useScreenDetector();
+  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
   const [tooltipState, setTooltipState] = useState<{
     visible: boolean;
     x: number;
@@ -63,6 +70,23 @@ export const TideChart = ({
     data: TransformedTidePoint | null;
   }>({ visible: false, x: 0, y: 0, data: null });
   const tooltipDivRef = useRef<HTMLDivElement>(null);
+
+  // Add state for click events on small devices
+  const [clickedTimestamp, setClickedTimestamp] = useState<number | null>(null);
+  const [hoveredTimestamp, setHoveredTimestamp] = useState<number | null>(null);
+
+  // Determine if we should use click events (small devices) or hover events (desktop)
+  const useClickEvents = isMobile || isLandscapeMobile || isTablet;
+
+  // Function to close tooltip
+  const closeTooltip = useCallback(() => {
+    setClickedTimestamp(null);
+    setHoveredTimestamp(null);
+    setTooltipState((prev) => ({ ...prev, visible: false }));
+  }, []);
+
+  // Get the active timestamp based on device type
+  const activeTimestamp = useClickEvents ? clickedTimestamp : hoveredTimestamp;
 
   const length = swellData.length === 0 ? 128 : swellData.length;
 
@@ -337,7 +361,7 @@ export const TideChart = ({
       .attr("y", 0)
       .attr("width", 64)
       .attr("height", svgDimensions.height)
-      .attr("fill", "oklch(0.968 0.007 247.896)");
+      .attr("fill", "oklch(96.7% 0.003 264.542)"); // Tailwind gray-100
 
     // Add background rectangle to Y-axis
     yAxisSvg
@@ -381,8 +405,8 @@ export const TideChart = ({
         "fill",
         (_, i) =>
           i % 2 === 0
-            ? "oklch(0.929 0.013 255.508)" // Tailwind Slate 200
-            : "oklch(0.968 0.007 247.896)" // Tailwind Slate 300
+            ? "#eceef1" // Tailwind gray-150
+            : "oklch(96.7% 0.003 264.542)" // Tailwind gray-100
       )
       .lower();
 
@@ -547,6 +571,25 @@ export const TideChart = ({
       .attr("opacity", 0)
       .attr("pointer-events", "none");
 
+    // Update hover line position based on active timestamp
+    if (activeTimestamp !== null) {
+      const dayIndex = Math.floor(
+        (activeTimestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+      );
+      const dayProgress =
+        (activeTimestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+      const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+      const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+
+      hoverLine
+        .attr("x", x - 0.5)
+        .attr("y", 0)
+        .attr("height", chartDrawingHeight)
+        .attr("opacity", 0.2);
+    } else {
+      hoverLine.attr("opacity", 0);
+    }
+
     chartArea
       .append("rect")
       .attr("class", "overlay")
@@ -555,6 +598,8 @@ export const TideChart = ({
       .attr("fill", "none")
       .attr("pointer-events", "all")
       .on("mousemove", (event) => {
+        if (useClickEvents) return; // Skip hover events on small devices
+
         const [pointerX, pointerY] = d3.pointer(event);
 
         // Early exit if outside chart bounds
@@ -564,7 +609,7 @@ export const TideChart = ({
           pointerY < 0 ||
           pointerY > chartDrawingHeight
         ) {
-          hoverLine.attr("opacity", 0);
+          setHoveredTimestamp(null);
           setTooltipState((prev) => ({ ...prev, visible: false }));
           return;
         }
@@ -627,14 +672,12 @@ export const TideChart = ({
           }
         }
 
-        // The vertical line always spans the full chart height
-        hoverLine
-          .attr("x", x - 0.5)
-          .attr("y", 0)
-          .attr("height", chartDrawingHeight)
-          .attr("opacity", 0.2);
+        // Update hover timestamp
+        if (interpolatedPoint) {
+          setHoveredTimestamp(interpolatedPoint.timestamp);
+        }
 
-        // Tooltip logic (unchanged)
+        // Tooltip logic
         if (interpolatedPoint) {
           // For tooltip Y, use the interpolated Y value on the curve
           const y = yScale(interpolatedPoint.height);
@@ -660,8 +703,116 @@ export const TideChart = ({
         }
       })
       .on("mouseout", () => {
-        hoverLine.attr("opacity", 0);
-        setTooltipState((prev) => ({ ...prev, visible: false }));
+        if (!useClickEvents) {
+          setHoveredTimestamp(null);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+        }
+      })
+      .on("click", (event) => {
+        if (!useClickEvents) return; // Skip click events on desktop
+
+        const [pointerX, pointerY] = d3.pointer(event);
+
+        // Early exit if outside chart bounds
+        if (
+          pointerX < 0 ||
+          pointerX > chartDrawingWidth ||
+          pointerY < 0 ||
+          pointerY > chartDrawingHeight
+        ) {
+          closeTooltip();
+          return;
+        }
+
+        // --- Find the closest point on the area curve to the mouse X ---
+        let x = pointerX;
+        let interpolatedPoint: TransformedTidePoint | null = null;
+        if (areaPathNode) {
+          // Convert mouse X to timestamp
+          const dayIndex = Math.floor(pointerX / PIXELS_PER_DAY);
+          const dayProgress = pointerX % PIXELS_PER_DAY;
+          const dayFraction = dayProgress / PIXELS_PER_DAY;
+          const mouseTimestamp =
+            timeDomain[0].getTime() +
+            dayIndex * 24 * 60 * 60 * 1000 +
+            dayFraction * 24 * 60 * 60 * 1000;
+
+          // Find the two points that bracket the mouse timestamp
+          const i = bisectTime(transformedData, mouseTimestamp);
+          const left = transformedData[i - 1];
+          const right = transformedData[i];
+
+          // Handle edge cases
+          if (!left || !right) {
+            const point = left || right;
+            if (point) {
+              const px = (() => {
+                const dayIndex = Math.floor(
+                  (point.timestamp - timeDomain[0].getTime()) /
+                    (24 * 60 * 60 * 1000)
+                );
+                const dayProgress =
+                  (point.timestamp - timeDomain[0].getTime()) %
+                  (24 * 60 * 60 * 1000);
+                const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+                return dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+              })();
+              x = px;
+              interpolatedPoint = {
+                ...point,
+                isInterpolated: false,
+              };
+            }
+          } else {
+            // Calculate interpolated position and height
+            const t =
+              (mouseTimestamp - left.timestamp) /
+              (right.timestamp - left.timestamp);
+            const clampedT = Math.max(0, Math.min(1, t));
+            const interpolatedHeight =
+              left.height + clampedT * (right.height - left.height);
+            interpolatedPoint = {
+              height: interpolatedHeight,
+              timestamp: mouseTimestamp,
+              localDateTimeISO: tooltipDateFormat(new Date(mouseTimestamp)),
+              utcDateTimeISO: new Date(mouseTimestamp).toISOString(),
+              instance: clampedT < 0.5 ? left.instance : right.instance,
+              isInterpolated: true,
+            };
+          }
+        }
+
+        const newTimestamp =
+          clickedTimestamp === interpolatedPoint?.timestamp
+            ? null
+            : interpolatedPoint?.timestamp;
+        setClickedTimestamp(newTimestamp || null);
+
+        if (newTimestamp && interpolatedPoint) {
+          // For tooltip Y, use the interpolated Y value on the curve
+          const y = yScale(interpolatedPoint.height);
+          const tooltipDiv = tooltipDivRef.current;
+          const tooltipRect = tooltipDiv?.getBoundingClientRect();
+          const tooltipWidth = tooltipRect?.width ?? 0;
+          const tooltipHeight = tooltipRect?.height ?? 0;
+          const tooltipPosition = calculateTooltipPosition(
+            x,
+            y,
+            tooltipWidth,
+            tooltipHeight,
+            chartDrawingWidth,
+            chartDrawingHeight,
+            margin
+          );
+          setTooltipState({
+            visible: true,
+            x: tooltipPosition.x,
+            y: tooltipPosition.y,
+            data: interpolatedPoint,
+          });
+        } else {
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+        }
       });
 
     // Update the container width style to match the SVG width
@@ -676,9 +827,15 @@ export const TideChart = ({
     length,
     isMobile,
     isLandscapeMobile,
+    isTablet,
     timezone,
     bisectTime,
     tooltipDateFormat,
+    hoveredTimestamp,
+    clickedTimestamp,
+    activeTimestamp,
+    useClickEvents,
+    closeTooltip,
   ]);
 
   /**
@@ -739,6 +896,24 @@ export const TideChart = ({
     }
   }, [tooltipState, svgDimensions]);
 
+  // Hide hover/tooltip when mouse leaves the chart area, even if moving to another chart
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX;
+      const y = e.clientY;
+      if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+        closeTooltip();
+      }
+    };
+    window.addEventListener("mousemove", handleGlobalMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleGlobalMouseMove);
+    };
+  }, [containerRef, closeTooltip]);
+
   /**
    * Fifth, Render
    * @description It takes the container and renders the chart.
@@ -784,7 +959,7 @@ export const TideChart = ({
               left: tooltipState.x,
               top: tooltipState.y,
               zIndex: 10,
-              pointerEvents: "none",
+              pointerEvents: useClickEvents ? "auto" : "none",
               transform: "translate(0, 0)", // Remove any transform that might affect positioning
             }}
           >
@@ -797,6 +972,8 @@ export const TideChart = ({
                 },
               ]}
               timezone={timezone}
+              onClose={closeTooltip}
+              useClickEvents={useClickEvents}
             />
           </div>
         )}

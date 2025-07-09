@@ -1,17 +1,17 @@
-import {
-  CartesianGrid,
-  YAxis,
-  XAxis,
-  ScatterChart,
-  Scatter,
-  Tooltip,
-} from "recharts";
-import { ResponsiveContainer } from "recharts";
-import { WeatherBubble } from "./WeatherBubble";
+import { WeatherData } from "@/types";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
-import { WeatherData } from "@/types";
 import { useState } from "react";
+import {
+  CartesianGrid,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { WeatherBubble } from "./WeatherBubble";
 
 type ScatterShapeProps = {
   cx?: number;
@@ -31,7 +31,7 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
       height="100%"
       className={cn(
         "weather-chart tw:h-16 tw:min-h-16 tw:relative",
-        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-slate-400/80 tw:after:pointer-events-none"
+        "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[4.75rem] tw:after:border-y tw:after:border-gray-400/80 tw:after:pointer-events-none"
       )}
     >
       <ScatterChart
@@ -49,8 +49,8 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
           vertical={true}
           horizontal={false}
           verticalFill={[
-            "oklch(0.968 0.007 247.896)", // Tailwind slate-200
-            "oklch(0.929 0.013 255.508)", // Tailwind slate-300
+            "oklch(96.7% 0.003 264.542)", // Tailwind gray-100
+            "#eceef1", // Tailwind gray-150
           ]}
           y={0}
           height={64}

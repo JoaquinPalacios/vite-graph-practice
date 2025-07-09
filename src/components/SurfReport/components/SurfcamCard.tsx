@@ -21,7 +21,7 @@ export const SurfcamCard = ({
       className={cn("tw:block tw:relative", className)}
     >
       {/* Thumbnail container */}
-      <div className="tw:aspect-video tw:bg-slate-200 tw:overflow-hidden tw:relative tw:w-full">
+      <div className="tw:aspect-video tw:bg-gray-200 tw:overflow-hidden tw:relative tw:w-full">
         <img
           src={thumbnailUrl}
           alt={`${surfcam.name} Cam`}

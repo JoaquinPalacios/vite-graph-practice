@@ -1,25 +1,25 @@
 "use client";
 
+import { processTimeData } from "@/lib/time-utils";
 import {
+  DrupalApiData,
   TideDataFromDrupal,
   UnitPreferences,
   WeatherData,
-  DrupalApiData,
 } from "@/types";
-import ChartsWrapper from "./ChartsWrapper";
-import { SwellChart } from "./SwellChart";
-import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
-import { cn } from "@/utils/utils";
 import { ChartDataItem } from "@/types/index.ts";
-import { processTimeData } from "@/lib/time-utils";
-import { UnitSelector } from "./UnitSelector";
+import { cn } from "@/utils/utils";
 import { Suspense, useState } from "react";
-import WeatherChart from "./WeatherChart";
-import { TideChart } from "./TideChart";
+import { AdvanceD3Chart } from "./AdvanceD3Chart";
+import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
 import { SubscriptionOverlay } from "./SubscriptionOverlay";
 import SwellTrainAnalysis from "./SweeltrainAnalysis";
-import { AdvanceD3Chart } from "./AdvanceD3Chart";
+import { SwellChart } from "./SwellChart";
+import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
+import { TideChart } from "./TideChart";
+import { UnitSelector } from "./UnitSelector";
+import WeatherChart from "./WeatherChart";
 
 /**
  * ChartsContainer component
@@ -108,8 +108,8 @@ const ChartsContainer = ({
 
       <div
         className={cn(
-          "tw:w-full tw:relative tw:bg-slate-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-4 tw:py-0 tw:overflow-hidden tw:transition-opacity",
-          showSubscriptionOverlay && "tw:max-md:pt-72",
+          "tw:w-full tw:relative tw:bg-gray-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-2 tw:py-0 tw:overflow-hidden tw:transition-opacity",
+          showSubscriptionOverlay && "tw:max-md:pt-80",
           !showAnalysis
             ? "tw:opacity-100"
             : "tw:opacity-0 tw:-z-10 tw:pointer-events-none tw:w-0 tw:h-0"
@@ -148,6 +148,7 @@ const ChartsContainer = ({
                     unitPreferences={unitPreferences}
                     chartData={processedData}
                     maxSurfHeight={maxSurfHeightAdvanced}
+                    hasSubscription={rawApiData.user.hasFullAccess}
                   />
                 </>
               ) : (
@@ -183,7 +184,7 @@ const ChartsContainer = ({
                   timezone={timezone}
                 />
               ) : (
-                <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-slate-500">
+                <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-gray-500">
                   No tide data available
                 </div>
               )}

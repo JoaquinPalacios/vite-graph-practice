@@ -24,7 +24,7 @@ const GraphSkeleton = ({
   const placeholderCount = 33; // Adjust based on desired density
 
   return (
-    <div className="tw:w-full tw:pl-4 tw:bg-slate-50 tw:overflow-hidden tw:h-[33rem]">
+    <div className="tw:w-full tw:pl-4 tw:bg-gray-50 tw:overflow-hidden tw:h-[33rem]">
       {/* Main Chart Skeleton */}
       {showMain && (
         <>
@@ -53,10 +53,10 @@ const GraphSkeleton = ({
             <div className="tw:flex-1 tw:flex tw:items-end tw:justify-start tw:space-x-1 tw:overflow-hidden tw:relative tw:h-full">
               {/* Background Bands (simplified) */}
               <div className="tw:absolute tw:inset-0 tw:flex tw:z-0">
-                <div className="tw:w-1/4 tw:h-full tw:bg-slate-200/60"></div>
-                <div className="tw:w-1/4 tw:h-full tw:bg-slate-100/60"></div>
-                <div className="tw:w-1/4 tw:h-full tw:bg-slate-200/60"></div>
-                <div className="tw:w-1/4 tw:h-full tw:bg-slate-100/60"></div>
+                <div className="tw:w-1/4 tw:h-full tw:bg-gray-200/60"></div>
+                <div className="tw:w-1/4 tw:h-full tw:bg-gray-100/60"></div>
+                <div className="tw:w-1/4 tw:h-full tw:bg-gray-200/60"></div>
+                <div className="tw:w-1/4 tw:h-full tw:bg-gray-100/60"></div>
               </div>
               {/* Bars + Arrows Placeholder */}
               <div className="tw:flex tw:items-end tw:h-full tw:space-x-1 tw:relative tw:z-10">
@@ -92,14 +92,14 @@ const GraphSkeleton = ({
 
       {/* Weather Chart Skeleton */}
       {showWeather && (
-        <div className="tw:py-4 tw:ml-5 tw:flex tw:flex-row tw:items-center tw:gap-2 tw:justify-start tw:border-y tw:border-slate-200/50 tw:overflow-hidden">
+        <div className="tw:py-4 tw:ml-5 tw:flex tw:flex-row tw:items-center tw:gap-2 tw:justify-start tw:border-y tw:border-gray-200/50 tw:overflow-hidden">
           {[...Array(isExtraLargeDesktop ? 40 : 32)].map((_, i) => (
             <div
               key={`weather-skel-${i}`}
               className="tw:flex tw:flex-col tw:items-center tw:gap-1"
             >
-              <div className="tw:w-6 tw:h-6 tw:bg-slate-200 tw:rounded-full tw:animate-pulse tw:aspect-square"></div>
-              <div className="tw:w-3 tw:h-2 tw:bg-slate-200/80 tw:rounded-full tw:animate-pulse tw:aspect-video"></div>
+              <div className="tw:w-6 tw:h-6 tw:bg-gray-200 tw:rounded-full tw:animate-pulse tw:aspect-square"></div>
+              <div className="tw:w-3 tw:h-2 tw:bg-gray-200/80 tw:rounded-full tw:animate-pulse tw:aspect-video"></div>
             </div>
           ))}
         </div>
@@ -111,7 +111,7 @@ const GraphSkeleton = ({
           {[...Array(80)].map((_, i) => (
             <div
               key={`tide-skel-${i}`}
-              className="tw:w-3 tw:bg-slate-200 tw:rounded tw:animate-pulse"
+              className="tw:w-3 tw:bg-gray-200 tw:rounded tw:animate-pulse"
               style={{ height: `${Math.abs(Math.sin(i / 5)) * 32 + 4}px` }}
             ></div>
           ))}

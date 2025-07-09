@@ -1,27 +1,27 @@
-import { Waves, Sunrise, Sunset, Thermometer, Wind } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ChartDataItem,
-  CurrentWeatherData,
-  SunriseSunsetData,
-  UnitPreferences,
-  SurfReportItem,
-  TideDataFromDrupal,
-} from "@/types";
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { cn } from "@/utils/utils";
 import { WeatherIcon, getWeatherLabel } from "@/components/WeatherIcon";
+import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
+import { getSurfHeightLabel } from "@/lib/surf-height-utils";
 import {
   findCurrentDaySunriseSunset,
   findCurrentDayTides,
 } from "@/lib/time-utils";
+import {
+  ChartDataItem,
+  CurrentWeatherData,
+  SunriseSunsetData,
+  SurfReportItem,
+  TideDataFromDrupal,
+  UnitPreferences,
+} from "@/types";
+import { cn } from "@/utils/utils";
 import { formatInTimeZone } from "date-fns-tz";
-import { PreviousReportItem } from "./PreviousReport";
-import { getSurfHeightLabel } from "@/lib/surf-height-utils";
+import { Sunrise, Sunset, Thermometer, Waves, Wind } from "lucide-react";
 import { useMemo } from "react";
 import { MetricCard } from "./components/MetricCard";
 import { MetricDisplay } from "./components/MetricDisplay";
 import { SwellMetrics } from "./components/SwellMetrics";
+import { PreviousReportItem } from "./PreviousReport";
 
 type SurfReportPanelProps = {
   localDateTimeISO: string;
@@ -110,7 +110,7 @@ export const SurfReportPanel = ({
   }, [surfReport]);
 
   return (
-    <article className="tw:w-full tw:bg-slate-100 tw:p-4 ">
+    <article className="tw:w-full tw:bg-gray-100 tw:p-4 ">
       <div className="tw:flex tw:flex-col tw:gap-4">
         <div className="tw:flex tw:items-center tw:justify-between">
           <div>

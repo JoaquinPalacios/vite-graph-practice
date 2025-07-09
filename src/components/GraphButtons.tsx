@@ -1,10 +1,10 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { cn } from "@/utils/utils";
 import {
+  AiOutlineDoubleLeft,
+  AiOutlineDoubleRight,
   AiOutlineLeft,
   AiOutlineRight,
-  AiOutlineDoubleRight,
-  AiOutlineDoubleLeft,
 } from "react-icons/ai";
 
 /**
@@ -63,54 +63,54 @@ const GraphButtons = ({
     <>
       <div
         className={cn(
-          "tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-slate-200"
+          "tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-200"
         )}
       >
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
-            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:left-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0] tw:focus:outline-none"
           )}
           disabled={isAtStart}
           aria-label="Scroll left one day"
         >
-          <AiOutlineLeft color="white" size={18} />
+          <AiOutlineLeft color="oklch(21% 0.034 264.665)" size={18} />
         </button>
         <button
           onClick={() => scrollByDay("left", getScrollMultiplier())}
           className={cn(
-            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:left-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
           )}
           disabled={isAtStart}
           aria-label="Scroll left multiple days"
         >
-          <AiOutlineDoubleLeft color="white" size={18} />
+          <AiOutlineDoubleLeft color="oklch(21% 0.034 264.665)" size={18} />
         </button>
       </div>
-      <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-slate-200">
+      <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-200">
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(
-            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:right-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right one day"
         >
-          <AiOutlineRight color="white" size={18} />
+          <AiOutlineRight color="oklch(21% 0.034 264.665)" size={18} />
         </button>
         <button
           onClick={() => scrollByDay("right", getScrollMultiplier())}
           className={cn(
-            "tw:bg-slate-600 tw:p-1.5 tw:sm:p-2 tw:cursor-pointer tw:absolute tw:right-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-300 tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-slate-700 tw:focus:bg-slate-700 tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right multiple days"
         >
-          <AiOutlineDoubleRight color="white" size={18} />
+          <AiOutlineDoubleRight color="oklch(21% 0.034 264.665)" size={18} />
         </button>
       </div>
     </>
