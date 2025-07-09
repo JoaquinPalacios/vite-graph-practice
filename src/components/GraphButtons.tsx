@@ -63,14 +63,15 @@ const GraphButtons = ({
     <>
       <div
         className={cn(
-          "tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-200"
+          "tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-100"
         )}
       >
         <button
           onClick={() => scrollByDay("left", 1)}
           className={cn(
-            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-[#c4c9d0] tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-100",
+            "tw:active:bg-[#c4c9d0] tw:focus:outline-none",
+            "tw:disabled:cursor-auto tw:disabled:bg-gray-100 tw:disabled:[&>svg]:opacity-0"
           )}
           disabled={isAtStart}
           aria-label="Scroll left one day"
@@ -80,8 +81,9 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("left", getScrollMultiplier())}
           className={cn(
-            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:left-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-100 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0] tw:focus:outline-none",
+            "tw:disabled:cursor-auto tw:disabled:bg-gray-100 tw:disabled:[&>svg]:opacity-0"
           )}
           disabled={isAtStart}
           aria-label="Scroll left multiple days"
@@ -89,12 +91,13 @@ const GraphButtons = ({
           <AiOutlineDoubleLeft color="oklch(21% 0.034 264.665)" size={18} />
         </button>
       </div>
-      <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-200">
+      <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-100">
         <button
           onClick={() => scrollByDay("right", 1)}
           className={cn(
-            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:top-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-100 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0] tw:focus:outline-none",
+            "tw:disabled:cursor-auto tw:disabled:bg-gray-100 tw:disabled:[&>svg]:opacity-0"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right one day"
@@ -104,8 +107,9 @@ const GraphButtons = ({
         <button
           onClick={() => scrollByDay("right", getScrollMultiplier())}
           className={cn(
-            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:disabled:opacity-0 tw:disabled:cursor-auto",
-            "tw:active:bg-[#c4c9d0]  tw:focus:outline-none"
+            "tw:bg-gray-300 tw:p-1 tw:cursor-pointer tw:absolute tw:right-0 tw:bottom-0 tw:h-1/2 tw:z-30 tw:transition-[opacity,colors,transform,shadow] tw:duration-100 tw:disabled:opacity-0 tw:disabled:cursor-auto",
+            "tw:active:bg-[#c4c9d0] tw:focus:outline-none",
+            "tw:disabled:cursor-auto tw:disabled:bg-gray-100 tw:disabled:[&>svg]:opacity-0"
           )}
           disabled={isAtEnd}
           aria-label="Scroll right multiple days"

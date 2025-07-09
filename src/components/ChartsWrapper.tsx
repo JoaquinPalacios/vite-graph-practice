@@ -160,7 +160,7 @@ const ChartsWrapper = ({
           rect = createRect(axis);
         }
 
-        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
+        rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "1");
         // Update width when updating position
         rect.setAttribute("width", getAxisWidth());
       });
