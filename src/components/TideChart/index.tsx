@@ -306,7 +306,12 @@ export const TideChart = ({
     // Create the chart area with proper translation
     const chartArea = svg
       .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr(
+        "transform",
+        `translate(${isMobile || isLandscapeMobile ? 60 : margin.left},${
+          margin.top
+        })`
+      );
 
     // --- Scales ---
     const maxTide = d3.max(transformedData, (d) => d.height) ?? 1;
@@ -979,12 +984,12 @@ export const TideChart = ({
         )}
       </div>
       {/* Y-axis container */}
-      <div className="tw:w-11 tw:md:w-12 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+      <div className="tw:w-11 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:bottom-0 tw:z-10 tw:pointer-events-none">
         <svg
           ref={yAxisRef}
-          width={isMobile || isLandscapeMobile ? 44 : 48}
+          width={isMobile || isLandscapeMobile ? 44 : 64}
           height={svgDimensions.height}
-          className="tw:w-11 tw:md:w-12"
+          className="tw:w-11 tw:md:w-16"
         />
       </div>
     </>

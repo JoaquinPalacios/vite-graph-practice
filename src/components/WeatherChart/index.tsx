@@ -1,3 +1,4 @@
+import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { WeatherData } from "@/types";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
@@ -21,13 +22,18 @@ type ScatterShapeProps = {
 };
 
 const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
+  const { isMobile, isLandscapeMobile } = useScreenDetector();
   // Add index property to each data point
   const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   return (
     <ResponsiveContainer
-      width={getChartWidth(weatherData.length, 256, 60)}
+      width={getChartWidth(
+        weatherData.length,
+        256,
+        isMobile || isLandscapeMobile ? 44 : 60
+      )}
       height="100%"
       className={cn(
         "weather-chart tw:h-16 tw:min-h-16 tw:relative",
@@ -93,7 +99,7 @@ const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
         <YAxis
           dataKey={() => 1}
           height={0}
-          // domain={[1]}
+          width={isMobile || isLandscapeMobile ? 44 : 60}
           domain={[1, 1]}
           padding={{ bottom: 16 }}
           opacity={0}

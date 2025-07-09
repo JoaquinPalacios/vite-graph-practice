@@ -217,7 +217,12 @@ export const AdvanceD3Chart = ({
     const chartArea = svg
       .append("g")
       .attr("height", chartDrawingHeight)
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr(
+        "transform",
+        `translate(${isMobile || isLandscapeMobile ? 26 : margin.left},${
+          margin.top
+        })`
+      );
 
     // Add background stripes
     chartArea
