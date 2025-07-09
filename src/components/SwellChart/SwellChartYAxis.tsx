@@ -36,11 +36,11 @@ export const SwellChartYAxis = ({
 
   return (
     <ResponsiveContainer
-      width={60}
+      width={48}
       height={320}
       minHeight={320}
       className={cn(
-        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-4 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
+        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-5 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
         !hasSubscription && "tw:max-md:top-80"
       )}
     >
@@ -51,7 +51,7 @@ export const SwellChartYAxis = ({
             // bottom: 12,
           }
         }
-        width={60}
+        width={48}
         className="tw:[&>svg]:focus:outline-none"
         height={320}
       >
@@ -95,7 +95,6 @@ export const SwellChartYAxis = ({
           name="Y Wave Height"
           id="y-wave-height"
           key={`y-wave-height-${unitPreferences.units.surfHeight}`}
-          // hide
           aria-hidden
         />
 
@@ -112,12 +111,11 @@ export const SwellChartYAxis = ({
           name="Y Face Wave Height"
           id="y-face-wave-height"
           key={`y-face-wave-height-${unitPreferences.units.surfHeight}`}
-          // hide
           aria-hidden
         />
 
         <YAxis
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+          tickMargin={isMobile || isLandscapeMobile ? 20 : 20}
           minTickGap={0}
           unit={unitPreferences.units.surfHeight}
           interval={0}
@@ -128,6 +126,7 @@ export const SwellChartYAxis = ({
             top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
           }}
           height={320}
+          width={48}
           axisLine={false}
           type="number"
           tick={(value) => {
@@ -135,7 +134,7 @@ export const SwellChartYAxis = ({
               // Wind Direction, Speed & Period
               <g transform="translate(-10, 0)">
                 <text
-                  x={value.x + 12}
+                  x={value.x + 20}
                   y={value.y + 16}
                   fontSize={10}
                   textAnchor="end"
@@ -144,14 +143,14 @@ export const SwellChartYAxis = ({
                 </text>
                 <LuWind
                   className="tw:w-4 tw:h-4"
-                  x={value.x - 6}
+                  x={value.x + 2}
                   y={value.y + 32}
                   size={20}
                   color="#666"
                 />
                 {unitPreferences.units.wind === "knots" ? (
                   <text
-                    x={value.x + 10}
+                    x={value.x + 18}
                     y={value.y + 70}
                     dy={1}
                     textAnchor="end"
@@ -161,7 +160,7 @@ export const SwellChartYAxis = ({
                   </text>
                 ) : (
                   <text
-                    x={value.x + 12}
+                    x={value.x + 20}
                     y={value.y + 70}
                     dy={1}
                     textAnchor="end"
@@ -174,7 +173,7 @@ export const SwellChartYAxis = ({
             ) : (
               // Surf Height
               <text
-                x={value.x}
+                x={value.x + 8}
                 y={value.y}
                 dy={1}
                 textAnchor="end"

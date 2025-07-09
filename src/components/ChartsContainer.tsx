@@ -161,8 +161,8 @@ const ChartsContainer = ({
                   <WeatherChart weatherData={weatherData} />
                   <div
                     className={cn(
-                      "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-16",
-                      "tw:absolute tw:left-0 tw:md:left-3 tw:bottom-24 tw:z-10"
+                      "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-20",
+                      "tw:absolute tw:left-0 tw:md:left-5 tw:bottom-24 tw:z-10"
                     )}
                   >
                     <svg

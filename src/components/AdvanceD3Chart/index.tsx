@@ -803,7 +803,7 @@ export const AdvanceD3Chart = ({
       {/* Y-axis container */}
       <div
         className={cn(
-          "tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-3 tw:top-80 tw:z-10 tw:pointer-events-none",
+          "tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:top-80 tw:z-10 tw:pointer-events-none",
           !hasSubscription && "tw:max-md:top-[40rem]"
         )}
         aria-hidden={!unitPreferences.showAdvancedChart}

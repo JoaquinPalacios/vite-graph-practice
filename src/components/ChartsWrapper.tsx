@@ -80,7 +80,7 @@ const ChartsWrapper = ({
       if (isLandscapeMobile || isMobile) {
         return "48";
       }
-      return isAdvanced ? "60" : "64";
+      return isAdvanced ? "48" : "48";
     },
     [isMobile, isLandscapeMobile]
   );
