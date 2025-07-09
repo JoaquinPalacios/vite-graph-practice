@@ -75,26 +75,23 @@ const ChartsWrapper = ({
   }, []);
 
   // Memoize the get axis width function
-  const getAxisWidth = useCallback(
-    (isAdvanced: boolean): string => {
-      if (isLandscapeMobile || isMobile) {
-        return "48";
-      }
-      return isAdvanced ? "48" : "48";
-    },
-    [isMobile, isLandscapeMobile]
-  );
+  const getAxisWidth = useCallback((): string => {
+    if (isLandscapeMobile || isMobile) {
+      return "44";
+    }
+    return "48";
+  }, [isMobile, isLandscapeMobile]);
 
   // Memoize the create rect function
   const createRect = useCallback(
-    (axis: HTMLElement, isAdvanced: boolean): SVGRectElement => {
+    (axis: HTMLElement): SVGRectElement => {
       const rect = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "rect"
       );
       rect.setAttribute("x", "0");
       rect.setAttribute("y", "0");
-      rect.setAttribute("width", getAxisWidth(isAdvanced));
+      rect.setAttribute("width", getAxisWidth());
       rect.setAttribute("height", "320");
       rect.setAttribute("fill", "oklch(96.7% 0.003 264.542)");
       rect.setAttribute("class", "y-axis-rect-left");
@@ -111,10 +108,9 @@ const ChartsWrapper = ({
     ) as NodeListOf<HTMLElement>;
     axes.forEach((axis) => {
       if (!axis) return;
-      const isAdvanced = axis.classList.contains("advance-y-axis");
       const rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
       if (rect) {
-        rect.setAttribute("width", getAxisWidth(isAdvanced));
+        rect.setAttribute("width", getAxisWidth());
       }
     });
 
@@ -125,7 +121,7 @@ const ChartsWrapper = ({
         ".y-axis-rect-left"
       ) as SVGRectElement;
       if (rect) {
-        rect.setAttribute("width", getAxisWidth(false));
+        rect.setAttribute("width", getAxisWidth());
       }
     }
   }, [getAxisWidth]);
@@ -161,12 +157,12 @@ const ChartsWrapper = ({
 
         let rect = axis.querySelector(".y-axis-rect-left") as SVGRectElement;
         if (!rect) {
-          rect = createRect(axis, isAdvanced);
+          rect = createRect(axis);
         }
 
         rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
         // Update width when updating position
-        rect.setAttribute("width", getAxisWidth(isAdvanced));
+        rect.setAttribute("width", getAxisWidth());
       });
 
       // Handle weather-rect
@@ -178,12 +174,12 @@ const ChartsWrapper = ({
           ".y-axis-rect-left"
         ) as SVGRectElement;
         if (!rect) {
-          rect = createRect(weatherRect, false);
+          rect = createRect(weatherRect);
           rect.setAttribute("height", "80");
         }
         rect.setAttribute("fill-opacity", scrollLeft > 0 ? "1" : "0");
         // Update width when updating position
-        rect.setAttribute("width", getAxisWidth(false));
+        rect.setAttribute("width", getAxisWidth());
       }
     },
     [createRect, getAxisWidth]

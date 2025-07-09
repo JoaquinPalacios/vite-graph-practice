@@ -293,7 +293,7 @@ export const AdvanceD3Chart = ({
       .attr("class", "y-axis-rect-left")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", 64)
+      .attr("width", 48)
       .attr("height", svgDimensions.height)
       .attr("fill", "oklch(96.7% 0.003 264.542)"); // Tailwind gray-100
 
@@ -303,7 +303,7 @@ export const AdvanceD3Chart = ({
       .attr("class", "y-axis")
       .attr(
         "transform",
-        `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 32)`
+        `translate(${isMobile || isLandscapeMobile ? 44 : 48}, 32)`
       )
       .call(yAxis);
 
@@ -803,16 +803,16 @@ export const AdvanceD3Chart = ({
       {/* Y-axis container */}
       <div
         className={cn(
-          "tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:top-80 tw:z-10 tw:pointer-events-none",
+          "tw:w-11 tw:md:w-12 tw:h-fit tw:absolute tw:left-0 tw:md:left-5 tw:top-80 tw:z-10 tw:pointer-events-none",
           !hasSubscription && "tw:max-md:top-[40rem]"
         )}
         aria-hidden={!unitPreferences.showAdvancedChart}
       >
         <svg
           ref={yAxisRef}
-          width={isMobile || isLandscapeMobile ? 48 : 64}
+          width={isMobile || isLandscapeMobile ? 44 : 48}
           height={svgDimensions.height}
-          className="tw:w-12 tw:md:w-16"
+          className="tw:w-11 tw:md:w-12"
           role="img"
           aria-label="Y-axis for Swell height and direction analysis over time"
         />

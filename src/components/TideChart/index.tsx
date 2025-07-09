@@ -979,12 +979,12 @@ export const TideChart = ({
         )}
       </div>
       {/* Y-axis container */}
-      <div className="tw:w-12 tw:md:w-16 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:bottom-0 tw:z-10 tw:pointer-events-none">
+      <div className="tw:w-11 tw:md:w-12 tw:h-fit tw:absolute tw:left-0 tw:md:left-1 tw:bottom-0 tw:z-10 tw:pointer-events-none">
         <svg
           ref={yAxisRef}
-          width={isMobile || isLandscapeMobile ? 48 : 64}
+          width={isMobile || isLandscapeMobile ? 44 : 48}
           height={svgDimensions.height}
-          className="tw:w-12 tw:md:w-16"
+          className="tw:w-11 tw:md:w-12"
         />
       </div>
     </>
