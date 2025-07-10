@@ -9,7 +9,7 @@ import {
 } from "@/types";
 import { ChartDataItem } from "@/types/index.ts";
 import { cn } from "@/utils/utils";
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { AdvanceD3Chart } from "./AdvanceD3Chart";
 import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
@@ -20,6 +20,8 @@ import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
 import { TideChart } from "./TideChart";
 import { UnitSelector } from "./UnitSelector";
 import WeatherChart from "./WeatherChart";
+
+type ChartDataItemWithTimestamp = ChartDataItem & { timestamp: number };
 
 /**
  * ChartsContainer component
@@ -65,13 +67,17 @@ const ChartsContainer = ({
   setModelType: (type: "gfs" | "ecmwf") => void;
 }) => {
   // Update the existing swell chart data processing to use the new utility
-  const { processedData } = processTimeData(
-    chartData.map((item) => ({
-      ...item,
-      dateTime: item.localDateTimeISO,
-      timestamp: new Date(item.localDateTimeISO).getTime(),
-    })),
-    timezone
+  const { processedData } = useMemo(
+    () =>
+      processTimeData(
+        chartData.map((item) => ({
+          ...item,
+          dateTime: item.localDateTimeISO,
+          timestamp: new Date(item.localDateTimeISO).getTime(),
+        })),
+        timezone
+      ),
+    [chartData, timezone]
   );
 
   const [unitPreferences, setUnitPreferences] =
@@ -83,6 +89,34 @@ const ChartsContainer = ({
     tideData && Array.isArray(tideData) && tideData.length > 0;
 
   const showSubscriptionOverlay = !rawApiData.user.hasFullAccess;
+
+  const referenceLineData = useMemo(() => {
+    const dataWithTimestamp = processedData as ChartDataItemWithTimestamp[];
+    let referenceTime: string | undefined;
+    let exactTimestamp: number | undefined;
+    let referenceTimestamp: number | undefined;
+
+    if (dataWithTimestamp.length > 0) {
+      const nowTimestamp = Date.now();
+      exactTimestamp = nowTimestamp;
+
+      const currentChartItem = dataWithTimestamp
+        .slice()
+        .reverse()
+        .find((item) => item.timestamp <= nowTimestamp);
+
+      if (currentChartItem) {
+        const timeDifference = nowTimestamp - currentChartItem.timestamp;
+        const sixHoursInMillis = 6 * 60 * 60 * 1000;
+
+        if (timeDifference < sixHoursInMillis) {
+          referenceTime = currentChartItem.localDateTimeISO;
+          referenceTimestamp = currentChartItem.timestamp;
+        }
+      }
+    }
+    return { referenceTime, exactTimestamp, referenceTimestamp };
+  }, [processedData]);
 
   return (
     <section className="display-flex tw:flex-col tw:gap-4 tw:w-full">
@@ -132,6 +166,9 @@ const ChartsContainer = ({
                         ? maxSurfHeight.feet
                         : maxSurfHeight.meters
                     }
+                    currentLocationTime={referenceLineData.referenceTime}
+                    exactTimestamp={referenceLineData.exactTimestamp}
+                    referenceTimestamp={referenceLineData.referenceTimestamp}
                   />
                   <SwellChartYAxis
                     unitPreferences={unitPreferences}

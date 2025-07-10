@@ -7,12 +7,14 @@ import {
   getChartWidth,
 } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 import {
   Bar,
-  BarChart,
   CartesianGrid,
+  ComposedChart,
+  Label,
   LabelList,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -31,362 +33,475 @@ import { WindSpeedTick } from "./WindSpeedTick";
  * @param maxSurfHeight - The max surf height
  * @returns The SwellChart component
  */
-export const SwellChart = ({
-  unitPreferences,
-  chartData,
-  maxSurfHeight,
-}: {
-  unitPreferences: UnitPreferences;
-  chartData: ChartDataItem[];
-  maxSurfHeight: number;
-}) => {
-  const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
+export const SwellChart = memo(
+  ({
+    unitPreferences,
+    chartData,
+    maxSurfHeight,
+    currentLocationTime,
+    exactTimestamp,
+    referenceTimestamp,
+  }: {
+    unitPreferences: UnitPreferences;
+    chartData: (ChartDataItem & { timestamp: number })[];
+    maxSurfHeight: number;
+    currentLocationTime?: string;
+    exactTimestamp?: number;
+    referenceTimestamp?: number;
+  }) => {
+    const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
 
-  const isSmallScreen = isMobile || isLandscapeMobile || isTablet;
-  const [isTooltipClosed, setIsTooltipClosed] = useState(false);
+    const isSmallScreen = isMobile || isLandscapeMobile || isTablet;
+    const [isTooltipClosed, setIsTooltipClosed] = useState(false);
 
-  const handleClose = () => {
-    // Set the flag to indicate tooltip was closed
-    setIsTooltipClosed(true);
+    const handleClose = () => {
+      // Set the flag to indicate tooltip was closed
+      setIsTooltipClosed(true);
 
-    // Simulate Escape key press to close the tooltip
-    const escapeEvent = new KeyboardEvent("keydown", {
-      key: "Escape",
-      code: "Escape",
-      keyCode: 27,
-      which: 27,
-      bubbles: true,
-      cancelable: true,
-    });
-    document.dispatchEvent(escapeEvent);
-  };
+      // Simulate Escape key press to close the tooltip
+      const escapeEvent = new KeyboardEvent("keydown", {
+        key: "Escape",
+        code: "Escape",
+        keyCode: 27,
+        which: 27,
+        bubbles: true,
+        cancelable: true,
+      });
+      document.dispatchEvent(escapeEvent);
+    };
 
-  return (
-    <ResponsiveContainer
-      width={getChartWidth(
-        chartData.length,
-        256,
-        isMobile || isLandscapeMobile ? 44 : 60
-      )}
-      height="100%"
-      className={cn(
-        "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
-        unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
-          "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-gray-400/80 tw:after:pointer-events-none"
-      )}
-      minHeight={320}
-    >
-      <BarChart
-        data={chartData}
-        barCategoryGap={1}
-        margin={
-          {
-            // bottom: 12,
-          }
-        }
-        className={cn(
-          "swellnet-bar-chart tw:[&>svg]:focus:outline-none",
-          isTooltipClosed
-            ? "tw:[&>svg>.recharts-rectangle.recharts-tooltip-cursor]:fill-transparent"
-            : ""
+    // Calculate interpolated position for ReferenceLine
+    const interpolatedData = useMemo(() => {
+      if (!currentLocationTime || !exactTimestamp || !referenceTimestamp) {
+        return undefined;
+      }
+
+      const currentIndex = chartData.findIndex(
+        (item) => item.localDateTimeISO === currentLocationTime
+      );
+
+      if (currentIndex === -1) return { translateX: 0 };
+
+      const nextSlot = chartData[currentIndex + 1];
+
+      // Use the passed-in, consistent timestamp for the current slot.
+      const currentSlotTimestamp = referenceTimestamp;
+
+      let nextSlotTimestamp;
+      if (nextSlot) {
+        nextSlotTimestamp = nextSlot.timestamp;
+      } else {
+        // It's the last slot, assume 3 hours duration for interpolation
+        const threeHoursInMillis = 3 * 60 * 60 * 1000;
+        nextSlotTimestamp = currentSlotTimestamp + threeHoursInMillis;
+      }
+
+      // Calculate the ratio of where we are between the two slots
+      const timeRatio =
+        (exactTimestamp - currentSlotTimestamp) /
+        (nextSlotTimestamp - currentSlotTimestamp);
+
+      // Clamp the ratio between 0 and 1
+      const clampedRatio = Math.max(0, Math.min(1, timeRatio));
+
+      // Calculate the translation distance
+      const barWidth = 32; // This should match the cursor width from tooltip
+      const translateX = barWidth * clampedRatio;
+
+      return { translateX };
+    }, [chartData, currentLocationTime, exactTimestamp, referenceTimestamp]);
+
+    return (
+      <ResponsiveContainer
+        width={getChartWidth(
+          chartData.length,
+          256,
+          isMobile || isLandscapeMobile ? 44 : 60
         )}
-        onClick={() => {
-          setIsTooltipClosed(false);
-        }}
+        height="100%"
+        className={cn(
+          "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
+          unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
+            "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-gray-400/80 tw:after:pointer-events-none"
+        )}
+        minHeight={320}
       >
-        <CartesianGrid
-          vertical={true}
-          verticalFill={[
-            "oklch(96.7% 0.003 264.542)", // Tailwind gray-100
-            "#eceef1", // Tailwind gray-150
-          ]}
-          horizontal={true}
-          y={0}
-          height={320}
-          syncWithTicks
-          className=""
-        />
-
-        {/* Duplicate XAxis for the stripes in the background */}
-        <XAxis dataKey="localDateTimeISO" xAxisId={0} interval={7} hide />
-
-        {/* XAxis for the calendar date */}
-        <XAxis
-          dataKey="localDateTimeISO"
-          xAxisId={2}
-          tickLine={false}
-          axisLine={false}
-          orientation="top"
-          tickFormatter={formatDateTick}
-          fontSize={12}
-          fontWeight={700}
-          allowDuplicatedCategory={false}
-          textAnchor="middle"
-          ticks={
-            chartData
-              .reduce((acc: string[], curr) => {
-                const date = new Date(curr.localDateTimeISO)
-                  .toISOString()
-                  .split("T")[0];
-                // Only keep the first occurrence of each date
-                if (
-                  !acc.some(
-                    (existingDate) =>
-                      new Date(existingDate).toISOString().split("T")[0] ===
-                      date
-                  )
-                ) {
-                  acc.push(curr.localDateTimeISO);
-                }
-                return acc;
-              }, [])
-              .slice(1) // We remove the first tick due to being duplicated.
-          }
-        />
-
-        {/* XAxis for the time of day */}
-        <XAxis
-          dataKey="localDateTimeISO"
-          xAxisId={1}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value: string) => {
-            const date = new Date(value);
-            // Use the timezone-aware date for formatting
-            const hours = date.getHours();
-            const period = hours >= 12 ? "pm" : "am";
-            const hour = hours % 12 || 12;
-            return `${hour}${period}`;
-          }}
-          orientation="top"
-          fontSize={12}
-          interval="preserveStart"
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-          minTickGap={16}
-          tickCount={4} // Increased from 2 to show more time points
-        />
-
-        {/* XAxis for the swell period */}
-        <XAxis
-          dataKey="localDateTimeISO"
-          xAxisId={3}
-          tickLine={false}
-          axisLine={false}
-          allowDataOverflow
-          allowDuplicatedCategory={false}
-          tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = chartData[index];
-            if (!data) {
-              return <g />;
+        <ComposedChart
+          data={chartData}
+          barCategoryGap={1}
+          margin={
+            {
+              // bottom: 12,
             }
-            return (
-              <g
-                className="tw:text-white tw:px-1 tw:py-1"
-                transform={`translate(0, ${y - 21})`}
-              >
-                <rect
-                  x={x - 15}
-                  y={-18}
-                  width={30}
-                  height={20}
-                  fill="#1aa7b1"
-                />
-                <text
-                  x={
-                    Math.round(data.trainData?.[0]?.peakPeriod || 0).toString()
-                      .length === 2
-                      ? x - 7
-                      : x - 3
-                  }
-                  y={-2}
-                  fontSize={11}
-                  fill="white"
-                >
-                  {Math.round(data.trainData?.[0]?.peakPeriod || 0)}
-                </text>
-              </g>
-            );
-          }}
-          interval={0}
-        />
-
-        {/* XAxis for the wind direction */}
-        <XAxis
-          dataKey="localDateTimeISO"
-          xAxisId={4}
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-          tickLine={false}
-          axisLine={false}
-          tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = chartData[index];
-            if (!data) {
-              return <g />;
-            }
-            return (
-              <SwellAxisTick
-                payload={{ value: data.wind.direction ?? 0 }}
-                windSpeed={data.wind.speedKnots || 0}
-                x={x}
-                y={y - 40}
-              />
-            );
-          }}
-          interval={0}
-        />
-
-        {/* XAxis for the wind speed with dynamic values */}
-        <XAxis
-          dataKey="localDateTimeISO"
-          xAxisId={5}
-          tick={({ x, y, index }: { x: number; y: number; index: number }) => {
-            const data = chartData[index];
-            if (!data) {
-              return <g />;
-            }
-            return (
-              <WindSpeedTick
-                x={x}
-                y={y - 40}
-                payload={{
-                  value:
-                    unitPreferences.units.wind === "knots"
-                      ? Math.round(data.wind.speedKnots ?? 0)
-                      : Math.round(data.wind.speedKmh ?? 0),
-                }}
-              />
-            );
-          }}
-          interval={0}
-          axisLine={false}
-          tickLine={false}
-          tickMargin={16}
-          allowDuplicatedCategory={false}
-          allowDataOverflow
-        />
-
-        <Tooltip
-          content={
-            <SwellTooltip
-              unitPreferences={unitPreferences}
-              onClose={handleClose}
-            />
           }
-          cursor={{
-            fill: "oklch(0.129 0.042 264.695)",
-            fillOpacity: 0.1,
-            height: 280,
+          className={cn(
+            "swellnet-bar-chart tw:[&>svg]:focus:outline-none",
+            isTooltipClosed
+              ? "tw:[&>svg>.recharts-rectangle.recharts-tooltip-cursor]:fill-transparent"
+              : ""
+          )}
+          onClick={() => {
+            setIsTooltipClosed(false);
           }}
-          trigger={isSmallScreen ? "click" : "hover"}
-          isAnimationActive={false}
-          offset={24}
-          wrapperStyle={{
-            pointerEvents: "auto",
-          }}
-        />
-
-        <Bar
-          dataKey={(d) =>
-            unitPreferences.units.surfHeight === "ft"
-              ? d.primary.fullSurfHeightFeet
-              : d.primary.fullSurfHeightMetres
-          }
-          fill="#008993"
-          unit={unitPreferences.units.surfHeight}
-          activeBar={!isTooltipClosed ? { fill: "#00b4c6" } : undefined}
-          stackId="a"
-          animationEasing="linear"
-          animationDuration={220}
         >
-          <LabelList
-            dataKey="primary.direction"
-            position="top"
-            fill="#008a93"
-            content={({ x, y, value, fill, index }) => {
-              if (typeof index === "undefined") return null;
+          <CartesianGrid
+            vertical={true}
+            verticalFill={[
+              "oklch(96.7% 0.003 264.542)", // Tailwind gray-100
+              "#eceef1", // Tailwind gray-150
+            ]}
+            horizontal={true}
+            y={0}
+            height={320}
+            syncWithTicks
+            className=""
+          />
+
+          {/* Duplicate XAxis for the stripes in the background */}
+          <XAxis dataKey="localDateTimeISO" xAxisId={0} interval={7} hide />
+
+          {/* XAxis for the calendar date */}
+          <XAxis
+            dataKey="localDateTimeISO"
+            xAxisId={2}
+            tickLine={false}
+            axisLine={false}
+            orientation="top"
+            tickFormatter={formatDateTick}
+            fontSize={12}
+            fontWeight={700}
+            allowDuplicatedCategory={false}
+            textAnchor="middle"
+            ticks={
+              chartData
+                .reduce((acc: string[], curr) => {
+                  const date = new Date(curr.localDateTimeISO)
+                    .toISOString()
+                    .split("T")[0];
+                  // Only keep the first occurrence of each date
+                  if (
+                    !acc.some(
+                      (existingDate) =>
+                        new Date(existingDate).toISOString().split("T")[0] ===
+                        date
+                    )
+                  ) {
+                    acc.push(curr.localDateTimeISO);
+                  }
+                  return acc;
+                }, [])
+                .slice(1) // We remove the first tick due to being duplicated.
+            }
+          />
+
+          {/* XAxis for the time of day */}
+          <XAxis
+            dataKey="localDateTimeISO"
+            xAxisId={1}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value: string) => {
+              const date = new Date(value);
+              // Use the timezone-aware date for formatting
+              const hours = date.getHours();
+              const period = hours >= 12 ? "pm" : "am";
+              const hour = hours % 12 || 12;
+              return `${hour}${period}`;
+            }}
+            orientation="top"
+            fontSize={12}
+            interval="preserveStart"
+            allowDuplicatedCategory={false}
+            allowDataOverflow
+            minTickGap={16}
+            tickCount={4} // Increased from 2 to show more time points
+          />
+
+          {/* XAxis for the swell period */}
+          <XAxis
+            dataKey="localDateTimeISO"
+            xAxisId={3}
+            tickLine={false}
+            axisLine={false}
+            allowDataOverflow
+            allowDuplicatedCategory={false}
+            tick={({
+              x,
+              y,
+              index,
+            }: {
+              x: number;
+              y: number;
+              index: number;
+            }) => {
               const data = chartData[index];
-
-              // We only display the label if there is no secondary swell
-              if (data.secondary) return null;
-
+              if (!data) {
+                return <g />;
+              }
               return (
-                <SwellLabel
+                <g
+                  className="tw:text-white tw:px-1 tw:py-1"
+                  transform={`translate(0, ${y - 21})`}
+                >
+                  <rect
+                    x={x - 15}
+                    y={-18}
+                    width={30}
+                    height={20}
+                    fill="#1aa7b1"
+                  />
+                  <text
+                    x={
+                      Math.round(
+                        data.trainData?.[0]?.peakPeriod || 0
+                      ).toString().length === 2
+                        ? x - 7
+                        : x - 3
+                    }
+                    y={-2}
+                    fontSize={11}
+                    fill="white"
+                  >
+                    {Math.round(data.trainData?.[0]?.peakPeriod || 0)}
+                  </text>
+                </g>
+              );
+            }}
+            interval={0}
+          />
+
+          {/* XAxis for the wind direction */}
+          <XAxis
+            dataKey="localDateTimeISO"
+            xAxisId={4}
+            allowDuplicatedCategory={false}
+            allowDataOverflow
+            tickLine={false}
+            axisLine={false}
+            tick={({
+              x,
+              y,
+              index,
+            }: {
+              x: number;
+              y: number;
+              index: number;
+            }) => {
+              const data = chartData[index];
+              if (!data) {
+                return <g />;
+              }
+              return (
+                <SwellAxisTick
+                  payload={{ value: data.wind.direction ?? 0 }}
+                  windSpeed={data.wind.speedKnots || 0}
                   x={x}
-                  y={y}
-                  value={value}
-                  fill={fill}
-                  hasSecondary={false}
-                  className="tw:animate-in tw:fade-in-0 tw:duration-1000"
+                  y={y - 40}
                 />
               );
             }}
+            interval={0}
           />
-        </Bar>
 
-        <Bar
-          dataKey={(d) =>
-            d.secondary
-              ? unitPreferences.units.surfHeight === "ft"
-                ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
-                : d.secondary.fullSurfHeightMetres -
-                  d.primary.fullSurfHeightMetres
-              : null
-          }
-          fill="#ffa800"
-          unit={unitPreferences.units.surfHeight}
-          activeBar={!isTooltipClosed ? { fill: "#ffc95d" } : undefined}
-          className="tw:w-7 tw:min-w-7"
-          stackId="a"
-          animationEasing="ease-in-out"
-        >
-          <LabelList
-            dataKey="secondary.direction"
-            position="top"
-            fill="#ffa800"
-            content={({ x, y, value, fill, index }) => {
-              if (typeof index === "undefined") return null;
+          {/* XAxis for the wind speed with dynamic values */}
+          <XAxis
+            dataKey="localDateTimeISO"
+            xAxisId={5}
+            tick={({
+              x,
+              y,
+              index,
+            }: {
+              x: number;
+              y: number;
+              index: number;
+            }) => {
               const data = chartData[index];
-
-              if (data.secondary) {
-                return (
-                  <SwellLabel
-                    value={value}
-                    x={x}
-                    y={y}
-                    fill={fill}
-                    hasSecondary={data?.secondary ? true : false}
-                    primarySwellDirection={data?.primary.direction}
-                  />
-                );
+              if (!data) {
+                return <g />;
               }
-              return null;
+              return (
+                <WindSpeedTick
+                  x={x}
+                  y={y - 40}
+                  payload={{
+                    value:
+                      unitPreferences.units.wind === "knots"
+                        ? Math.round(data.wind.speedKnots ?? 0)
+                        : Math.round(data.wind.speedKmh ?? 0),
+                  }}
+                />
+              );
+            }}
+            interval={0}
+            axisLine={false}
+            tickLine={false}
+            tickMargin={16}
+            allowDuplicatedCategory={false}
+            allowDataOverflow
+          />
+
+          {currentLocationTime && (
+            <ReferenceLine
+              x={currentLocationTime}
+              stroke="#b7bcc5" // Custom Tailwind gray-350
+              strokeWidth={1}
+              strokeDasharray="4 4"
+              y1={60}
+              y2={320}
+              style={{
+                transform: interpolatedData
+                  ? `translateX(${interpolatedData.translateX}px)`
+                  : undefined,
+              }}
+            >
+              <Label
+                position="top"
+                fill="#b7bcc5" // Custom Tailwind gray-350
+                fontSize={12}
+                fontWeight={700}
+                offset={-6}
+                style={{
+                  transform: interpolatedData
+                    ? `translateX(${interpolatedData.translateX}px)`
+                    : undefined,
+                }}
+              >
+                &#9660;
+              </Label>
+            </ReferenceLine>
+          )}
+
+          <Tooltip
+            content={
+              <SwellTooltip
+                unitPreferences={unitPreferences}
+                onClose={handleClose}
+              />
+            }
+            cursor={{
+              width: 32,
+              height: 320,
+              stroke: "oklch(0.129 0.042 264.695)",
+              strokeWidth: 32,
+              strokeOpacity: 0.1,
+              overflow: "visible",
+              className: "tw:scale-y-150 tw:-translate-y-6",
+            }}
+            trigger={isSmallScreen ? "click" : "hover"}
+            isAnimationActive={false}
+            offset={24}
+            wrapperStyle={{
+              pointerEvents: "auto",
             }}
           />
-        </Bar>
 
-        <YAxis
-          tickLine={false}
-          axisLine={false}
-          type="number"
-          minTickGap={0}
-          padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
-          }}
-          width={isMobile || isLandscapeMobile ? 44 : 60}
-          interval={0}
-          overflow="visible"
-          opacity={0}
-          allowDecimals={false}
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
-          unit={unitPreferences.units.surfHeight}
-          tick={() => {
-            return <text></text>;
-          }}
-          ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
-          height={320}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  );
-};
+          <Bar
+            dataKey={(d) =>
+              unitPreferences.units.surfHeight === "ft"
+                ? d.primary.fullSurfHeightFeet
+                : d.primary.fullSurfHeightMetres
+            }
+            fill="#008993"
+            unit={unitPreferences.units.surfHeight}
+            activeBar={!isTooltipClosed ? { fill: "#00b4c6" } : undefined}
+            stackId="a"
+            animationEasing="linear"
+            animationDuration={220}
+          >
+            <LabelList
+              dataKey="primary.direction"
+              position="top"
+              fill="#008a93"
+              content={({ x, y, value, fill, index }) => {
+                if (typeof index === "undefined") return null;
+                const data = chartData[index];
+
+                // We only display the label if there is no secondary swell
+                if (data.secondary) return null;
+
+                return (
+                  <SwellLabel
+                    x={x}
+                    y={y}
+                    value={value}
+                    fill={fill}
+                    hasSecondary={false}
+                    className="tw:animate-in tw:fade-in-0 tw:duration-1000"
+                  />
+                );
+              }}
+            />
+          </Bar>
+
+          <Bar
+            dataKey={(d) =>
+              d.secondary
+                ? unitPreferences.units.surfHeight === "ft"
+                  ? d.secondary.fullSurfHeightFeet -
+                    d.primary.fullSurfHeightFeet
+                  : d.secondary.fullSurfHeightMetres -
+                    d.primary.fullSurfHeightMetres
+                : null
+            }
+            fill="#ffa800"
+            unit={unitPreferences.units.surfHeight}
+            activeBar={!isTooltipClosed ? { fill: "#ffc95d" } : undefined}
+            className="tw:w-7 tw:min-w-7"
+            stackId="a"
+            animationEasing="ease-in-out"
+          >
+            <LabelList
+              dataKey="secondary.direction"
+              position="top"
+              fill="#ffa800"
+              content={({ x, y, value, fill, index }) => {
+                if (typeof index === "undefined") return null;
+                const data = chartData[index];
+
+                if (data.secondary) {
+                  return (
+                    <SwellLabel
+                      value={value}
+                      x={x}
+                      y={y}
+                      fill={fill}
+                      hasSecondary={data?.secondary ? true : false}
+                      primarySwellDirection={data?.primary.direction}
+                    />
+                  );
+                }
+                return null;
+              }}
+            />
+          </Bar>
+
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            type="number"
+            minTickGap={0}
+            padding={{
+              top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
+            }}
+            width={isMobile || isLandscapeMobile ? 44 : 60}
+            interval={0}
+            overflow="visible"
+            opacity={0}
+            allowDecimals={false}
+            tickMargin={isMobile || isLandscapeMobile ? 20 : 8}
+            unit={unitPreferences.units.surfHeight}
+            tick={() => {
+              return <text></text>;
+            }}
+            ticks={generateTicks(
+              maxSurfHeight,
+              unitPreferences.units.surfHeight
+            )}
+            height={320}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    );
+  }
+);
