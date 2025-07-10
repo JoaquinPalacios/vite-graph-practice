@@ -53,10 +53,12 @@ export const TideChart = ({
   tideData,
   swellData,
   timezone,
+  exactTimestamp,
 }: {
   tideData: TideDataFromDrupal[];
   swellData: ChartDataItem[];
   timezone: string;
+  exactTimestamp?: number;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -195,19 +197,26 @@ export const TideChart = ({
     );
   }, [tideData]); // Only depend on tideData
 
-  // Only show a dot if it's at least 15 minutes from the previous one (for real points)
+  // Data for tide dots (all non-boundary points)
+  const dotData = useMemo(
+    () => transformedData.filter((d) => !d.isBoundary),
+    [transformedData]
+  );
+
+  // Data for tide labels, filtered to prevent overlap
   const labelData = useMemo(() => {
-    const MIN_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
+    const MIN_LABEL_INTERVAL_MS = 2.5 * 60 * 60 * 1000; // 2.5 hours
     const filtered: TransformedTidePoint[] = [];
-    let lastTimestamp = -Infinity;
-    for (const d of transformedData) {
-      if (!d.isBoundary && d.timestamp - lastTimestamp >= MIN_INTERVAL_MS) {
+    let lastLabelTimestamp = -Infinity;
+
+    for (const d of dotData) {
+      if (d.timestamp - lastLabelTimestamp >= MIN_LABEL_INTERVAL_MS) {
         filtered.push(d);
-        lastTimestamp = d.timestamp;
+        lastLabelTimestamp = d.timestamp;
       }
     }
     return filtered;
-  }, [transformedData]);
+  }, [dotData]);
 
   /**
    * Second, determine the master time domain based on the data points
@@ -285,7 +294,7 @@ export const TideChart = ({
     svg.selectAll("*").remove();
     yAxisSvg.selectAll("*").remove();
 
-    const margin = { top: 32, right: 0, bottom: 8, left: 76 };
+    const margin = { top: 32, right: 0, bottom: 12, left: 76 }; // Margin bottom determines the space between the chart and the bottom edge of its container
 
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
@@ -545,7 +554,7 @@ export const TideChart = ({
       .append("g")
       .attr("class", "tide-dots")
       .selectAll("circle")
-      .data(labelData)
+      .data(dotData)
       .enter()
       .append("circle")
       .attr("cx", (d) => {
@@ -824,9 +833,49 @@ export const TideChart = ({
     if (containerRef.current) {
       containerRef.current.style.width = `${totalWidth}px`;
     }
+
+    // --- "Now" Reference Line ---
+    if (
+      exactTimestamp &&
+      exactTimestamp >= timeDomain[0].getTime() &&
+      exactTimestamp <= timeDomain[1].getTime()
+    ) {
+      const dayIndex = Math.floor(
+        (exactTimestamp - timeDomain[0].getTime()) / (24 * 60 * 60 * 1000)
+      );
+      const dayProgress =
+        (exactTimestamp - timeDomain[0].getTime()) % (24 * 60 * 60 * 1000);
+      const dayFraction = dayProgress / (24 * 60 * 60 * 1000);
+      const x = dayIndex * PIXELS_PER_DAY + dayFraction * PIXELS_PER_DAY;
+
+      // Draw the reference line
+      chartArea
+        .append("line")
+        .attr("class", "now-line")
+        .attr("x1", x)
+        .attr("y1", -margin.top) // Start from top of chart area
+        .attr("x2", x)
+        .attr("y2", chartDrawingHeight) // End at bottom of chart area
+        .attr("stroke", "#b7bcc5") // Same color as SwellChart
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "4 4");
+
+      // Draw the label at the bottom
+      chartArea
+        .append("text")
+        .attr("class", "now-label")
+        .attr("x", x)
+        .attr("y", chartDrawingHeight + 10) // Position below the chart area
+        .attr("text-anchor", "middle")
+        .attr("fill", "#b7bcc5")
+        .attr("font-size", 12)
+        .attr("font-weight", 700)
+        .html("&#9650;"); // Upward arrow
+    }
   }, [
     svgDimensions,
     transformedData,
+    dotData,
     labelData,
     timeDomain,
     length,
@@ -841,6 +890,7 @@ export const TideChart = ({
     activeTimestamp,
     useClickEvents,
     closeTooltip,
+    exactTimestamp,
   ]);
 
   /**

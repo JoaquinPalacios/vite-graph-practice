@@ -9,6 +9,7 @@ A high-performance React application for displaying comprehensive weather, tide,
   - **Advanced D3.js swell analysis** with intelligent event tracking and arrow visualization
   - Tide data (Australia and worldwide) using D3.js for precise time-series visualization
   - Weather conditions and forecasts
+- 🕰️ Real-time "Now" indicator on Swell (Recharts) and Tide (D3.js) charts, with an interpolated position for precise, up-to-the-minute tracking.
 - 🎨 Smooth animations and transitions powered by D3.js and React
 - 📱 Responsive design with mobile optimization
 - ⚡ Optimized performance with:

@@ -219,6 +219,7 @@ const ChartsContainer = ({
                   tideData={tideData}
                   swellData={processedData}
                   timezone={timezone}
+                  exactTimestamp={referenceLineData.exactTimestamp}
                 />
               ) : (
                 <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-gray-500">
