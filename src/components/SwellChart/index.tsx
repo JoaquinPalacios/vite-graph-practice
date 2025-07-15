@@ -122,7 +122,7 @@ export const SwellChart = memo(
         className={cn(
           "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
           unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
-            "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[4.75rem] tw:after:border-b tw:after:border-gray-400/80 tw:after:pointer-events-none"
+            "tw:after:absolute tw:after:z-0 tw:after:h-px tw:after:w-[calc(100%-4.75rem)] tw:after:sm:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[3.75rem] tw:after:sm:left-[4.75rem] tw:after:bg-gray-400/80 tw:after:pointer-events-none"
         )}
         minHeight={320}
       >
@@ -344,9 +344,10 @@ export const SwellChart = memo(
           {currentLocationTime && (
             <ReferenceLine
               x={currentLocationTime}
-              stroke="#b7bcc5" // Custom Tailwind gray-350
+              stroke="#484a4f" // Custom Tailwind gray-350
               strokeWidth={1}
               strokeDasharray="4 4"
+              strokeOpacity={0.26}
               y1={60}
               y2={320}
               style={{
@@ -494,9 +495,10 @@ export const SwellChart = memo(
             tick={() => {
               return <text></text>;
             }}
-            ticks={generateTicks(
-              maxSurfHeight,
-              unitPreferences.units.surfHeight
+            ticks={useMemo(
+              () =>
+                generateTicks(maxSurfHeight, unitPreferences.units.surfHeight),
+              [maxSurfHeight, unitPreferences.units.surfHeight]
             )}
             height={320}
           />

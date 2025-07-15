@@ -856,7 +856,8 @@ export const TideChart = ({
         .attr("y1", -margin.top) // Start from top of chart area
         .attr("x2", x)
         .attr("y2", chartDrawingHeight) // End at bottom of chart area
-        .attr("stroke", "#b7bcc5") // Same color as SwellChart
+        .attr("stroke", "#484a4f") // Same color as SwellChart
+        .attr("stroke-opacity", 0.26)
         .attr("stroke-width", 1)
         .attr("stroke-dasharray", "4 4");
 

@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import App from "./App.tsx";
-import { DrupalApiData, ChartDataItem } from "./types/index.ts";
+import "./index.css";
+import { ChartDataItem, DrupalApiData } from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
 
 /**
@@ -94,6 +94,90 @@ function initGraph() {
       )
     ),
   };
+
+  // Find the specific data point that contains the maximum height
+  const findMaxHeightDetails = () => {
+    let maxFeet = 0;
+    let maxMeters = 0;
+    let maxFeetDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
+    let maxMetersDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
+
+    // Check GFS data
+    gfsData.forEach((d) => {
+      const feetHeight =
+        d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0;
+      const metersHeight =
+        d.secondary?.fullSurfHeightMetres ??
+        d.primary.fullSurfHeightMetres ??
+        0;
+
+      if (feetHeight > maxFeet) {
+        maxFeet = feetHeight;
+        maxFeetDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: feetHeight,
+        };
+      }
+
+      if (metersHeight > maxMeters) {
+        maxMeters = metersHeight;
+        maxMetersDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: metersHeight,
+        };
+      }
+    });
+
+    // Check ECMWF data
+    ecmwfData.forEach((d) => {
+      const feetHeight =
+        d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0;
+      const metersHeight =
+        d.secondary?.fullSurfHeightMetres ??
+        d.primary.fullSurfHeightMetres ??
+        0;
+
+      if (feetHeight > maxFeet) {
+        maxFeet = feetHeight;
+        maxFeetDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: feetHeight,
+        };
+      }
+
+      if (metersHeight > maxMeters) {
+        maxMeters = metersHeight;
+        maxMetersDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: metersHeight,
+        };
+      }
+    });
+
+    return { maxFeetDetails, maxMetersDetails };
+  };
+
+  const maxHeightDetails = findMaxHeightDetails();
+
+  console.log({
+    maxSurfHeight,
+    maxHeightDetails: {
+      feet: maxHeightDetails.maxFeetDetails,
+      meters: maxHeightDetails.maxMetersDetails,
+    },
+  });
 
   // Calculate chart width based on available data
   const gfsDataLength = gfsData.length;

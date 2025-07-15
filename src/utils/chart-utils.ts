@@ -9,9 +9,16 @@ import { scaleTime } from "d3-scale";
  * @returns - An array of ticks
  */
 export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
+  const logInfo = {
+    input: { maxHeight, unit },
+    calculation: {} as any,
+    result: [] as number[],
+  };
+
   if (unit === "ft") {
     // Round maxHeight to nearest whole number
     const roundedMax = Math.ceil(maxHeight) + 1;
+    logInfo.calculation.roundedMax = roundedMax;
 
     // Special cases for feet based on rounded maxHeight
     if (roundedMax <= 5) {
@@ -20,16 +27,29 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
       for (let i = 0; i <= roundedMax; i++) {
         ticks.push(i);
       }
+      logInfo.calculation.reason = `Small waves (≤5ft): Showing every foot increment up to ${roundedMax}`;
+      logInfo.result = ticks;
+      console.log("Y-Axis Tick Generation (Feet):", logInfo);
       return ticks;
     } else if (roundedMax <= 14) {
+      // Round up to the nearest multiple of 2 for better tick spacing
       const roundedToTwo = Math.ceil(roundedMax / 2) * 2;
       const ticks = [];
       for (let i = 0; i <= roundedToTwo; i += 2) {
         ticks.push(i);
       }
+      logInfo.calculation.reason = `Medium waves (6-14ft): Using increments of 2, rounded to ${roundedToTwo}`;
+      logInfo.calculation.roundedToTwo = roundedToTwo;
+      logInfo.result = ticks;
+      console.log("Y-Axis Tick Generation (Feet):", logInfo);
       return ticks;
     } else if (roundedMax <= 16) {
-      return [0, 4, 8, 12, 16];
+      const ticks = [0, 4, 8, 12, 16];
+      logInfo.calculation.reason =
+        "Large waves (15-16ft): Using fixed scale for optimal readability";
+      logInfo.result = ticks;
+      console.log("Y-Axis Tick Generation (Feet):", logInfo);
+      return ticks;
     } else {
       // For values greater than 16, show ticks in increments of 5
       // Round up to the nearest multiple of 5
@@ -38,6 +58,10 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
       for (let i = 0; i <= roundedToFive; i += 5) {
         ticks.push(i);
       }
+      logInfo.calculation.reason = `Very large waves (>16ft): Using increments of 5, rounded to ${roundedToFive}`;
+      logInfo.calculation.roundedToFive = roundedToFive;
+      logInfo.result = ticks;
+      console.log("Y-Axis Tick Generation (Feet):", logInfo);
       return ticks;
     }
   } else {
@@ -47,9 +71,12 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
     ];
 
     let maxTick = 0;
+    let foundInBaseTicks = false;
+
     for (let i = 0; i < baseTicksMeters.length; i++) {
       if (baseTicksMeters[i] >= maxHeight) {
         maxTick = baseTicksMeters[i];
+        foundInBaseTicks = true;
         break;
       }
       if (i === baseTicksMeters.length - 1) {
@@ -59,10 +86,23 @@ export const generateTicks = (maxHeight: number, unit: "ft" | "m") => {
           lastTick +
           (maxHeight > 15 ? 5 : 1) *
             Math.ceil((maxHeight - lastTick) / (maxHeight > 15 ? 5 : 1));
+        foundInBaseTicks = false;
       }
     }
 
-    return baseTicksMeters.filter((tick) => tick <= maxTick).concat(maxTick);
+    const result = baseTicksMeters
+      .filter((tick) => tick <= maxTick)
+      .concat(maxTick);
+
+    logInfo.calculation.reason = foundInBaseTicks
+      ? `Meters: Found suitable tick in base scale (${maxTick}m)`
+      : `Meters: Calculated custom tick (${maxTick}m) beyond base scale`;
+    logInfo.calculation.maxTick = maxTick;
+    logInfo.calculation.foundInBaseTicks = foundInBaseTicks;
+    logInfo.result = result;
+
+    console.log("Y-Axis Tick Generation (Meters):", logInfo);
+    return result;
   }
 };
 
