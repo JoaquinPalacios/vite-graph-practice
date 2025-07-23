@@ -79,7 +79,7 @@ export const UnitSelector = ({
             <button
               type="button"
               className={cn(
-                "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-200",
+                "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-200",
                 !defaultValues.showAdvancedChart
                   ? "tw:text-gray-900"
                   : "tw:text-gray-700"
@@ -97,7 +97,7 @@ export const UnitSelector = ({
             <button
               type="button"
               className={cn(
-                "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
                 defaultValues.showAdvancedChart
                   ? "tw:text-gray-900"
                   : "tw:text-gray-700"
@@ -155,7 +155,7 @@ export const UnitSelector = ({
                 <button
                   type="button"
                   className={cn(
-                    "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                    "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
                     modelType === "gfs"
                       ? "tw:text-gray-900"
                       : "tw:text-gray-700",
@@ -193,7 +193,7 @@ export const UnitSelector = ({
                 <button
                   type="button"
                   className={cn(
-                    "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                    "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
                     modelType === "ecmwf"
                       ? "tw:text-gray-900"
                       : "tw:text-gray-700"
@@ -247,7 +247,7 @@ export const UnitSelector = ({
             <button
               type="button"
               className={cn(
-                "font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
                 !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
               )}
               aria-pressed={!showAnalysis}
@@ -258,7 +258,7 @@ export const UnitSelector = ({
             <button
               type="button"
               className={cn(
-                "font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
                 showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
               )}
               aria-pressed={showAnalysis}

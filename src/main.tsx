@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { ChartDataItem, DrupalApiData } from "./types/index.ts";
+import { ChartDataItem, DrupalApiData, MobileContext } from "./types/index.ts";
 import { getChartWidth } from "./utils/chart-utils";
 
 /**
@@ -13,15 +13,31 @@ import { getChartWidth } from "./utils/chart-utils";
  */
 function initGraph() {
   const container = document.getElementById("swell-graph-container");
-  const drupalSettings = (
-    window as unknown as {
-      Drupal?: { settings?: { swellnetGraph?: { apiData?: DrupalApiData } } };
+
+  // 🚀 DRUPAL 11 UPDATE: Check modern drupalSettings first, then legacy format
+  const getDrupalSettings = () => {
+    // Try modern Drupal 11 format first
+    const modernSettings = (window as any).drupalSettings?.swellnetGraph;
+    if (modernSettings) {
+      console.log("✅ Using Drupal 11 drupalSettings format");
+      return modernSettings;
     }
-  ).Drupal?.settings?.swellnetGraph;
+
+    // Fallback to legacy Drupal 7 format
+    const legacySettings = (window as any).Drupal?.settings?.swellnetGraph;
+    if (legacySettings) {
+      console.log("⚠️ Using legacy Drupal.settings format");
+      return legacySettings;
+    }
+
+    return null;
+  };
+
+  const drupalSettings = getDrupalSettings();
 
   if (!container || !drupalSettings || !drupalSettings.apiData) {
     const errorMessage =
-      'Swellnet Graph: Container "#swell-graph-container" or API data (Drupal.settings.swellnetGraph.apiData) not found.';
+      'Swellnet Graph: Container "#swell-graph-container" or API data (drupalSettings.swellnetGraph.apiData) not found.';
     console.error(errorMessage);
     if (container) {
       container.innerHTML = `<p style="color: red; padding: 1rem;">Error: ${errorMessage}</p>`;
@@ -30,8 +46,17 @@ function initGraph() {
   }
 
   const rawApiData: DrupalApiData = drupalSettings.apiData;
+  const mobileContext: MobileContext = drupalSettings.mobileContext ?? {
+    isWebView: false,
+    appVersion: "0.0.0",
+    featureFlags: {
+      supportsStyleUpdates: false,
+      supportsAdvancedChart: false,
+    },
+  };
 
-  console.log({ rawApiData });
+  console.log("Swellnet Graph: Drupal Settings Raw API Data", { rawApiData });
+  console.log("Swellnet Graph: Mobile Context", { mobileContext });
 
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
@@ -226,6 +251,7 @@ function initGraph() {
   // Prepare props for the App component
   const appProps = {
     rawApiData,
+    mobileContext,
     locationName: rawApiData.location?.name || "Unknown Location",
     timezone: rawApiData.location?.timezone || "UTC",
     localDateTimeISO: firstTimestamp,
@@ -251,7 +277,7 @@ function initGraph() {
   };
 
   // Render the React component
-  const root = createRoot(container);
+  const root = createRoot(container!);
   root.render(
     <StrictMode>
       <App {...appProps} />

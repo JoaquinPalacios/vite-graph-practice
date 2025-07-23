@@ -216,3 +216,9 @@ td {
   user-select: none; /* Standard */
   -webkit-tap-highlight-color: transparent;
 }
+
+button.selector-btn {
+  color: inherit;
+  background-color: inherit;
+  padding: unset;
+}

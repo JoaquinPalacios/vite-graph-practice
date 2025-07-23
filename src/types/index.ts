@@ -90,6 +90,15 @@ export interface DrupalApiData {
   surfcams: SurfcamProps[];
 }
 
+export interface MobileContext {
+  isWebView: boolean;
+  appVersion: string;
+  featureFlags: {
+    supportsStyleUpdates: boolean;
+    supportsAdvancedChart: boolean;
+  };
+}
+
 export interface ChartDataItem {
   localDateTimeISO: string;
   utcDateTimeISO: string; // Needs to be derived or present in API data

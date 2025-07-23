@@ -264,13 +264,16 @@ export const TideChart = ({
     const domainEnd = getLocationMidnightUTC(basisForDomainEnd, timezone);
 
     // Only add an extra day if the content actually extends into the next day
-    const contentEndHour = basisForDomainEnd.getHours();
+    const contentEndHour = parseInt(
+      formatInTimeZone(basisForDomainEnd, timezone, "H"),
+      10
+    );
     if (contentEndHour >= 21) {
       // If content extends past 9 PM, show next day
       domainEnd.setDate(domainEnd.getDate() + 1);
     }
 
-    return [domainStart, domainEnd];
+    return [domainStart, new Date(domainEnd.getTime() - 90 * 60 * 1000)];
   }, [transformedData, swellData, timezone, length]);
 
   /**
@@ -299,10 +302,9 @@ export const TideChart = ({
     // Calculate the exact width needed for the chart area
     // This ensures each day stripe is exactly 256px wide
     const chartDrawingWidth =
-      Math.ceil(
-        (timeDomain[1].getTime() - timeDomain[0].getTime()) /
-          (24 * 60 * 60 * 1000)
-      ) * PIXELS_PER_DAY;
+      ((timeDomain[1].getTime() - timeDomain[0].getTime()) /
+        (24 * 60 * 60 * 1000)) *
+      PIXELS_PER_DAY;
 
     // Set the SVG width to accommodate the chart area plus margins
     const totalWidth = chartDrawingWidth + margin.left + margin.right;
@@ -678,7 +680,11 @@ export const TideChart = ({
             interpolatedPoint = {
               height: interpolatedHeight,
               timestamp: mouseTimestamp,
-              localDateTimeISO: tooltipDateFormat(new Date(mouseTimestamp)),
+              localDateTimeISO: formatInTimeZone(
+                new Date(mouseTimestamp),
+                timezone,
+                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+              ),
               utcDateTimeISO: new Date(mouseTimestamp).toISOString(),
               instance: clampedT < 0.5 ? left.instance : right.instance,
               isInterpolated: true,
@@ -788,7 +794,11 @@ export const TideChart = ({
             interpolatedPoint = {
               height: interpolatedHeight,
               timestamp: mouseTimestamp,
-              localDateTimeISO: tooltipDateFormat(new Date(mouseTimestamp)),
+              localDateTimeISO: formatInTimeZone(
+                new Date(mouseTimestamp),
+                timezone,
+                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+              ),
               utcDateTimeISO: new Date(mouseTimestamp).toISOString(),
               instance: clampedT < 0.5 ? left.instance : right.instance,
               isInterpolated: true,

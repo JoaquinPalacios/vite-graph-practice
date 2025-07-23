@@ -1,19 +1,21 @@
 import { lazy, Suspense, useState } from "react";
-import {
-  UnitPreferences,
-  DrupalApiData,
-  WeatherData,
-  CurrentWeatherData,
-  SurfReportItem,
-  TideDataFromDrupal,
-  SurfcamProps,
-} from "./types/index.ts";
+import { GraphHeader } from "./components/GraphHeader.tsx";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { processApiDataToChartData } from "./lib/data-processing.ts";
-import { GraphHeader } from "./components/GraphHeader.tsx";
+import {
+  CurrentWeatherData,
+  DrupalApiData,
+  MobileContext,
+  SurfcamProps,
+  SurfReportItem,
+  TideDataFromDrupal,
+  UnitPreferences,
+  WeatherData,
+} from "./types/index.ts";
 
 interface AppProps {
   rawApiData: DrupalApiData;
+  mobileContext: MobileContext;
   defaultPreferences: UnitPreferences;
   maxSurfHeight: {
     feet: number;
@@ -34,6 +36,7 @@ const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
 
 function App({
   rawApiData,
+  mobileContext,
   defaultPreferences,
   maxSurfHeight,
   locationName,
@@ -51,6 +54,10 @@ AppProps) {
     if (rawApiData.forecasts?.gfs?.forecastSteps?.length) return "gfs";
     if (rawApiData.forecasts?.ecmwf?.forecastSteps?.length) return "ecmwf";
     return "gfs"; // fallback if both are empty
+  });
+
+  console.log("Swellnet Graph: App Component Mobile Context", {
+    mobileContext,
   });
 
   // Process the data based on the selected model type

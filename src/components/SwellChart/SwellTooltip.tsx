@@ -1,4 +1,5 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { getBeachFacingDirection } from "@/lib/beach-facing-direction";
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { getAdjustedDirection } from "@/lib/format-direction";
 import { formatTooltipDate } from "@/lib/format-tooltip-date";
@@ -118,7 +119,9 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
                 </p>
               </div>
               <p className="margin-none semibold tooltip-paragraph tw:leading-[1.2]">
-                South Facing
+                {getBeachFacingDirection(
+                  Number(payload[0].payload.secondary.direction)
+                )}
               </p>
               <p className="margin-bottom-2 tooltip-paragraph-small">
                 (

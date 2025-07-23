@@ -142,7 +142,7 @@ const ChartsContainer = ({
 
       <div
         className={cn(
-          "tw:w-full tw:relative tw:bg-gray-100 tw:max-w-full tw:h-auto tw:mr-auto tw:pr-2 tw:md:px-2 tw:py-0 tw:overflow-hidden tw:transition-opacity",
+          "tw:w-full tw:relative tw:bg-gray-100 tw:max-w-full tw:h-auto tw:mr-auto tw:md:px-2 tw:py-0 tw:overflow-hidden tw:transition-opacity",
           showSubscriptionOverlay && "tw:max-md:pt-80",
           !showAnalysis
             ? "tw:opacity-100"
