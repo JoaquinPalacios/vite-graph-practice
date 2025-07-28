@@ -12,6 +12,7 @@ import {
   UnitPreferences,
   WeatherData,
 } from "./types/index.ts";
+import { roundUpToMultiple } from "./utils/chart-utils.ts";
 
 interface AppProps {
   rawApiData: DrupalApiData;
@@ -46,9 +47,7 @@ function App({
   // currentWeatherData,
   tideData,
   timezone,
-}: // surfReport,
-// surfcams,
-AppProps) {
+}: AppProps) {
   const [modelType, setModelType] = useState<"gfs" | "ecmwf">(() => {
     // Set initial model type based on available data
     if (rawApiData.forecasts?.gfs?.forecastSteps?.length) return "gfs";
@@ -68,7 +67,9 @@ AppProps) {
   }
 
   // Get the length of the chart data in order to limit the weather data to the same length
-  const chartDataLength = chartData.length;
+  // If chartData.length is 0, use tideData.length rounded up to the nearest multiple of 8
+  const chartDataLength =
+    chartData.length || roundUpToMultiple(tideData.length, 8) || 0;
 
   // Calculate max significant height across both model types
   const maxSurfHeightAdvanced = Math.ceil(

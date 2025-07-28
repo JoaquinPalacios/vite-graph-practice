@@ -78,28 +78,53 @@ export default function processSwellData(
 
     const currentSwells: CurrentSwell[] = [];
 
-    // Gather significant swells for this time step from trainData
-    if (timeStep.trainData && timeStep.trainData.length > 0) {
-      timeStep.trainData.forEach((train) => {
-        if (
-          train.sigHeight !== null &&
-          train.sigHeight !== undefined &&
-          train.sigHeight >= options.minHeight &&
-          train.direction !== null &&
-          train.direction !== undefined &&
-          train.peakPeriod !== null &&
-          train.peakPeriod !== undefined
-        ) {
-          currentSwells.push({
-            trainDelta: train.trainDelta || 0,
-            height: train.sigHeight,
-            direction: train.direction,
-            period: train.peakPeriod,
-            timestamp: currentTimestamp,
-            matched: false,
-          });
-        }
+    // Handle missing data by creating minimal invisible swells
+    if (timeStep._isMissingData === true) {
+      // Create a minimal swell event just above threshold to maintain timeline structure
+      currentSwells.push({
+        trainDelta: 0,
+        height: options.minHeight + 0.01, // Just above minimum threshold
+        direction: 0, // Default direction
+        period: options.periodThreshold + 0.1, // Just above minimum period
+        timestamp: currentTimestamp,
+        matched: false,
       });
+
+      // Update gap count for all active events since we have missing data
+      const nextActiveEvents = [];
+      for (const activeEvent of activeEvents) {
+        activeEvent.gapCount++;
+        if (activeEvent.gapCount <= options.maxGap) {
+          nextActiveEvents.push(activeEvent);
+        }
+      }
+      activeEvents = nextActiveEvents;
+
+      // Continue with normal processing using the minimal swell
+    } else {
+      // Gather significant swells for this time step from trainData
+      if (timeStep.trainData && timeStep.trainData.length > 0) {
+        timeStep.trainData.forEach((train) => {
+          if (
+            train.sigHeight !== null &&
+            train.sigHeight !== undefined &&
+            train.sigHeight >= options.minHeight &&
+            train.direction !== null &&
+            train.direction !== undefined &&
+            train.peakPeriod !== null &&
+            train.peakPeriod !== undefined
+          ) {
+            currentSwells.push({
+              trainDelta: train.trainDelta || 0,
+              height: train.sigHeight,
+              direction: train.direction,
+              period: train.peakPeriod,
+              timestamp: currentTimestamp,
+              matched: false,
+            });
+          }
+        });
+      }
     }
 
     const nextActiveEvents = [];

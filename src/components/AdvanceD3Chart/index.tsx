@@ -252,7 +252,7 @@ export const AdvanceD3Chart = ({
       chartArea
         .insert("rect", ".day-stripes ~ *")
         .attr("class", "hover-rect")
-        .attr("x", getX(activeTimestamp) - 16)
+        .attr("x", getX(activeTimestamp) - 14)
         .attr("y", -32)
         .attr("width", 32)
         .attr("height", chartDrawingHeight)
@@ -329,6 +329,14 @@ export const AdvanceD3Chart = ({
         !isLandscapeMobile &&
         activeEventId === eventId;
 
+      // Check if this event corresponds to missing data periods
+      const isMissingDataEvent = eventData.every((point) => {
+        const correspondingData = chartData.find(
+          (d) => d.localDateTimeISO === point.localDateTimeISO
+        );
+        return correspondingData?._isMissingData === true;
+      });
+
       const line = d3
         .line<SwellPoint>()
         .x((d) => getX(d.timestamp))
@@ -344,7 +352,7 @@ export const AdvanceD3Chart = ({
         .attr("stroke", isHovered ? activeColor : color)
         .attr("stroke-width", 2)
         .attr("fill", "none")
-        .attr("opacity", isHovered ? 1 : 0.25)
+        .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.25)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
         .on("mouseenter", () => {
           if (!useClickEvents) {
@@ -375,10 +383,20 @@ export const AdvanceD3Chart = ({
           const y = yScale(d.height);
           return `translate(${x},${y})`;
         })
-        .attr("opacity", isHovered ? 1 : 0.4)
+        .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.4)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
         .on("mouseenter", function (_, d) {
           if (!useClickEvents) {
+            // Check if this point corresponds to missing data
+            const correspondingChartData = chartData.find(
+              (item) => item.localDateTimeISO === d.localDateTimeISO
+            );
+
+            if (correspondingChartData?._isMissingData === true) {
+              // Don't show tooltip for missing data periods
+              return;
+            }
+
             setHoveredEventId(eventId);
             // Get all events for this timestamp to show in tooltip
             const allEventsForTimestamp = transformedData.filter(
@@ -418,6 +436,16 @@ export const AdvanceD3Chart = ({
         })
         .on("click", function (_, d) {
           if (useClickEvents) {
+            // Check if this point corresponds to missing data
+            const correspondingChartData = chartData.find(
+              (item) => item.localDateTimeISO === d.localDateTimeISO
+            );
+
+            if (correspondingChartData?._isMissingData === true) {
+              // Don't show tooltip for missing data periods
+              return;
+            }
+
             const newEventId = clickedEventId === eventId ? null : eventId;
             setClickedEventId(newEventId);
 
@@ -526,6 +554,19 @@ export const AdvanceD3Chart = ({
             ? curr
             : prev;
         });
+
+        // Check if this timestamp corresponds to missing data
+        const correspondingChartData = chartData.find(
+          (d) => new Date(d.localDateTimeISO).getTime() === timestamp
+        );
+
+        if (correspondingChartData?._isMissingData === true) {
+          // Hide tooltip and cursor for missing data periods
+          setHoveredTimestamp(null);
+          setTooltipState((prev) => ({ ...prev, visible: false }));
+          return;
+        }
+
         setHoveredTimestamp(timestamp);
         // Tooltip: get all events for this timestamp
         const events = transformedData.filter((d) => d.timestamp === timestamp);
@@ -574,6 +615,17 @@ export const AdvanceD3Chart = ({
             ? curr
             : prev;
         });
+
+        // Check if this timestamp corresponds to missing data
+        const correspondingChartData = chartData.find(
+          (d) => new Date(d.localDateTimeISO).getTime() === timestamp
+        );
+
+        if (correspondingChartData?._isMissingData === true) {
+          // Hide tooltip and cursor for missing data periods
+          closeTooltip();
+          return;
+        }
 
         const newTimestamp = clickedTimestamp === timestamp ? null : timestamp;
         setClickedTimestamp(newTimestamp);
@@ -654,23 +706,32 @@ export const AdvanceD3Chart = ({
 
     // Update line colors and opacity
     eventIds.forEach((eventId, index) => {
+      const eventData = transformedData.filter((d) => d.eventId === eventId);
       const color = colorPalette[index % colorPalette.length];
       const activeColor = activeColorPalette[index % activeColorPalette.length];
       const isHovered = activeEventId === eventId;
+
+      // Check if this event corresponds to missing data periods
+      const isMissingDataEvent = eventData.every((point) => {
+        const correspondingData = chartData.find(
+          (d) => d.localDateTimeISO === point.localDateTimeISO
+        );
+        return correspondingData?._isMissingData === true;
+      });
 
       // Update line
       chartArea
         .selectAll(".swell-line")
         .filter((_, i) => i === index)
         .attr("stroke", isHovered ? activeColor : color)
-        .attr("opacity", isHovered ? 1 : 0.25);
+        .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.25);
 
       // Update arrows
       chartArea
         .selectAll(".swell-arrows")
         .filter((_, i) => i === index)
         .selectAll("g")
-        .attr("opacity", isHovered ? 1 : 0.4)
+        .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.4)
         .selectAll("path")
         .attr("fill", isHovered ? activeColor : color);
     });

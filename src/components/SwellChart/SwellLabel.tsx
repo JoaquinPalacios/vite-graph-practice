@@ -17,7 +17,7 @@ export const SwellLabel = (props: SwellLabelProps) => {
   const yPosition = typeof y === "number" && !isNaN(y) ? y - 20 : 0;
   const xPosition = typeof x === "number" && !isNaN(x) ? x : 0;
 
-  if (!hasSecondary) {
+  if (!hasSecondary && value) {
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -248,7 +248,7 @@ export const SwellChart = memo(
                     y={-18}
                     width={30}
                     height={20}
-                    fill="#1aa7b1"
+                    fill={data._isMissingData ? "#bdbcbc" : "#1aa7b1"}
                   />
                   <text
                     x={
@@ -262,7 +262,9 @@ export const SwellChart = memo(
                     fontSize={11}
                     fill="white"
                   >
-                    {Math.round(data.trainData?.[0]?.peakPeriod || 0)}
+                    {data._isMissingData
+                      ? ""
+                      : Math.round(data.trainData?.[0]?.peakPeriod || 0)}
                   </text>
                 </g>
               );
@@ -288,7 +290,7 @@ export const SwellChart = memo(
               index: number;
             }) => {
               const data = chartData[index];
-              if (!data) {
+              if (!data || data._isMissingData) {
                 return <g />;
               }
               return (
@@ -317,7 +319,7 @@ export const SwellChart = memo(
               index: number;
             }) => {
               const data = chartData[index];
-              if (!data) {
+              if (!data || data._isMissingData) {
                 return <g />;
               }
               return (
@@ -419,7 +421,13 @@ export const SwellChart = memo(
                 const data = chartData[index];
 
                 // We only display the label if there is no secondary swell
-                if (data.secondary) return null;
+                if (
+                  data.secondary ||
+                  data._isMissingData ||
+                  String(data.primary.fullSurfHeightFeet) === "0.00" ||
+                  String(data.primary.fullSurfHeightMetres) === "0.00"
+                )
+                  return null;
 
                 return (
                   <SwellLabel

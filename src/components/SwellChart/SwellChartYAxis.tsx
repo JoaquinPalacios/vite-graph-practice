@@ -181,7 +181,12 @@ export const SwellChartYAxis = ({
                 fill="#666"
               >
                 {value.payload.value}
-                {unitPreferences.units.surfHeight}
+                {unitPreferences.units.surfHeight === "m" &&
+                Number.isInteger(value.payload.value)
+                  ? unitPreferences.units.surfHeight
+                  : unitPreferences.units.surfHeight === "ft"
+                  ? unitPreferences.units.surfHeight
+                  : ""}
               </text>
             );
           }}

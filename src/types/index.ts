@@ -2,7 +2,8 @@ export type UnitPreferences = {
   units: {
     surfHeight: "ft" | "m";
     temperature: "celsius" | "fahrenheit";
-    wind: "knots" | "kmh";
+    wind: "knots" | "km";
+    unitMeasurements: "m" | "ft" | "surfers_feet";
   };
   showAdvancedChart: boolean;
 };
@@ -70,9 +71,10 @@ export interface DrupalApiData {
   };
   preferences: {
     units: {
-      surfHeight: "ft" | "m";
+      surfHeight: "ft" | "m" | "surfers_feet";
       temperature: "celsius" | "fahrenheit";
-      wind: "knots" | "kmh";
+      wind: "knots" | "km";
+      unitMeasurements: "m" | "ft";
     };
   };
   error: string | null;
@@ -135,6 +137,7 @@ export interface ChartDataItem {
     peakPeriod: number | null;
     direction: number | null;
   }[];
+  _isMissingData?: boolean;
 }
 
 export interface WeatherData {

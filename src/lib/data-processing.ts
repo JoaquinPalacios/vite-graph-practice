@@ -117,6 +117,8 @@ export function processApiDataToChartData(
             direction: Number(train.direction || 0),
           })) || [],
 
+        ...(apiStep._isMissingData === true ? { _isMissingData: true } : {}),
+
         ...(index === 0 && forecastData.bulletinDateTimeUtc
           ? { bulletinDateTimeUtc: forecastData.bulletinDateTimeUtc }
           : {}),

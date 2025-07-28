@@ -174,7 +174,7 @@ export const UnitSelector = ({
                       <button
                         type="button"
                         className={cn(
-                          "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                          "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
                           "tw:text-gray-700 tw:disabled:opacity-50"
                         )}
                         disabled
@@ -211,7 +211,7 @@ export const UnitSelector = ({
                       <button
                         type="button"
                         className={cn(
-                          "font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                          "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
                           "tw:text-gray-700 tw:disabled:opacity-50"
                         )}
                         disabled

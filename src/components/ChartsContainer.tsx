@@ -13,6 +13,7 @@ import { Suspense, useMemo, useState } from "react";
 import { AdvanceD3Chart } from "./AdvanceD3Chart";
 import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
+import NoDataFallback from "./NoDataFallback";
 import { SubscriptionOverlay } from "./SubscriptionOverlay";
 import SwellTrainAnalysis from "./SweeltrainAnalysis";
 import { SwellChart } from "./SwellChart";
@@ -88,6 +89,11 @@ const ChartsContainer = ({
   const isValidTideData =
     tideData && Array.isArray(tideData) && tideData.length > 0;
 
+  // Check if forecast data is available
+  const hasGfsData = rawApiData.forecasts?.gfs?.forecastSteps?.length > 0;
+  const hasEcmwfData = rawApiData.forecasts?.ecmwf?.forecastSteps?.length > 0;
+  const hasForecastData = hasGfsData || hasEcmwfData;
+
   const showSubscriptionOverlay = !rawApiData.user.hasFullAccess;
 
   const referenceLineData = useMemo(() => {
@@ -156,7 +162,7 @@ const ChartsContainer = ({
         <Suspense fallback={<GraphSkeleton />}>
           <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
             <Suspense fallback={<GraphSkeleton showMain />}>
-              {processedData.length > 0 ? (
+              {processedData.length > 0 && hasForecastData ? (
                 <>
                   <SwellChart
                     unitPreferences={unitPreferences}
@@ -188,6 +194,8 @@ const ChartsContainer = ({
                     hasSubscription={rawApiData.user.hasFullAccess}
                   />
                 </>
+              ) : !hasForecastData ? (
+                <NoDataFallback showMain showWeather={false} showTide={false} />
               ) : (
                 <div className="tw:h-0" />
               )}
@@ -210,7 +218,7 @@ const ChartsContainer = ({
                   </div>
                 </>
               ) : (
-                <div className="tw:h-0" />
+                <NoDataFallback showWeather showTide={false} showMain={false} />
               )}
             </Suspense>
             <Suspense fallback={<GraphSkeleton showTide />}>
@@ -222,9 +230,7 @@ const ChartsContainer = ({
                   exactTimestamp={referenceLineData.exactTimestamp}
                 />
               ) : (
-                <div className="tw:h-36 tw:min-h-36 tw:flex tw:items-center tw:justify-center tw:text-gray-500">
-                  No tide data available
-                </div>
+                <NoDataFallback showTide showWeather={false} showMain={false} />
               )}
             </Suspense>
           </ChartsWrapper>

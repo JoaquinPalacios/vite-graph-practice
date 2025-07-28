@@ -90,6 +90,8 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
               </p>
               <p className="margin-none tw:leading-[1.2]">
                 {payload[0] &&
+                  String(payload[0].payload.primary.fullSurfHeightFeet) !==
+                    "0.00" &&
                   degreesToCompassDirection(
                     getAdjustedDirection(
                       Number(payload[0].payload.primary.direction)

@@ -56,7 +56,6 @@ function initGraph() {
   };
 
   console.log("Swellnet Graph: Drupal Settings Raw API Data", { rawApiData });
-  console.log("Swellnet Graph: Mobile Context", { mobileContext });
 
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
@@ -92,30 +91,33 @@ function initGraph() {
       })()
     : [];
 
-  // Calculate max surf height from available models using sliced data
   const maxSurfHeight = {
     feet: Math.max(
-      ...gfsData.map(
-        (d) =>
-          d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
+      ...gfsData.map((d) =>
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
       ),
-      ...ecmwfData.map(
-        (d) =>
-          d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
+      ...ecmwfData.map((d) =>
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
       )
     ),
     meters: Math.max(
-      ...gfsData.map(
-        (d) =>
-          d.secondary?.fullSurfHeightMetres ??
-          d.primary.fullSurfHeightMetres ??
-          0
+      ...gfsData.map((d) =>
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0
       ),
-      ...ecmwfData.map(
-        (d) =>
-          d.secondary?.fullSurfHeightMetres ??
-          d.primary.fullSurfHeightMetres ??
-          0
+      ...ecmwfData.map((d) =>
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0
       )
     ),
   };
@@ -138,11 +140,17 @@ function initGraph() {
     // Check GFS data
     gfsData.forEach((d) => {
       const feetHeight =
-        d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0;
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFeet ??
+            d.primary.fullSurfHeightFeet ??
+            0;
       const metersHeight =
-        d.secondary?.fullSurfHeightMetres ??
-        d.primary.fullSurfHeightMetres ??
-        0;
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0;
 
       if (feetHeight > maxFeet) {
         maxFeet = feetHeight;
@@ -166,11 +174,17 @@ function initGraph() {
     // Check ECMWF data
     ecmwfData.forEach((d) => {
       const feetHeight =
-        d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0;
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFeet ??
+            d.primary.fullSurfHeightFeet ??
+            0;
       const metersHeight =
-        d.secondary?.fullSurfHeightMetres ??
-        d.primary.fullSurfHeightMetres ??
-        0;
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0;
 
       if (feetHeight > maxFeet) {
         maxFeet = feetHeight;
@@ -260,14 +274,17 @@ function initGraph() {
       units: {
         surfHeight: (rawApiData.preferences?.units?.surfHeight === "ft"
           ? "ft"
-          : "m") as "ft" | "m",
-        temperature: rawApiData.preferences?.units?.temperature || "c",
-        wind: rawApiData.preferences?.units?.wind || "kmh",
+          : rawApiData.preferences?.units?.surfHeight === "m"
+          ? "m"
+          : "ft") as "ft" | "m",
+        temperature: rawApiData.preferences?.units?.temperature || "celsius",
+        wind: rawApiData.preferences?.units?.wind || "knots",
+        unitMeasurements:
+          rawApiData.preferences?.units?.unitMeasurements || "m",
       },
       showAdvancedChart: false,
     },
     maxSurfHeight,
-    // maxSurfHeightAdvanced,
     chartWidth,
     currentWeatherData: rawApiData.weather?.current || null,
     weatherData,
