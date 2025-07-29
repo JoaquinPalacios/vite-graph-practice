@@ -491,7 +491,7 @@ export const SwellChart = memo(
             type="number"
             minTickGap={0}
             padding={{
-              top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
+              top: unitPreferences.units.surfHeight === "ft" ? 20 : 16,
             }}
             width={isMobile || isLandscapeMobile ? 44 : 60}
             interval={0}

@@ -123,7 +123,7 @@ export const SwellChartYAxis = ({
           allowDecimals={false}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 20 : 0,
+            top: unitPreferences.units.surfHeight === "ft" ? 20 : 16,
           }}
           height={320}
           width={48}

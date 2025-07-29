@@ -1,6 +1,6 @@
 import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
 import { getAdjustedDirection } from "@/lib/format-direction";
-import { SwellPoint, TooltipState } from "@/types";
+import { SwellPoint, TooltipState, UnitPreferences } from "@/types";
 import { colorPalette } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import React from "react";
@@ -19,23 +19,37 @@ function formatTooltipTime(dateInput: string | number | Date) {
   return `${hour}${period} ${weekday} ${day} ${month}`;
 }
 
-interface SwellTooltipProps extends Omit<TooltipState, "y"> {
+interface SwellTooltipProps extends TooltipState {
   data: SwellPoint[];
   eventIds: string[];
   onClose?: () => void;
   useClickEvents?: boolean;
+  unitPreferences: UnitPreferences;
 }
 
 export const SwellTooltip: React.FC<SwellTooltipProps> = React.memo(
-  ({ visible, x, data, side, eventIds, onClose, useClickEvents }) => {
+  ({
+    visible,
+    x,
+    y,
+    data,
+    side,
+    eventIds,
+    onClose,
+    useClickEvents,
+    unitPreferences,
+  }) => {
     if (!visible || !data || data.length === 0) return null;
+
+    const isFeet = unitPreferences.units.unitMeasurements === "ft";
+
     return (
       <div
         key={data[0].timestamp}
         style={{
           position: "absolute",
           left: `${x}px`,
-          top: "48px",
+          top: `${y}px`,
           zIndex: 10,
           pointerEvents: useClickEvents ? "auto" : "none",
         }}
@@ -78,7 +92,10 @@ export const SwellTooltip: React.FC<SwellTooltipProps> = React.memo(
                     ]
                   }
                 />
-                <p className="margin-none tooltip-paragraph">{item.height}m</p>
+                <p className="margin-none tooltip-paragraph">
+                  {item.height.toFixed(1)}
+                  {isFeet ? "ft" : "m"}
+                </p>
                 <p className="margin-none tooltip-paragraph">@</p>
                 <p className="margin-none tooltip-paragraph">
                   {Number(item.period).toFixed(1)}s

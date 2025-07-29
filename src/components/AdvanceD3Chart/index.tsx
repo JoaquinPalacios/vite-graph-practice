@@ -25,6 +25,8 @@ import {
 import processSwellData from "./ProcessDataSwell";
 import { SwellTooltip } from "./SwellTooltip";
 
+const METERS_TO_FEET = 3.28084;
+
 /**
  * Advanced Swell Chart using D3.js
  * @description A line chart that shows different incoming swells and their relative heights
@@ -66,6 +68,12 @@ export const AdvanceD3Chart = ({
   // Determine if we should use click events (small devices) or hover events (desktop)
   const useClickEvents = isMobile || isLandscapeMobile || isTablet;
 
+  const isFeet = unitPreferences.units.unitMeasurements === "ft";
+
+  const convertedMaxSurfHeight = isFeet
+    ? maxSurfHeight * METERS_TO_FEET
+    : maxSurfHeight;
+
   // Function to close tooltip
   const closeTooltip = useCallback(() => {
     setClickedTimestamp(null);
@@ -93,12 +101,32 @@ export const AdvanceD3Chart = ({
 
   // Memoize yTicks
   const yTicks = useMemo(() => {
-    if (maxSurfHeight < 2.5) {
-      return [0.5, 1, 1.5, 2, 2.5];
-    } else {
-      return Array.from({ length: Math.ceil(maxSurfHeight) }, (_, i) => i + 1);
+    const maxHeight = convertedMaxSurfHeight;
+
+    if (isFeet) {
+      if (maxHeight <= 5) {
+        // if max height is less than 5 feet, show all ticks
+        return Array.from({ length: Math.ceil(maxHeight) + 1 }, (_, i) => i);
+      }
+      if (maxHeight <= 14) {
+        // if max height is less than 14 feet, show ticks in increments of 2
+        const roundedToTwo = Math.ceil(maxHeight / 2) * 2;
+        return Array.from({ length: roundedToTwo / 2 + 1 }, (_, i) => i * 2);
+      }
+      if (maxHeight <= 16) {
+        // if max height is less than 16 feet, show ticks in increments of 4
+        return [0, 4, 8, 12, 16];
+      }
+      const roundedToFive = Math.ceil(maxHeight / 5) * 5; // if max height is greater than 16 feet, show ticks in increments of 5
+      return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
     }
-  }, [maxSurfHeight]);
+
+    if (maxHeight < 2.5) {
+      return [0, 0.5, 1, 1.5, 2, 2.5];
+    } else {
+      return Array.from({ length: Math.ceil(maxHeight) + 1 }, (_, i) => i);
+    }
+  }, [convertedMaxSurfHeight, isFeet]);
 
   // Transform data for D3
   const transformedData = useMemo(() => {
@@ -107,13 +135,14 @@ export const AdvanceD3Chart = ({
       points.forEach((point) => {
         allPoints.push({
           ...point,
+          height: isFeet ? point.height * METERS_TO_FEET : point.height,
           timestamp: new Date(point.localDateTimeISO).getTime(),
           eventId,
         });
       });
     });
     return allPoints;
-  }, [processedSwellData]);
+  }, [processedSwellData, isFeet]);
 
   // Calculate time domain
   const timeDomain = useMemo((): [Date, Date] => {
@@ -183,10 +212,13 @@ export const AdvanceD3Chart = ({
     () =>
       d3
         .scaleLinear()
-        .domain([0, Math.ceil(maxSurfHeight)])
+        .domain([
+          0,
+          yTicks[yTicks.length - 1] ?? Math.ceil(convertedMaxSurfHeight),
+        ])
         .range([chartDrawingHeight - 48, 0])
         .nice(),
-    [maxSurfHeight, chartDrawingHeight]
+    [convertedMaxSurfHeight, yTicks]
   );
 
   // Calculate chart width to match Recharts getChartWidth logic
@@ -268,32 +300,25 @@ export const AdvanceD3Chart = ({
       .tickSize(-chartDrawingWidth)
       .tickFormat(() => ""); // Only lines, no labels
 
-    chartArea
+    const yGrid = chartArea
       .append("g")
       .attr("class", "y-grid")
       .attr("height", chartDrawingHeight)
       .call(gridAxis);
 
-    // Remove grid lines for 0
-    chartArea
-      .select(".y-grid")
-      .selectAll(".tick")
-      .each(function (d) {
-        if (Number(d) === 0) {
-          d3.select(this).select("line").remove();
-        }
-      });
+    // Remove the domain path to prevent the extra line at the top
+    yGrid.select(".domain").remove();
 
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
       .tickValues(yTicks)
       .tickPadding(8)
-      .tickFormat((d) => `${d}m`)
+      .tickFormat((d) => `${d}${isFeet ? "ft" : "m"}`)
       .tickSize(6);
 
     // Create a group for the Y-axis in its own SVG
-    const yAxisG = yAxisSvg
+    yAxisSvg
       .append("rect")
       .attr("class", "y-axis-rect-left")
       .attr("x", 0)
@@ -303,7 +328,7 @@ export const AdvanceD3Chart = ({
       .attr("fill", "oklch(96.7% 0.003 264.542)"); // Tailwind gray-100
 
     // Add background rectangle to Y-axis
-    yAxisSvg
+    const yAxisGroup = yAxisSvg
       .append("g")
       .attr("class", "y-axis")
       .attr(
@@ -313,9 +338,9 @@ export const AdvanceD3Chart = ({
       .call(yAxis);
 
     // Hide the 0m label but keep its tick line
-    yAxisG
+    yAxisGroup
       .selectAll(".tick text")
-      .filter((d) => d === 0)
+      .filter((d) => Number(d) === 0)
       .text("");
 
     // Add lines for each event
@@ -695,6 +720,8 @@ export const AdvanceD3Chart = ({
     chartDrawingWidth,
     getX,
     closeTooltip,
+    isFeet,
+    convertedMaxSurfHeight,
   ]);
 
   // Update D3 elements when activeEventId changes (for line highlighting)
@@ -857,11 +884,13 @@ export const AdvanceD3Chart = ({
           <SwellTooltip
             visible={tooltipState.visible}
             x={tooltipState.x}
+            y={tooltipState.y}
             data={tooltipState.data}
             side={tooltipState.side}
             eventIds={eventIds}
             onClose={closeTooltip}
             useClickEvents={useClickEvents}
+            unitPreferences={unitPreferences}
           />
         )}
       </div>

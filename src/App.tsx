@@ -72,18 +72,18 @@ function App({
     chartData.length || roundUpToMultiple(tideData.length, 8) || 0;
 
   // Calculate max significant height across both model types
-  const maxSurfHeightAdvanced = Math.ceil(
-    Math.max(
-      ...processApiDataToChartData(rawApiData, "gfs")
-        .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
-        .flat()
-        .filter((n): n is number => n !== undefined),
-      ...processApiDataToChartData(rawApiData, "ecmwf")
-        .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
-        .flat()
-        .filter((n): n is number => n !== undefined)
-    )
+  const maxSurfHeightAdvanced = Math.max(
+    ...processApiDataToChartData(rawApiData, "gfs")
+      .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
+      .flat()
+      .filter((n): n is number => n !== undefined),
+    ...processApiDataToChartData(rawApiData, "ecmwf")
+      .map((d) => d.trainData?.map((d) => d.sigHeight ?? 0))
+      .flat()
+      .filter((n): n is number => n !== undefined),
+    0
   );
+  console.log({ maxSurfHeightAdvanced });
 
   // Create a default chart data item if none exists
   // const defaultChartData = {
