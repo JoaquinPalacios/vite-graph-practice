@@ -1,6 +1,7 @@
+import { METERS_TO_FEET } from "@/constants/meters_to_feet";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { getLocationMidnightUTC } from "@/lib/time-utils";
-import { ChartDataItem, TideDataFromDrupal } from "@/types";
+import { ChartDataItem, TideDataFromDrupal, UnitPreferences } from "@/types";
 import * as d3 from "d3";
 import { bisector } from "d3-array";
 import { timeFormat } from "d3-time-format";
@@ -47,6 +48,7 @@ const getTideInstance = (tide: TideDataFromDrupal): "high" | "low" => {
  * @param tideData - Tide data from Drupal
  * @param swellData - Swells data from Drupal
  * @param timezone - The timezone
+ * @param unitPreferences - The unit preferences for the chart
  * @returns Tide chart component
  */
 export const TideChart = ({
@@ -54,11 +56,13 @@ export const TideChart = ({
   swellData,
   timezone,
   exactTimestamp,
+  unitPreferences,
 }: {
   tideData: TideDataFromDrupal[];
   swellData: ChartDataItem[];
   timezone: string;
   exactTimestamp?: number;
+  unitPreferences: UnitPreferences;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -79,6 +83,8 @@ export const TideChart = ({
 
   // Determine if we should use click events (small devices) or hover events (desktop)
   const useClickEvents = isMobile || isLandscapeMobile || isTablet;
+
+  const isFeet = unitPreferences.units.unitMeasurements === "ft";
 
   // Function to close tooltip
   const closeTooltip = useCallback(() => {
@@ -183,7 +189,9 @@ export const TideChart = ({
 
           const pointTime = pointDate.getTime();
           return {
-            height: getTideHeight(point),
+            height: isFeet
+              ? getTideHeight(point) * METERS_TO_FEET
+              : getTideHeight(point),
             timestamp: pointTime,
             localDateTimeISO: point._source.time_local,
             utcDateTimeISO: pointDate.toISOString(),
@@ -195,7 +203,40 @@ export const TideChart = ({
         // Keep sort as a safety measure, though PHP should send sorted data
         .sort((a, b) => a.timestamp - b.timestamp)
     );
-  }, [tideData]); // Only depend on tideData
+  }, [tideData, isFeet]); // Only depend on tideData and isFeet
+
+  // Generate Y-axis tick values based on max tide height and unit preference
+  const generateYTicks = useMemo(() => {
+    const maxTide = d3.max(transformedData, (d) => d.height) ?? 1;
+    const minTide = d3.min(transformedData, (d) => d.height) ?? 0;
+    const maxHeight = Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)));
+
+    if (isFeet) {
+      if (maxHeight <= 5) {
+        // Show all ticks up to the actual maximum
+        return Array.from({ length: maxHeight + 1 }, (_, i) => i);
+      }
+      if (maxHeight <= 14) {
+        // Round up to the nearest multiple of 2 for better tick spacing
+        const roundedToTwo = Math.ceil(maxHeight / 2) * 2;
+        return Array.from({ length: roundedToTwo / 2 + 1 }, (_, i) => i * 2);
+      }
+      if (maxHeight <= 16) {
+        return [0, 4, 8, 12, 16];
+      }
+      // For values greater than 16, show ticks in increments of 5
+      const roundedToFive = Math.ceil(maxHeight / 5) * 5;
+      return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
+    }
+
+    // For meters, use the existing logic for small ranges
+    if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
+      return [-1, -0.5, 0, 0.5, 1];
+    }
+
+    // For larger ranges in meters, show whole numbers
+    return Array.from({ length: maxHeight + 1 }, (_, i) => i);
+  }, [transformedData, isFeet]);
 
   // Data for tide dots (all non-boundary points)
   const dotData = useMemo(
@@ -338,36 +379,29 @@ export const TideChart = ({
     // Custom tick format function with correct type definition
     const customTickFormat = (d: d3.NumberValue) => {
       const value = Number(d);
-      if (value === 0) return "0m"; // Show 0m instead of hiding it
+      const unit = isFeet ? "ft" : "m";
+
+      if (value === 0) return `0${unit}`; // Show 0m/0ft instead of hiding it
 
       // For max tide ≤ 1m and min tide ≥ -1m, show 0.5m intervals
       if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
         if (Math.abs(value) === 0.5 || Math.abs(value) === 1) {
-          return `${value}m`;
+          return `${value}${unit}`;
         }
         return "";
       }
 
       // For larger ranges, show whole numbers
-      return `${Math.round(value)}m`;
+      return `${Math.round(value)}${unit}`;
     };
 
     // --- Y Axis ---
     const yAxis = d3
       .axisLeft(yScale)
-      .ticks(
-        Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1
-          ? 4
-          : Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)))
-      )
+      .tickValues(generateYTicks)
       .tickPadding(8)
       .tickFormat(customTickFormat)
       .tickSize(6);
-
-    // Set specific tick values for small ranges
-    if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
-      yAxis.tickValues([-1, -0.5, 0, 0.5, 1]);
-    }
 
     // Create a group for the Y-axis in its own SVG
     const yAxisG = yAxisSvg
@@ -430,20 +464,14 @@ export const TideChart = ({
     // Draw horizontal grid lines for each Y tick, for visual clarity
     const gridAxis = d3
       .axisLeft(yScale)
-      .ticks(
-        Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1
-          ? 4
-          : Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)))
-      )
+      .tickValues(generateYTicks)
       .tickSize(-chartDrawingWidth)
       .tickFormat(() => ""); // Only lines, no labels
 
-    // Set specific tick values for small ranges
-    if (Math.abs(maxTide) <= 1 && Math.abs(minTide) <= 1) {
-      gridAxis.tickValues([-1, -0.5, 0, 0.5, 1]);
-    }
-
     const yGridG = chartArea.append("g").attr("class", "y-grid").call(gridAxis);
+
+    // Remove the domain path to prevent the extra line at the top
+    yGridG.select(".domain").remove();
 
     // Style the zero line differently
     yGridG.selectAll(".tick").each(function (d) {
@@ -548,7 +576,7 @@ export const TideChart = ({
           .append("tspan")
           .attr("x", 0)
           .attr("dy", "1.2em")
-          .text((d) => `${d.height.toFixed(2)}m`)
+          .text((d) => `${d.height.toFixed(2)}${isFeet ? "ft" : "m"}`)
       );
 
     // --- Tide Dots (Always-visible for real tide points) ---
@@ -902,6 +930,9 @@ export const TideChart = ({
     useClickEvents,
     closeTooltip,
     exactTimestamp,
+    isFeet,
+    unitPreferences,
+    generateYTicks,
   ]);
 
   /**
@@ -1040,6 +1071,7 @@ export const TideChart = ({
               timezone={timezone}
               onClose={closeTooltip}
               useClickEvents={useClickEvents}
+              unitPreferences={unitPreferences}
             />
           </div>
         )}

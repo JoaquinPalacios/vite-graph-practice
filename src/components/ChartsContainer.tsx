@@ -228,6 +228,7 @@ const ChartsContainer = ({
                   swellData={processedData}
                   timezone={timezone}
                   exactTimestamp={referenceLineData.exactTimestamp}
+                  unitPreferences={unitPreferences}
                 />
               ) : (
                 <NoDataFallback showTide showWeather={false} showMain={false} />

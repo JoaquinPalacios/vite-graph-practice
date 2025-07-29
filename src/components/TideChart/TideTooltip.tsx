@@ -1,3 +1,4 @@
+import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
 import { formatInTimeZone } from "date-fns-tz";
 import { memo } from "react";
@@ -15,6 +16,7 @@ type CustomTooltipProps = {
   timezone: string;
   onClose?: () => void;
   useClickEvents?: boolean;
+  unitPreferences: UnitPreferences;
 };
 
 /**
@@ -25,6 +27,7 @@ type CustomTooltipProps = {
  * @param timezone - The timezone for date formatting
  * @param onClose - Function to close the tooltip (for small devices)
  * @param useClickEvents - Whether to show close button for click events
+ * @param unitPreferences - The unit preferences for the chart
  * @returns The TideTooltip component
  */
 export const TideTooltip = memo(
@@ -34,7 +37,10 @@ export const TideTooltip = memo(
     timezone,
     onClose,
     useClickEvents,
+    unitPreferences,
   }: CustomTooltipProps) => {
+    const isFeet = unitPreferences.units.unitMeasurements === "ft";
+
     if (active && payload && payload.length && payload[0].payload) {
       return (
         <div
@@ -71,7 +77,8 @@ export const TideTooltip = memo(
             <div className="tw:flex tw:gap-1 tw:items-center">
               {/* <LuWaves className="tw:w-3.5 tw:h-3.5" color="#008a93" /> */}
               <p className="margin-bottom-none tw:ml-px tw:text-xs">
-                {payload[0].value && Number(payload[0].value).toFixed(1)}m
+                {payload[0].value && Number(payload[0].value).toFixed(1)}
+                {isFeet ? "ft" : "m"}
               </p>
             </div>
           </div>

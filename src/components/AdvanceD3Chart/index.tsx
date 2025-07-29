@@ -1,5 +1,6 @@
 "use client";
 
+import { METERS_TO_FEET } from "@/constants/meters_to_feet";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import {
   ChartDataItem,
@@ -24,8 +25,6 @@ import {
 } from "react";
 import processSwellData from "./ProcessDataSwell";
 import { SwellTooltip } from "./SwellTooltip";
-
-const METERS_TO_FEET = 3.28084;
 
 /**
  * Advanced Swell Chart using D3.js
