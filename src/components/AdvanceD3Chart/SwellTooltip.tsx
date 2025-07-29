@@ -49,7 +49,7 @@ export const SwellTooltip: React.FC<SwellTooltipProps> = React.memo(
         style={{
           position: "absolute",
           left: `${x}px`,
-          top: `${y}px`,
+          top: y > 80 ? "80px" : `${y}px`,
           zIndex: 10,
           pointerEvents: useClickEvents ? "auto" : "none",
         }}

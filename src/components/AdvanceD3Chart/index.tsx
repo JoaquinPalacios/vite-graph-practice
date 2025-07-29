@@ -378,21 +378,7 @@ export const AdvanceD3Chart = ({
         .attr("fill", "none")
         .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.25)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
-        .on("mouseenter", () => {
-          if (!useClickEvents) {
-            setHoveredEventId(eventId);
-          }
-        })
-        .on("mouseleave", () => {
-          if (!useClickEvents) {
-            setHoveredEventId(null);
-          }
-        })
-        .on("click", () => {
-          if (useClickEvents) {
-            setClickedEventId(clickedEventId === eventId ? null : eventId);
-          }
-        });
+        .style("pointer-events", "none"); // Disable all pointer interactions
 
       // Add arrows instead of dots
       const arrowGroup = chartArea
@@ -409,108 +395,7 @@ export const AdvanceD3Chart = ({
         })
         .attr("opacity", isMissingDataEvent ? 0 : isHovered ? 1 : 0.4)
         .style("transition", "all 300ms, opacity 250ms ease-in-out")
-        .on("mouseenter", function (_, d) {
-          if (!useClickEvents) {
-            // Check if this point corresponds to missing data
-            const correspondingChartData = chartData.find(
-              (item) => item.localDateTimeISO === d.localDateTimeISO
-            );
-
-            if (correspondingChartData?._isMissingData === true) {
-              // Don't show tooltip for missing data periods
-              return;
-            }
-
-            setHoveredEventId(eventId);
-            // Get all events for this timestamp to show in tooltip
-            const allEventsForTimestamp = transformedData.filter(
-              (dataPoint) => dataPoint.timestamp === d.timestamp
-            );
-
-            // Show tooltip for this point
-            const tooltipDiv = tooltipDivRef.current;
-            const tooltipRect = tooltipDiv?.getBoundingClientRect();
-            const tooltipWidth = tooltipRect?.width ?? 0;
-            const tooltipHeight = tooltipRect?.height ?? 0;
-            const x = getX(d.timestamp);
-            const y = yScale(d.height);
-            const tooltipPos = calculateTooltipPosition(
-              x,
-              y,
-              tooltipWidth,
-              tooltipHeight,
-              chartDrawingWidth,
-              chartDrawingHeight,
-              margin
-            );
-            setTooltipState({
-              visible: true,
-              x: tooltipPos.x,
-              y: tooltipPos.y,
-              data: allEventsForTimestamp,
-              side: tooltipPos.side,
-            });
-          }
-        })
-        .on("mouseleave", function () {
-          if (!useClickEvents) {
-            setHoveredEventId(null);
-            setTooltipState((prev) => ({ ...prev, visible: false }));
-          }
-        })
-        .on("click", function (_, d) {
-          if (useClickEvents) {
-            // Check if this point corresponds to missing data
-            const correspondingChartData = chartData.find(
-              (item) => item.localDateTimeISO === d.localDateTimeISO
-            );
-
-            if (correspondingChartData?._isMissingData === true) {
-              // Don't show tooltip for missing data periods
-              return;
-            }
-
-            const newEventId = clickedEventId === eventId ? null : eventId;
-            setClickedEventId(newEventId);
-
-            if (newEventId) {
-              // Set the timestamp so the hover rect gets positioned correctly
-              setClickedTimestamp(d.timestamp);
-
-              // Get all events for this timestamp to show in tooltip
-              const allEventsForTimestamp = transformedData.filter(
-                (dataPoint) => dataPoint.timestamp === d.timestamp
-              );
-
-              // Show tooltip for this point
-              const tooltipDiv = tooltipDivRef.current;
-              const tooltipRect = tooltipDiv?.getBoundingClientRect();
-              const tooltipWidth = tooltipRect?.width ?? 0;
-              const tooltipHeight = tooltipRect?.height ?? 0;
-              const x = getX(d.timestamp);
-              const y = yScale(d.height);
-              const tooltipPos = calculateTooltipPosition(
-                x,
-                y,
-                tooltipWidth,
-                tooltipHeight,
-                chartDrawingWidth,
-                chartDrawingHeight,
-                margin
-              );
-              setTooltipState({
-                visible: true,
-                x: tooltipPos.x,
-                y: tooltipPos.y,
-                data: allEventsForTimestamp,
-                side: tooltipPos.side,
-              });
-            } else {
-              setClickedTimestamp(null);
-              setTooltipState((prev) => ({ ...prev, visible: false }));
-            }
-          }
-        });
+        .style("pointer-events", "none"); // Disable all pointer interactions
 
       // Arrow center is at (10, 10) for both paths
       // Clamp scale between 0.6 and 0.8 for visual consistency

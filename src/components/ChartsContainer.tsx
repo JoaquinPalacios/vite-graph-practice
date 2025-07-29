@@ -10,7 +10,6 @@ import {
 import { ChartDataItem } from "@/types/index.ts";
 import { cn } from "@/utils/utils";
 import { Suspense, useMemo, useState } from "react";
-import { VscSettings } from "react-icons/vsc";
 import { AdvanceD3Chart } from "./AdvanceD3Chart";
 import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
@@ -128,18 +127,16 @@ const ChartsContainer = ({
 
   return (
     <section className="display-flex tw:flex-col tw:gap-4 tw:w-full">
-      {processedData.length > 0 && (
-        <UnitSelector
-          onChange={setUnitPreferences}
-          defaultValues={unitPreferences}
-          modelType={modelType}
-          setModelType={setModelType}
-          rawApiData={rawApiData}
-          timezone={timezone}
-          showAnalysis={showAnalysis}
-          setShowAnalysis={setShowAnalysis}
-        />
-      )}
+      <UnitSelector
+        onChange={setUnitPreferences}
+        defaultValues={unitPreferences}
+        modelType={modelType}
+        setModelType={setModelType}
+        rawApiData={rawApiData}
+        timezone={timezone}
+        showAnalysis={showAnalysis}
+        setShowAnalysis={setShowAnalysis}
+      />
 
       <SwellTrainAnalysis
         chartData={chartData}
@@ -161,11 +158,6 @@ const ChartsContainer = ({
             style: { width: chartWidth },
           })}
       >
-        {/* Settings button */}
-        <div className="tw:absolute tw:top-4 tw:left-7 tw:z-30 tw:cursor-pointer">
-          <VscSettings className="tw:size-6 tw:cursor-progress" />
-        </div>
-
         <Suspense fallback={<GraphSkeleton />}>
           <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
             <Suspense fallback={<GraphSkeleton showMain />}>

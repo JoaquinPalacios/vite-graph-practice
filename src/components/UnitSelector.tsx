@@ -4,6 +4,7 @@ import { cn } from "@/utils/utils";
 
 import { ImTable2 } from "react-icons/im";
 import { MdAccessTime, MdBarChart } from "react-icons/md";
+import { VscSettings } from "react-icons/vsc";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export interface UnitSelectorProps {
@@ -56,6 +57,14 @@ export const UnitSelector = ({
       </p>
 
       <div className="tw:flex tw:items-start tw:lg:items-center tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
+        {/* Settings button */}
+        <div className="tw:flex tw:items-center tw:gap-2">
+          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+            Settings
+          </span>
+          <VscSettings className="tw:size-5" />
+        </div>
+
         {/* Advance chart toggle */}
         <div
           className={cn(
