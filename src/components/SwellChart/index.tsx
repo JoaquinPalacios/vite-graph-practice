@@ -401,8 +401,10 @@ export const SwellChart = memo(
 
           <Bar
             dataKey={(d) =>
-              unitPreferences.units.surfHeight === "ft"
+              unitPreferences.units.surfHeight === "surfers_feet"
                 ? d.primary.fullSurfHeightFeet
+                : unitPreferences.units.surfHeight === "ft"
+                ? d.primary.fullSurfHeightFaceFeet
                 : d.primary.fullSurfHeightMetres
             }
             fill="#008993"
@@ -424,8 +426,12 @@ export const SwellChart = memo(
                 if (
                   data.secondary ||
                   data._isMissingData ||
-                  String(data.primary.fullSurfHeightFeet) === "0.00" ||
-                  String(data.primary.fullSurfHeightMetres) === "0.00"
+                  (unitPreferences.units.surfHeight === "surfers_feet" &&
+                    String(data.primary.fullSurfHeightFeet) === "0.00") ||
+                  (unitPreferences.units.surfHeight === "ft" &&
+                    String(data.primary.fullSurfHeightFaceFeet) === "0.00") ||
+                  (unitPreferences.units.surfHeight === "m" &&
+                    String(data.primary.fullSurfHeightMetres) === "0.00")
                 )
                   return null;
 
@@ -446,9 +452,12 @@ export const SwellChart = memo(
           <Bar
             dataKey={(d) =>
               d.secondary
-                ? unitPreferences.units.surfHeight === "ft"
+                ? unitPreferences.units.surfHeight === "surfers_feet"
                   ? d.secondary.fullSurfHeightFeet -
                     d.primary.fullSurfHeightFeet
+                  : unitPreferences.units.surfHeight === "ft"
+                  ? d.secondary.fullSurfHeightFaceFeet -
+                    d.primary.fullSurfHeightFaceFeet
                   : d.secondary.fullSurfHeightMetres -
                     d.primary.fullSurfHeightMetres
                 : null
@@ -491,7 +500,11 @@ export const SwellChart = memo(
             type="number"
             minTickGap={0}
             padding={{
-              top: unitPreferences.units.surfHeight === "ft" ? 20 : 16,
+              top:
+                unitPreferences.units.surfHeight === "ft" ||
+                unitPreferences.units.surfHeight === "surfers_feet"
+                  ? 20
+                  : 16,
             }}
             width={isMobile || isLandscapeMobile ? 44 : 60}
             interval={0}

@@ -21,6 +21,7 @@ interface AppProps {
   maxSurfHeight: {
     feet: number;
     meters: number;
+    surfersFeet: number;
   };
   locationName: string;
   localDateTimeISO: string;

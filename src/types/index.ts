@@ -1,9 +1,9 @@
 export type UnitPreferences = {
   units: {
-    surfHeight: "ft" | "m";
+    surfHeight: "ft" | "m" | "surfers_feet";
     temperature: "celsius" | "fahrenheit";
     wind: "knots" | "km";
-    unitMeasurements: "m" | "ft" | "surfers_feet";
+    unitMeasurements: "m" | "ft";
   };
   showAdvancedChart: boolean;
 };
@@ -113,8 +113,10 @@ export interface ChartDataItem {
     speedKnots: number | null;
   };
   primary: {
+    fullSurfHeightFaceFeet: number | null;
     fullSurfHeightFeet: number | null;
     fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFaceFeetLabelBin?: string;
     fullSurfHeightFeetLabelDescriptive?: string;
     fullSurfHeightMetres?: number | null;
     fullSurfHeightMetresLabelBin?: string;
@@ -122,8 +124,10 @@ export interface ChartDataItem {
     direction: number | null;
   };
   secondary?: {
+    fullSurfHeightFaceFeet: number | null;
     fullSurfHeightFeet: number | null;
     fullSurfHeightFeetLabelBin?: string;
+    fullSurfHeightFaceFeetLabelBin?: string;
     fullSurfHeightFeetLabelDescriptive?: string;
     fullSurfHeightMetres?: number | null;
     fullSurfHeightMetresLabelBin?: string;

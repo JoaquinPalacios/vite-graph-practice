@@ -80,10 +80,14 @@ export function processApiDataToChartData(
         },
 
         primary: {
+          fullSurfHeightFaceFeet:
+            apiStep.primary?.fullSurfHeightFaceFeet ?? null,
           fullSurfHeightFeet: apiStep.primary?.fullSurfHeightFeet ?? null,
           direction: apiStep.primary?.direction ?? null,
           fullSurfHeightFeetLabelBin:
             apiStep.primary?.fullSurfHeightFeetLabelBin || undefined,
+          fullSurfHeightFaceFeetLabelBin:
+            apiStep.primary?.fullSurfHeightFaceFeetLabelBin || undefined,
           fullSurfHeightFeetLabelDescriptive:
             apiStep.primary?.fullSurfHeightFeetLabelDescriptive || undefined,
           fullSurfHeightMetres: apiStep.primary?.fullSurfHeightMetres ?? null,
@@ -94,10 +98,14 @@ export function processApiDataToChartData(
 
         secondary: apiStep.secondary
           ? {
+              fullSurfHeightFaceFeet:
+                apiStep.secondary?.fullSurfHeightFaceFeet ?? null,
               fullSurfHeightFeet: apiStep.secondary?.fullSurfHeightFeet ?? null,
               direction: apiStep.secondary?.direction ?? null,
               fullSurfHeightFeetLabelBin:
                 apiStep.secondary?.fullSurfHeightFeetLabelBin || undefined,
+              fullSurfHeightFaceFeetLabelBin:
+                apiStep.secondary?.fullSurfHeightFaceFeetLabelBin || undefined,
               fullSurfHeightFeetLabelDescriptive:
                 apiStep.secondary?.fullSurfHeightFeetLabelDescriptive ||
                 undefined,

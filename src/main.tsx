@@ -96,6 +96,22 @@ function initGraph() {
       ...gfsData.map((d) =>
         d?.primary == null
           ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0
+      ),
+      ...ecmwfData.map((d) =>
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0
+      )
+    ),
+    surfersFeet: Math.max(
+      ...gfsData.map((d) =>
+        d?.primary == null
+          ? 0
           : d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
       ),
       ...ecmwfData.map((d) =>
@@ -125,8 +141,14 @@ function initGraph() {
   // Find the specific data point that contains the maximum height
   const findMaxHeightDetails = () => {
     let maxFeet = 0;
+    let maxSurfersFeet = 0;
     let maxMeters = 0;
     let maxFeetDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
+    let maxSurfersFeetDetails: {
       model: string;
       dateTime: string;
       height: number;
@@ -142,8 +164,14 @@ function initGraph() {
       const feetHeight =
         d?.primary == null
           ? 0
-          : d.secondary?.fullSurfHeightFeet ??
-            d.primary.fullSurfHeightFeet ??
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const surfersFeetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
             0;
       const metersHeight =
         d?.primary == null
@@ -158,6 +186,15 @@ function initGraph() {
           model: "GFS",
           dateTime: d.localDateTimeISO,
           height: feetHeight,
+        };
+      }
+
+      if (surfersFeetHeight > maxSurfersFeet) {
+        maxSurfersFeet = surfersFeetHeight;
+        maxSurfersFeetDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: surfersFeetHeight,
         };
       }
 
@@ -176,8 +213,14 @@ function initGraph() {
       const feetHeight =
         d?.primary == null
           ? 0
-          : d.secondary?.fullSurfHeightFeet ??
-            d.primary.fullSurfHeightFeet ??
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const surfersFeetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
             0;
       const metersHeight =
         d?.primary == null
@@ -195,6 +238,15 @@ function initGraph() {
         };
       }
 
+      if (surfersFeetHeight > maxSurfersFeet) {
+        maxSurfersFeet = surfersFeetHeight;
+        maxSurfersFeetDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: surfersFeetHeight,
+        };
+      }
+
       if (metersHeight > maxMeters) {
         maxMeters = metersHeight;
         maxMetersDetails = {
@@ -205,7 +257,7 @@ function initGraph() {
       }
     });
 
-    return { maxFeetDetails, maxMetersDetails };
+    return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
   };
 
   const maxHeightDetails = findMaxHeightDetails();
@@ -215,6 +267,7 @@ function initGraph() {
     maxHeightDetails: {
       feet: maxHeightDetails.maxFeetDetails,
       meters: maxHeightDetails.maxMetersDetails,
+      surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
     },
   });
 
@@ -276,7 +329,7 @@ function initGraph() {
           ? "ft"
           : rawApiData.preferences?.units?.surfHeight === "m"
           ? "m"
-          : "ft") as "ft" | "m",
+          : "surfers_feet") as "ft" | "m" | "surfers_feet",
         temperature: rawApiData.preferences?.units?.temperature || "celsius",
         wind: rawApiData.preferences?.units?.wind || "knots",
         unitMeasurements:

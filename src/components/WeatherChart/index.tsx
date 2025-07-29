@@ -1,8 +1,8 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { WeatherData } from "@/types";
+import { UnitPreferences, WeatherData } from "@/types";
 import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -21,10 +21,41 @@ type ScatterShapeProps = {
   index?: number;
 };
 
-const WeatherChart = ({ weatherData }: { weatherData: WeatherData[] }) => {
+// Convert Celsius to Fahrenheit
+const celsiusToFahrenheit = (celsius: number): number => {
+  return (celsius * 9) / 5 + 32;
+};
+
+const WeatherChart = ({
+  weatherData,
+  unitPreferences,
+}: {
+  weatherData: WeatherData[];
+  unitPreferences: UnitPreferences;
+}) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
+
+  const isFahrenheit = unitPreferences.units.temperature === "fahrenheit";
+
+  // Convert temperature data based on unit preference
+  const convertedWeatherData = useMemo(() => {
+    if (!isFahrenheit) {
+      return weatherData;
+    }
+
+    return weatherData.map((data) => ({
+      ...data,
+      currentTemp: data.currentTemp
+        ? celsiusToFahrenheit(data.currentTemp)
+        : data.currentTemp,
+    }));
+  }, [weatherData, isFahrenheit]);
+
   // Add index property to each data point
-  const weatherDataWithIndex = weatherData.map((d, i) => ({ ...d, index: i }));
+  const weatherDataWithIndex = convertedWeatherData.map((d, i) => ({
+    ...d,
+    index: i,
+  }));
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   return (

@@ -87,8 +87,10 @@ export const SwellChartYAxis = ({
 
         <Bar
           dataKey={(d) =>
-            unitPreferences.units.surfHeight === "ft"
+            unitPreferences.units.surfHeight === "surfers_feet"
               ? d.primary.fullSurfHeightFeet
+              : unitPreferences.units.surfHeight === "ft"
+              ? d.primary.fullSurfHeightFaceFeet
               : d.primary.fullSurfHeightMetres
           }
           stackId="b"
@@ -101,8 +103,11 @@ export const SwellChartYAxis = ({
         <Bar
           dataKey={(d) =>
             d.secondary
-              ? unitPreferences.units.surfHeight === "ft"
+              ? unitPreferences.units.surfHeight === "surfers_feet"
                 ? d.secondary.fullSurfHeightFeet - d.primary.fullSurfHeightFeet
+                : unitPreferences.units.surfHeight === "ft"
+                ? d.secondary.fullSurfHeightFaceFeet -
+                  d.primary.fullSurfHeightFaceFeet
                 : d.secondary.fullSurfHeightMetres -
                   d.primary.fullSurfHeightMetres
               : null
@@ -123,7 +128,11 @@ export const SwellChartYAxis = ({
           allowDecimals={false}
           ticks={generateTicks(maxSurfHeight, unitPreferences.units.surfHeight)}
           padding={{
-            top: unitPreferences.units.surfHeight === "ft" ? 20 : 16,
+            top:
+              unitPreferences.units.surfHeight === "ft" ||
+              unitPreferences.units.surfHeight === "surfers_feet"
+                ? 20
+                : 16,
           }}
           height={320}
           width={48}
@@ -177,7 +186,7 @@ export const SwellChartYAxis = ({
                 y={value.y}
                 dy={1}
                 textAnchor="end"
-                fontSize={12}
+                fontSize={11}
                 fill="#666"
               >
                 {value.payload.value}
@@ -186,6 +195,8 @@ export const SwellChartYAxis = ({
                   ? unitPreferences.units.surfHeight
                   : unitPreferences.units.surfHeight === "ft"
                   ? unitPreferences.units.surfHeight
+                  : unitPreferences.units.surfHeight === "surfers_feet"
+                  ? "ft"
                   : ""}
               </text>
             );

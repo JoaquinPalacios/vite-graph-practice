@@ -29,6 +29,153 @@ type SwellTooltipProps = TooltipProps<ValueType, NameType> & {
   onClose?: () => void;
 };
 
+// Helper function to get surf height label based on unit preferences
+const getSurfHeightLabel = (
+  swellData: any,
+  unitPreferences: UnitPreferences,
+  isPrimary: boolean = true
+): string => {
+  const data = isPrimary ? swellData.primary : swellData.secondary;
+  const { surfHeight } = unitPreferences.units;
+
+  switch (surfHeight) {
+    case "surfers_feet":
+      return data.fullSurfHeightFeetLabelBin;
+    case "ft":
+      return data.fullSurfHeightFaceFeetLabelBin;
+    default:
+      return data.fullSurfHeightMetresLabelBin;
+  }
+};
+
+// Helper function to get surf height descriptive label
+const getSurfHeightDescriptive = (
+  swellData: any,
+  unitPreferences: UnitPreferences,
+  isPrimary: boolean = true
+): string => {
+  const data = isPrimary ? swellData.primary : swellData.secondary;
+  const { surfHeight } = unitPreferences.units;
+
+  switch (surfHeight) {
+    case "surfers_feet":
+    case "ft":
+      return data.fullSurfHeightFeetLabelDescriptive;
+    default:
+      return data.fullSurfHeightMetresLabelDescriptive;
+  }
+};
+
+// Helper function to get wind speed and unit
+const getWindSpeed = (
+  windData: any,
+  unitPreferences: UnitPreferences
+): { speed: number; unit: string } => {
+  const isKnots = unitPreferences.units.wind === "knots";
+  return {
+    speed: Math.round(isKnots ? windData.speedKnots : windData.speedKmh),
+    unit: isKnots ? "kts" : "km/h",
+  };
+};
+
+// Reusable component for surf height section
+const SurfHeightSection = memo(
+  ({
+    swellData,
+    unitPreferences,
+    isPrimary = true,
+    showBeachFacing = false,
+  }: {
+    swellData: any;
+    unitPreferences: UnitPreferences;
+    isPrimary?: boolean;
+    showBeachFacing?: boolean;
+  }) => {
+    const data = isPrimary ? swellData.primary : swellData.secondary;
+    const heightLabel = getSurfHeightLabel(
+      swellData,
+      unitPreferences,
+      isPrimary
+    );
+    const descriptiveLabel = getSurfHeightDescriptive(
+      swellData,
+      unitPreferences,
+      isPrimary
+    );
+    const direction = getAdjustedDirection(Number(data.direction));
+    const compassDirection = degreesToCompassDirection(direction);
+
+    return (
+      <div className="tw:flex tw:flex-col">
+        <div className="tw:flex tw:gap-1 surf-height-label">
+          <p className="margin-none tw:leading-[1.2]">{heightLabel}</p>
+          <p className="margin-none tw:leading-[1.2]">
+            {String(data.fullSurfHeightFeet) !== "0.00" && compassDirection}
+          </p>
+        </div>
+        {showBeachFacing && (
+          <p className="margin-none semibold tooltip-paragraph tw:leading-[1.2]">
+            {getBeachFacingDirection(Number(data.direction))}
+          </p>
+        )}
+        <p className="margin-bottom-2 tooltip-paragraph-small">
+          ({descriptiveLabel})
+        </p>
+      </div>
+    );
+  }
+);
+
+SurfHeightSection.displayName = "SurfHeightSection";
+
+// Reusable component for wind section
+const WindSection = memo(
+  ({
+    windData,
+    unitPreferences,
+  }: {
+    windData: any;
+    unitPreferences: UnitPreferences;
+  }) => {
+    const color = getWindColor(windData.speedKnots);
+    const { speed, unit } = getWindSpeed(windData, unitPreferences);
+    const direction = getAdjustedDirection(Number(windData.direction));
+    const compassDirection = degreesToCompassDirection(windData.direction);
+
+    return (
+      <div className="margin-bottom-2 tw:flex tw:gap-1 tw:items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          height={18}
+          width={18}
+          fill={color || "currentColor"}
+          className="tw:transition-colors tw:duration-200 tw:ease"
+        >
+          <path
+            d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
+            transform={`rotate(${direction}, 0, 0)`}
+            style={{ transformOrigin: "center" }}
+            className="tw:transition-transform tw:duration-150 tw:ease"
+          />
+          <path
+            d="M7.65 10h5v7.5h-5z"
+            transform={`rotate(${direction}, 0, 0)`}
+            style={{ transformOrigin: "center" }}
+          />
+        </svg>
+        <p className="margin-none tooltip-paragraph">
+          {speed}
+          {unit}
+        </p>
+        <p className="margin-none tooltip-paragraph">{compassDirection}</p>
+      </div>
+    );
+  }
+);
+
+WindSection.displayName = "WindSection";
+
 /**
  * SwellTooltip component
  * This component is used to display the tooltip of the SwellChart.
@@ -47,7 +194,8 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
   };
 
   if (active && payload && payload.length) {
-    const color = getWindColor(payload[0].payload.wind.speedKnots);
+    const swellData = payload[0].payload;
+    const hasSecondary = payload && payload[1];
 
     return (
       <div
@@ -81,116 +229,38 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
 
         {/* Surf Height and Wind */}
         <div className="tw:flex tw:flex-col tw:px-2 tw:pt-2 tw:border-b tw:border-gray-400/20">
-          <div className="tw:flex tw:flex-col">
-            <div className="tw:flex tw:gap-1 surf-height-label">
-              <p className="margin-none tw:leading-[1.2]">
-                {unitPreferences.units.surfHeight === "ft"
-                  ? payload[0].payload.primary.fullSurfHeightFeetLabelBin
-                  : payload[0].payload.primary.fullSurfHeightMetresLabelBin}
-              </p>
-              <p className="margin-none tw:leading-[1.2]">
-                {payload[0] &&
-                  String(payload[0].payload.primary.fullSurfHeightFeet) !==
-                    "0.00" &&
-                  degreesToCompassDirection(
-                    getAdjustedDirection(
-                      Number(payload[0].payload.primary.direction)
-                    )
-                  )}
-              </p>
-            </div>
-            <p className="margin-bottom-2 tooltip-paragraph-small">
-              ({payload[0].payload.primary.fullSurfHeightFeetLabelDescriptive})
-            </p>
-          </div>
-          {payload && payload[1] && (
-            <div className="tw:flex tw:flex-col">
-              <div className="tw:flex tw:gap-1 surf-height-label">
-                <p className="margin-none tw:leading-[1.2]">
-                  {unitPreferences.units.surfHeight === "ft"
-                    ? payload[0].payload.secondary.fullSurfHeightFeetLabelBin
-                    : payload[0].payload.secondary.fullSurfHeightMetresLabelBin}
-                </p>
-                <p className="margin-none tw:leading-[1.2]">
-                  {payload[0] &&
-                    degreesToCompassDirection(
-                      getAdjustedDirection(
-                        Number(payload[0].payload.secondary.direction)
-                      )
-                    )}
-                </p>
-              </div>
-              <p className="margin-none semibold tooltip-paragraph tw:leading-[1.2]">
-                {getBeachFacingDirection(
-                  Number(payload[0].payload.secondary.direction)
-                )}
-              </p>
-              <p className="margin-bottom-2 tooltip-paragraph-small">
-                (
-                {
-                  payload[0].payload.secondary
-                    .fullSurfHeightFeetLabelDescriptive
-                }
-                )
-              </p>
-            </div>
+          <SurfHeightSection
+            swellData={swellData}
+            unitPreferences={unitPreferences}
+            isPrimary={true}
+          />
+
+          {hasSecondary && (
+            <SurfHeightSection
+              swellData={swellData}
+              unitPreferences={unitPreferences}
+              isPrimary={false}
+              showBeachFacing={true}
+            />
           )}
-          {payload[0] && (
-            <div className="margin-bottom-2 tw:flex tw:gap-1 tw:items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                height={18}
-                width={18}
-                fill={color || "currentColor"}
-                className="tw:transition-colors tw:duration-200 tw:ease"
-              >
-                <path
-                  d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
-                  transform={`rotate(${getAdjustedDirection(
-                    Number(payload[0].payload.wind.direction)
-                  )}, 0, 0)`}
-                  style={{
-                    transformOrigin: "center",
-                  }}
-                  className="tw:transition-transform tw:duration-150 tw:ease"
-                />
-                <path
-                  d="M7.65 10h5v7.5h-5z"
-                  transform={`rotate(${getAdjustedDirection(
-                    Number(payload[0].payload.wind.direction)
-                  )}, 0, 0)`}
-                  style={{
-                    transformOrigin: "center",
-                  }}
-                />
-              </svg>
-              <p className="margin-none tooltip-paragraph">
-                {unitPreferences.units.wind === "knots"
-                  ? Math.round(payload[0].payload.wind.speedKnots)
-                  : Math.round(payload[0].payload.wind.speedKmh)}
-                {unitPreferences.units.wind === "knots" ? "kts" : "km/h"}
-              </p>
-              <p className="margin-none tooltip-paragraph">
-                {degreesToCompassDirection(payload[0].payload.wind.direction)}
-              </p>
-            </div>
-          )}
+
+          <WindSection
+            windData={swellData.wind}
+            unitPreferences={unitPreferences}
+          />
         </div>
 
         {/* Swell Trains */}
-        {payload[0]?.payload.trainData && (
+        {swellData?.trainData && (
           <div className="tw:flex tw:flex-col tw:p-2">
-            {payload[0]?.payload.trainData.map(
-              (train: TrainData, index: number) => (
-                <SwellTrainRow
-                  key={`train-${index}`}
-                  direction={train.direction}
-                  sigHeight={train.sigHeight}
-                  peakPeriod={train.peakPeriod}
-                />
-              )
-            )}
+            {swellData.trainData.map((train: TrainData, index: number) => (
+              <SwellTrainRow
+                key={`train-${index}`}
+                direction={train.direction}
+                sigHeight={train.sigHeight}
+                peakPeriod={train.peakPeriod}
+              />
+            ))}
           </div>
         )}
       </div>

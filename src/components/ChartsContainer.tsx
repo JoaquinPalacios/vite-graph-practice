@@ -10,6 +10,7 @@ import {
 import { ChartDataItem } from "@/types/index.ts";
 import { cn } from "@/utils/utils";
 import { Suspense, useMemo, useState } from "react";
+import { VscSettings } from "react-icons/vsc";
 import { AdvanceD3Chart } from "./AdvanceD3Chart";
 import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
@@ -57,6 +58,7 @@ const ChartsContainer = ({
   maxSurfHeight: {
     feet: number;
     meters: number;
+    surfersFeet: number;
   };
   maxSurfHeightAdvanced: number; // Always in meters
   chartWidth: number;
@@ -159,6 +161,11 @@ const ChartsContainer = ({
             style: { width: chartWidth },
           })}
       >
+        {/* Settings button */}
+        <div className="tw:absolute tw:top-4 tw:left-7 tw:z-30 tw:cursor-pointer">
+          <VscSettings className="tw:size-6 tw:cursor-progress" />
+        </div>
+
         <Suspense fallback={<GraphSkeleton />}>
           <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
             <Suspense fallback={<GraphSkeleton showMain />}>
@@ -170,6 +177,8 @@ const ChartsContainer = ({
                     maxSurfHeight={
                       unitPreferences.units.surfHeight === "ft"
                         ? maxSurfHeight.feet
+                        : unitPreferences.units.surfHeight === "surfers_feet"
+                        ? maxSurfHeight.surfersFeet
                         : maxSurfHeight.meters
                     }
                     currentLocationTime={referenceLineData.referenceTime}
@@ -182,6 +191,8 @@ const ChartsContainer = ({
                     maxSurfHeight={
                       unitPreferences.units.surfHeight === "ft"
                         ? maxSurfHeight.feet
+                        : unitPreferences.units.surfHeight === "surfers_feet"
+                        ? maxSurfHeight.surfersFeet
                         : maxSurfHeight.meters
                     }
                     hasSubscription={rawApiData.user.hasFullAccess}
@@ -203,7 +214,10 @@ const ChartsContainer = ({
             <Suspense fallback={<GraphSkeleton showWeather />}>
               {weatherData && weatherData.length > 0 ? (
                 <>
-                  <WeatherChart weatherData={weatherData} />
+                  <WeatherChart
+                    weatherData={weatherData}
+                    unitPreferences={unitPreferences}
+                  />
                   <div
                     className={cn(
                       "tw:pointer-events-none tw:h-20 [&]:tw:w-12 [&]:tw:md:w-20",
