@@ -2,7 +2,7 @@ export type UnitPreferences = {
   units: {
     surfHeight: "ft" | "m" | "surfers_feet";
     temperature: "celsius" | "fahrenheit";
-    wind: "knots" | "km";
+    wind: "knots" | "km" | "mph";
     unitMeasurements: "m" | "ft";
   };
   showAdvancedChart: boolean;
@@ -111,6 +111,7 @@ export interface ChartDataItem {
     direction: number | null;
     speedKmh: number | null;
     speedKnots: number | null;
+    speedMph: number | null;
   };
   primary: {
     fullSurfHeightFaceFeet: number | null;

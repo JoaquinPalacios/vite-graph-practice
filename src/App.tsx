@@ -90,7 +90,7 @@ function App({
   // const defaultChartData = {
   //   localDateTimeISO: localDateTimeISO,
   //   utcDateTimeISO: new Date(localDateTimeISO).toISOString(),
-  //   wind: { direction: null, speedKmh: null, speedKnots: null },
+  //   wind: { direction: null, speedKmh: null, speedKnots: null, speedMph: null },
   //   primary: {
   //     fullSurfHeightFeet: null,
   //     direction: null,

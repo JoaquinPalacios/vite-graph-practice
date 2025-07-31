@@ -72,9 +72,19 @@ const getWindSpeed = (
   unitPreferences: UnitPreferences
 ): { speed: number; unit: string } => {
   const isKnots = unitPreferences.units.wind === "knots";
+  const isKmh = unitPreferences.units.wind === "km";
+  const isMph = unitPreferences.units.wind === "mph";
   return {
-    speed: Math.round(isKnots ? windData.speedKnots : windData.speedKmh),
-    unit: isKnots ? "kts" : "km/h",
+    speed: Math.round(
+      isKnots
+        ? windData.speedKnots
+        : isKmh
+        ? windData.speedKmh
+        : isMph
+        ? windData.speedMph
+        : 0
+    ),
+    unit: isKnots ? "kts" : isKmh ? "km/h" : isMph ? "mph" : "",
   };
 };
 

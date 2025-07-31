@@ -61,6 +61,13 @@ td {
   margin-bottom: 0.5rem;
 }
 
+.margin-bottom-minus-11 {
+  margin-bottom: -2.75rem; /* -44px */
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .recharts-cartesian-axis-tick-line {
   opacity: 0.5;
 }
@@ -221,4 +228,17 @@ button.selector-btn {
   color: inherit;
   background-color: inherit;
   padding: unset;
+}
+
+/* Unit selector preferences button */
+.preference-btn-wrapper {
+  transition: margin-bottom 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.preference-btn-wrapper[data-state="open"] {
+  margin-bottom: 3.5rem;
+}
+
+/* Accordion trigger */
+.accordion-trigger h3 {
+  margin: 0;
 }

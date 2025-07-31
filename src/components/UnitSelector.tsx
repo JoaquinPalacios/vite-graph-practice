@@ -5,6 +5,12 @@ import { cn } from "@/utils/utils";
 import { ImTable2 } from "react-icons/im";
 import { MdAccessTime, MdBarChart } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export interface UnitSelectorProps {
@@ -37,9 +43,9 @@ export const UnitSelector = ({
   const hasEcmwfData = rawApiData.forecasts?.ecmwf?.forecastSteps?.length > 0;
 
   return (
-    <div className="tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-md:px-5 tw:justify-between tw:max-lg:flex-col">
+    <>
       {/* Model run time */}
-      <p className="margin-none tw:text-sm tw:mb-4 tw:flex tw:items-center tw:gap-2">
+      <p className="margin-bottom-minus-11 tw:text-sm tw:flex tw:items-center tw:gap-2">
         {hasGfsData || hasEcmwfData ? (
           <>
             <MdAccessTime className="tw:w-4 tw:h-4" />
@@ -55,229 +61,431 @@ export const UnitSelector = ({
           "No forecast data available"
         )}
       </p>
-
-      <div className="tw:flex tw:items-start tw:lg:items-center tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
-        {/* Settings button */}
-        <div className="tw:flex tw:items-center tw:gap-2">
-          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-            Settings
-          </span>
-          <VscSettings className="tw:size-5" />
-        </div>
-
-        {/* Advance chart toggle */}
-        <div
-          className={cn(
-            "tw:flex tw:items-center tw:gap-2 tw:transition-opacity tw:order-last tw:lg:order-none",
-            showAnalysis ? "tw:opacity-0" : "tw:opacity-100"
-          )}
-        >
-          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-            Graph
-          </span>
-          <div className="tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:overflow-hidden tw:gap-3 tw:px-2">
-            <div
-              className={cn(
-                "tw:absolute tw:top-1/2 tw:w-12 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
-                defaultValues.showAdvancedChart
-                  ? "tw:translate-x-full"
-                  : "tw:translate-x-0"
-              )}
-              style={{ willChange: "transform" }}
-            />
-            <button
-              type="button"
-              className={cn(
-                "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-200",
-                !defaultValues.showAdvancedChart
-                  ? "tw:text-gray-900"
-                  : "tw:text-gray-700"
-              )}
-              aria-pressed={!defaultValues.showAdvancedChart}
-              onClick={() =>
-                onChange({
-                  ...defaultValues,
-                  showAdvancedChart: false,
-                })
-              }
+      <div className="tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-md:px-5 tw:justify-between tw:lg:justify-end tw:max-lg:flex-col">
+        <div className="tw:flex tw:items-start tw:lg:items-baseline tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
+          {/* Settings button with expandable preferences */}
+          <div className="tw:min-w-fit">
+            <Accordion
+              type="single"
+              collapsible
+              className="tw:w-full tw:border-none accordion-trigger"
             >
-              Basic
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
-                defaultValues.showAdvancedChart
-                  ? "tw:text-gray-900"
-                  : "tw:text-gray-700"
-              )}
-              aria-pressed={defaultValues.showAdvancedChart}
-              onClick={() =>
-                onChange({
-                  ...defaultValues,
-                  showAdvancedChart: true,
-                })
-              }
-            >
-              Adv
-            </button>
+              <AccordionItem value="preferences" className=" tw:border-none">
+                <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&[data-state=open]>svg]:rotate-180">
+                  <div className="tw:flex tw:items-center tw:gap-2">
+                    <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                      Settings
+                    </span>
+                    <VscSettings className="tw:size-5 tw:transition-transform tw:duration-300" />
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent
+                  className={cn(
+                    "tw:absolute tw:top-24 tw:left-0 tw:w-full tw:h-full tw:min-w-fit tw:p-0",
+                    "tw:data-[state=open]:animate-in tw:animation-[slide-down_0.5s_cubic-bezier(0.4,0,0.2,1)_0.2s_forwards]"
+                  )}
+                >
+                  <div className="tw:min-w-fit tw:flex tw:justify-between tw:gap-8 tw:bg-gray-100 tw:p-4 tw:border-b-gray-300 tw:border-b">
+                    {/* Surf Height Units */}
+                    <div className="tw:flex tw:gap-3">
+                      <label className="margin-none tw:block tw:text-sm tw:font-medium tw:text-gray-700">
+                        Surf Height
+                      </label>
+                      <div className="tw:flex tw:gap-3 tw:relative">
+                        <div
+                          className={cn(
+                            "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-200 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                            defaultValues.units.surfHeight === "ft" &&
+                              "tw:w-9 tw:-translate-x-0.5",
+                            defaultValues.units.surfHeight === "m" &&
+                              "tw:w-[3.25rem] tw:translate-x-9",
+                            defaultValues.units.surfHeight === "surfers_feet" &&
+                              "tw:w-[5.625rem] tw:translate-x-[5.875rem]"
+                          )}
+                          style={{ willChange: "transform, width" }}
+                        />
+                        {["ft", "m", "surfers_feet"].map((unit) => (
+                          <button
+                            key={unit}
+                            type="button"
+                            className={cn(
+                              "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                              defaultValues.units.surfHeight === unit
+                                ? "tw:text-gray-900"
+                                : "tw:text-gray-700"
+                            )}
+                            onClick={() =>
+                              onChange({
+                                ...defaultValues,
+                                units: {
+                                  ...defaultValues.units,
+                                  surfHeight: unit as
+                                    | "ft"
+                                    | "m"
+                                    | "surfers_feet",
+                                },
+                              })
+                            }
+                          >
+                            {unit === "surfers_feet"
+                              ? "Surfer's Feet"
+                              : unit === "ft"
+                              ? "Feet"
+                              : "Metres"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Temperature Units */}
+                    <div className="tw:flex tw:gap-2">
+                      <label className="margin-none tw:block tw:text-sm tw:font-medium tw:text-gray-700">
+                        Tempe
+                      </label>
+                      <div className="tw:flex tw:gap-3 tw:relative tw:px-2">
+                        <div
+                          className={cn(
+                            "tw:absolute tw:top-1/2 tw:w-6 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-200 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                            defaultValues.units.temperature === "celsius"
+                              ? "tw:translate-x-1"
+                              : "tw:translate-x-[1.875rem]"
+                          )}
+                          style={{ willChange: "transform" }}
+                        />
+                        {["celsius", "fahrenheit"].map((unit) => (
+                          <button
+                            key={unit}
+                            type="button"
+                            className={cn(
+                              "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                              defaultValues.units.temperature === unit
+                                ? "tw:text-gray-900"
+                                : "tw:text-gray-700"
+                            )}
+                            onClick={() =>
+                              onChange({
+                                ...defaultValues,
+                                units: {
+                                  ...defaultValues.units,
+                                  temperature: unit as "celsius" | "fahrenheit",
+                                },
+                              })
+                            }
+                          >
+                            {unit === "celsius" ? "°C" : "°F"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Wind Speed Units */}
+                    <div className="tw:flex tw:gap-2">
+                      <label className="margin-none tw:block tw:text-sm tw:font-medium tw:text-gray-700">
+                        Wind
+                      </label>
+                      <div className="tw:flex tw:gap-3 tw:relative tw:px-2">
+                        <div
+                          className={cn(
+                            "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-200 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                            defaultValues.units.wind === "knots" &&
+                              "tw:w-11 tw:translate-x-1",
+                            defaultValues.units.wind === "km" &&
+                              "tw:w-[2.625rem] tw:translate-x-[3.375rem]",
+                            defaultValues.units.wind === "mph" &&
+                              "tw:w-9 tw:translate-x-[6.25rem]"
+                          )}
+                          style={{ willChange: "transform, width" }}
+                        />
+                        {["knots", "km", "mph"].map((unit) => (
+                          <button
+                            key={unit}
+                            type="button"
+                            className={cn(
+                              "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                              defaultValues.units.wind === unit
+                                ? "tw:text-gray-900"
+                                : "tw:text-gray-700"
+                            )}
+                            onClick={() =>
+                              onChange({
+                                ...defaultValues,
+                                units: {
+                                  ...defaultValues.units,
+                                  wind: unit as "knots" | "km" | "mph",
+                                },
+                              })
+                            }
+                          >
+                            {unit === "km"
+                              ? "Km/h"
+                              : unit === "mph"
+                              ? "Mph"
+                              : "Knots"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* General Measurements */}
+                    <div className="tw:flex tw:gap-2">
+                      <label className="margin-none tw:block tw:text-sm tw:font-medium tw:text-gray-700">
+                        Tide / Swell
+                      </label>
+                      <div className="tw:flex tw:gap-3 tw:relative tw:px-2">
+                        <div
+                          className={cn(
+                            "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-200 tw:shadow tw:z-0 tw:transition-all tw:duration-200",
+                            defaultValues.units.unitMeasurements === "m"
+                              ? "tw:w-[3.3125rem] tw:translate-x-1"
+                              : "tw:w-9 tw:translate-x-[3.75rem]"
+                          )}
+                          style={{ willChange: "transform, width" }}
+                        />
+                        {["m", "ft"].map((unit) => (
+                          <button
+                            key={unit}
+                            type="button"
+                            className={cn(
+                              "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                              defaultValues.units.unitMeasurements === unit
+                                ? "tw:text-gray-900"
+                                : "tw:text-gray-700"
+                            )}
+                            onClick={() =>
+                              onChange({
+                                ...defaultValues,
+                                units: {
+                                  ...defaultValues.units,
+                                  unitMeasurements: unit as "m" | "ft",
+                                },
+                              })
+                            }
+                          >
+                            {unit === "m" ? "Meters" : "Feet"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
-        </div>
 
-        {/* Model type selector */}
-        {(hasGfsData || hasEcmwfData) && (
-          <div className="tw:flex tw:items-center tw:gap-2 tw:order-2 tw:lg:order-none">
-            <Tooltip useTouch>
-              <TooltipTrigger asChild>
-                <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-                  Model
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="font-xs margin-none tw:max-w-96 tw:w-fit">
-                  Select the model to display the forecast data.
-                  <br />
-                  GFS: Global Forecast System
-                  <br />
-                  ECMWF: European Centre for Medium-Range Weather Forecasts
-                </p>
-              </TooltipContent>
-            </Tooltip>
-            <div
-              className={cn(
-                "tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:gap-3 tw:px-2 tw:overflow-hidden",
-                !hasGfsData || !hasEcmwfData ? "" : ""
-              )}
-            >
+          {/* Advance chart toggle */}
+          <div
+            className={cn(
+              "tw:flex tw:items-center tw:gap-2 tw:transition-opacity tw:order-last tw:lg:order-none",
+              showAnalysis ? "tw:opacity-0" : "tw:opacity-100"
+            )}
+          >
+            <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+              Graph
+            </span>
+            <div className="tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:overflow-hidden tw:gap-3 tw:px-2">
               <div
                 className={cn(
-                  "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
-                  modelType !== "gfs"
-                    ? "tw:translate-x-1/2 tw:w-20"
-                    : "tw:translate-x-0 tw:w-10",
-                  !hasGfsData && !hasEcmwfData ? "tw:hidden" : ""
+                  "tw:absolute tw:top-1/2 tw:w-12 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                  defaultValues.showAdvancedChart
+                    ? "tw:translate-x-full"
+                    : "tw:translate-x-0"
                 )}
                 style={{ willChange: "transform" }}
               />
-
-              {hasGfsData ? (
-                <button
-                  type="button"
-                  className={cn(
-                    "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
-                    modelType === "gfs"
-                      ? "tw:text-gray-900"
-                      : "tw:text-gray-700",
-                    "tw:cursor-pointer"
-                  )}
-                  aria-pressed={modelType === "gfs"}
-                  onClick={() => setModelType("gfs")}
-                  disabled={!hasGfsData}
-                >
-                  GFS
-                </button>
-              ) : (
-                <Tooltip useTouch>
-                  <TooltipTrigger asChild>
-                    <span className="tw:flex">
-                      <button
-                        type="button"
-                        className={cn(
-                          "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
-                          "tw:text-gray-700 tw:disabled:opacity-50"
-                        )}
-                        disabled
-                      >
-                        GFS
-                      </button>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="margin-none font-xs">Temporarly offline</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-
-              {hasEcmwfData ? (
-                <button
-                  type="button"
-                  className={cn(
-                    "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                    modelType === "ecmwf"
-                      ? "tw:text-gray-900"
-                      : "tw:text-gray-700"
-                  )}
-                  aria-pressed={modelType === "ecmwf"}
-                  onClick={() => setModelType("ecmwf")}
-                  disabled={!hasEcmwfData}
-                >
-                  ECMWF
-                </button>
-              ) : (
-                <Tooltip useTouch>
-                  <TooltipTrigger asChild>
-                    <span className="tw:flex">
-                      <button
-                        type="button"
-                        className={cn(
-                          "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                          "tw:text-gray-700 tw:disabled:opacity-50"
-                        )}
-                        disabled
-                      >
-                        ECMWF
-                      </button>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="margin-none font-xs">Temporarly offline</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
+              <button
+                type="button"
+                className={cn(
+                  "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-200",
+                  !defaultValues.showAdvancedChart
+                    ? "tw:text-gray-900"
+                    : "tw:text-gray-700"
+                )}
+                aria-pressed={!defaultValues.showAdvancedChart}
+                onClick={() =>
+                  onChange({
+                    ...defaultValues,
+                    showAdvancedChart: false,
+                  })
+                }
+              >
+                Basic
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-250",
+                  defaultValues.showAdvancedChart
+                    ? "tw:text-gray-900"
+                    : "tw:text-gray-700"
+                )}
+                aria-pressed={defaultValues.showAdvancedChart}
+                onClick={() =>
+                  onChange({
+                    ...defaultValues,
+                    showAdvancedChart: true,
+                  })
+                }
+              >
+                Adv
+              </button>
             </div>
           </div>
-        )}
 
-        {/* Charts/Analysis toggle with animated thumb */}
-        <div className="tw:flex tw:items-center tw:gap-2 tw:order-1 tw:lg:order-none">
-          <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-            View
-          </span>
-          <div className="tw:relative tw:w-16 tw:h-8 tw:rounded tw:flex tw:items-center tw:overflow-hidden">
-            {/* Animated thumb */}
-            <div
-              className={cn(
-                "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:w-1/2 tw:bg-gray-100 tw:shadow tw:transition-transform tw:duration-300 tw:z-0",
-                showAnalysis ? "tw:translate-x-full" : "tw:translate-x-0"
-              )}
-              style={{ willChange: "transform" }}
-            />
-            {/* Buttons */}
-            <button
-              type="button"
-              className={cn(
-                "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
-              )}
-              aria-pressed={!showAnalysis}
-              onClick={() => setShowAnalysis(false)}
-            >
-              <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
-              )}
-              aria-pressed={showAnalysis}
-              onClick={() => setShowAnalysis(true)}
-            >
-              <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
-            </button>
+          {/* Model type selector */}
+          {(hasGfsData || hasEcmwfData) && (
+            <div className="tw:flex tw:items-center tw:gap-2 tw:order-2 tw:lg:order-none">
+              <Tooltip useTouch>
+                <TooltipTrigger asChild>
+                  <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                    Model
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-xs margin-none tw:max-w-96 tw:w-fit">
+                    Select the model to display the forecast data.
+                    <br />
+                    GFS: Global Forecast System
+                    <br />
+                    ECMWF: European Centre for Medium-Range Weather Forecasts
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+              <div
+                className={cn(
+                  "tw:relative tw:w-fit tw:h-8 tw:flex tw:items-center tw:gap-3 tw:px-2 tw:overflow-hidden",
+                  !hasGfsData || !hasEcmwfData ? "" : ""
+                )}
+              >
+                <div
+                  className={cn(
+                    "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:bg-gray-100 tw:shadow tw:z-0 tw:transition-transform tw:duration-200",
+                    modelType !== "gfs"
+                      ? "tw:translate-x-1/2 tw:w-20"
+                      : "tw:translate-x-0 tw:w-10",
+                    !hasGfsData && !hasEcmwfData ? "tw:hidden" : ""
+                  )}
+                  style={{ willChange: "transform" }}
+                />
+
+                {hasGfsData ? (
+                  <button
+                    type="button"
+                    className={cn(
+                      "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                      modelType === "gfs"
+                        ? "tw:text-gray-900"
+                        : "tw:text-gray-700",
+                      "tw:cursor-pointer"
+                    )}
+                    aria-pressed={modelType === "gfs"}
+                    onClick={() => setModelType("gfs")}
+                    disabled={!hasGfsData}
+                  >
+                    GFS
+                  </button>
+                ) : (
+                  <Tooltip useTouch>
+                    <TooltipTrigger asChild>
+                      <span className="tw:flex">
+                        <button
+                          type="button"
+                          className={cn(
+                            "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:transition-colors tw:duration-300",
+                            "tw:text-gray-700 tw:disabled:opacity-50"
+                          )}
+                          disabled
+                        >
+                          GFS
+                        </button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="margin-none font-xs">Temporarly offline</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {hasEcmwfData ? (
+                  <button
+                    type="button"
+                    className={cn(
+                      "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                      modelType === "ecmwf"
+                        ? "tw:text-gray-900"
+                        : "tw:text-gray-700"
+                    )}
+                    aria-pressed={modelType === "ecmwf"}
+                    onClick={() => setModelType("ecmwf")}
+                    disabled={!hasEcmwfData}
+                  >
+                    ECMWF
+                  </button>
+                ) : (
+                  <Tooltip useTouch>
+                    <TooltipTrigger asChild>
+                      <span className="tw:flex">
+                        <button
+                          type="button"
+                          className={cn(
+                            "selector-btn font-sm font-bold tw:relative tw:flex tw:items-center tw:justify-center tw:z-10 tw:w-fit tw:h-fit tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                            "tw:text-gray-700 tw:disabled:opacity-50"
+                          )}
+                          disabled
+                        >
+                          ECMWF
+                        </button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="margin-none font-xs">Temporarly offline</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Charts/Analysis toggle with animated thumb */}
+          <div className="tw:flex tw:items-center tw:gap-2 tw:order-1 tw:lg:order-none">
+            <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+              View
+            </span>
+            <div className="tw:relative tw:w-16 tw:h-8 tw:rounded tw:flex tw:items-center tw:overflow-hidden">
+              {/* Animated thumb */}
+              <div
+                className={cn(
+                  "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:w-1/2 tw:bg-gray-100 tw:shadow tw:transition-transform tw:duration-300 tw:z-0",
+                  showAnalysis ? "tw:translate-x-full" : "tw:translate-x-0"
+                )}
+                style={{ willChange: "transform" }}
+              />
+              {/* Buttons */}
+              <button
+                type="button"
+                className={cn(
+                  "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                  !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+                )}
+                aria-pressed={!showAnalysis}
+                onClick={() => setShowAnalysis(false)}
+              >
+                <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                  showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+                )}
+                aria-pressed={showAnalysis}
+                onClick={() => setShowAnalysis(true)}
+              >
+                <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

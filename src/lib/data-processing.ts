@@ -77,6 +77,7 @@ export function processApiDataToChartData(
           direction: apiStep.wind?.direction ?? null,
           speedKmh: apiStep.wind?.speedKmh ?? null,
           speedKnots: apiStep.wind?.speedKnots ?? null,
+          speedMph: apiStep.wind?.speedMph ?? null,
         },
 
         primary: {

@@ -330,7 +330,11 @@ export const SwellChart = memo(
                     value:
                       unitPreferences.units.wind === "knots"
                         ? Math.round(data.wind.speedKnots ?? 0)
-                        : Math.round(data.wind.speedKmh ?? 0),
+                        : unitPreferences.units.wind === "km"
+                        ? Math.round(data.wind.speedKmh ?? 0)
+                        : unitPreferences.units.wind === "mph"
+                        ? Math.round(data.wind.speedMph ?? 0)
+                        : 0,
                   }}
                 />
               );

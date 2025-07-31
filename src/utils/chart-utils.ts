@@ -34,12 +34,21 @@ export const generateTicks = (
       return ticks;
     } else if (roundedMax <= 16) {
       return [0, 4, 8, 12, 16];
-    } else {
-      // For values greater than 16, show ticks in increments of 5
+    } else if (roundedMax <= 40) {
+      // For values between 16 and 40, show ticks in increments of 5
       // Round up to the nearest multiple of 5
       const roundedToFive = Math.ceil(roundedMax / 5) * 5;
       const ticks = [];
       for (let i = 0; i <= roundedToFive; i += 5) {
+        ticks.push(i);
+      }
+      return ticks;
+    } else {
+      // For values greater than 40, show ticks in increments of 10
+      // Round up to the nearest multiple of 10
+      const roundedToTen = Math.ceil(roundedMax / 10) * 10;
+      const ticks = [];
+      for (let i = 0; i <= roundedToTen; i += 10) {
         ticks.push(i);
       }
       return ticks;
@@ -63,14 +72,15 @@ export const generateTicks = (
         ticks.push(i);
       }
       return ticks;
-    } else if (roundedMax <= 5) {
-      // Large waves: fixed scale for optimal readability
-      return [0, 1, 2, 3, 4, 5];
+    } else if (roundedMax <= 16) {
+      // For values up to 16m, show ticks in increments of 4
+      return [0, 4, 8, 12, 16];
     } else {
-      // Very large waves: show ticks in increments of 2m
-      const roundedToTwo = Math.ceil(roundedMax / 2) * 2;
+      // For values greater than 16m, show ticks in increments of 5
+      // Round up to the nearest multiple of 5
+      const roundedToFive = Math.ceil(roundedMax / 5) * 5;
       const ticks = [];
-      for (let i = 0; i <= roundedToTwo; i += 2) {
+      for (let i = 0; i <= roundedToFive; i += 5) {
         ticks.push(i);
       }
       return ticks;
