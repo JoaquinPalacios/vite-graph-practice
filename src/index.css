@@ -101,6 +101,11 @@ td {
   opacity: 1;
 }
 
+.advance-y-axis-group text,
+.tide-y-axis-group text {
+  font-size: 0.6875rem; /* 11px */
+}
+
 .tooltip-container {
   color: #3a3a3a;
 }

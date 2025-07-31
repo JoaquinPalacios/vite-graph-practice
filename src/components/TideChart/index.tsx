@@ -212,7 +212,7 @@ export const TideChart = ({
     const maxHeight = Math.ceil(Math.max(Math.abs(maxTide), Math.abs(minTide)));
 
     if (isFeet) {
-      if (maxHeight <= 5) {
+      if (maxHeight <= 4) {
         // Show all ticks up to the actual maximum
         return Array.from({ length: maxHeight + 1 }, (_, i) => i);
       }
@@ -416,7 +416,7 @@ export const TideChart = ({
     // Add background rectangle to Y-axis
     yAxisSvg
       .append("g")
-      .attr("class", "y-axis")
+      .attr("class", "y-axis tide-y-axis-group")
       .attr(
         "transform",
         `translate(${isMobile || isLandscapeMobile ? 48 : 64}, 32)`

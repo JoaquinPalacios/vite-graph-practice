@@ -116,15 +116,33 @@ export const AdvanceD3Chart = ({
         // if max height is less than 16 feet, show ticks in increments of 4
         return [0, 4, 8, 12, 16];
       }
-      const roundedToFive = Math.ceil(maxHeight / 5) * 5; // if max height is greater than 16 feet, show ticks in increments of 5
-      return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
+      if (maxHeight <= 40) {
+        // if max height is between 16 and 40 feet, show ticks in increments of 5
+        const roundedToFive = Math.ceil(maxHeight / 5) * 5;
+        return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
+      }
+      // if max height is greater than 40 feet, show ticks in increments of 10
+      const roundedToTen = Math.ceil(maxHeight / 10) * 10;
+      return Array.from({ length: roundedToTen / 10 + 1 }, (_, i) => i * 10);
     }
 
-    if (maxHeight < 2.5) {
-      return [0, 0.5, 1, 1.5, 2, 2.5];
-    } else {
-      return Array.from({ length: Math.ceil(maxHeight) + 1 }, (_, i) => i);
+    // For meters
+    if (maxHeight <= 1.5) {
+      // Small waves: show every 0.5m increment
+      return [0, 0.5, 1, 1.5];
     }
+    if (maxHeight <= 4.5) {
+      // Medium waves: show every 1m increment
+      const roundedToOne = Math.ceil(maxHeight);
+      return Array.from({ length: roundedToOne + 1 }, (_, i) => i);
+    }
+    if (maxHeight <= 16) {
+      // For values up to 16m, show ticks in increments of 4
+      return [0, 4, 8, 12, 16];
+    }
+    // For values greater than 16m, show ticks in increments of 5
+    const roundedToFive = Math.ceil(maxHeight / 5) * 5;
+    return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
   }, [convertedMaxSurfHeight, isFeet]);
 
   // Transform data for D3
@@ -329,7 +347,7 @@ export const AdvanceD3Chart = ({
     // Add background rectangle to Y-axis
     const yAxisGroup = yAxisSvg
       .append("g")
-      .attr("class", "y-axis")
+      .attr("class", "y-axis advance-y-axis-group")
       .attr(
         "transform",
         `translate(${isMobile || isLandscapeMobile ? 44 : 48}, 32)`
