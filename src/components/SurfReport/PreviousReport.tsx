@@ -1,9 +1,8 @@
+import { getSurfHeightLabel } from "@/lib/surf";
 import { formatTime } from "@/lib/time-utils";
-import { UnitPreferences } from "@/types";
-import { SurfReportItem } from "@/types";
+import { SurfReportItem, UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
-import { useState, memo } from "react";
-import { getSurfHeightLabel } from "@/lib/surf-height-utils";
+import { memo, useState } from "react";
 
 interface PreviousReportItemProps {
   report: SurfReportItem;

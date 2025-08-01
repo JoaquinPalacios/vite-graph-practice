@@ -2,8 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { getChartWidth } from "./lib/charts";
 import { ChartDataItem, DrupalApiData, MobileContext } from "./types/index.ts";
-import { getChartWidth } from "./utils/chart-utils";
 
 /**
  * This function initializes the graph by getting the container and

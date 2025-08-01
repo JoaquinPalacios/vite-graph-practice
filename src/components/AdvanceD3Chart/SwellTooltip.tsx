@@ -1,7 +1,6 @@
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getAdjustedDirection } from "@/lib/format-direction";
+import { colorPalette } from "@/lib/charts";
+import { degreesToCompassDirection, getAdjustedDirection } from "@/lib/surf";
 import { SwellPoint, TooltipState, UnitPreferences } from "@/types";
-import { colorPalette } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import React from "react";
 import { IoClose } from "react-icons/io5";

@@ -95,7 +95,13 @@ src/
 │   ├── SubscriptionOverlay/      # Subscription UI components
 │   └── ui/                      # Shared UI components
 ├── data/                       # Data management and API integration
-├── lib/                        # Utility libraries
+├── api/                        # API integration modules
+│   └── drupal-api.ts           # Drupal backend communication
+├── lib/                        # Core libraries and utilities
+│   ├── charts/                 # Chart-specific utilities (D3.js, Recharts)
+│   ├── formatting/             # Date and text formatting utilities
+│   ├── surf/                   # Surf and weather domain utilities
+│   ├── data-processing.ts      # Core data transformation logic
 │   └── time-utils.ts           # Timezone and date handling
 ├── types/                      # TypeScript type definitions
 ├── utils/                      # Helper functions

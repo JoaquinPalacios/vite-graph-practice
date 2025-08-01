@@ -1,11 +1,7 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { formatDateTick, generateTicks, getChartWidth } from "@/lib/charts";
 import { UnitPreferences } from "@/types";
 import { ChartDataItem } from "@/types/index.ts";
-import {
-  formatDateTick,
-  generateTicks,
-  getChartWidth,
-} from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { memo, useMemo, useState } from "react";
 import {

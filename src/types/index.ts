@@ -73,7 +73,7 @@ export interface DrupalApiData {
     units: {
       surfHeight: "ft" | "m" | "surfers_feet";
       temperature: "celsius" | "fahrenheit";
-      wind: "knots" | "km";
+      wind: "knots" | "km" | "mph";
       unitMeasurements: "m" | "ft";
     };
   };

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from "react";
 import { GraphHeader } from "./components/GraphHeader.tsx";
 import GraphSkeleton from "./components/GraphSkeleton.tsx";
+import { roundUpToMultiple } from "./lib/charts";
 import { processApiDataToChartData } from "./lib/data-processing.ts";
 import {
   CurrentWeatherData,
@@ -12,7 +13,6 @@ import {
   UnitPreferences,
   WeatherData,
 } from "./types/index.ts";
-import { roundUpToMultiple } from "./utils/chart-utils.ts";
 
 interface AppProps {
   rawApiData: DrupalApiData;

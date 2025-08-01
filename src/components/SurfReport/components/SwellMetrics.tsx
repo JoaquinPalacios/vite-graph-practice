@@ -1,9 +1,8 @@
+import { degreesToCompassDirection, getAdjustedDirection } from "@/lib/surf";
 import { ChartDataItem, UnitPreferences } from "@/types";
+import { cn } from "@/utils/utils";
 import { MetricCard } from "./MetricCard";
 import { MetricDisplay } from "./MetricDisplay";
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getAdjustedDirection } from "@/lib/format-direction";
-import { cn } from "@/utils/utils";
 
 interface SwellMetricsProps {
   chartData: ChartDataItem;

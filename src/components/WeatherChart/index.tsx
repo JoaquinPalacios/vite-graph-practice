@@ -1,6 +1,6 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { formatDateTick, getChartWidth } from "@/lib/charts";
 import { UnitPreferences, WeatherData } from "@/types";
-import { formatDateTick, getChartWidth } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { useMemo, useState } from "react";
 import {

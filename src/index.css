@@ -247,3 +247,8 @@ button.selector-btn {
 .accordion-trigger h3 {
   margin: 0;
 }
+
+/* PAnel Preferences Submit Button */
+button.panel-preferences-submit-btn {
+  padding: 0 8px;
+}

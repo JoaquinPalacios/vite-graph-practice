@@ -3,16 +3,16 @@
 import { METERS_TO_FEET } from "@/constants/meters_to_feet";
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import {
+  activeColorPalette,
+  calculateTooltipPosition,
+  colorPalette,
+} from "@/lib/charts";
+import {
   ChartDataItem,
   SwellPoint,
   TooltipState,
   UnitPreferences,
 } from "@/types";
-import {
-  activeColorPalette,
-  calculateTooltipPosition,
-  colorPalette,
-} from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import * as d3 from "d3";
 import {

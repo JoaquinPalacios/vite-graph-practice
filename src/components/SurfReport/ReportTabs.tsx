@@ -1,7 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WeatherIcon, getWeatherLabel } from "@/components/WeatherIcon";
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getSurfHeightLabel } from "@/lib/surf-height-utils";
+import { degreesToCompassDirection, getSurfHeightLabel } from "@/lib/surf";
 import {
   findCurrentDaySunriseSunset,
   findCurrentDayTides,

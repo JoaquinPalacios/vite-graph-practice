@@ -1,7 +1,7 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
+import { generateTicks } from "@/lib/charts";
 import { UnitPreferences } from "@/types";
 import { ChartDataItem } from "@/types/index.ts";
-import { generateTicks } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { LuWind } from "react-icons/lu";
 import {

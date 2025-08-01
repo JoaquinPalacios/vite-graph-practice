@@ -1,5 +1,4 @@
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getAdjustedDirection } from "@/lib/format-direction";
+import { degreesToCompassDirection, getAdjustedDirection } from "@/lib/surf";
 import { memo } from "react";
 import { SwellLabel } from "./SwellLabel";
 

@@ -14,10 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getAdjustedDirection } from "@/lib/format-direction";
+import { getWindColor } from "@/lib/charts";
+import { degreesToCompassDirection, getAdjustedDirection } from "@/lib/surf";
 import { ChartDataItem, UnitPreferences } from "@/types";
-import { getWindColor } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { formatInTimeZone } from "date-fns-tz";
 import { useState } from "react";

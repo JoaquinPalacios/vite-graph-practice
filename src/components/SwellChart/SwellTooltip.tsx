@@ -1,10 +1,12 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
-import { getBeachFacingDirection } from "@/lib/beach-facing-direction";
-import { degreesToCompassDirection } from "@/lib/degrees-to-compass-direction";
-import { getAdjustedDirection } from "@/lib/format-direction";
-import { formatTooltipDate } from "@/lib/format-tooltip-date";
+import { getWindColor } from "@/lib/charts";
+import { formatTooltipDate } from "@/lib/formatting";
+import {
+  degreesToCompassDirection,
+  getAdjustedDirection,
+  getBeachFacingDirection,
+} from "@/lib/surf";
 import { UnitPreferences } from "@/types";
-import { getWindColor } from "@/utils/chart-utils";
 import { cn } from "@/utils/utils";
 import { memo, MouseEvent } from "react";
 import { IoClose } from "react-icons/io5";
