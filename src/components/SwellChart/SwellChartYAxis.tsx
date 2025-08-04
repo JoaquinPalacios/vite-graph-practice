@@ -167,6 +167,16 @@ export const SwellChartYAxis = ({
                   >
                     kts
                   </text>
+                ) : unitPreferences.units.wind === "mph" ? (
+                  <text
+                    x={value.x + 20}
+                    y={value.y + 70}
+                    dy={1}
+                    textAnchor="end"
+                    fontSize={10}
+                  >
+                    mph
+                  </text>
                 ) : (
                   <text
                     x={value.x + 20}

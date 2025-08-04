@@ -2,7 +2,7 @@ import { updateUserPreferences, validatePreferences } from "@/api";
 import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { BiCheck, BiLoaderAlt } from "react-icons/bi";
+import { BiCheck, BiLoaderAlt, BiX } from "react-icons/bi";
 
 // Save status for UI feedback
 export type SaveStatus = "idle" | "saving" | "success" | "error";
@@ -79,7 +79,7 @@ const PreferencesPanelComponent = ({
         // Clear success message after 3 seconds
         setTimeout(() => {
           setSaveStatus("idle");
-        }, 3000);
+        }, 2000);
       } else {
         setSaveStatus("error");
         console.warn(response.message || "Failed to save preferences");
@@ -166,7 +166,7 @@ const PreferencesPanelComponent = ({
   const unitMeasurementUnits = useMemo(() => ["m", "ft"] as const, []);
 
   return (
-    <div className="tw:min-w-fit tw:flex tw:justify-between tw:items-center tw:gap-8 tw:bg-gray-100 tw:p-4 tw:border-b-gray-300 tw:border-b">
+    <div className="tw:min-w-fit tw:flex tw:justify-between tw:flex-col tw:lg:flex-row tw:items-start tw:lg:items-center tw:gap-6 tw:lg:gap-8 tw:bg-gray-100 tw:py-4 tw:px-5 tw:md:px-4 tw:border-b-gray-300 tw:border-b">
       {/* Surf Height Units */}
       <div className="tw:flex tw:gap-3">
         <label className="margin-none tw:block tw:text-sm tw:font-medium tw:text-gray-700">
@@ -327,6 +327,9 @@ const PreferencesPanelComponent = ({
           )}
           {saveStatus === "success" && (
             <BiCheck className="tw:size-4 tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-swell" />
+          )}
+          {saveStatus === "error" && (
+            <BiX className="tw:size-4 tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-red-500" />
           )}
         </button>
       </div>

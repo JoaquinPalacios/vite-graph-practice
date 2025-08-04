@@ -241,6 +241,15 @@ button.selector-btn {
 }
 .preference-btn-wrapper[data-state="open"] {
   margin-bottom: 3.5rem;
+
+  @media (min-width: 550px) and (max-width: 1024px) {
+    /* Drupal weird breakpoint */
+    margin-bottom: 14.3125rem;
+  }
+  @media (max-width: 550px) {
+    /* Drupal weird breakpoint */
+    margin-bottom: 14.875rem;
+  }
 }
 
 /* Accordion trigger */

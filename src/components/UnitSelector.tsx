@@ -46,7 +46,7 @@ export const UnitSelector = ({
   return (
     <>
       {/* Model run time */}
-      <p className="margin-bottom-minus-11 tw:text-sm tw:flex tw:items-center tw:gap-2">
+      <p className="margin-bottom-minus-11 tw:text-sm tw:hidden tw:lg:flex tw:items-center tw:gap-2">
         {hasGfsData || hasEcmwfData ? (
           <>
             <MdAccessTime className="tw:w-4 tw:h-4" />
@@ -63,16 +63,16 @@ export const UnitSelector = ({
         )}
       </p>
       <div className="tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-md:px-5 tw:justify-between tw:lg:justify-end tw:max-lg:flex-col">
-        <div className="tw:flex tw:items-start tw:lg:items-baseline tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
+        <div className="tw:flex tw:items-start tw:sm:items-baseline tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
           {/* Settings button with expandable preferences */}
-          <div className="tw:min-w-fit">
+          <div className="tw:min-w-fit tw:max-md:pt-1.5">
             <Accordion
               type="single"
               collapsible
               className="tw:w-full tw:border-none accordion-trigger"
             >
               <AccordionItem value="preferences" className=" tw:border-none">
-                <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&[data-state=open]>svg]:rotate-180">
+                <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&>svg]:hidden">
                   <div className="tw:flex tw:items-center tw:gap-2">
                     <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
                       Settings
@@ -82,7 +82,7 @@ export const UnitSelector = ({
                 </AccordionTrigger>
                 <AccordionContent
                   className={cn(
-                    "tw:absolute tw:top-24 tw:left-0 tw:w-full tw:h-full tw:min-w-fit tw:p-0",
+                    "tw:absolute tw:top-[6.25rem] tw:lg:top-24 tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
                     "tw:data-[state=open]:animate-in tw:animation-[slide-down_0.5s_cubic-bezier(0.4,0,0.2,1)_0.2s_forwards]"
                   )}
                 >
