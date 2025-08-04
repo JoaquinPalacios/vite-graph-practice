@@ -291,6 +291,7 @@ export const UnitSelector = ({
                 )}
                 aria-pressed={!showAnalysis}
                 onClick={() => setShowAnalysis(false)}
+                aria-label="Show charts"
               >
                 <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
               </button>
@@ -302,6 +303,7 @@ export const UnitSelector = ({
                 )}
                 aria-pressed={showAnalysis}
                 onClick={() => setShowAnalysis(true)}
+                aria-label="Show analysis"
               >
                 <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
               </button>

@@ -211,6 +211,7 @@ export const SwellChart = memo(
             allowDataOverflow
             minTickGap={16}
             tickCount={4} // Increased from 2 to show more time points
+            color="#000"
           />
 
           {/* XAxis for the swell period */}
