@@ -50,24 +50,6 @@ const getSurfHeightLabel = (
   }
 };
 
-// Helper function to get surf height descriptive label
-const getSurfHeightDescriptive = (
-  swellData: any,
-  unitPreferences: UnitPreferences,
-  isPrimary: boolean = true
-): string => {
-  const data = isPrimary ? swellData.primary : swellData.secondary;
-  const { surfHeight } = unitPreferences.units;
-
-  switch (surfHeight) {
-    case "surfers_feet":
-    case "ft":
-      return data.fullSurfHeightFeetLabelDescriptive;
-    default:
-      return data.fullSurfHeightMetresLabelDescriptive;
-  }
-};
-
 // Helper function to get wind speed and unit
 const getWindSpeed = (
   windData: any,
@@ -109,11 +91,7 @@ const SurfHeightSection = memo(
       unitPreferences,
       isPrimary
     );
-    const descriptiveLabel = getSurfHeightDescriptive(
-      swellData,
-      unitPreferences,
-      isPrimary
-    );
+    const descriptiveLabel = data.fullSurfHeightFeetLabelDescriptive;
     const direction = getAdjustedDirection(Number(data.direction));
     const compassDirection = degreesToCompassDirection(direction);
 
