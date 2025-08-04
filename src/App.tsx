@@ -144,6 +144,7 @@ function App({
           rawApiData={rawApiData}
           modelType={modelType}
           setModelType={setModelType}
+          mobileContext={mobileContext}
         />
       </Suspense>
     </div>

@@ -69,10 +69,6 @@ export const AdvanceD3Chart = ({
 
   const isFeet = unitPreferences.units.unitMeasurements === "ft";
 
-  const convertedMaxSurfHeight = isFeet
-    ? maxSurfHeight * METERS_TO_FEET
-    : maxSurfHeight;
-
   // Function to close tooltip
   const closeTooltip = useCallback(() => {
     setClickedTimestamp(null);
@@ -100,9 +96,8 @@ export const AdvanceD3Chart = ({
 
   // Memoize yTicks
   const yTicks = useMemo(() => {
-    const maxHeight = convertedMaxSurfHeight;
-
     if (isFeet) {
+      const maxHeight = maxSurfHeight * METERS_TO_FEET;
       if (maxHeight <= 5) {
         // if max height is less than 5 feet, show all ticks
         return Array.from({ length: Math.ceil(maxHeight) + 1 }, (_, i) => i);
@@ -126,6 +121,8 @@ export const AdvanceD3Chart = ({
       return Array.from({ length: roundedToTen / 10 + 1 }, (_, i) => i * 10);
     }
 
+    const maxHeight = maxSurfHeight;
+
     // For meters
     if (maxHeight <= 1.5) {
       // Small waves: show every 0.5m increment
@@ -143,7 +140,7 @@ export const AdvanceD3Chart = ({
     // For values greater than 16m, show ticks in increments of 5
     const roundedToFive = Math.ceil(maxHeight / 5) * 5;
     return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
-  }, [convertedMaxSurfHeight, isFeet]);
+  }, [isFeet, maxSurfHeight]);
 
   // Transform data for D3
   const transformedData = useMemo(() => {
@@ -229,13 +226,10 @@ export const AdvanceD3Chart = ({
     () =>
       d3
         .scaleLinear()
-        .domain([
-          0,
-          yTicks[yTicks.length - 1] ?? Math.ceil(convertedMaxSurfHeight),
-        ])
+        .domain([0, yTicks[yTicks.length - 1] ?? 0])
         .range([chartDrawingHeight - 48, 0])
         .nice(),
-    [convertedMaxSurfHeight, yTicks]
+    [yTicks, chartDrawingHeight]
   );
 
   // Calculate chart width to match Recharts getChartWidth logic
@@ -623,7 +617,6 @@ export const AdvanceD3Chart = ({
     getX,
     closeTooltip,
     isFeet,
-    convertedMaxSurfHeight,
   ]);
 
   // Update D3 elements when activeEventId changes (for line highlighting)
