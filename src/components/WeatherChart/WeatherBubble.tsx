@@ -1,6 +1,7 @@
-import { memo } from "react";
 import { WeatherIcon } from "@/components/WeatherIcon";
+import { MobileContext } from "@/types";
 import { cn } from "@/utils/utils";
+import { memo } from "react";
 
 type WeatherData = {
   weatherId: number;
@@ -16,6 +17,7 @@ type WeatherBubbleProps = {
   payload?: WeatherData;
   index?: number;
   isHover?: boolean;
+  mobileContext: MobileContext;
 };
 
 /**
@@ -33,8 +35,10 @@ export const WeatherBubble = memo((props: WeatherBubbleProps) => {
       transform={`translate(${(props.x || 0) - 7}, ${props.y || 0})`}
       className={cn(
         "tw:[&>svg]:transition-colors tw:[&>text]:transition-colors",
-        props.isHover
+        props.isHover && !props.mobileContext.isWebView
           ? "tw:[&>svg]:fill-gray-800 tw:[&>text]:fill-gray-800"
+          : props.mobileContext.isWebView
+          ? "tw:[&>svg]:fill-white tw:[&>text]:fill-white"
           : "tw:[&>svg]:fill-[#666] tw:[&>text]:fill-[#666]"
       )}
     >

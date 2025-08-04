@@ -1,6 +1,6 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { formatDateTick, getChartWidth } from "@/lib/charts";
-import { UnitPreferences, WeatherData } from "@/types";
+import { MobileContext, UnitPreferences, WeatherData } from "@/types";
 import { cn } from "@/utils/utils";
 import { useMemo, useState } from "react";
 import {
@@ -29,9 +29,11 @@ const celsiusToFahrenheit = (celsius: number): number => {
 const WeatherChart = ({
   weatherData,
   unitPreferences,
+  mobileContext,
 }: {
   weatherData: WeatherData[];
   unitPreferences: UnitPreferences;
+  mobileContext: MobileContext;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
 
@@ -108,7 +110,11 @@ const WeatherChart = ({
         <Scatter
           dataKey="weatherId"
           shape={(props: ScatterShapeProps) => (
-            <WeatherBubble {...props} isHover={hoverIndex === props.index} />
+            <WeatherBubble
+              {...props}
+              isHover={hoverIndex === props.index}
+              mobileContext={mobileContext}
+            />
           )}
           overflow="visible"
           onMouseEnter={(_, index) => {

@@ -3,6 +3,7 @@
 import { processTimeData } from "@/lib/time-utils";
 import {
   DrupalApiData,
+  MobileContext,
   TideDataFromDrupal,
   UnitPreferences,
   WeatherData,
@@ -38,6 +39,9 @@ type ChartDataItemWithTimestamp = ChartDataItem & { timestamp: number };
  * @param timezone - The timezone
  * @param isAustralia - Whether the location is in Australia
  * @param rawApiData - The raw API data
+ * @param modelType - The model type
+ * @param setModelType - The function to set the model type
+ * @param mobileContext - The mobile context
  */
 const ChartsContainer = ({
   defaultPreferences,
@@ -51,6 +55,7 @@ const ChartsContainer = ({
   rawApiData,
   modelType,
   setModelType,
+  mobileContext,
 }: {
   defaultPreferences: UnitPreferences;
   chartData: ChartDataItem[];
@@ -67,6 +72,7 @@ const ChartsContainer = ({
   rawApiData: DrupalApiData;
   modelType: "gfs" | "ecmwf";
   setModelType: (type: "gfs" | "ecmwf") => void;
+  mobileContext: MobileContext;
 }) => {
   // Update the existing swell chart data processing to use the new utility
   const { processedData } = useMemo(
@@ -209,6 +215,7 @@ const ChartsContainer = ({
                   <WeatherChart
                     weatherData={weatherData}
                     unitPreferences={unitPreferences}
+                    mobileContext={mobileContext}
                   />
                   <div
                     className={cn(
