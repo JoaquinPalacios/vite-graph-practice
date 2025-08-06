@@ -2,16 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { BigPipeContainerTester } from "./lib/bigpipe-container-test";
+import { BigPipeDebugger } from "./lib/bigpipe-debug";
+import { BigPipeTester } from "./lib/bigpipe-test";
 import { getChartWidth } from "./lib/charts";
 import { ChartDataItem, DrupalApiData, MobileContext } from "./types/index.ts";
 
 /**
- * This function initializes the graph by getting the container and
- * the Drupal settings. It then checks if the container and settings are valid
- * and if the API data is valid. If so, it transforms the raw forecast steps
- * into the structure the graph needs and renders the React component.
+ * BigPipe-optimized main entry point
+ * Sets up the application shell and global data for other entries to use
  */
-function initGraph() {
+function initBigPipeApp() {
   const container = document.getElementById("swell-graph-container");
 
   // 🚀 DRUPAL 11 UPDATE: Check modern drupalSettings first, then legacy format
@@ -35,13 +36,17 @@ function initGraph() {
 
   const drupalSettings = getDrupalSettings();
 
-  if (!container || !drupalSettings || !drupalSettings.apiData) {
-    const errorMessage =
-      'Swellnet Graph: Container "#swell-graph-container" or API data (drupalSettings.swellnetGraph.apiData) not found.';
-    console.error(errorMessage);
-    if (container) {
-      container.innerHTML = `<p style="color: red; padding: 1rem;">Error: ${errorMessage}</p>`;
-    }
+  if (!container) {
+    console.error('BigPipe App: Container "#swell-graph-container" not found.');
+    return;
+  }
+
+  // Handle case where initial data is not available (BigPipe will provide it later)
+  if (!drupalSettings || !drupalSettings.apiData) {
+    console.log(
+      "BigPipe App: Initial data not available, waiting for BigPipe chunks..."
+    );
+    renderShellApp(container, null, null);
     return;
   }
 
@@ -55,18 +60,97 @@ function initGraph() {
     },
   };
 
-  console.log("Swellnet Graph: Drupal Settings Raw API Data", { rawApiData });
+  console.log("BigPipe App: Initial data loaded", {
+    hasGFS: !!rawApiData.forecasts?.gfs?.forecastSteps?.length,
+    hasECMWF: !!rawApiData.forecasts?.ecmwf?.forecastSteps?.length,
+    hasWeather: !!rawApiData.weather?.hourly,
+    hasTides: !!rawApiData.tide?.length,
+    userAccess: rawApiData.user?.hasFullAccess,
+  });
 
-  // Slice the data for non-subscribers before any calculations
+  renderShellApp(container, rawApiData, mobileContext);
+}
+
+/**
+ * Render the main application shell
+ * This is a lightweight container that provides the basic structure
+ */
+function renderShellApp(
+  container: HTMLElement,
+  rawApiData: DrupalApiData | null,
+  mobileContext: MobileContext | null
+) {
+  // Set up global data for BigPipe entries to use
+  if (rawApiData) {
+    setupGlobalData(rawApiData, mobileContext);
+  }
+
+  // Render lightweight app shell
+  if (!rawApiData) {
+    // Render loading state while waiting for BigPipe data
+    const root = createRoot(container);
+    root.render(
+      <StrictMode>
+        <div className="tw:p-4 tw:text-center">
+          <div className="tw:animate-pulse">Loading forecast data...</div>
+        </div>
+      </StrictMode>
+    );
+    return;
+  }
+
+  const appProps = buildAppProps(rawApiData, mobileContext);
+
+  const root = createRoot(container);
+  root.render(
+    <StrictMode>
+      <App {...appProps} />
+    </StrictMode>
+  );
+
+  // Set up BigPipe event listeners for dynamic data loading
+  setupBigPipeEventListeners();
+
+  // Initialize BigPipe testing
+  initializeBigPipeTesting();
+}
+
+/**
+ * Set up global data that BigPipe entries can access
+ */
+function setupGlobalData(
+  rawApiData: DrupalApiData,
+  mobileContext: MobileContext | null
+) {
+  // Store processed data globally for other entries
+  const processedData = processApiDataForBigPipe(rawApiData);
+
+  (window as any).swellnetRawData = processedData;
+  (window as any).swellnetMobileContext = mobileContext;
+
+  console.log("BigPipe: Global data setup complete", {
+    hasGFS: !!processedData.forecasts?.gfs?.forecastSteps?.length,
+    hasECMWF: !!processedData.forecasts?.ecmwf?.forecastSteps?.length,
+    hasWeather: !!processedData.weather?.hourly,
+    hasTides: !!processedData.tide?.length,
+    userAccess: processedData.user?.hasFullAccess,
+  });
+}
+
+/**
+ * Process API data for BigPipe usage
+ */
+function processApiDataForBigPipe(rawApiData: DrupalApiData): DrupalApiData {
+  // Slice data for non-subscribers
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
     if (!data) return [];
-    if (!rawApiData.user.hasFullAccess) {
+    if (!rawApiData.user?.hasFullAccess) {
       return data.slice(0, 25); // 3 days * 8 data points per day + midnight
     }
     return data;
   };
 
-  // Get sliced data for both models
+  // Process forecast data
   const gfsData = sliceDataForSubscription(
     rawApiData.forecasts?.gfs?.forecastSteps
   );
@@ -74,216 +158,24 @@ function initGraph() {
     rawApiData.forecasts?.ecmwf?.forecastSteps
   );
 
-  // Slice weather data for non-subscribers
+  // Process weather data
   const weatherData = rawApiData.weather?.hourly
     ? (() => {
         const timeData = rawApiData.weather.hourly.time;
-        const slicedTimeData = !rawApiData.user.hasFullAccess
-          ? timeData.slice(0, 25) // 3 days * 8 data points per day + midnight
+        const slicedTimeData = !rawApiData.user?.hasFullAccess
+          ? timeData.slice(0, 25)
           : timeData;
 
         return slicedTimeData.map((time: string, index: number) => ({
-          index: 1,
+          index: index + 1,
           localDateTimeISO: time,
           currentTemp: rawApiData.weather.hourly.temperature_2m[index],
           weatherId: rawApiData.weather.hourly.weather_code[index],
         }));
       })()
-    : [];
+    : undefined;
 
-  const maxSurfHeight = {
-    feet: Math.max(
-      ...gfsData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0
-      ),
-      ...ecmwfData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0
-      )
-    ),
-    surfersFeet: Math.max(
-      ...gfsData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
-      ),
-      ...ecmwfData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFeet ?? d.primary.fullSurfHeightFeet ?? 0
-      )
-    ),
-    meters: Math.max(
-      ...gfsData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0
-      ),
-      ...ecmwfData.map((d) =>
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0
-      )
-    ),
-  };
-
-  // Find the specific data point that contains the maximum height
-  const findMaxHeightDetails = () => {
-    let maxFeet = 0;
-    let maxSurfersFeet = 0;
-    let maxMeters = 0;
-    let maxFeetDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
-    let maxSurfersFeetDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
-    let maxMetersDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
-
-    // Check GFS data
-    gfsData.forEach((d) => {
-      const feetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const surfersFeetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const metersHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0;
-
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: feetHeight,
-        };
-      }
-
-      if (surfersFeetHeight > maxSurfersFeet) {
-        maxSurfersFeet = surfersFeetHeight;
-        maxSurfersFeetDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: surfersFeetHeight,
-        };
-      }
-
-      if (metersHeight > maxMeters) {
-        maxMeters = metersHeight;
-        maxMetersDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: metersHeight,
-        };
-      }
-    });
-
-    // Check ECMWF data
-    ecmwfData.forEach((d) => {
-      const feetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const surfersFeetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const metersHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0;
-
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: feetHeight,
-        };
-      }
-
-      if (surfersFeetHeight > maxSurfersFeet) {
-        maxSurfersFeet = surfersFeetHeight;
-        maxSurfersFeetDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: surfersFeetHeight,
-        };
-      }
-
-      if (metersHeight > maxMeters) {
-        maxMeters = metersHeight;
-        maxMetersDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: metersHeight,
-        };
-      }
-    });
-
-    return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
-  };
-
-  const maxHeightDetails = findMaxHeightDetails();
-
-  console.log({
-    maxSurfHeight,
-    maxHeightDetails: {
-      feet: maxHeightDetails.maxFeetDetails,
-      meters: maxHeightDetails.maxMetersDetails,
-      surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
-    },
-  });
-
-  // Calculate chart width based on available data
-  const gfsDataLength = gfsData.length;
-  const ecmwfDataLength = ecmwfData.length;
-
-  // For non-subscribers, limit to 25 data points (3 days + midnight)
-  const maxDataLength = !rawApiData.user.hasFullAccess
-    ? 25 // 3 days * 8 data points per day
-    : Math.max(gfsDataLength, ecmwfDataLength);
-
-  const chartWidth = getChartWidth(maxDataLength || 128);
-
-  // Store the raw API data globally for forecast type switching
-  (window as unknown as { swellnetRawData: DrupalApiData }).swellnetRawData = {
+  const processedData = {
     ...rawApiData,
     forecasts: {
       gfs: {
@@ -297,67 +189,186 @@ function initGraph() {
     },
   };
 
-  // Log missing forecast data
-  if (!gfsData.length && !ecmwfData.length) {
-    console.warn(
-      "Swellnet Graph: No forecast data available from either GFS or ECMWF models"
-    );
-  } else if (!gfsData.length) {
-    console.warn("Swellnet Graph: No GFS forecast data available");
-  } else if (!ecmwfData.length) {
-    console.warn("Swellnet Graph: No ECMWF forecast data available");
-  }
+  // Store processed weather data separately
+  (processedData as any).processedWeatherData = weatherData;
 
-  // Get the first available timestamp from any data source
-  const firstTimestamp =
-    gfsData[0]?.localDateTimeISO ||
-    ecmwfData[0]?.localDateTimeISO ||
-    rawApiData.weather?.hourly?.time?.[0] ||
-    new Date().toISOString();
+  return processedData;
+}
 
-  // Prepare props for the App component
-  const appProps = {
-    rawApiData,
-    mobileContext,
+/**
+ * Build app props from processed data
+ */
+function buildAppProps(
+  rawApiData: DrupalApiData,
+  mobileContext: MobileContext | null
+) {
+  const processedData = (window as any).swellnetRawData || rawApiData;
+
+  // Calculate basic metrics
+  const gfsData = processedData.forecasts?.gfs?.forecastSteps || [];
+  const ecmwfData = processedData.forecasts?.ecmwf?.forecastSteps || [];
+  const maxDataLength = !rawApiData.user?.hasFullAccess
+    ? 25
+    : Math.max(gfsData.length, ecmwfData.length);
+  const chartWidth = getChartWidth(maxDataLength || 128);
+
+  // Calculate max surf height (simplified for shell)
+  const maxSurfHeight = calculateMaxSurfHeight(gfsData, ecmwfData);
+
+  return {
+    rawApiData: processedData,
+    mobileContext: mobileContext || createDefaultMobileContext(),
     locationName: rawApiData.location?.name || "Unknown Location",
     timezone: rawApiData.location?.timezone || "UTC",
-    localDateTimeISO: firstTimestamp,
+    localDateTimeISO: getFirstTimestamp(processedData),
     isAustralia: rawApiData.location?.isAustralia || false,
-    defaultPreferences: {
-      units: {
-        surfHeight: (rawApiData.preferences?.units?.surfHeight === "ft"
-          ? "ft"
-          : rawApiData.preferences?.units?.surfHeight === "m"
-          ? "m"
-          : "surfers_feet") as "ft" | "m" | "surfers_feet",
-        temperature: rawApiData.preferences?.units?.temperature || "celsius",
-        wind: rawApiData.preferences?.units?.wind || "knots",
-        unitMeasurements:
-          rawApiData.preferences?.units?.unitMeasurements || "m",
-      },
-      showAdvancedChart: false,
-    },
+    defaultPreferences: buildDefaultPreferences(rawApiData),
     maxSurfHeight,
     chartWidth,
     currentWeatherData: rawApiData.weather?.current || null,
-    weatherData,
-    tideData: rawApiData.tide ? rawApiData.tide : [],
+    weatherData: processedData.processedWeatherData || [],
+    tideData: rawApiData.tide || [],
     surfReport: rawApiData.surf_report || [],
-    surfcams: rawApiData.surfcams ? rawApiData.surfcams : [],
+    surfcams: rawApiData.surfcams || [],
   };
+}
 
-  // Render the React component
-  const root = createRoot(container!);
-  root.render(
-    <StrictMode>
-      <App {...appProps} />
-    </StrictMode>
+/**
+ * Set up BigPipe event listeners for coordinated loading
+ */
+function setupBigPipeEventListeners() {
+  // Listen for initial data chunks
+  document.addEventListener("bigpipe:initial-data", (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const { data } = customEvent.detail;
+    console.log("BigPipe: Initial data received", data);
+    setupGlobalData(data, null);
+  });
+
+  // Listen for app updates
+  document.addEventListener("bigpipe:app-update", (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const { data } = customEvent.detail;
+    console.log("BigPipe: App update received", data);
+    // Update global data and trigger re-renders as needed
+  });
+}
+
+/**
+ * Initialize BigPipe testing functionality
+ */
+function initializeBigPipeTesting() {
+  const tester = BigPipeTester.getInstance();
+  const bigPipeDebugger = BigPipeDebugger.getInstance();
+
+  // Start monitoring BigPipe events
+  bigPipeDebugger.startMonitoring();
+
+  // Run tests after a short delay to ensure everything is loaded
+  setTimeout(() => {
+    tester.runAllTests();
+  }, 2000);
+
+  // Make tester and debugger available globally for manual testing
+  (window as any).runBigPipeTests = () => tester.runAllTests();
+  (window as any).getBigPipeStatus = () => tester.getStatus();
+  (window as any).simulateBigPipeEvent = (
+    eventType: string,
+    data: any,
+    placeholderId?: string
+  ) => tester.simulateBigPipeEvent(eventType, data, placeholderId);
+
+  // Container testing
+  (window as any).runContainerTests = () =>
+    BigPipeContainerTester.runAllTests();
+  (window as any).analyzeContainers = () =>
+    BigPipeContainerTester.analyzeExpectedContainers();
+  (window as any).findPotentialContainers = () =>
+    BigPipeContainerTester.findPotentialContainers();
+
+  // Debug panel controls
+  (window as any).showBigPipeDebug = () => bigPipeDebugger.createDebugPanel();
+  (window as any).hideBigPipeDebug = () => bigPipeDebugger.removeDebugPanel();
+  (window as any).getBigPipeDebugStatus = () => bigPipeDebugger.getStatus();
+}
+
+// Helper functions
+function createDefaultMobileContext(): MobileContext {
+  return {
+    isWebView: false,
+    appVersion: "0.0.0",
+    featureFlags: {
+      supportsStyleUpdates: false,
+      supportsAdvancedChart: false,
+    },
+  };
+}
+
+function calculateMaxSurfHeight(
+  gfsData: ChartDataItem[],
+  ecmwfData: ChartDataItem[]
+) {
+  const allData = [...gfsData, ...ecmwfData];
+
+  return {
+    feet: Math.max(
+      0,
+      ...allData.map(
+        (d) =>
+          d?.secondary?.fullSurfHeightFaceFeet ??
+          d?.primary?.fullSurfHeightFaceFeet ??
+          0
+      )
+    ),
+    surfersFeet: Math.max(
+      0,
+      ...allData.map(
+        (d) =>
+          d?.secondary?.fullSurfHeightFeet ??
+          d?.primary?.fullSurfHeightFeet ??
+          0
+      )
+    ),
+    meters: Math.max(
+      0,
+      ...allData.map(
+        (d) =>
+          d?.secondary?.fullSurfHeightMetres ??
+          d?.primary?.fullSurfHeightMetres ??
+          0
+      )
+    ),
+  };
+}
+
+function getFirstTimestamp(data: DrupalApiData): string {
+  return (
+    data.forecasts?.gfs?.forecastSteps?.[0]?.localDateTimeISO ||
+    data.forecasts?.ecmwf?.forecastSteps?.[0]?.localDateTimeISO ||
+    data.weather?.hourly?.time?.[0] ||
+    new Date().toISOString()
   );
 }
 
-// --- Run Initialization ---
+function buildDefaultPreferences(rawApiData: DrupalApiData) {
+  return {
+    units: {
+      surfHeight: (rawApiData.preferences?.units?.surfHeight === "ft"
+        ? "ft"
+        : rawApiData.preferences?.units?.surfHeight === "m"
+        ? "m"
+        : "surfers_feet") as "ft" | "m" | "surfers_feet",
+      temperature: rawApiData.preferences?.units?.temperature || "celsius",
+      wind: rawApiData.preferences?.units?.wind || "knots",
+      unitMeasurements: rawApiData.preferences?.units?.unitMeasurements || "m",
+    },
+    showAdvancedChart: false,
+  };
+}
+
+// --- Run BigPipe Initialization ---
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initGraph);
+  document.addEventListener("DOMContentLoaded", initBigPipeApp);
 } else {
-  initGraph();
+  initBigPipeApp();
 }
