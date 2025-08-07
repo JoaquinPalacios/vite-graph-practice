@@ -1,6 +1,6 @@
 # Swellnet Graphs 🌊
 
-A high-performance React application for displaying comprehensive weather, tide, and surf data using Vite and Recharts. This application provides detailed visualizations for surfers and weather enthusiasts.
+A high-performance React application for displaying comprehensive weather, tide, and surf data using Vite, D3 and Recharts. This application provides detailed visualizations for surfers and weather enthusiasts.
 
 ## Features
 

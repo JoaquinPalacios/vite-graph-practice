@@ -1,11 +1,11 @@
-import path from "path";
 import tailwindcssPlugin from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/profiles/swellnet/modules/custom/swellnet_location_forecast_v2/js/dist/",
+  base: "/modules/custom/swellnet_location_forecast_v2/js/dist/",
   plugins: [react(), tailwindcssPlugin()],
 
   resolve: {
