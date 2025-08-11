@@ -133,137 +133,137 @@ async function initGraph(): Promise<void> {
   };
 
   // Find the specific data point that contains the maximum height
-  // const findMaxHeightDetails = () => {
-  //   let maxFeet = 0;
-  //   let maxSurfersFeet = 0;
-  //   let maxMeters = 0;
-  //   let maxFeetDetails: {
-  //     model: string;
-  //     dateTime: string;
-  //     height: number;
-  //   } | null = null;
-  //   let maxSurfersFeetDetails: {
-  //     model: string;
-  //     dateTime: string;
-  //     height: number;
-  //   } | null = null;
-  //   let maxMetersDetails: {
-  //     model: string;
-  //     dateTime: string;
-  //     height: number;
-  //   } | null = null;
+  const findMaxHeightDetails = () => {
+    let maxFeet = 0;
+    let maxSurfersFeet = 0;
+    let maxMeters = 0;
+    let maxFeetDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
+    let maxSurfersFeetDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
+    let maxMetersDetails: {
+      model: string;
+      dateTime: string;
+      height: number;
+    } | null = null;
 
-  //   // Check GFS data
-  //   gfsData.forEach((d) => {
-  //     const feetHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightFaceFeet ??
-  //           d.primary.fullSurfHeightFaceFeet ??
-  //           0;
-  //     const surfersFeetHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightFaceFeet ??
-  //           d.primary.fullSurfHeightFaceFeet ??
-  //           0;
-  //     const metersHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightMetres ??
-  //           d.primary.fullSurfHeightMetres ??
-  //           0;
+    // Check GFS data
+    gfsData.forEach((d) => {
+      const feetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const surfersFeetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const metersHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0;
 
-  //     if (feetHeight > maxFeet) {
-  //       maxFeet = feetHeight;
-  //       maxFeetDetails = {
-  //         model: "GFS",
-  //         dateTime: d.localDateTimeISO,
-  //         height: feetHeight,
-  //       };
-  //     }
+      if (feetHeight > maxFeet) {
+        maxFeet = feetHeight;
+        maxFeetDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: feetHeight,
+        };
+      }
 
-  //     if (surfersFeetHeight > maxSurfersFeet) {
-  //       maxSurfersFeet = surfersFeetHeight;
-  //       maxSurfersFeetDetails = {
-  //         model: "GFS",
-  //         dateTime: d.localDateTimeISO,
-  //         height: surfersFeetHeight,
-  //       };
-  //     }
+      if (surfersFeetHeight > maxSurfersFeet) {
+        maxSurfersFeet = surfersFeetHeight;
+        maxSurfersFeetDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: surfersFeetHeight,
+        };
+      }
 
-  //     if (metersHeight > maxMeters) {
-  //       maxMeters = metersHeight;
-  //       maxMetersDetails = {
-  //         model: "GFS",
-  //         dateTime: d.localDateTimeISO,
-  //         height: metersHeight,
-  //       };
-  //     }
-  //   });
+      if (metersHeight > maxMeters) {
+        maxMeters = metersHeight;
+        maxMetersDetails = {
+          model: "GFS",
+          dateTime: d.localDateTimeISO,
+          height: metersHeight,
+        };
+      }
+    });
 
-  //   // Check ECMWF data
-  //   ecmwfData.forEach((d) => {
-  //     const feetHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightFaceFeet ??
-  //           d.primary.fullSurfHeightFaceFeet ??
-  //           0;
-  //     const surfersFeetHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightFaceFeet ??
-  //           d.primary.fullSurfHeightFaceFeet ??
-  //           0;
-  //     const metersHeight =
-  //       d?.primary == null
-  //         ? 0
-  //         : d.secondary?.fullSurfHeightMetres ??
-  //           d.primary.fullSurfHeightMetres ??
-  //           0;
+    // Check ECMWF data
+    ecmwfData.forEach((d) => {
+      const feetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const surfersFeetHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightFaceFeet ??
+            d.primary.fullSurfHeightFaceFeet ??
+            0;
+      const metersHeight =
+        d?.primary == null
+          ? 0
+          : d.secondary?.fullSurfHeightMetres ??
+            d.primary.fullSurfHeightMetres ??
+            0;
 
-  //     if (feetHeight > maxFeet) {
-  //       maxFeet = feetHeight;
-  //       maxFeetDetails = {
-  //         model: "ECMWF",
-  //         dateTime: d.localDateTimeISO,
-  //         height: feetHeight,
-  //       };
-  //     }
+      if (feetHeight > maxFeet) {
+        maxFeet = feetHeight;
+        maxFeetDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: feetHeight,
+        };
+      }
 
-  //     if (surfersFeetHeight > maxSurfersFeet) {
-  //       maxSurfersFeet = surfersFeetHeight;
-  //       maxSurfersFeetDetails = {
-  //         model: "ECMWF",
-  //         dateTime: d.localDateTimeISO,
-  //         height: surfersFeetHeight,
-  //       };
-  //     }
+      if (surfersFeetHeight > maxSurfersFeet) {
+        maxSurfersFeet = surfersFeetHeight;
+        maxSurfersFeetDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: surfersFeetHeight,
+        };
+      }
 
-  //     if (metersHeight > maxMeters) {
-  //       maxMeters = metersHeight;
-  //       maxMetersDetails = {
-  //         model: "ECMWF",
-  //         dateTime: d.localDateTimeISO,
-  //         height: metersHeight,
-  //       };
-  //     }
-  //   });
+      if (metersHeight > maxMeters) {
+        maxMeters = metersHeight;
+        maxMetersDetails = {
+          model: "ECMWF",
+          dateTime: d.localDateTimeISO,
+          height: metersHeight,
+        };
+      }
+    });
 
-  //   return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
-  // };
+    return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
+  };
 
-  // const maxHeightDetails = findMaxHeightDetails();
+  const maxHeightDetails = findMaxHeightDetails();
 
-  // console.log("[GRAPH] Swellnet Graph: Max Surf Height", {
-  //   maxSurfHeight,
-  //   maxHeightDetails: {
-  //     feet: maxHeightDetails.maxFeetDetails,
-  //     meters: maxHeightDetails.maxMetersDetails,
-  //     surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
-  //   },
-  // });
+  console.log("[GRAPH] Swellnet Graph: Max Surf Height", {
+    maxSurfHeight,
+    maxHeightDetails: {
+      feet: maxHeightDetails.maxFeetDetails,
+      meters: maxHeightDetails.maxMetersDetails,
+      surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
+    },
+  });
 
   // Calculate chart width based on available data
   const gfsDataLength = gfsData.length;

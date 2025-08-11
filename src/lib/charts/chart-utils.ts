@@ -72,8 +72,16 @@ export const generateTicks = (
         ticks.push(i);
       }
       return ticks;
+    } else if (roundedMax <= 14) {
+      // Round up to the nearest multiple of 2 for better tick spacing
+      const roundedToTwo = Math.ceil(roundedMax / 2) * 2;
+      const ticks = [];
+      for (let i = 0; i <= roundedToTwo; i += 2) {
+        ticks.push(i);
+      }
+      return ticks;
     } else if (roundedMax <= 16) {
-      // For values up to 16m, show ticks in increments of 4
+      // For values between 14 and 16m, show ticks in increments of 4
       return [0, 4, 8, 12, 16];
     } else {
       // For values greater than 16m, show ticks in increments of 5
