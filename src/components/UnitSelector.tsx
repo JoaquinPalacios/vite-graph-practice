@@ -71,7 +71,7 @@ export const UnitSelector = ({
               collapsible
               className="tw:w-full tw:border-none accordion-trigger"
             >
-              <AccordionItem value="preferences" className=" tw:border-none">
+              <AccordionItem value="preferences" className="tw:border-none">
                 <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&>svg]:hidden">
                   <div className="tw:flex tw:items-center tw:gap-2">
                     <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
@@ -83,7 +83,7 @@ export const UnitSelector = ({
                 <AccordionContent
                   className={cn(
                     "tw:absolute tw:top-[6.25rem] tw:lg:top-24 tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
-                    "tw:data-[state=open]:animate-in tw:animation-[slide-down_0.5s_cubic-bezier(0.4,0,0.2,1)_0.2s_forwards]"
+                    "tw:transition-opacity tw:duration-200"
                   )}
                 >
                   <PreferencesPanel

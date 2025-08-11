@@ -77,7 +77,6 @@ function App({
       .filter((n): n is number => n !== undefined),
     0
   );
-  console.log("[GRAPH]: ", { maxSurfHeightAdvanced });
 
   // Create a default chart data item if none exists
   // const defaultChartData = {

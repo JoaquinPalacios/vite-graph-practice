@@ -185,10 +185,6 @@ export const fetchUserDataFromDrupal = async (): Promise<UserStatus | null> => {
     }
 
     const apiResponse: DrupalUserApiResponse = await response.json();
-    console.log(
-      "[GRAPH] ✅ Successfully fetched user data from Drupal API:",
-      apiResponse
-    );
 
     // Transform the API response to match our UserStatus interface
     const userStatus: UserStatus = {

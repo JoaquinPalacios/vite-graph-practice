@@ -347,11 +347,6 @@ async function initGraph(): Promise<void> {
       <App {...appProps} />
     </StrictMode>
   );
-
-  // Log successful initialization
-  console.log(
-    "[GRAPH] ✅ Swellnet Graph successfully initialized with user data from API"
-  );
 }
 
 // --- Run Initialization ---
