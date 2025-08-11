@@ -6,7 +6,6 @@ import { processApiDataToChartData } from "./lib/data-processing.ts";
 import {
   CurrentWeatherData,
   DrupalApiData,
-  MobileContext,
   SurfcamProps,
   SurfReportItem,
   TideDataFromDrupal,
@@ -16,7 +15,6 @@ import {
 
 interface AppProps {
   rawApiData: DrupalApiData;
-  mobileContext: MobileContext;
   defaultPreferences: UnitPreferences;
   maxSurfHeight: {
     feet: number;
@@ -38,7 +36,6 @@ const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
 
 function App({
   rawApiData,
-  mobileContext,
   defaultPreferences,
   maxSurfHeight,
   locationName,
@@ -54,10 +51,6 @@ function App({
     if (rawApiData.forecasts?.gfs?.forecastSteps?.length) return "gfs";
     if (rawApiData.forecasts?.ecmwf?.forecastSteps?.length) return "ecmwf";
     return "gfs"; // fallback if both are empty
-  });
-
-  console.log("Swellnet Graph: App Component Mobile Context", {
-    mobileContext,
   });
 
   // Process the data based on the selected model type
@@ -84,7 +77,7 @@ function App({
       .filter((n): n is number => n !== undefined),
     0
   );
-  console.log({ maxSurfHeightAdvanced });
+  console.log("[GRAPH]: ", { maxSurfHeightAdvanced });
 
   // Create a default chart data item if none exists
   // const defaultChartData = {
@@ -144,7 +137,6 @@ function App({
           rawApiData={rawApiData}
           modelType={modelType}
           setModelType={setModelType}
-          mobileContext={mobileContext}
         />
       </Suspense>
     </div>

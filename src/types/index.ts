@@ -190,6 +190,41 @@ export interface TooltipState {
   side: "left" | "right";
 }
 
+// New types for the user API endpoint
+export interface UserStatus {
+  isLoggedIn: boolean;
+  hasFullAccess: boolean;
+  username: string;
+  userId: string;
+  isSubscriber: boolean;
+  isPastDue: boolean;
+  userLocationCountry: string;
+  userLocationRegion: string;
+  surf_height_preference: "ft" | "m" | "surfers_feet";
+  wind_preference: "knots" | "km" | "mph";
+  temperature_preference: "celsius" | "fahrenheit";
+  unit_of_measurement: "m" | "ft";
+}
+
+export interface DrupalUserApiResponse {
+  user_status: {
+    isLoggedIn: boolean;
+    hasFullAccess: boolean;
+  };
+  user: {
+    username: string;
+    userId: string;
+    isSubscriber: boolean;
+    isPastDue: boolean;
+    userLocationCountry: string;
+    userLocationRegion: string;
+    surf_height_preference: "ft" | "m" | "surfers_feet";
+    wind_preference: "knots" | "km" | "mph";
+    temperature_preference: "celsius" | "fahrenheit";
+    unit_of_measurement: "m" | "ft";
+  };
+}
+
 declare global {
   interface Window {
     swellnetRawData: DrupalApiData;

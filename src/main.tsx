@@ -1,43 +1,25 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { fetchUserDataFromDrupal } from "./api/drupal-api.ts";
 import App from "./App.tsx";
 import "./index.css";
 import { getChartWidth } from "./lib/charts";
-import { ChartDataItem, DrupalApiData, MobileContext } from "./types/index.ts";
+import { ChartDataItem, DrupalApiData, UserStatus } from "./types/index.ts";
 
 /**
- * This function initializes the graph by getting the container and
- * the Drupal settings. It then checks if the container and settings are valid
- * and if the API data is valid. If so, it transforms the raw forecast steps
- * into the structure the graph needs and renders the React component.
+ * Initializes the graph by reading Drupal 11 settings from `window.drupalSettings`
+ * and fetching user data from the new API endpoint.
+ * Transforms the API data into the structure the graph needs and renders the React app.
  */
-function initGraph() {
+async function initGraph(): Promise<void> {
   const container = document.getElementById("swell-graph-container");
 
-  // 🚀 DRUPAL 11 UPDATE: Check modern drupalSettings first, then legacy format
-  const getDrupalSettings = () => {
-    // Try modern Drupal 11 format first
-    const modernSettings = (window as any).drupalSettings?.swellnetGraph;
-    if (modernSettings) {
-      console.log("✅ Using Drupal 11 drupalSettings format");
-      return modernSettings;
-    }
-
-    // Fallback to legacy Drupal 7 format
-    const legacySettings = (window as any).Drupal?.settings?.swellnetGraph;
-    if (legacySettings) {
-      console.log("⚠️ Using legacy Drupal.settings format");
-      return legacySettings;
-    }
-
-    return null;
-  };
-
-  const drupalSettings = getDrupalSettings();
+  // Read Drupal 11 settings only
+  const drupalSettings = (window as any).drupalSettings?.swellnetGraph || null;
 
   if (!container || !drupalSettings || !drupalSettings.apiData) {
     const errorMessage =
-      'Swellnet Graph: Container "#swell-graph-container" or API data (drupalSettings.swellnetGraph.apiData) not found.';
+      '[GRAPH] Swellnet Graph: Container "#swell-graph-container" or API data (drupalSettings.swellnetGraph.apiData) not found.';
     console.error(errorMessage);
     if (container) {
       container.innerHTML = `<p style="color: red; padding: 1rem;">Error: ${errorMessage}</p>`;
@@ -45,17 +27,29 @@ function initGraph() {
     return;
   }
 
-  const rawApiData: DrupalApiData = drupalSettings.apiData;
-  const mobileContext: MobileContext = drupalSettings.mobileContext ?? {
-    isWebView: false,
-    appVersion: "0.0.0",
-    featureFlags: {
-      supportsStyleUpdates: false,
-      supportsAdvancedChart: false,
+  // Fetch user data from the new API endpoint
+  const userData: UserStatus | null = await fetchUserDataFromDrupal();
+
+  // Merge user data with existing API data structure
+  const rawApiData: DrupalApiData = {
+    ...drupalSettings.apiData,
+    user: {
+      hasFullAccess: userData?.hasFullAccess ?? false,
+      subscriptionStatus: userData?.isSubscriber ? "active" : "inactive",
+    },
+    preferences: {
+      units: {
+        surfHeight: userData?.surf_height_preference ?? "ft",
+        temperature: userData?.temperature_preference ?? "celsius",
+        wind: userData?.wind_preference ?? "knots",
+        unitMeasurements: userData?.unit_of_measurement ?? "m",
+      },
     },
   };
 
-  console.log("Swellnet Graph: Drupal Settings Raw API Data", { rawApiData });
+  console.log("[GRAPH] Swellnet Graph: Drupal Settings Raw API Data", {
+    rawApiData,
+  });
 
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
@@ -139,137 +133,137 @@ function initGraph() {
   };
 
   // Find the specific data point that contains the maximum height
-  const findMaxHeightDetails = () => {
-    let maxFeet = 0;
-    let maxSurfersFeet = 0;
-    let maxMeters = 0;
-    let maxFeetDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
-    let maxSurfersFeetDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
-    let maxMetersDetails: {
-      model: string;
-      dateTime: string;
-      height: number;
-    } | null = null;
+  // const findMaxHeightDetails = () => {
+  //   let maxFeet = 0;
+  //   let maxSurfersFeet = 0;
+  //   let maxMeters = 0;
+  //   let maxFeetDetails: {
+  //     model: string;
+  //     dateTime: string;
+  //     height: number;
+  //   } | null = null;
+  //   let maxSurfersFeetDetails: {
+  //     model: string;
+  //     dateTime: string;
+  //     height: number;
+  //   } | null = null;
+  //   let maxMetersDetails: {
+  //     model: string;
+  //     dateTime: string;
+  //     height: number;
+  //   } | null = null;
 
-    // Check GFS data
-    gfsData.forEach((d) => {
-      const feetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const surfersFeetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const metersHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0;
+  //   // Check GFS data
+  //   gfsData.forEach((d) => {
+  //     const feetHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightFaceFeet ??
+  //           d.primary.fullSurfHeightFaceFeet ??
+  //           0;
+  //     const surfersFeetHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightFaceFeet ??
+  //           d.primary.fullSurfHeightFaceFeet ??
+  //           0;
+  //     const metersHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightMetres ??
+  //           d.primary.fullSurfHeightMetres ??
+  //           0;
 
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: feetHeight,
-        };
-      }
+  //     if (feetHeight > maxFeet) {
+  //       maxFeet = feetHeight;
+  //       maxFeetDetails = {
+  //         model: "GFS",
+  //         dateTime: d.localDateTimeISO,
+  //         height: feetHeight,
+  //       };
+  //     }
 
-      if (surfersFeetHeight > maxSurfersFeet) {
-        maxSurfersFeet = surfersFeetHeight;
-        maxSurfersFeetDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: surfersFeetHeight,
-        };
-      }
+  //     if (surfersFeetHeight > maxSurfersFeet) {
+  //       maxSurfersFeet = surfersFeetHeight;
+  //       maxSurfersFeetDetails = {
+  //         model: "GFS",
+  //         dateTime: d.localDateTimeISO,
+  //         height: surfersFeetHeight,
+  //       };
+  //     }
 
-      if (metersHeight > maxMeters) {
-        maxMeters = metersHeight;
-        maxMetersDetails = {
-          model: "GFS",
-          dateTime: d.localDateTimeISO,
-          height: metersHeight,
-        };
-      }
-    });
+  //     if (metersHeight > maxMeters) {
+  //       maxMeters = metersHeight;
+  //       maxMetersDetails = {
+  //         model: "GFS",
+  //         dateTime: d.localDateTimeISO,
+  //         height: metersHeight,
+  //       };
+  //     }
+  //   });
 
-    // Check ECMWF data
-    ecmwfData.forEach((d) => {
-      const feetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const surfersFeetHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightFaceFeet ??
-            d.primary.fullSurfHeightFaceFeet ??
-            0;
-      const metersHeight =
-        d?.primary == null
-          ? 0
-          : d.secondary?.fullSurfHeightMetres ??
-            d.primary.fullSurfHeightMetres ??
-            0;
+  //   // Check ECMWF data
+  //   ecmwfData.forEach((d) => {
+  //     const feetHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightFaceFeet ??
+  //           d.primary.fullSurfHeightFaceFeet ??
+  //           0;
+  //     const surfersFeetHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightFaceFeet ??
+  //           d.primary.fullSurfHeightFaceFeet ??
+  //           0;
+  //     const metersHeight =
+  //       d?.primary == null
+  //         ? 0
+  //         : d.secondary?.fullSurfHeightMetres ??
+  //           d.primary.fullSurfHeightMetres ??
+  //           0;
 
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: feetHeight,
-        };
-      }
+  //     if (feetHeight > maxFeet) {
+  //       maxFeet = feetHeight;
+  //       maxFeetDetails = {
+  //         model: "ECMWF",
+  //         dateTime: d.localDateTimeISO,
+  //         height: feetHeight,
+  //       };
+  //     }
 
-      if (surfersFeetHeight > maxSurfersFeet) {
-        maxSurfersFeet = surfersFeetHeight;
-        maxSurfersFeetDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: surfersFeetHeight,
-        };
-      }
+  //     if (surfersFeetHeight > maxSurfersFeet) {
+  //       maxSurfersFeet = surfersFeetHeight;
+  //       maxSurfersFeetDetails = {
+  //         model: "ECMWF",
+  //         dateTime: d.localDateTimeISO,
+  //         height: surfersFeetHeight,
+  //       };
+  //     }
 
-      if (metersHeight > maxMeters) {
-        maxMeters = metersHeight;
-        maxMetersDetails = {
-          model: "ECMWF",
-          dateTime: d.localDateTimeISO,
-          height: metersHeight,
-        };
-      }
-    });
+  //     if (metersHeight > maxMeters) {
+  //       maxMeters = metersHeight;
+  //       maxMetersDetails = {
+  //         model: "ECMWF",
+  //         dateTime: d.localDateTimeISO,
+  //         height: metersHeight,
+  //       };
+  //     }
+  //   });
 
-    return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
-  };
+  //   return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
+  // };
 
-  const maxHeightDetails = findMaxHeightDetails();
+  // const maxHeightDetails = findMaxHeightDetails();
 
-  console.log({
-    maxSurfHeight,
-    maxHeightDetails: {
-      feet: maxHeightDetails.maxFeetDetails,
-      meters: maxHeightDetails.maxMetersDetails,
-      surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
-    },
-  });
+  // console.log("[GRAPH] Swellnet Graph: Max Surf Height", {
+  //   maxSurfHeight,
+  //   maxHeightDetails: {
+  //     feet: maxHeightDetails.maxFeetDetails,
+  //     meters: maxHeightDetails.maxMetersDetails,
+  //     surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
+  //   },
+  // });
 
   // Calculate chart width based on available data
   const gfsDataLength = gfsData.length;
@@ -300,12 +294,12 @@ function initGraph() {
   // Log missing forecast data
   if (!gfsData.length && !ecmwfData.length) {
     console.warn(
-      "Swellnet Graph: No forecast data available from either GFS or ECMWF models"
+      "[GRAPH] Swellnet Graph: No forecast data available from either GFS or ECMWF models"
     );
   } else if (!gfsData.length) {
-    console.warn("Swellnet Graph: No GFS forecast data available");
+    console.warn("[GRAPH] Swellnet Graph: No GFS forecast data available");
   } else if (!ecmwfData.length) {
-    console.warn("Swellnet Graph: No ECMWF forecast data available");
+    console.warn("[GRAPH] Swellnet Graph: No ECMWF forecast data available");
   }
 
   // Get the first available timestamp from any data source
@@ -318,7 +312,7 @@ function initGraph() {
   // Prepare props for the App component
   const appProps = {
     rawApiData,
-    mobileContext,
+    // mobileContext,
     locationName: rawApiData.location?.name || "Unknown Location",
     timezone: rawApiData.location?.timezone || "UTC",
     localDateTimeISO: firstTimestamp,
@@ -353,11 +347,22 @@ function initGraph() {
       <App {...appProps} />
     </StrictMode>
   );
+
+  // Log successful initialization
+  console.log(
+    "[GRAPH] ✅ Swellnet Graph successfully initialized with user data from API"
+  );
 }
 
 // --- Run Initialization ---
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initGraph);
+  document.addEventListener("DOMContentLoaded", () => {
+    initGraph().catch((error) => {
+      console.error("[GRAPH] Failed to initialize graph:", error);
+    });
+  });
 } else {
-  initGraph();
+  initGraph().catch((error) => {
+    console.error("[GRAPH] Failed to initialize graph:", error);
+  });
 }
