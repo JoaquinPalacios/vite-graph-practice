@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState } from "react";
+import { useState } from "react";
+import ChartsContainer from "./components/ChartsContainer";
 import { GraphHeader } from "./components/GraphHeader.tsx";
-import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import { roundUpToMultiple } from "./lib/charts";
 import { processApiDataToChartData } from "./lib/data-processing.ts";
 import {
@@ -31,8 +31,6 @@ interface AppProps {
   surfReport: SurfReportItem[];
   surfcams: SurfcamProps[];
 }
-
-const ChartsContainer = lazy(() => import("./components/ChartsContainer"));
 
 function App({
   rawApiData,
@@ -123,21 +121,19 @@ function App({
       /> */}
       <GraphHeader locationName={locationName} />
 
-      <Suspense fallback={<GraphSkeleton showMain showWeather showTide />}>
-        <ChartsContainer
-          chartData={chartData}
-          defaultPreferences={defaultPreferences}
-          maxSurfHeight={maxSurfHeight}
-          maxSurfHeightAdvanced={maxSurfHeightAdvanced}
-          chartWidth={chartWidth}
-          weatherData={weatherData.slice(0, chartDataLength)}
-          tideData={tideData}
-          timezone={timezone}
-          rawApiData={rawApiData}
-          modelType={modelType}
-          setModelType={setModelType}
-        />
-      </Suspense>
+      <ChartsContainer
+        chartData={chartData}
+        defaultPreferences={defaultPreferences}
+        maxSurfHeight={maxSurfHeight}
+        maxSurfHeightAdvanced={maxSurfHeightAdvanced}
+        chartWidth={chartWidth}
+        weatherData={weatherData.slice(0, chartDataLength)}
+        tideData={tideData}
+        timezone={timezone}
+        rawApiData={rawApiData}
+        modelType={modelType}
+        setModelType={setModelType}
+      />
     </div>
   );
 }

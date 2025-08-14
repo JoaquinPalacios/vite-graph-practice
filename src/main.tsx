@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { fetchUserDataFromDrupal } from "./api/drupal-api.ts";
 import App from "./App.tsx";
+import GraphSkeleton from "./components/GraphSkeleton.tsx";
 import "./index.css";
 import { getChartWidth } from "./lib/charts";
 import { ChartDataItem, DrupalApiData, UserStatus } from "./types/index.ts";
@@ -26,6 +27,14 @@ async function initGraph(): Promise<void> {
     }
     return;
   }
+
+  // Show initial skeleton while loading all data
+  const root = createRoot(container!);
+  root.render(
+    <StrictMode>
+      <GraphSkeleton showMain showWeather showTide />
+    </StrictMode>
+  );
 
   // Fetch user data from the new API endpoint
   const userData: UserStatus | null = await fetchUserDataFromDrupal();
@@ -340,8 +349,7 @@ async function initGraph(): Promise<void> {
     surfcams: rawApiData.surfcams ? rawApiData.surfcams : [],
   };
 
-  // Render the React component
-  const root = createRoot(container!);
+  // Re-render with the complete data (this replaces the skeleton)
   root.render(
     <StrictMode>
       <App {...appProps} />

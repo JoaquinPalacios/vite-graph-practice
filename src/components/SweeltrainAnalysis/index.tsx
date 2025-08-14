@@ -211,7 +211,7 @@ const getSwellColor = (size: string) => {
 };
 
 const getWindIcon = (direction: number, speed: number) => {
-  const adjustedDirection = getAdjustedDirection(direction);
+  const adjustedDirection = getAdjustedDirection(direction || 0);
   const color = getWindColor(speed);
 
   return (
@@ -225,7 +225,7 @@ const getWindIcon = (direction: number, speed: number) => {
     >
       <path
         d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
-        transform={`rotate(${adjustedDirection}, 0, 0)`}
+        transform={`rotate(${adjustedDirection ?? 0}, 0, 0)`}
         style={{
           transformOrigin: "center",
         }}
@@ -233,7 +233,7 @@ const getWindIcon = (direction: number, speed: number) => {
       />
       <path
         d="M7.65 10h5v7.5h-5z"
-        transform={`rotate(${adjustedDirection}, 0, 0)`}
+        transform={`rotate(${adjustedDirection ?? 0}, 0, 0)`}
         style={{
           transformOrigin: "center",
         }}
@@ -327,8 +327,8 @@ export default function SwellTrainAnalysis({
                             <TableCell>
                               <div className="font-normal tw:flex tw:items-center tw:gap-1">
                                 {getWindIcon(
-                                  day.sessions[4]?.wind.angle,
-                                  day.sessions[4]?.wind.speed
+                                  day.sessions[4]?.wind.angle ?? 0,
+                                  day.sessions[4]?.wind.speed ?? 0
                                 )}
                                 <span className="font-normal tw:text-xs tw:text-muted-foreground">
                                   {day.sessions[4]?.wind.speed}
@@ -441,8 +441,8 @@ export default function SwellTrainAnalysis({
                             <TableCell>
                               <div className="tw:flex tw:items-center tw:gap-1">
                                 {getWindIcon(
-                                  session.wind.angle,
-                                  session.wind.speed
+                                  session.wind.angle ?? 0,
+                                  session.wind.speed ?? 0
                                 )}
                                 <span className="tw:text-xs tw:text-muted-foreground">
                                   {session.wind.speed}

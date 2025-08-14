@@ -423,7 +423,7 @@ export const AdvanceD3Chart = ({
           const t = (d.period - 8) / 12;
           scale = Math.min(1.4, lerp(0.6, 1.4, t));
         }
-        const rotation = d.direction;
+        const rotation = d.direction ?? 0;
         return `scale(${scale}) rotate(${rotation}) translate(-10,-10)`;
       };
 

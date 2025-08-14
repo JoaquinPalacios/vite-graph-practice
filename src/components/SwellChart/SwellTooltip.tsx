@@ -129,8 +129,8 @@ const WindSection = memo(
   }) => {
     const color = getWindColor(windData.speedKnots);
     const { speed, unit } = getWindSpeed(windData, unitPreferences);
-    const direction = getAdjustedDirection(Number(windData.direction));
-    const compassDirection = degreesToCompassDirection(windData.direction);
+    const direction = getAdjustedDirection(Number(windData.direction) || 0);
+    const compassDirection = degreesToCompassDirection(direction);
 
     return (
       <div className="margin-bottom-2 tw:flex tw:gap-1 tw:items-center">
@@ -144,13 +144,13 @@ const WindSection = memo(
         >
           <path
             d="M17.66 11.39h-15l7.5-8.75 7.5 8.75z"
-            transform={`rotate(${direction}, 0, 0)`}
+            transform={`rotate(${direction ?? 0}, 0, 0)`}
             style={{ transformOrigin: "center" }}
             className="tw:transition-transform tw:duration-150 tw:ease"
           />
           <path
             d="M7.65 10h5v7.5h-5z"
-            transform={`rotate(${direction}, 0, 0)`}
+            transform={`rotate(${direction ?? 0}, 0, 0)`}
             style={{ transformOrigin: "center" }}
           />
         </svg>

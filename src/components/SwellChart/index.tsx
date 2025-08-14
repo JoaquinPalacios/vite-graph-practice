@@ -423,6 +423,9 @@ export const SwellChart = memo(
                 if (typeof index === "undefined") return null;
                 const data = chartData[index];
 
+                // Safety check: ensure data exists and has the required structure
+                if (!data || !data.primary) return null;
+
                 // We only display the label if there is no secondary swell
                 if (
                   data.secondary ||
@@ -471,12 +474,15 @@ export const SwellChart = memo(
             animationEasing="ease-in-out"
           >
             <LabelList
-              dataKey="secondary.direction"
+              dataKey={(d) => d.secondary?.direction ?? null}
               position="top"
               fill="#ffa800"
               content={({ x, y, value, fill, index }) => {
                 if (typeof index === "undefined") return null;
                 const data = chartData[index];
+
+                // Safety check: ensure data exists and has the required structure
+                if (!data || !data.primary) return null;
 
                 if (data.secondary) {
                   return (

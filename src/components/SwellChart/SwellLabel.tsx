@@ -39,14 +39,14 @@ export const SwellLabel = (props: SwellLabelProps) => {
           />
           <path
             d="M14.13 9.11h-12l6-7 6 7z"
-            transform={`rotate(${value}, 0, 0)`}
+            transform={`rotate(${value ?? 0}, 0, 0)`}
             style={{
               transformOrigin: "center",
             }}
           />
           <path
             d="M6.12 8h4v6h-4z"
-            transform={`rotate(${value}, 0, 0)`}
+            transform={`rotate(${value ?? 0}, 0, 0)`}
             style={{
               transformOrigin: "center",
             }}
@@ -77,14 +77,14 @@ export const SwellLabel = (props: SwellLabelProps) => {
             />
             <path
               d="M14.13 9.11h-12l6-7 6 7z"
-              transform={`rotate(${value}, 0, 0)`}
+              transform={`rotate(${value ?? 0}, 0, 0)`}
               style={{
                 transformOrigin: "center",
               }}
             />
             <path
               d="M6.12 8h4v6h-4z"
-              transform={`rotate(${value}, 0, 0)`}
+              transform={`rotate(${value ?? 0}, 0, 0)`}
               style={{
                 transformOrigin: "center",
               }}
@@ -113,8 +113,8 @@ export const SwellLabel = (props: SwellLabelProps) => {
               d="M14.13 9.11h-12l6-7 6 7z"
               transform={
                 primarySwellDirection
-                  ? `rotate(${primarySwellDirection}, 0, 0)`
-                  : `rotate(${value}, 0, 0)`
+                  ? `rotate(${primarySwellDirection ?? 0}, 0, 0)`
+                  : `rotate(${value ?? 0}, 0, 0)`
               }
               style={{
                 transformOrigin: "center",
@@ -124,8 +124,8 @@ export const SwellLabel = (props: SwellLabelProps) => {
               d="M6.12 8h4v6h-4z"
               transform={
                 primarySwellDirection
-                  ? `rotate(${primarySwellDirection}, 0, 0)`
-                  : `rotate(${value}, 0, 0)`
+                  ? `rotate(${primarySwellDirection ?? 0}, 0, 0)`
+                  : `rotate(${value ?? 0}, 0, 0)`
               }
               style={{
                 transformOrigin: "center",
