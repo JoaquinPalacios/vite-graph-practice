@@ -24,6 +24,12 @@ export const generateTicks = (
         ticks.push(i);
       }
       return ticks;
+    } else if (roundedMax === 7 && maxHeight <= 5.75) {
+      // Edge case: for maxHeight between 5 and 5.75, cap ticks at 6
+      return [0, 2, 4, 6];
+    } else if (roundedMax === 9 && maxHeight <= 7.5) {
+      // Edge case: for maxHeight between 6 and 7.5, cap ticks at 8
+      return [0, 2, 4, 6, 8];
     } else if (roundedMax <= 14) {
       // Round up to the nearest multiple of 2 for better tick spacing
       const roundedToTwo = Math.ceil(roundedMax / 2) * 2;

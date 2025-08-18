@@ -146,7 +146,7 @@ async function initGraph(): Promise<void> {
     let maxFeet = 0;
     let maxSurfersFeet = 0;
     let maxMeters = 0;
-    let maxFeetDetails: {
+    let maxFaceFeetDetails: {
       model: string;
       dateTime: string;
       height: number;
@@ -164,7 +164,7 @@ async function initGraph(): Promise<void> {
 
     // Check GFS data
     gfsData.forEach((d) => {
-      const feetHeight =
+      const faceFeetHeight =
         d?.primary == null
           ? 0
           : d.secondary?.fullSurfHeightFaceFeet ??
@@ -183,12 +183,12 @@ async function initGraph(): Promise<void> {
             d.primary.fullSurfHeightMetres ??
             0;
 
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
+      if (faceFeetHeight > maxFeet) {
+        maxFeet = faceFeetHeight;
+        maxFaceFeetDetails = {
           model: "GFS",
           dateTime: d.localDateTimeISO,
-          height: feetHeight,
+          height: faceFeetHeight,
         };
       }
 
@@ -213,7 +213,7 @@ async function initGraph(): Promise<void> {
 
     // Check ECMWF data
     ecmwfData.forEach((d) => {
-      const feetHeight =
+      const faceFeetHeight =
         d?.primary == null
           ? 0
           : d.secondary?.fullSurfHeightFaceFeet ??
@@ -232,12 +232,12 @@ async function initGraph(): Promise<void> {
             d.primary.fullSurfHeightMetres ??
             0;
 
-      if (feetHeight > maxFeet) {
-        maxFeet = feetHeight;
-        maxFeetDetails = {
+      if (faceFeetHeight > maxFeet) {
+        maxFeet = faceFeetHeight;
+        maxFaceFeetDetails = {
           model: "ECMWF",
           dateTime: d.localDateTimeISO,
-          height: feetHeight,
+          height: faceFeetHeight,
         };
       }
 
@@ -260,7 +260,7 @@ async function initGraph(): Promise<void> {
       }
     });
 
-    return { maxFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
+    return { maxFaceFeetDetails, maxMetersDetails, maxSurfersFeetDetails };
   };
 
   const maxHeightDetails = findMaxHeightDetails();
@@ -268,7 +268,7 @@ async function initGraph(): Promise<void> {
   console.log("[GRAPH] Swellnet Graph: Max Surf Height", {
     maxSurfHeight,
     maxHeightDetails: {
-      feet: maxHeightDetails.maxFeetDetails,
+      faceFeet: maxHeightDetails.maxFaceFeetDetails,
       meters: maxHeightDetails.maxMetersDetails,
       surfersFeet: maxHeightDetails.maxSurfersFeetDetails,
     },

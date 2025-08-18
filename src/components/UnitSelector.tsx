@@ -46,54 +46,77 @@ export const UnitSelector = ({
   return (
     <>
       {/* Model run time */}
-      <p className="margin-bottom-minus-11 tw:text-sm tw:hidden tw:lg:flex tw:items-center tw:gap-2">
-        {hasGfsData || hasEcmwfData ? (
-          <>
-            <MdAccessTime className="tw:w-4 tw:h-4" />
-            Updated{" "}
-            {formatBulletinDateTime(
-              modelType === "gfs"
-                ? rawApiData.forecasts?.gfs?.bulletinDateTimeUtc
-                : rawApiData.forecasts?.ecmwf?.bulletinDateTimeUtc,
-              timezone
-            )}
-          </>
-        ) : (
-          "No forecast data available"
+      {!rawApiData.embedded && (
+        <p className="margin-bottom-minus-11 tw:text-sm tw:hidden tw:lg:flex tw:items-center tw:gap-2">
+          {hasGfsData || hasEcmwfData ? (
+            <>
+              <MdAccessTime className="tw:w-4 tw:h-4" />
+              Updated{" "}
+              {formatBulletinDateTime(
+                modelType === "gfs"
+                  ? rawApiData.forecasts?.gfs?.bulletinDateTimeUtc
+                  : rawApiData.forecasts?.ecmwf?.bulletinDateTimeUtc,
+                timezone
+              )}
+            </>
+          ) : (
+            "No forecast data available"
+          )}
+        </p>
+      )}
+      <div
+        className={cn(
+          "tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-lg:flex-col",
+          rawApiData.embedded
+            ? "tw:justify-start"
+            : "tw:justify-between tw:lg:justify-end tw:max-md:px-5"
         )}
-      </p>
-      <div className="tw:flex tw:gap-4 tw:items-start tw:lg:items-center tw:max-md:px-5 tw:justify-between tw:lg:justify-end tw:max-lg:flex-col">
-        <div className="tw:flex tw:items-start tw:sm:items-baseline tw:justify-between tw:sm:justify-start tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit">
+      >
+        <div
+          className={cn(
+            "tw:flex tw:items-start tw:sm:items-baseline tw:gap-4 tw:sm:8 tw:md:gap-10 tw:w-full tw:sm:w-fit",
+            rawApiData.embedded
+              ? "tw:justify-start"
+              : "tw:justify-between tw:sm:justify-start"
+          )}
+        >
           {/* Settings button with expandable preferences */}
-          <div className="tw:min-w-fit tw:max-md:pt-1.5">
-            <Accordion
-              type="single"
-              collapsible
-              className="tw:w-full tw:border-none accordion-trigger"
+          {!rawApiData.embedded && (
+            <div
+              className={cn(
+                "tw:min-w-fit tw:max-md:pt-1.5",
+                rawApiData.embedded && "tw:z-10"
+              )}
             >
-              <AccordionItem value="preferences" className="tw:border-none">
-                <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&>svg]:hidden">
-                  <div className="tw:flex tw:items-center tw:gap-2">
-                    <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-                      Settings
-                    </span>
-                    <VscSettings className="tw:size-5 tw:transition-transform tw:duration-300" />
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent
-                  className={cn(
-                    "tw:absolute tw:top-[6.25rem] tw:lg:top-24 tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
-                    "tw:transition-opacity tw:duration-200"
-                  )}
-                >
-                  <PreferencesPanel
-                    defaultValues={defaultValues}
-                    onChange={onChange}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+              <Accordion
+                type="single"
+                collapsible
+                className="tw:w-full tw:border-none accordion-trigger"
+              >
+                <AccordionItem value="preferences" className="tw:border-none">
+                  <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&>svg]:hidden">
+                    <div className="tw:flex tw:items-center tw:gap-2">
+                      <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                        Settings
+                      </span>
+                      <VscSettings className="tw:size-5 tw:transition-transform tw:duration-300" />
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent
+                    className={cn(
+                      "tw:absolute tw:top-[6.25rem] tw:lg:top-24 tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
+                      "tw:transition-opacity tw:duration-200"
+                    )}
+                  >
+                    <PreferencesPanel
+                      defaultValues={defaultValues}
+                      onChange={onChange}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          )}
 
           {/* Advance chart toggle */}
           <div
@@ -269,46 +292,48 @@ export const UnitSelector = ({
           )}
 
           {/* Charts/Analysis toggle with animated thumb */}
-          <div className="tw:flex tw:items-center tw:gap-2 tw:order-1 tw:lg:order-none">
-            <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
-              View
-            </span>
-            <div className="tw:relative tw:w-16 tw:h-8 tw:rounded tw:flex tw:items-center tw:overflow-hidden">
-              {/* Animated thumb */}
-              <div
-                className={cn(
-                  "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:w-1/2 tw:bg-gray-100 tw:shadow tw:transition-transform tw:duration-300 tw:z-0",
-                  showAnalysis ? "tw:translate-x-full" : "tw:translate-x-0"
-                )}
-                style={{ willChange: "transform" }}
-              />
-              {/* Buttons */}
-              <button
-                type="button"
-                className={cn(
-                  "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                  !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
-                )}
-                aria-pressed={!showAnalysis}
-                onClick={() => setShowAnalysis(false)}
-                aria-label="Show charts"
-              >
-                <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
-                  showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
-                )}
-                aria-pressed={showAnalysis}
-                onClick={() => setShowAnalysis(true)}
-                aria-label="Show analysis"
-              >
-                <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
-              </button>
+          {!rawApiData.embedded && (
+            <div className="tw:flex tw:items-center tw:gap-2 tw:order-1 tw:lg:order-none">
+              <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                View
+              </span>
+              <div className="tw:relative tw:w-16 tw:h-8 tw:rounded tw:flex tw:items-center tw:overflow-hidden">
+                {/* Animated thumb */}
+                <div
+                  className={cn(
+                    "tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:left-0 tw:h-7 tw:w-1/2 tw:bg-gray-100 tw:shadow tw:transition-transform tw:duration-300 tw:z-0",
+                    showAnalysis ? "tw:translate-x-full" : "tw:translate-x-0"
+                  )}
+                  style={{ willChange: "transform" }}
+                />
+                {/* Buttons */}
+                <button
+                  type="button"
+                  className={cn(
+                    "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                    !showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+                  )}
+                  aria-pressed={!showAnalysis}
+                  onClick={() => setShowAnalysis(false)}
+                  aria-label="Show charts"
+                >
+                  <MdBarChart className="tw:w-4 tw:h-4 tw:m-auto" />
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    "selector-btn font-sm font-bold tw:relative tw:flex tw:z-10 tw:w-1/2 tw:h-full tw:border-none tw:bg-transparent tw:cursor-pointer tw:transition-colors tw:duration-300",
+                    showAnalysis ? "tw:text-gray-900" : "tw:text-gray-700"
+                  )}
+                  aria-pressed={showAnalysis}
+                  onClick={() => setShowAnalysis(true)}
+                  aria-label="Show analysis"
+                >
+                  <ImTable2 className="tw:w-4 tw:h-4 tw:m-auto" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

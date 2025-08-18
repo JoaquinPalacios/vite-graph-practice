@@ -130,7 +130,7 @@ const WindSection = memo(
     const color = getWindColor(windData.speedKnots);
     const { speed, unit } = getWindSpeed(windData, unitPreferences);
     const direction = getAdjustedDirection(Number(windData.direction) || 0);
-    const compassDirection = degreesToCompassDirection(direction);
+    const compassDirection = degreesToCompassDirection(direction + 180);
 
     return (
       <div className="margin-bottom-2 tw:flex tw:gap-1 tw:items-center">

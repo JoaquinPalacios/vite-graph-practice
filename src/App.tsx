@@ -119,7 +119,10 @@ function App({
         surfReport={surfReport || []}
         surfcams={surfcams}
       /> */}
-      <GraphHeader locationName={locationName} />
+      <GraphHeader
+        locationName={locationName}
+        isEmbedded={rawApiData.embedded}
+      />
 
       <ChartsContainer
         chartData={chartData}

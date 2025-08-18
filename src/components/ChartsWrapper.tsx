@@ -9,6 +9,7 @@ import GraphButtons from "./GraphButtons";
 interface ChartsWrapperProps {
   children: React.ReactNode;
   hasSubscription: boolean;
+  isEmbedded?: boolean;
 }
 
 interface ContainerDimensions {
@@ -28,6 +29,7 @@ interface ContainerDimensions {
 const ChartsWrapper = ({
   children,
   hasSubscription,
+  isEmbedded,
 }: ChartsWrapperProps): ReactElement => {
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
@@ -92,7 +94,7 @@ const ChartsWrapper = ({
       rect.setAttribute("x", "0");
       rect.setAttribute("y", "0");
       rect.setAttribute("width", getAxisWidth());
-      rect.setAttribute("height", "320");
+      rect.setAttribute("height", isEmbedded ? "368" : "320");
       rect.setAttribute("fill", "oklch(96.7% 0.003 264.542)");
       rect.setAttribute("class", "y-axis-rect-left");
       axis.insertBefore(rect, axis.firstChild);

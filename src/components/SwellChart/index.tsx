@@ -1,6 +1,7 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { formatDateTick, generateTicks, getChartWidth } from "@/lib/charts";
-import { UnitPreferences } from "@/types";
+import { generateEventTicks } from "@/lib/events";
+import { EventData, UnitPreferences } from "@/types";
 import { ChartDataItem } from "@/types/index.ts";
 import { cn } from "@/utils/utils";
 import { memo, useMemo, useState } from "react";
@@ -16,6 +17,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { EventTickRenderer } from "./EventTickRenderer";
 import { SwellAxisTick } from "./SwellAxisTick";
 import { SwellLabel } from "./SwellLabel";
 import { SwellTooltip } from "./SwellTooltip";
@@ -37,6 +39,8 @@ export const SwellChart = memo(
     currentLocationTime,
     exactTimestamp,
     referenceTimestamp,
+    isEmbedded,
+    event,
   }: {
     unitPreferences: UnitPreferences;
     chartData: (ChartDataItem & { timestamp: number })[];
@@ -44,6 +48,8 @@ export const SwellChart = memo(
     currentLocationTime?: string;
     exactTimestamp?: number;
     referenceTimestamp?: number;
+    isEmbedded?: boolean;
+    event?: EventData;
   }) => {
     const { isMobile, isLandscapeMobile, isTablet } = useScreenDetector();
 
@@ -107,6 +113,8 @@ export const SwellChart = memo(
       return { translateX };
     }, [chartData, currentLocationTime, exactTimestamp, referenceTimestamp]);
 
+    const embeddedHeight = isEmbedded ? 360 : 320;
+
     return (
       <ResponsiveContainer
         width={getChartWidth(
@@ -116,20 +124,18 @@ export const SwellChart = memo(
         )}
         height="100%"
         className={cn(
-          "tw:mb-0 tw:h-80 tw:min-h-80 tw:relative",
+          "tw:mb-0 tw:relative",
           unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
-            "tw:after:absolute tw:after:z-0 tw:after:h-px tw:after:w-[calc(100%-4.75rem)] tw:after:sm:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[3.75rem] tw:after:sm:left-[4.75rem] tw:after:bg-gray-400/80 tw:after:pointer-events-none"
+            "tw:after:absolute tw:after:z-0 tw:after:h-px tw:after:w-[calc(100%-4.75rem)] tw:after:sm:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[3.75rem] tw:after:sm:left-[4.75rem] tw:after:bg-gray-400/80 tw:after:pointer-events-none",
+          isEmbedded
+            ? "tw:h-[22.5rem] tw:min-h-[22.5rem]"
+            : "tw:h-80 tw:min-h-80"
         )}
-        minHeight={320}
+        minHeight={isEmbedded ? 360 : 320}
       >
         <ComposedChart
           data={chartData}
           barCategoryGap={1}
-          margin={
-            {
-              // bottom: 12,
-            }
-          }
           className={cn(
             "swellnet-bar-chart tw:[&>svg]:focus:outline-none",
             isTooltipClosed
@@ -148,7 +154,7 @@ export const SwellChart = memo(
             ]}
             horizontal={true}
             y={0}
-            height={320}
+            height={embeddedHeight}
             syncWithTicks
             className=""
           />
@@ -214,10 +220,33 @@ export const SwellChart = memo(
             color="#000"
           />
 
+          {isEmbedded && event && (
+            <XAxis
+              dataKey="localDateTimeISO"
+              xAxisId={3}
+              tickLine={false}
+              axisLine={false}
+              orientation="top"
+              allowDuplicatedCategory={false}
+              textAnchor="middle"
+              interval={0}
+              minTickGap={0}
+              domain={["dataMin", "dataMax"]}
+              tickMargin={16}
+              ticks={generateEventTicks(chartData)}
+              tick={(props: {
+                x: number;
+                y: number;
+                payload: { value: string };
+                index?: number;
+              }) => <EventTickRenderer {...props} eventData={event} />}
+            />
+          )}
+
           {/* XAxis for the swell period */}
           <XAxis
             dataKey="localDateTimeISO"
-            xAxisId={3}
+            xAxisId={isEmbedded ? 4 : 3}
             tickLine={false}
             axisLine={false}
             allowDataOverflow
@@ -272,7 +301,7 @@ export const SwellChart = memo(
           {/* XAxis for the wind direction */}
           <XAxis
             dataKey="localDateTimeISO"
-            xAxisId={4}
+            xAxisId={isEmbedded ? 5 : 4}
             allowDuplicatedCategory={false}
             allowDataOverflow
             tickLine={false}
@@ -305,7 +334,7 @@ export const SwellChart = memo(
           {/* XAxis for the wind speed with dynamic values */}
           <XAxis
             dataKey="localDateTimeISO"
-            xAxisId={5}
+            xAxisId={isEmbedded ? 6 : 5}
             tick={({
               x,
               y,
@@ -390,7 +419,9 @@ export const SwellChart = memo(
               strokeWidth: 32,
               strokeOpacity: 0.1,
               overflow: "visible",
-              className: "tw:scale-y-150 tw:-translate-y-6",
+              className: isEmbedded
+                ? "tw:scale-y-175 tw:-translate-y-16"
+                : "tw:scale-y-175 tw:-translate-y-9",
             }}
             trigger={isSmallScreen ? "click" : "hover"}
             isAnimationActive={false}
@@ -528,7 +559,7 @@ export const SwellChart = memo(
                 generateTicks(maxSurfHeight, unitPreferences.units.surfHeight),
               [maxSurfHeight, unitPreferences.units.surfHeight]
             )}
-            height={320}
+            height={embeddedHeight}
           />
         </ComposedChart>
       </ResponsiveContainer>

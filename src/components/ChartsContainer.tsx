@@ -162,7 +162,10 @@ const ChartsContainer = ({
           })}
       >
         <Suspense fallback={<GraphSkeleton />}>
-          <ChartsWrapper hasSubscription={rawApiData.user.hasFullAccess}>
+          <ChartsWrapper
+            hasSubscription={rawApiData.user.hasFullAccess}
+            isEmbedded={rawApiData.embedded}
+          >
             <Suspense fallback={<GraphSkeleton showMain />}>
               {processedData.length > 0 && hasForecastData ? (
                 <>
@@ -179,6 +182,10 @@ const ChartsContainer = ({
                     currentLocationTime={referenceLineData.referenceTime}
                     exactTimestamp={referenceLineData.exactTimestamp}
                     referenceTimestamp={referenceLineData.referenceTimestamp}
+                    {...(rawApiData.embedded && {
+                      isEmbedded: true,
+                      event: rawApiData.event,
+                    })}
                   />
                   <SwellChartYAxis
                     unitPreferences={unitPreferences}
@@ -191,6 +198,9 @@ const ChartsContainer = ({
                         : maxSurfHeight.meters
                     }
                     hasSubscription={rawApiData.user.hasFullAccess}
+                    {...(rawApiData.embedded && {
+                      isEmbedded: true,
+                    })}
                   />
 
                   <AdvanceD3Chart

@@ -48,7 +48,18 @@ export interface SurfReportItem {
   report: string;
 }
 
+export interface EventData {
+  chance_of_running: {
+    raw_value: string;
+    numeric_value: number;
+    label: string;
+  }[];
+  start_date: string;
+  end_date: string;
+}
+
 export interface DrupalApiData {
+  embedded?: boolean;
   location: {
     name: string;
     timezone: string;
@@ -90,6 +101,7 @@ export interface DrupalApiData {
   tide: TideDataFromDrupal[] | [];
   surf_report: SurfReportItem[];
   surfcams: SurfcamProps[];
+  event?: EventData;
 }
 
 export interface MobileContext {
@@ -223,6 +235,17 @@ export interface DrupalUserApiResponse {
     temperature_preference: "celsius" | "fahrenheit";
     unit_of_measurement: "m" | "ft";
   };
+}
+
+/**
+ * Event status tick renderer component props
+ */
+export interface EventTickRendererProps {
+  x: number;
+  y: number;
+  payload: { value: string };
+  index?: number;
+  eventData: EventData;
 }
 
 declare global {

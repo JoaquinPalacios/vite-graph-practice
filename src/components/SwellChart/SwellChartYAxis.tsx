@@ -6,8 +6,8 @@ import { cn } from "@/utils/utils";
 import { LuWind } from "react-icons/lu";
 import {
   Bar,
-  BarChart,
   CartesianGrid,
+  ComposedChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -26,34 +26,36 @@ export const SwellChartYAxis = ({
   chartData,
   maxSurfHeight,
   hasSubscription,
+  isEmbedded,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
   maxSurfHeight: number;
   hasSubscription: boolean;
+  isEmbedded?: boolean;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
+
+  const embeddedHeight = isEmbedded ? 390 : 350; // it has 30px added of extra space to the height of the chart
 
   return (
     <ResponsiveContainer
       width={48}
-      height={320}
-      minHeight={320}
+      height={embeddedHeight}
+      minHeight={embeddedHeight}
       className={cn(
-        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-5 tw:z-20 tw:h-80 tw:min-h-80 tw:max-h-80",
-        !hasSubscription && "tw:max-md:top-80"
+        "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-5 tw:z-20",
+        !hasSubscription && "tw:max-md:top-80",
+        isEmbedded
+          ? "tw:h-[24.375rem] tw:min-h-[24.375rem] tw:max-h-[24.375rem]"
+          : "tw:h-[21.875rem] tw:min-h-[21.875rem] tw:max-h-[21.875rem]"
       )}
     >
-      <BarChart
+      <ComposedChart
         data={chartData}
-        margin={
-          {
-            // bottom: 12,
-          }
-        }
         width={48}
         className="tw:[&>svg]:focus:outline-none"
-        height={320}
+        height={embeddedHeight}
       >
         <CartesianGrid
           vertical={true}
@@ -63,7 +65,7 @@ export const SwellChartYAxis = ({
             "#eceef1", // Tailwind gray-150
           ]}
           y={0}
-          height={320}
+          height={embeddedHeight}
           syncWithTicks
         />
 
@@ -76,14 +78,21 @@ export const SwellChartYAxis = ({
         {/* This XAxis is the one that shows the time of the day */}
         <XAxis xAxisId={1} dataKey="localDateTimeISO" orientation="top" />
 
+        {isEmbedded && (
+          <XAxis xAxisId={3} dataKey="localDateTimeISO" orientation="top" />
+        )}
+
+        {/* This XAxis is the one that shows the event status */}
+        <XAxis xAxisId={isEmbedded ? 4 : 3} dataKey="localDateTimeISO" />
+
         {/* This XAxis is the one that shows the swell period */}
-        <XAxis xAxisId={3} dataKey="localDateTimeISO" />
+        <XAxis xAxisId={isEmbedded ? 5 : 4} dataKey="localDateTimeISO" />
 
         {/* This XAxis is the one that shows the wind direction */}
-        <XAxis xAxisId={4} dataKey="localDateTimeISO" />
+        <XAxis xAxisId={isEmbedded ? 6 : 5} dataKey="localDateTimeISO" />
 
         {/* This XAxis is the one that shows the wind speed */}
-        <XAxis xAxisId={5} dataKey="localDateTimeISO" />
+        <XAxis xAxisId={isEmbedded ? 7 : 6} dataKey="localDateTimeISO" />
 
         <Bar
           dataKey={(d) =>
@@ -134,7 +143,7 @@ export const SwellChartYAxis = ({
                 ? 20
                 : 16,
           }}
-          height={320}
+          height={embeddedHeight}
           width={48}
           axisLine={false}
           type="number"
@@ -212,7 +221,7 @@ export const SwellChartYAxis = ({
             );
           }}
         />
-      </BarChart>
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };

@@ -317,7 +317,7 @@ const PreferencesPanelComponent = ({
           onClick={handleSavePreferences}
           disabled={!hasUnsavedChanges || saveStatus === "saving"}
           className={cn(
-            "panel-preferences-submit-btn tw:flex tw:items-center tw:relative",
+            "panel-preferences-submit-btn tw:flex tw:items-center tw:relative tw:h-6 tw:px-3",
             hasUnsavedChanges && saveStatus !== "saving" ? "" : ""
           )}
         >
