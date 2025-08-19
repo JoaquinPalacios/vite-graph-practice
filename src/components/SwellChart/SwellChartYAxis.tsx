@@ -56,6 +56,11 @@ export const SwellChartYAxis = ({
         width={48}
         className="tw:[&>svg]:focus:outline-none"
         height={embeddedHeight}
+        {...(isEmbedded && {
+          margin: {
+            top: -12,
+          },
+        })}
       >
         <CartesianGrid
           vertical={true}

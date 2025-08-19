@@ -145,6 +145,11 @@ export const SwellChart = memo(
           onClick={() => {
             setIsTooltipClosed(false);
           }}
+          {...(isEmbedded && {
+            margin: {
+              top: -12,
+            },
+          })}
         >
           <CartesianGrid
             vertical={true}
@@ -232,7 +237,7 @@ export const SwellChart = memo(
               interval={0}
               minTickGap={0}
               domain={["dataMin", "dataMax"]}
-              tickMargin={16}
+              // tickMargin={16}
               ticks={generateEventTicks(chartData)}
               tick={(props: {
                 x: number;
