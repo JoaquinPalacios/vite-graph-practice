@@ -61,6 +61,11 @@ export const SwellChartYAxis = ({
             top: -12,
           },
         })}
+        margin={
+          {
+            // bottom: 0,
+          }
+        }
       >
         <CartesianGrid
           vertical={true}
@@ -134,7 +139,7 @@ export const SwellChartYAxis = ({
         />
 
         <YAxis
-          tickMargin={isMobile || isLandscapeMobile ? 20 : 20}
+          tickMargin={isMobile || isLandscapeMobile ? 28 : 20}
           minTickGap={0}
           unit={unitPreferences.units.surfHeight}
           interval={0}
@@ -149,7 +154,7 @@ export const SwellChartYAxis = ({
                 : 16,
           }}
           height={embeddedHeight}
-          width={48}
+          width={isMobile || isLandscapeMobile ? 56 : 48}
           axisLine={false}
           type="number"
           tick={(value) => {
