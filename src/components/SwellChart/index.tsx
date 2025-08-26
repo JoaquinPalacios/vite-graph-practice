@@ -146,6 +146,7 @@ export const SwellChart = memo(
             setIsTooltipClosed(false);
           }}
           {...(isEmbedded && {
+            // this is to offset the top margin of the YAxis for the embedded chart to have labels flash with outer border of the chart
             margin: {
               top: -12,
             },
@@ -277,7 +278,7 @@ export const SwellChart = memo(
                   <rect
                     x={x - 15}
                     y={-18}
-                    width={30}
+                    width={29}
                     height={20}
                     fill={data._isMissingData ? "#bdbcbc" : "#1aa7b1"}
                   />

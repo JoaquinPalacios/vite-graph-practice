@@ -51,9 +51,9 @@ interface EventMap {
  * @param {number} options.periodThreshold - Max period difference (seconds).
  * @param {number} options.minHeight - Minimum height (meters) to track.
  * @param {number} options.maxGap - Max number of time steps an event can disappear before being considered ended.
- * @returns {object} - Collection of swell events, where each event contains its complete history
+ * @returns {Promise<object>} - Collection of swell events, where each event contains its complete history
  */
-export default function processSwellData(
+export default async function processSwellData(
   data: ChartDataItem[],
   options = {
     dirThreshold: 15,
@@ -62,20 +62,20 @@ export default function processSwellData(
     maxGap: 2,
     maxTimeGap: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
   }
-) {
+): Promise<EventMap> {
   const events: EventMap = {};
   let activeEvents: ActiveEvent[] = [];
   let eventCounter = 0;
 
+  // Process all data in one go (simplified approach)
   data.forEach((timeStep, t) => {
     const localDateTimeISO = timeStep.localDateTimeISO;
     if (!localDateTimeISO) {
       console.warn("Missing localDateTimeISO:", timeStep);
-      return;
+      return; // Skip this item
     }
 
     const currentTimestamp = new Date(localDateTimeISO).getTime();
-
     const currentSwells: CurrentSwell[] = [];
 
     // Handle missing data by creating minimal invisible swells

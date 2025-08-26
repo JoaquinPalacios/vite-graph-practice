@@ -96,7 +96,7 @@ export const UnitSelector = ({
                 <AccordionItem value="preferences" className="tw:border-none">
                   <AccordionTrigger className="selector-btn preference-btn-wrapper tw:py-2 tw:px-0 hover:tw:no-underline tw:gap-0.5 tw:[&>svg]:hidden">
                     <div className="tw:flex tw:items-center tw:gap-2">
-                      <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
+                      <span className="font-sm font-medium tw:text-gray-700 tw:sm:block tw:max-sm:sr-only">
                         Settings
                       </span>
                       <VscSettings className="tw:size-5 tw:transition-transform tw:duration-300" />

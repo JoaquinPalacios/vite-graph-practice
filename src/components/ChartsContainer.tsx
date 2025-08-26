@@ -203,12 +203,24 @@ const ChartsContainer = ({
                     })}
                   />
 
-                  <AdvanceD3Chart
-                    unitPreferences={unitPreferences}
-                    chartData={processedData}
-                    maxSurfHeight={maxSurfHeightAdvanced}
-                    hasSubscription={rawApiData.user.hasFullAccess}
-                  />
+                  <div
+                    style={{
+                      height: unitPreferences.showAdvancedChart ? 192 : 0,
+                      minHeight: unitPreferences.showAdvancedChart ? 192 : 0,
+                      opacity: unitPreferences.showAdvancedChart ? 1 : 0,
+                      ...(!unitPreferences.showAdvancedChart && {
+                        overflow: "hidden",
+                      }),
+                    }}
+                    className="tw:transition-[height,min-height] tw:duration-300 tw:ease-out"
+                  >
+                    <AdvanceD3Chart
+                      unitPreferences={unitPreferences}
+                      chartData={processedData}
+                      maxSurfHeight={maxSurfHeightAdvanced}
+                      hasSubscription={rawApiData.user.hasFullAccess}
+                    />
+                  </div>
                 </>
               ) : !hasForecastData ? (
                 <NoDataFallback showMain showWeather={false} showTide={false} />

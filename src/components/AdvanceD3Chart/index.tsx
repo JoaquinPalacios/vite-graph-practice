@@ -82,11 +82,42 @@ export const AdvanceD3Chart = ({
   const activeTimestamp = useClickEvents ? clickedTimestamp : hoveredTimestamp;
   const activeEventId = useClickEvents ? clickedEventId : hoveredEventId;
 
-  // Process swell data using the existing processor
-  const processedSwellData = useMemo(
-    () => processSwellData(chartData),
-    [chartData]
-  );
+  // State for async processing
+  const [processedSwellData, setProcessedSwellData] = useState<{
+    [key: string]: any;
+  }>({});
+
+  // Process swell data asynchronously
+  useEffect(() => {
+    let isCancelled = false;
+
+    const processData = async (): Promise<void> => {
+      if (chartData.length === 0) {
+        setProcessedSwellData({});
+        return;
+      }
+
+      try {
+        const result = await processSwellData(chartData);
+
+        if (!isCancelled) {
+          setProcessedSwellData(result);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error("Error processing swell data:", error);
+          // Fallback to empty data on error to avoid breaking the chart
+          setProcessedSwellData({});
+        }
+      }
+    };
+
+    processData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chartData]);
 
   // Memoize eventIds
   const eventIds = useMemo(
@@ -145,16 +176,19 @@ export const AdvanceD3Chart = ({
   // Transform data for D3
   const transformedData = useMemo(() => {
     const allPoints: SwellPoint[] = [];
-    Object.entries(processedSwellData).forEach(([eventId, points]) => {
-      points.forEach((point) => {
-        allPoints.push({
-          ...point,
-          height: isFeet ? point.height * METERS_TO_FEET : point.height,
-          timestamp: new Date(point.localDateTimeISO).getTime(),
-          eventId,
+    Object.entries(processedSwellData).forEach(
+      ([eventId, points]: [string, any[]]) => {
+        points.forEach((point: any) => {
+          allPoints.push({
+            ...point,
+            height: isFeet ? point.height * METERS_TO_FEET : point.height,
+            timestamp: new Date(point.localDateTimeISO).getTime(),
+            eventId,
+          });
         });
-      });
-    });
+      }
+    );
+
     return allPoints;
   }, [processedSwellData, isFeet]);
 
@@ -742,11 +776,14 @@ export const AdvanceD3Chart = ({
     return (
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "100%", position: "relative" }}
-        className="tw:h-48 tw:min-h-48"
-      >
-        <div>Loading swell data or no data available...</div>
-      </div>
+        style={{
+          position: "relative",
+          height: 192,
+          minHeight: 192,
+          overflow: "hidden",
+        }}
+        className="tw:transition-[height,min-height] tw:duration-300 tw:ease-out"
+      />
     );
   }
 
@@ -756,12 +793,11 @@ export const AdvanceD3Chart = ({
         ref={containerRef}
         style={{
           position: "relative",
-          height: unitPreferences.showAdvancedChart ? 192 : 0,
-          minHeight: unitPreferences.showAdvancedChart ? 192 : 0,
+          height: 192,
+          minHeight: 192,
           overflow: "hidden",
         }}
         className="tw:transition-[height,min-height] tw:duration-300 tw:ease-out"
-        aria-hidden={!unitPreferences.showAdvancedChart}
       >
         <svg
           ref={svgRef}
@@ -796,7 +832,6 @@ export const AdvanceD3Chart = ({
           "tw:w-11 tw:md:w-12 tw:h-fit tw:absolute tw:left-0 tw:md:left-5 tw:top-80 tw:z-10 tw:pointer-events-none",
           !hasSubscription && "tw:max-md:top-[40rem]"
         )}
-        aria-hidden={!unitPreferences.showAdvancedChart}
       >
         <svg
           ref={yAxisRef}
