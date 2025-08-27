@@ -283,7 +283,7 @@ export const SwellChart = memo(
                   <rect
                     x={x - 15}
                     y={-18}
-                    width={29}
+                    width={30}
                     height={20}
                     fill={data._isMissingData ? "#bdbcbc" : "#1aa7b1"}
                   />

@@ -19,16 +19,6 @@ interface ApiStep extends ChartDataItem {
 }
 
 /**
- * Ensures we only use complete days of data (8 data points per day)
- * @param data - Array of data points
- * @returns Array trimmed to complete days
- */
-export function trimToCompleteDays<T>(data: T[]): T[] {
-  const completeDays = Math.floor(data.length / 8);
-  return data.slice(0, completeDays * 8);
-}
-
-/**
  * This function takes the raw API data steps and transforms them
  * into the array structure the graph expects.
  * @param apiData - The raw API data steps
@@ -52,8 +42,8 @@ export function processApiDataToChartData(
     return [];
   }
 
-  // Trim the data to complete days
-  let completeData = trimToCompleteDays(forecastData.forecastSteps);
+  // Use the forecast data directly since it's already trimmed in Drupal
+  let completeData = forecastData.forecastSteps;
 
   // Limit data for non-subscribers
   if (!apiData.user.hasFullAccess) {
@@ -61,14 +51,14 @@ export function processApiDataToChartData(
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() + daysAllowed);
 
-    completeData = completeData.filter((step) => {
+    completeData = completeData.filter((step: ApiStep) => {
       const stepDate = new Date(step.localDateTimeISO);
       return stepDate <= cutoffDate;
     });
   }
 
   const chartData: ChartDataItem[] = completeData.map(
-    (apiStep: ApiStep, index) => {
+    (apiStep: ApiStep, index: number) => {
       const chartItem: ChartDataItem = {
         localDateTimeISO: apiStep.localDateTimeISO || "",
         utcDateTimeISO: apiStep.utcDateTimeISO,
