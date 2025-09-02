@@ -6,6 +6,7 @@ import {
   activeColorPalette,
   calculateTooltipPosition,
   colorPalette,
+  generateTicks,
 } from "@/lib/charts";
 import {
   ChartDataItem,
@@ -125,52 +126,13 @@ export const AdvanceD3Chart = ({
     [processedSwellData]
   );
 
-  // Memoize yTicks
+  // Memoize yTicks using the shared generateTicks function
   const yTicks = useMemo(() => {
-    if (isFeet) {
-      const maxHeight = maxSurfHeight * METERS_TO_FEET;
-      if (maxHeight <= 5) {
-        // if max height is less than 5 feet, show all ticks
-        return Array.from({ length: Math.ceil(maxHeight) + 1 }, (_, i) => i);
-      }
-      if (maxHeight <= 14) {
-        // if max height is less than 14 feet, show ticks in increments of 2
-        const roundedToTwo = Math.ceil(maxHeight / 2) * 2;
-        return Array.from({ length: roundedToTwo / 2 + 1 }, (_, i) => i * 2);
-      }
-      if (maxHeight <= 16) {
-        // if max height is less than 16 feet, show ticks in increments of 4
-        return [0, 4, 8, 12, 16];
-      }
-      if (maxHeight <= 40) {
-        // if max height is between 16 and 40 feet, show ticks in increments of 5
-        const roundedToFive = Math.ceil(maxHeight / 5) * 5;
-        return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
-      }
-      // if max height is greater than 40 feet, show ticks in increments of 10
-      const roundedToTen = Math.ceil(maxHeight / 10) * 10;
-      return Array.from({ length: roundedToTen / 10 + 1 }, (_, i) => i * 10);
-    }
+    // Convert maxSurfHeight to the appropriate unit for generateTicks
+    const maxHeight = isFeet ? maxSurfHeight * METERS_TO_FEET : maxSurfHeight;
+    const unit = isFeet ? "ft" : "m";
 
-    const maxHeight = maxSurfHeight;
-
-    // For meters
-    if (maxHeight <= 1.5) {
-      // Small waves: show every 0.5m increment
-      return [0, 0.5, 1, 1.5];
-    }
-    if (maxHeight <= 4.5) {
-      // Medium waves: show every 1m increment
-      const roundedToOne = Math.ceil(maxHeight);
-      return Array.from({ length: roundedToOne + 1 }, (_, i) => i);
-    }
-    if (maxHeight <= 16) {
-      // For values up to 16m, show ticks in increments of 4
-      return [0, 4, 8, 12, 16];
-    }
-    // For values greater than 16m, show ticks in increments of 5
-    const roundedToFive = Math.ceil(maxHeight / 5) * 5;
-    return Array.from({ length: roundedToFive / 5 + 1 }, (_, i) => i * 5);
+    return generateTicks(maxHeight, unit);
   }, [isFeet, maxSurfHeight]);
 
   // Transform data for D3
@@ -779,6 +741,7 @@ export const AdvanceD3Chart = ({
         style={{
           position: "relative",
           height: 192,
+          maxHeight: 192,
           minHeight: 192,
           overflow: "hidden",
         }}
@@ -794,6 +757,7 @@ export const AdvanceD3Chart = ({
         style={{
           position: "relative",
           height: 192,
+          maxHeight: 192,
           minHeight: 192,
           overflow: "hidden",
         }}

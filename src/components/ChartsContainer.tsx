@@ -14,7 +14,7 @@ import { AdvanceD3Chart } from "./AdvanceD3Chart";
 import ChartsWrapper from "./ChartsWrapper";
 import GraphSkeleton from "./GraphSkeleton";
 import NoDataFallback from "./NoDataFallback";
-import { SubscriptionOverlay } from "./SubscriptionOverlay";
+
 import SwellTrainAnalysis from "./SweeltrainAnalysis";
 import { SwellChart } from "./SwellChart";
 import { SwellChartYAxis } from "./SwellChart/SwellChartYAxis";
@@ -151,7 +151,7 @@ const ChartsContainer = ({
       <div
         className={cn(
           "tw:w-full tw:relative tw:bg-gray-100 tw:max-w-full tw:h-auto tw:mr-auto tw:md:px-2 tw:py-0 tw:overflow-hidden tw:transition-opacity",
-          showSubscriptionOverlay && "tw:max-md:pt-80",
+          // showSubscriptionOverlay && "tw:max-md:pt-80",
           !showAnalysis
             ? "tw:opacity-100"
             : "tw:opacity-0 tw:-z-10 tw:pointer-events-none tw:w-0 tw:h-0"
@@ -163,8 +163,9 @@ const ChartsContainer = ({
       >
         <Suspense fallback={<GraphSkeleton />}>
           <ChartsWrapper
-            hasSubscription={rawApiData.user.hasFullAccess}
             isEmbedded={rawApiData.embedded}
+            showSubscriptionOverlay={showSubscriptionOverlay}
+            isPastDue={rawApiData.user.isPastDue}
           >
             <Suspense fallback={<GraphSkeleton showMain />}>
               {processedData.length > 0 && hasForecastData ? (
@@ -197,7 +198,6 @@ const ChartsContainer = ({
                         ? maxSurfHeight.surfersFeet
                         : maxSurfHeight.meters
                     }
-                    hasSubscription={rawApiData.user.hasFullAccess}
                     {...(rawApiData.embedded && {
                       isEmbedded: true,
                     })}
@@ -266,11 +266,6 @@ const ChartsContainer = ({
               )}
             </Suspense>
           </ChartsWrapper>
-          {showSubscriptionOverlay && (
-            <SubscriptionOverlay
-              subscriptionStatus={rawApiData.user.subscriptionStatus}
-            />
-          )}
         </Suspense>
       </div>
     </section>

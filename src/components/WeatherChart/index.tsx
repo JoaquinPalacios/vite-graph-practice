@@ -67,7 +67,7 @@ const WeatherChart = ({
       )}
       height="100%"
       className={cn(
-        "weather-chart tw:h-16 tw:min-h-16 tw:relative",
+        "weather-chart tw:h-16 tw:min-h-16 tw:max-h-16 tw:relative",
         "tw:after:absolute tw:after:z-0 tw:after:h-16 tw:after:w-[calc(100%-3.75rem)] tw:after:sm:w-[calc(100%-4.75rem)] tw:after:top-0 tw:after:left-[3.75rem] tw:after:sm:left-[4.75rem] tw:after:border-y tw:after:border-gray-400/80 tw:after:pointer-events-none"
       )}
     >

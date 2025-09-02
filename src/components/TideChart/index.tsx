@@ -1021,7 +1021,7 @@ export const TideChart = ({
       <div
         ref={containerRef}
         style={{ width: "100%", height: "100%", position: "relative" }}
-        className="tw:h-28 tw:min-h-28"
+        className="tw:h-28 tw:min-h-28 tw:max-h-28"
       >
         <div>Loading tide data or no data available...</div>
       </div>
@@ -1037,7 +1037,7 @@ export const TideChart = ({
           height: "100%",
           overflow: "hidden",
         }}
-        className="tw:h-28 tw:min-h-28"
+        className="tw:h-28 tw:min-h-28 tw:max-h-28"
       >
         <svg
           ref={svgRef}

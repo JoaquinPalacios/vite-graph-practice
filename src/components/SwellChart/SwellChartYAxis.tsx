@@ -25,13 +25,11 @@ export const SwellChartYAxis = ({
   unitPreferences,
   chartData,
   maxSurfHeight,
-  hasSubscription,
   isEmbedded,
 }: {
   unitPreferences: UnitPreferences;
   chartData: ChartDataItem[];
   maxSurfHeight: number;
-  hasSubscription: boolean;
   isEmbedded?: boolean;
 }) => {
   const { isMobile, isLandscapeMobile } = useScreenDetector();
@@ -45,7 +43,6 @@ export const SwellChartYAxis = ({
       minHeight={embeddedHeight}
       className={cn(
         "swell-y-axis tw:mb-0 tw:absolute tw:top-0 tw:left-0 tw:md:left-5 tw:z-20",
-        !hasSubscription && "tw:max-md:top-80",
         isEmbedded
           ? "tw:h-[24.375rem] tw:min-h-[24.375rem] tw:max-h-[24.375rem]"
           : "tw:h-[21.875rem] tw:min-h-[21.875rem] tw:max-h-[21.875rem]"

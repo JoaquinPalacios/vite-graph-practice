@@ -2,27 +2,24 @@ import { cn } from "@/utils/utils";
 
 interface SubscriptionOverlayProps {
   className?: string;
-  subscriptionStatus?: string;
+  isPastDue?: boolean;
 }
 
 export const SubscriptionOverlay = ({
   className,
-  subscriptionStatus,
+  isPastDue,
 }: SubscriptionOverlayProps) => {
-  const isPastDue = subscriptionStatus === "Past Due";
-
   return (
     <div
       className={cn(
-        "tw:md:bg-white/70 tw:flex-col tw:h-fit tw:md:h-full tw:w-full tw:md:w-fit tw:backdrop-blur-sm tw:flex tw:items-center tw:justify-center tw:p-5 tw:md:p-4 tw:md:pr-8",
-        "tw:absolute tw:right-0 tw:top-0 tw:md:top-1/2 tw:md:-translate-y-1/2 tw:z-10",
+        "tw:bg-white/70 tw:flex-col tw:h-auto tw:w-fit tw:max-md:max-w-72 tw:min-w-64 tw:sm:min-w-72 tw:md:min-w-80 tw:lg:min-w-md tw:backdrop-blur-sm tw:flex tw:items-center tw:justify-center tw:p-4",
         className
       )}
     >
       {isPastDue ? (
         <>
           <h3 className="">Subscription Update Required</h3>
-          <div className="tw:max-w-full tw:md:max-w-[17rem] tw:lg:max-w-sm tw:xl:max-w-[29rem] tw:text-center">
+          <div className="tw:max-w-[17rem] tw:lg:max-w-sm tw:xl:max-w-[29rem] tw:text-center">
             <p className="tw:text-pretty tw:mb-4">
               Your Swellnet Pro subscription needs attention. Please update your
               payment details to continue enjoying premium forecasts and
@@ -38,7 +35,7 @@ export const SubscriptionOverlay = ({
         </>
       ) : (
         <>
-          <h3 className="">Premium Forecast</h3>
+          <h3 className="text-center">Premium Forecast</h3>
           <div className="tw:max-w-full tw:md:max-w-[17rem] tw:lg:max-w-sm tw:xl:max-w-[29rem] tw:text-center">
             <p className="tw:text-pretty">
               Subscribe to access our full forecast data and unlock detailed
@@ -66,7 +63,7 @@ export const SubscriptionOverlay = ({
                 href={`/user/login?destination=${encodeURIComponent(
                   window.location.pathname
                 )}`}
-                className="tw:inline-flex tw:items-center tw:justify-center tw:w-full tw:font-medium tw:transition-colors tw:duration-200"
+                className="tw:inline-flex tw:items-center tw:justify-center tw:w-full tw:font-medium tw:transition-colors tw:duration-200 tw:text-balance"
               >
                 Already a subscriber? Sign in
               </a>

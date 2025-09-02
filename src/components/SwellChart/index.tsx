@@ -128,8 +128,8 @@ export const SwellChart = memo(
           unitPreferences.showAdvancedChart && // border bottom that's only there when the advanced chart is shown
             "tw:after:absolute tw:after:z-0 tw:after:h-px tw:after:w-[calc(100%-3.75rem)] tw:after:sm:w-[calc(100%-4.75rem)] tw:after:bottom-0 tw:after:left-[3.75rem] tw:after:sm:left-[4.75rem] tw:after:bg-gray-400/80 tw:after:pointer-events-none",
           isEmbedded
-            ? "tw:h-[22.5rem] tw:min-h-[22.5rem]"
-            : "tw:h-80 tw:min-h-80"
+            ? "tw:h-[22.5rem] tw:min-h-[22.5rem] tw:max-h-[22.5rem]"
+            : "tw:h-80 tw:min-h-80 tw:max-h-80"
         )}
         minHeight={isEmbedded ? 360 : 320}
       >

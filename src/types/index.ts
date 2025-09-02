@@ -69,6 +69,7 @@ export interface DrupalApiData {
   user: {
     hasFullAccess: boolean;
     subscriptionStatus: string;
+    isPastDue: boolean;
   };
   forecasts: {
     ecmwf: {

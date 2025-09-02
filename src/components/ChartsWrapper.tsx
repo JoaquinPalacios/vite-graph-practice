@@ -5,11 +5,13 @@ import { cn } from "@/utils/utils";
 import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 import GraphButtons from "./GraphButtons";
+import { SubscriptionOverlay } from "./SubscriptionOverlay";
 
 interface ChartsWrapperProps {
   children: React.ReactNode;
-  hasSubscription: boolean;
   isEmbedded?: boolean;
+  showSubscriptionOverlay?: boolean;
+  isPastDue?: boolean;
 }
 
 interface ContainerDimensions {
@@ -28,8 +30,9 @@ interface ContainerDimensions {
  */
 const ChartsWrapper = ({
   children,
-  hasSubscription,
   isEmbedded,
+  showSubscriptionOverlay,
+  isPastDue,
 }: ChartsWrapperProps): ReactElement => {
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
@@ -265,14 +268,20 @@ const ChartsWrapper = ({
         ref={scrollContainerRef}
         {...(isDesktop ? events : {})}
         className={cn(
-          "chart-scroll-container tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent",
-          !hasSubscription &&
-            "tw:md:w-[calc(100%-18rem)] tw:lg:w-[calc(100%-24rem)] tw:xl:w-[calc(100%-28rem)]",
+          "chart-scroll-container tw:flex tw:p-0 tw:w-full tw:overflow-y-auto tw:no-scrollbar tw:[-ms-overflow-style:none] tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar-thumb]:bg-transparent tw:[&::-webkit-scrollbar-track]:bg-transparent",
           isDesktop && "no-user-select"
         )}
         onScroll={handleScroll}
       >
-        <div ref={contentWrapperRef}>{children}</div>
+        <div ref={contentWrapperRef} className="tw:h-full">
+          {children}
+        </div>
+        {showSubscriptionOverlay && (
+          <SubscriptionOverlay
+            className="tw:relative tw:z-10 tw:-left-6"
+            isPastDue={isPastDue}
+          />
+        )}
       </div>
     </>
   );

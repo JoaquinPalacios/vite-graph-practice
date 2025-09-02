@@ -44,7 +44,7 @@ async function initGraph(): Promise<void> {
     ...drupalSettings.apiData,
     user: {
       hasFullAccess: userData?.hasFullAccess ?? false,
-      subscriptionStatus: userData?.isSubscriber ? "active" : "inactive",
+      isPastDue: userData?.isPastDue ?? false,
     },
     preferences: {
       units: {
