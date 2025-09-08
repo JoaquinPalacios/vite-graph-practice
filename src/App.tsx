@@ -54,7 +54,7 @@ function App({
   // Process the data based on the selected model type
   let chartData = processApiDataToChartData(rawApiData, modelType);
 
-  if (!rawApiData.user.hasFullAccess) {
+  if (!rawApiData.user.isLoggedIn) {
     chartData = chartData.slice(0, 24);
   }
 
@@ -130,7 +130,12 @@ function App({
         maxSurfHeight={maxSurfHeight}
         maxSurfHeightAdvanced={maxSurfHeightAdvanced}
         chartWidth={chartWidth}
-        weatherData={weatherData.slice(0, chartDataLength)}
+        weatherData={weatherData.slice(
+          0,
+          !rawApiData.user.isLoggedIn
+            ? Math.min(chartDataLength, 24)
+            : chartDataLength
+        )}
         tideData={tideData}
         timezone={timezone}
         rawApiData={rawApiData}

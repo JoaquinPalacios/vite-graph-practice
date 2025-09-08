@@ -189,7 +189,6 @@ export const fetchUserDataFromDrupal = async (): Promise<UserStatus | null> => {
     // Transform the API response to match our UserStatus interface
     const userStatus: UserStatus = {
       isLoggedIn: apiResponse.user_status.isLoggedIn,
-      hasFullAccess: apiResponse.user_status.hasFullAccess,
       username: apiResponse.user.username,
       userId: apiResponse.user.userId,
       isSubscriber: apiResponse.user.isSubscriber,

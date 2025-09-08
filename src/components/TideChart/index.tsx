@@ -49,6 +49,7 @@ const getTideInstance = (tide: TideDataFromDrupal): "high" | "low" => {
  * @param swellData - Swells data from Drupal
  * @param timezone - The timezone
  * @param unitPreferences - The unit preferences for the chart
+ * @param hasSubscription - Whether the user has a subscription
  * @returns Tide chart component
  */
 export const TideChart = ({
@@ -57,12 +58,14 @@ export const TideChart = ({
   timezone,
   exactTimestamp,
   unitPreferences,
+  hasSubscription,
 }: {
   tideData: TideDataFromDrupal[];
   swellData: ChartDataItem[];
   timezone: string;
   exactTimestamp?: number;
   unitPreferences: UnitPreferences;
+  hasSubscription: boolean;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const yAxisRef = useRef<SVGSVGElement>(null);
@@ -96,7 +99,22 @@ export const TideChart = ({
   // Get the active timestamp based on device type
   const activeTimestamp = useClickEvents ? clickedTimestamp : hoveredTimestamp;
 
-  const length = swellData.length === 0 ? 128 : swellData.length;
+  const length = (() => {
+    // If no swell data and user has subscription, default to 128
+    if (swellData.length === 0 && hasSubscription) {
+      return 128;
+    }
+    // If no swell data and no subscription, limit to 3 days (25 points)
+    if (swellData.length === 0 && !hasSubscription) {
+      return 24; // 3 days * 8 data points per day + midnight
+    }
+    // If there is swell data but no subscription, limit to 3 days (25 points)
+    if (!hasSubscription) {
+      return Math.min(swellData.length, 24); // 3 days * 8 data points per day + midnight
+    }
+    // If there is swell data and user has subscription, use full length
+    return swellData.length;
+  })();
 
   const PIXELS_PER_DAY = 256; // Exact width per day in pixels
 

@@ -67,9 +67,9 @@ export interface DrupalApiData {
     isAustralia: boolean;
   };
   user: {
-    hasFullAccess: boolean;
     subscriptionStatus: string;
     isPastDue: boolean;
+    isLoggedIn: boolean;
   };
   forecasts: {
     ecmwf: {
@@ -206,7 +206,6 @@ export interface TooltipState {
 // New types for the user API endpoint
 export interface UserStatus {
   isLoggedIn: boolean;
-  hasFullAccess: boolean;
   username: string;
   userId: string;
   isSubscriber: boolean;
@@ -222,7 +221,6 @@ export interface UserStatus {
 export interface DrupalUserApiResponse {
   user_status: {
     isLoggedIn: boolean;
-    hasFullAccess: boolean;
   };
   user: {
     username: string;

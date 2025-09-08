@@ -43,8 +43,8 @@ async function initGraph(): Promise<void> {
   const rawApiData: DrupalApiData = {
     ...drupalSettings.apiData,
     user: {
-      hasFullAccess: userData?.hasFullAccess ?? false,
       isPastDue: userData?.isPastDue ?? false,
+      isLoggedIn: userData?.isLoggedIn ?? false,
     },
     preferences: {
       units: {
@@ -63,7 +63,7 @@ async function initGraph(): Promise<void> {
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
     if (!data) return [];
-    if (!rawApiData.user.hasFullAccess) {
+    if (!rawApiData.user.isLoggedIn) {
       return data.slice(0, 25); // 3 days * 8 data points per day + midnight
     }
     return data;
@@ -81,7 +81,7 @@ async function initGraph(): Promise<void> {
   const weatherData = rawApiData.weather?.hourly
     ? (() => {
         const timeData = rawApiData.weather.hourly.time;
-        const slicedTimeData = !rawApiData.user.hasFullAccess
+        const slicedTimeData = !rawApiData.user.isLoggedIn
           ? timeData.slice(0, 25) // 3 days * 8 data points per day + midnight
           : timeData;
 
@@ -150,7 +150,7 @@ async function initGraph(): Promise<void> {
   const ecmwfDataLength = ecmwfData.length;
 
   // For non-subscribers, limit to 25 data points (3 days + midnight)
-  const maxDataLength = !rawApiData.user.hasFullAccess
+  const maxDataLength = !rawApiData.user.isLoggedIn
     ? 25 // 3 days * 8 data points per day
     : Math.max(gfsDataLength, ecmwfDataLength);
 

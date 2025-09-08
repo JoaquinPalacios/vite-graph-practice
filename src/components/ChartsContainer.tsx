@@ -98,7 +98,7 @@ const ChartsContainer = ({
   const hasEcmwfData = rawApiData.forecasts?.ecmwf?.forecastSteps?.length > 0;
   const hasForecastData = hasGfsData || hasEcmwfData;
 
-  const showSubscriptionOverlay = !rawApiData.user.hasFullAccess;
+  const showSubscriptionOverlay = !rawApiData.user.isLoggedIn;
 
   const referenceLineData = useMemo(() => {
     const dataWithTimestamp = processedData as ChartDataItemWithTimestamp[];
@@ -218,7 +218,7 @@ const ChartsContainer = ({
                       unitPreferences={unitPreferences}
                       chartData={processedData}
                       maxSurfHeight={maxSurfHeightAdvanced}
-                      hasSubscription={rawApiData.user.hasFullAccess}
+                      hasSubscription={rawApiData.user.isLoggedIn}
                     />
                   </div>
                 </>
@@ -260,6 +260,7 @@ const ChartsContainer = ({
                   timezone={timezone}
                   exactTimestamp={referenceLineData.exactTimestamp}
                   unitPreferences={unitPreferences}
+                  hasSubscription={rawApiData.user.isLoggedIn}
                 />
               ) : (
                 <NoDataFallback showTide showWeather={false} showMain={false} />
