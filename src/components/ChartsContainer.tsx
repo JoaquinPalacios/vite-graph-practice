@@ -166,7 +166,6 @@ const ChartsContainer = ({
           <ChartsWrapper
             isEmbedded={rawApiData.embedded}
             showSubscriptionOverlay={showSubscriptionOverlay}
-            isSubscriber={rawApiData.user.isSubscriber}
             isPastDue={rawApiData.user.isPastDue}
           >
             <Suspense fallback={<GraphSkeleton showMain />}>
