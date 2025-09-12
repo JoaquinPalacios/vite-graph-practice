@@ -12,6 +12,7 @@ interface ChartsWrapperProps {
   isEmbedded?: boolean;
   showSubscriptionOverlay?: boolean;
   isPastDue?: boolean;
+  isSubscriber?: boolean;
 }
 
 interface ContainerDimensions {
@@ -33,6 +34,7 @@ const ChartsWrapper = ({
   isEmbedded,
   showSubscriptionOverlay,
   isPastDue,
+  isSubscriber,
 }: ChartsWrapperProps): ReactElement => {
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
@@ -280,6 +282,7 @@ const ChartsWrapper = ({
           <SubscriptionOverlay
             className="tw:relative tw:z-10 tw:-left-6"
             isPastDue={isPastDue}
+            isSubscriber={isSubscriber}
           />
         )}
       </div>

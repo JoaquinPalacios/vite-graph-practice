@@ -45,6 +45,7 @@ async function initGraph(): Promise<void> {
     user: {
       isPastDue: userData?.isPastDue ?? false,
       isLoggedIn: userData?.isLoggedIn ?? false,
+      isSubscriber: userData?.isSubscriber ?? false,
     },
     preferences: {
       units: {
@@ -63,7 +64,7 @@ async function initGraph(): Promise<void> {
   // Slice the data for non-subscribers before any calculations
   const sliceDataForSubscription = (data: ChartDataItem[] | undefined) => {
     if (!data) return [];
-    if (!rawApiData.user.isLoggedIn) {
+    if (!rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber) {
       return data.slice(0, 25); // 3 days * 8 data points per day + midnight
     }
     return data;
@@ -81,9 +82,10 @@ async function initGraph(): Promise<void> {
   const weatherData = rawApiData.weather?.hourly
     ? (() => {
         const timeData = rawApiData.weather.hourly.time;
-        const slicedTimeData = !rawApiData.user.isLoggedIn
-          ? timeData.slice(0, 25) // 3 days * 8 data points per day + midnight
-          : timeData;
+        const slicedTimeData =
+          !rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber
+            ? timeData.slice(0, 25) // 3 days * 8 data points per day + midnight
+            : timeData;
 
         return slicedTimeData.map((time: string, index: number) => ({
           index: 1,
@@ -150,9 +152,10 @@ async function initGraph(): Promise<void> {
   const ecmwfDataLength = ecmwfData.length;
 
   // For non-subscribers, limit to 25 data points (3 days + midnight)
-  const maxDataLength = !rawApiData.user.isLoggedIn
-    ? 25 // 3 days * 8 data points per day
-    : Math.max(gfsDataLength, ecmwfDataLength);
+  const maxDataLength =
+    !rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber
+      ? 25 // 3 days * 8 data points per day
+      : Math.max(gfsDataLength, ecmwfDataLength);
 
   const chartWidth = getChartWidth(maxDataLength || 128);
 

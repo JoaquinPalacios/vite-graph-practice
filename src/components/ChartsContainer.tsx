@@ -98,7 +98,8 @@ const ChartsContainer = ({
   const hasEcmwfData = rawApiData.forecasts?.ecmwf?.forecastSteps?.length > 0;
   const hasForecastData = hasGfsData || hasEcmwfData;
 
-  const showSubscriptionOverlay = !rawApiData.user.isLoggedIn;
+  const showSubscriptionOverlay =
+    !rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber;
 
   const referenceLineData = useMemo(() => {
     const dataWithTimestamp = processedData as ChartDataItemWithTimestamp[];
@@ -165,6 +166,7 @@ const ChartsContainer = ({
           <ChartsWrapper
             isEmbedded={rawApiData.embedded}
             showSubscriptionOverlay={showSubscriptionOverlay}
+            isSubscriber={rawApiData.user.isSubscriber}
             isPastDue={rawApiData.user.isPastDue}
           >
             <Suspense fallback={<GraphSkeleton showMain />}>
@@ -218,7 +220,10 @@ const ChartsContainer = ({
                       unitPreferences={unitPreferences}
                       chartData={processedData}
                       maxSurfHeight={maxSurfHeightAdvanced}
-                      hasSubscription={rawApiData.user.isLoggedIn}
+                      hasSubscription={
+                        rawApiData.user.isLoggedIn ||
+                        rawApiData.user.isSubscriber
+                      }
                     />
                   </div>
                 </>
@@ -260,7 +265,9 @@ const ChartsContainer = ({
                   timezone={timezone}
                   exactTimestamp={referenceLineData.exactTimestamp}
                   unitPreferences={unitPreferences}
-                  hasSubscription={rawApiData.user.isLoggedIn}
+                  hasSubscription={
+                    rawApiData.user.isLoggedIn || rawApiData.user.isSubscriber
+                  }
                 />
               ) : (
                 <NoDataFallback showTide showWeather={false} showMain={false} />

@@ -70,6 +70,7 @@ export interface DrupalApiData {
     subscriptionStatus: string;
     isPastDue: boolean;
     isLoggedIn: boolean;
+    isSubscriber: boolean;
   };
   forecasts: {
     ecmwf: {
@@ -221,6 +222,7 @@ export interface UserStatus {
 export interface DrupalUserApiResponse {
   user_status: {
     isLoggedIn: boolean;
+    // isSubscriber: boolean;
   };
   user: {
     username: string;

@@ -54,7 +54,8 @@ function App({
   // Process the data based on the selected model type
   let chartData = processApiDataToChartData(rawApiData, modelType);
 
-  if (!rawApiData.user.isLoggedIn) {
+  // If the user is not logged in, slice the chart data to 24 hours
+  if (!rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber) {
     chartData = chartData.slice(0, 24);
   }
 
@@ -132,7 +133,7 @@ function App({
         chartWidth={chartWidth}
         weatherData={weatherData.slice(
           0,
-          !rawApiData.user.isLoggedIn
+          !rawApiData.user.isLoggedIn || !rawApiData.user.isSubscriber
             ? Math.min(chartDataLength, 24)
             : chartDataLength
         )}
