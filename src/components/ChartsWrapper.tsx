@@ -282,7 +282,6 @@ const ChartsWrapper = ({
           <SubscriptionOverlay
             className="tw:relative tw:z-10 tw:-left-6"
             isPastDue={isPastDue}
-            isSubscriber={isSubscriber}
           />
         )}
       </div>
