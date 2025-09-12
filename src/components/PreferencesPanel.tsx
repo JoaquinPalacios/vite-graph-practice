@@ -1,8 +1,8 @@
 import { updateUserPreferences, validatePreferences } from "@/api";
 import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
+import { Check, LoaderCircle, TriangleAlert } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { BiCheck, BiLoaderAlt, BiX } from "react-icons/bi";
 
 // Save status for UI feedback
 export type SaveStatus = "idle" | "saving" | "success" | "error";
@@ -323,13 +323,13 @@ const PreferencesPanelComponent = ({
         >
           Save
           {saveStatus === "saving" && (
-            <BiLoaderAlt className="tw:size-3.5 tw:animate-spin tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-swell" />
+            <LoaderCircle className="tw:size-3.5 tw:animate-spin tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-swell" />
           )}
           {saveStatus === "success" && (
-            <BiCheck className="tw:size-4 tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-swell" />
+            <Check className="tw:size-4 tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-swell" />
           )}
           {saveStatus === "error" && (
-            <BiX className="tw:size-4 tw:absolute tw:-left-4 tw:top-1/2 tw:-translate-y-1/2 tw:text-red-500" />
+            <TriangleAlert className="tw:size-4 tw:absolute tw:-left-[1.125rem] tw:top-1/2 tw:-translate-y-1/2 tw:text-red-500/90" />
           )}
         </button>
       </div>

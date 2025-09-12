@@ -1,8 +1,8 @@
 import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
 import { formatInTimeZone } from "date-fns-tz";
+import { X } from "lucide-react";
 import { memo } from "react";
-import { IoClose } from "react-icons/io5";
 
 type CustomTooltipProps = {
   active?: boolean;
@@ -69,7 +69,7 @@ export const TideTooltip = memo(
                 className="tw:text-gray-500 hover:tw:text-gray-700 tw:transition-colors"
                 aria-label="Close tooltip"
               >
-                <IoClose className="tw:w-4 tw:h-4 tw:text-gray-600" />
+                <X className="tw:w-4 tw:h-4 tw:text-gray-600" />
               </button>
             )}
           </h5>

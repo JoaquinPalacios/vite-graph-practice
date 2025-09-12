@@ -1,11 +1,11 @@
 import { useScreenDetector } from "@/hooks/useScreenDetector";
 import { cn } from "@/utils/utils";
 import {
-  AiOutlineDoubleLeft,
-  AiOutlineDoubleRight,
-  AiOutlineLeft,
-  AiOutlineRight,
-} from "react-icons/ai";
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 
 /**
  * GraphButtons component
@@ -76,7 +76,7 @@ const GraphButtons = ({
           disabled={isAtStart}
           aria-label="Scroll left one day"
         >
-          <AiOutlineLeft color="oklch(21% 0.034 264.665)" size={18} />
+          <ChevronLeft color="oklch(21% 0.034 264.665)" size={18} />
         </button>
         <button
           onClick={() => scrollByDay("left", getScrollMultiplier())}
@@ -88,7 +88,7 @@ const GraphButtons = ({
           disabled={isAtStart}
           aria-label="Scroll left multiple days"
         >
-          <AiOutlineDoubleLeft color="oklch(21% 0.034 264.665)" size={18} />
+          <ChevronsLeft color="oklch(21% 0.034 264.665)" size={18} />
         </button>
       </div>
       <div className="tw:hidden tw:md:flex tw:flex-col tw:items-center tw:divide-y-2 tw:divide-gray-100">
@@ -102,7 +102,7 @@ const GraphButtons = ({
           disabled={isAtEnd}
           aria-label="Scroll right one day"
         >
-          <AiOutlineRight color="oklch(21% 0.034 264.665)" size={18} />
+          <ChevronRight color="oklch(21% 0.034 264.665)" size={18} />
         </button>
         <button
           onClick={() => scrollByDay("right", getScrollMultiplier())}
@@ -114,7 +114,7 @@ const GraphButtons = ({
           disabled={isAtEnd}
           aria-label="Scroll right multiple days"
         >
-          <AiOutlineDoubleRight color="oklch(21% 0.034 264.665)" size={18} />
+          <ChevronsRight color="oklch(21% 0.034 264.665)" size={18} />
         </button>
       </div>
     </>

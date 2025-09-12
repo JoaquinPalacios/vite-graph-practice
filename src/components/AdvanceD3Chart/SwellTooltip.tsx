@@ -2,8 +2,8 @@ import { colorPalette } from "@/lib/charts";
 import { degreesToCompassDirection, getAdjustedDirection } from "@/lib/surf";
 import { SwellPoint, TooltipState, UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
+import { X } from "lucide-react";
 import React from "react";
-import { IoClose } from "react-icons/io5";
 import { SwellLabel } from "../SwellChart/SwellLabel";
 
 // Format: 3pm Sat 14 Jun
@@ -73,7 +73,7 @@ export const SwellTooltip: React.FC<SwellTooltipProps> = React.memo(
               className="tw:text-gray-500 hover:tw:text-gray-700 tw:transition-colors"
               aria-label="Close tooltip"
             >
-              <IoClose className="tw:w-3.5 tw:h-3.5 tw:text-gray-600" />
+              <X className="tw:w-3.5 tw:h-3.5 tw:text-gray-600" />
             </button>
           )}
         </h5>

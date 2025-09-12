@@ -3,7 +3,7 @@ import { generateTicks } from "@/lib/charts";
 import { UnitPreferences } from "@/types";
 import { ChartDataItem } from "@/types/index.ts";
 import { cn } from "@/utils/utils";
-import { LuWind } from "react-icons/lu";
+import { Wind } from "lucide-react";
 import {
   Bar,
   CartesianGrid,
@@ -166,7 +166,7 @@ export const SwellChartYAxis = ({
                 >
                   Sec
                 </text>
-                <LuWind
+                <Wind
                   className="tw:w-4 tw:h-4"
                   x={value.x + 2}
                   y={value.y + 32}

@@ -8,8 +8,8 @@ import {
 } from "@/lib/surf";
 import { UnitPreferences } from "@/types";
 import { cn } from "@/utils/utils";
+import { X } from "lucide-react";
 import { memo, MouseEvent } from "react";
-import { IoClose } from "react-icons/io5";
 import { TooltipProps } from "recharts";
 import {
   NameType,
@@ -201,7 +201,7 @@ export const SwellTooltip = memo((props: SwellTooltipProps) => {
             className="tw:absolute tw:top-0.5 tw:right-0.5 tw:z-20 tw:w-6 tw:h-6 tw:flex tw:items-center tw:justify-center tw:text-gray-600 tw:text-sm tw:font-bold"
             aria-label="Close tooltip"
           >
-            <IoClose className="tw:w-3.5 tw:h-3.5" />
+            <X className="tw:w-3.5 tw:h-3.5" />
           </button>
         )}
 
