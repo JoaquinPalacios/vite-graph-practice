@@ -104,7 +104,7 @@ export const UnitSelector = ({
                   </AccordionTrigger>
                   <AccordionContent
                     className={cn(
-                      "tw:absolute tw:top-[6.25rem] tw:lg:top-24 tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
+                      "tw:absolute tw:top-[7.25rem] tw:lg:top-[7.0625rem] tw:left-1/2 tw:md:left-0 tw:max-md:-translate-x-1/2 tw:w-screen tw:md:w-full tw:h-full tw:min-w-fit tw:p-0",
                       "tw:transition-opacity tw:duration-200"
                     )}
                   >
@@ -122,7 +122,9 @@ export const UnitSelector = ({
           <div
             className={cn(
               "tw:flex tw:items-center tw:gap-2 tw:transition-opacity tw:order-last tw:lg:order-none",
-              showAnalysis ? "tw:opacity-0" : "tw:opacity-100"
+              showAnalysis || !hasGfsData || !hasEcmwfData
+                ? "tw:opacity-0"
+                : "tw:opacity-100"
             )}
           >
             <span className="font-sm font-medium tw:text-gray-700 tw:hidden tw:sm:block">
