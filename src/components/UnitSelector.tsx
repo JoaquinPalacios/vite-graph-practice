@@ -122,7 +122,7 @@ export const UnitSelector = ({
           <div
             className={cn(
               "tw:flex tw:items-center tw:gap-2 tw:transition-opacity tw:order-last tw:lg:order-none",
-              showAnalysis || !hasGfsData || !hasEcmwfData
+              showAnalysis || (!hasGfsData && !hasEcmwfData)
                 ? "tw:opacity-0"
                 : "tw:opacity-100"
             )}
